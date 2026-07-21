@@ -1,0 +1,14 @@
+export enum ProductType {
+
+  ADDITIVE = 'ADDITIVE',
+
+  BLEACH = 'BLEACH',
+
+  COLOR = 'COLOR',
+
+  DEVELOPER = 'DEVELOPER',
+
+  TONER = 'TONER',
+
+  TREATMENT = 'TREATMENT'
+}

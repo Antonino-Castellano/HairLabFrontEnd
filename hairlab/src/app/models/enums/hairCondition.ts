@@ -1,0 +1,10 @@
+export enum HairCondition {
+
+  HEALTHY = 'HEALTHY',
+
+  DRY = 'DRY',
+
+  DAMAGED = 'DAMAGED',
+
+  CHEMICALLY_TREATED = 'CHEMICALLY_TREATED'
+}

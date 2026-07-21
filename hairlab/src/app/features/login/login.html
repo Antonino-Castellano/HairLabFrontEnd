@@ -1,0 +1,24 @@
+<div class="login-page">
+  <form class="login-card" [formGroup]="loginForm" (ngSubmit)="submit()">
+    <div class="login-header">
+      <h1>HairLab</h1>
+      <p>Accedi al gestionale</p>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Inserisci la tua email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="Inserisci la password">
+    </div>
+
+    <p class="error-message">{{ errorMessage }}</p>
+
+    <button type="submit" [disabled]="loginForm.invalid || loading">
+      {{ loading ? 'Accesso in corso...' : 'Accedi' }}
+    </button>
+  </form>
+</div>

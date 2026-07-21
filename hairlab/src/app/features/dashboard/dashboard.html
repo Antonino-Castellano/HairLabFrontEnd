@@ -1,0 +1,51 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <h1>HairLab</h1>
+      <p>Gestionale salone</p>
+    </div>
+
+    <div class="user-area">
+      <span>{{ user?.username }}</span>
+      <span>{{ user?.role }}</span>
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <h2>Dashboard</h2>
+    <p>Benvenuto, {{ user?.username }}</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Clienti</h3>
+        <p>Gestione anagrafica e profilo capelli</p>
+      </div>
+
+      <div class="card">
+        <h3>Appuntamenti</h3>
+        <p>Agenda e gestione appuntamenti</p>
+      </div>
+
+      <div class="card">
+        <h3>Dipendenti</h3>
+        <p>Operatori e specializzazioni</p>
+      </div>
+
+      <div class="card">
+        <h3>Consulenze</h3>
+        <p>Diagnosi e consulenze tecniche</p>
+      </div>
+
+      <div class="card">
+        <h3>Color Lab</h3>
+        <p>Formule colore e tinte</p>
+      </div>
+
+      <div class="card">
+        <h3>Servizi</h3>
+        <p>Categorie e listino servizi</p>
+      </div>
+    </div>
+  </main>
+</div>
