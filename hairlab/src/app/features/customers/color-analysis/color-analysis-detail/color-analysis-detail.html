@@ -1,0 +1,448 @@
+<section class="color-analysis-section">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+  <div class="section-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ANALISI CROMATICA
+      </span>
+
+      <h2>
+        Armocromia
+      </h2>
+
+      <p>
+        Stagione, sottotono, contrasto
+        e palette cromatica della cliente.
+      </p>
+
+    </div>
+
+    @if (colorAnalysis(); as analysis) {
+
+      <a
+        class="secondary-button"
+        [routerLink]="[
+          '/customers',
+          customerId,
+          'color-analysis',
+          analysis.id,
+          'edit'
+        ]">
+        Modifica analisi
+      </a>
+
+    }
+
+  </div>
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+  @if (loading()) {
+
+    <div class="state-card">
+
+      <p>
+        Caricamento analisi cromatica...
+      </p>
+
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <!-- ===================================================
+         ERRORE
+         =================================================== -->
+    <div class="error-card">
+
+      {{ errorMessage() }}
+
+      <button
+        type="button"
+        (click)="loadColorAnalysis()">
+        Riprova
+      </button>
+
+    </div>
+
+  } @else if (analysisNotFound()) {
+
+    <!-- ===================================================
+         ANALISI NON PRESENTE
+         =================================================== -->
+    <div class="empty-card">
+
+      <div class="empty-icon">
+        ◐
+      </div>
+
+      <div class="empty-content">
+
+        <h3>
+          Analisi cromatica non compilata
+        </h3>
+
+        <p>
+          Definisci sottotono, stagione,
+          sottostagione, contrasto, intensità
+          e palette cromatica della cliente.
+        </p>
+
+      </div>
+
+      <a
+        class="primary-button"
+        [routerLink]="[
+          '/customers',
+          customerId,
+          'color-analysis',
+          'new'
+        ]">
+        + Crea analisi cromatica
+      </a>
+
+    </div>
+
+  } @else if (
+    colorAnalysis();
+    as analysis
+  ) {
+
+    <!-- ===================================================
+         HERO STAGIONE
+         =================================================== -->
+    <article
+      class="season-card"
+      [class.spring]="analysis.season === 'SPRING'"
+      [class.summer]="analysis.season === 'SUMMER'"
+      [class.autumn]="analysis.season === 'AUTUMN'"
+      [class.winter]="analysis.season === 'WINTER'">
+
+      <span class="season-kicker">
+        STAGIONE ARMOCROMATICA
+      </span>
+
+      <h3>
+        {{ label(analysis.season) }}
+      </h3>
+
+      <strong>
+        {{ label(analysis.subSeason) }}
+      </strong>
+
+      <div class="season-line"></div>
+
+    </article>
+
+    <!-- ===================================================
+         PARAMETRI PRINCIPALI
+         =================================================== -->
+    <div class="analysis-grid">
+
+      <article class="analysis-card">
+
+        <span class="card-label">
+          PELLE
+        </span>
+
+        <h3>
+          Caratteristiche cromatiche
+        </h3>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Tonalità pelle
+            </span>
+
+            <strong>
+              {{ label(analysis.skinTone) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Sottotono
+            </span>
+
+            <strong>
+              {{ label(analysis.undertone) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <article class="analysis-card">
+
+        <span class="card-label">
+          PARAMETRI ARMOCROMATICI
+        </span>
+
+        <h3>
+          Equilibrio cromatico
+        </h3>
+
+        <div class="properties three">
+
+          <div class="property">
+
+            <span>
+              Valore
+            </span>
+
+            <strong>
+              {{
+                colorValueLabel(
+                  analysis.colorValue
+                )
+              }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Contrasto
+            </span>
+
+            <strong>
+              {{ label(analysis.contrastLevel) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Croma
+            </span>
+
+            <strong>
+              {{ label(analysis.chroma) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+    <!-- ===================================================
+         COLORI CONSIGLIATI
+         =================================================== -->
+    <article class="palette-card">
+
+      <div class="palette-header">
+
+        <div>
+
+          <span class="card-label">
+            PALETTE
+          </span>
+
+          <h3>
+            Colori consigliati
+          </h3>
+
+        </div>
+
+        <span class="palette-count">
+          {{
+            paletteEntries(
+              analysis.bestColors
+            ).length
+          }}
+          colori
+        </span>
+
+      </div>
+
+      @if (
+        paletteEntries(
+          analysis.bestColors
+        ).length > 0
+      ) {
+
+        <div class="color-grid">
+
+          @for (
+            color of paletteEntries(
+              analysis.bestColors
+            );
+            track color[0]
+          ) {
+
+            <div class="color-item">
+
+              <span
+                class="color-swatch"
+                [style.background]="color[1]">
+              </span>
+
+              <div>
+
+                <strong>
+                  {{ color[0] }}
+                </strong>
+
+                <span>
+                  {{ color[1] }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <p class="empty-text">
+          Nessun colore consigliato inserito.
+        </p>
+
+      }
+
+    </article>
+
+    <!-- ===================================================
+         COLORI DA LIMITARE
+         =================================================== -->
+    <article class="palette-card avoid-card">
+
+      <div class="palette-header">
+
+        <div>
+
+          <span class="card-label">
+            ATTENZIONE CROMATICA
+          </span>
+
+          <h3>
+            Colori meno armonici
+          </h3>
+
+        </div>
+
+      </div>
+
+      @if (
+        paletteEntries(
+          analysis.avoidColors
+        ).length > 0
+      ) {
+
+        <div class="color-grid">
+
+          @for (
+            color of paletteEntries(
+              analysis.avoidColors
+            );
+            track color[0]
+          ) {
+
+            <div class="color-item">
+
+              <span
+                class="color-swatch"
+                [style.background]="color[1]">
+              </span>
+
+              <div>
+
+                <strong>
+                  {{ color[0] }}
+                </strong>
+
+                <span>
+                  {{ color[1] }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <p class="empty-text">
+          Nessun colore da limitare inserito.
+        </p>
+
+      }
+
+    </article>
+
+    <!-- ===================================================
+         METALLI
+         =================================================== -->
+    <article class="metals-card">
+
+      <span class="card-label">
+        METALLI CONSIGLIATI
+      </span>
+
+      <div class="metal-list">
+
+        @for (
+          metal of analysis.bestMetals;
+          track metal
+        ) {
+
+          <span class="metal-chip">
+            {{ label(metal) }}
+          </span>
+
+        } @empty {
+
+          <span class="empty-text">
+            Nessun metallo specificato.
+          </span>
+
+        }
+
+      </div>
+
+    </article>
+
+    <!-- ===================================================
+         NOTE
+         =================================================== -->
+    <article class="notes-card">
+
+      <span class="card-label">
+        NOTE PROFESSIONALI
+      </span>
+
+      <p>
+        {{
+          analysis.notes ||
+          'Nessuna nota inserita.'
+        }}
+      </p>
+
+    </article>
+
+  }
+
+</section>

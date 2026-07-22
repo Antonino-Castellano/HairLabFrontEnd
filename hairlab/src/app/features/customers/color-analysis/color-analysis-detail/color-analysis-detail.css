@@ -1,0 +1,445 @@
+:host {
+  display: block;
+}
+
+.color-analysis-section {
+  width: 100%;
+}
+
+/*
+ * ==========================================================
+ * HEADER
+ * ==========================================================
+ */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.eyebrow,
+.card-label {
+  color: #a06f50;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.section-header h2 {
+  margin: 5px 0;
+  color: #382f2b;
+  font-size: 21px;
+}
+
+.section-header p {
+  margin: 0;
+  color: #8d817a;
+  font-size: 11px;
+}
+
+/*
+ * ==========================================================
+ * BUTTON
+ * ==========================================================
+ */
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.primary-button {
+  background: #3d332e;
+  color: white;
+}
+
+.secondary-button {
+  border: 1px solid #ded5d0;
+  background: white;
+  color: #64564f;
+}
+
+/*
+ * ==========================================================
+ * STAGIONE
+ * ==========================================================
+ */
+.season-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 195px;
+  padding: 30px;
+  border-radius: 14px;
+  background: #f3efec;
+}
+
+.season-card::after {
+  content: "";
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  right: -45px;
+  top: -55px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.season-card.spring {
+  background:
+    linear-gradient(
+      145deg,
+      #f5e5c7,
+      #e9cfa7
+    );
+}
+
+.season-card.summer {
+  background:
+    linear-gradient(
+      145deg,
+      #e2e4ec,
+      #cfd6df
+    );
+}
+
+.season-card.autumn {
+  background:
+    linear-gradient(
+      145deg,
+      #dec2a1,
+      #b99169
+    );
+}
+
+.season-card.winter {
+  background:
+    linear-gradient(
+      145deg,
+      #d9dbe5,
+      #b8bdcb
+    );
+}
+
+.season-kicker {
+  position: relative;
+  z-index: 1;
+  color: #665a54;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.season-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 13px 0 3px;
+  color: #302927;
+  font-size: 32px;
+}
+
+.season-card strong {
+  position: relative;
+  z-index: 1;
+  color: #554944;
+  font-size: 15px;
+}
+
+.season-line {
+  width: 48px;
+  height: 2px;
+  margin-top: 22px;
+  background: rgba(70, 57, 50, 0.45);
+}
+
+/*
+ * ==========================================================
+ * ANALISI
+ * ==========================================================
+ */
+.analysis-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 13px;
+}
+
+.analysis-card,
+.palette-card,
+.metals-card,
+.notes-card {
+  padding: 19px;
+  border: 1px solid #ebe4e0;
+  border-radius: 12px;
+  background: white;
+}
+
+.analysis-card h3,
+.palette-card h3 {
+  margin: 5px 0 17px;
+  color: #493e38;
+  font-size: 14px;
+}
+
+.properties {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.properties.three {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.property span {
+  display: block;
+  margin-bottom: 4px;
+  color: #a0958e;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.property strong {
+  color: #51453f;
+  font-size: 12px;
+}
+
+/*
+ * ==========================================================
+ * PALETTE
+ * ==========================================================
+ */
+.palette-card {
+  margin-top: 13px;
+}
+
+.palette-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.palette-count {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #f4efec;
+  color: #75655c;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.color-item {
+  overflow: hidden;
+  border: 1px solid #e8e1dd;
+  border-radius: 9px;
+  background: #fbfaf9;
+}
+
+.color-swatch {
+  display: block;
+  width: 100%;
+  height: 55px;
+}
+
+.color-item div {
+  padding: 9px;
+}
+
+.color-item strong {
+  display: block;
+  color: #51463f;
+  font-size: 9px;
+}
+
+.color-item div span {
+  display: block;
+  margin-top: 2px;
+  color: #a0948c;
+  font-size: 7px;
+}
+
+.avoid-card {
+  background: #fdfbfa;
+}
+
+/*
+ * ==========================================================
+ * METALLI
+ * ==========================================================
+ */
+.metals-card {
+  margin-top: 13px;
+}
+
+.metal-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.metal-chip {
+  padding: 8px 12px;
+  border: 1px solid #dfd6d1;
+  border-radius: 20px;
+  background: #f9f6f4;
+  color: #63564f;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/*
+ * ==========================================================
+ * NOTE
+ * ==========================================================
+ */
+.notes-card {
+  margin-top: 13px;
+}
+
+.notes-card p {
+  margin: 10px 0 0;
+  color: #665a54;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.empty-text {
+  color: #9b8e87;
+  font-size: 10px;
+}
+
+/*
+ * ==========================================================
+ * STATI
+ * ==========================================================
+ */
+.empty-card,
+.state-card,
+.error-card {
+  border: 1px solid #e8e1dd;
+  border-radius: 12px;
+  background: white;
+}
+
+.empty-card {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 24px;
+}
+
+.empty-content {
+  flex: 1;
+}
+
+.empty-icon {
+  width: 55px;
+  height: 55px;
+  flex: 0 0 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eee7e3;
+  color: #956a52;
+  font-size: 25px;
+}
+
+.empty-card h3 {
+  margin: 0 0 5px;
+  color: #493e38;
+  font-size: 14px;
+}
+
+.empty-card p {
+  margin: 0;
+  color: #91857e;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.state-card {
+  padding: 35px;
+  text-align: center;
+  color: #8b8079;
+  font-size: 11px;
+}
+
+.error-card {
+  padding: 20px;
+  color: #a44747;
+}
+
+.error-card button {
+  margin-left: 10px;
+  border: 0;
+  background: transparent;
+  color: #8b5c43;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/*
+ * ==========================================================
+ * RESPONSIVE
+ * ==========================================================
+ */
+@media (max-width: 950px) {
+
+  .color-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .color-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .empty-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 450px) {
+
+  .color-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .properties.three {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,810 @@
+<section class="face-profile-section">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+  <div class="section-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ANALISI MORFOLOGICA
+      </span>
+
+      <h2>
+        Profilo del viso
+      </h2>
+
+      <p>
+        Caratteristiche morfologiche utili
+        alla consulenza di taglio e styling.
+      </p>
+
+    </div>
+
+    @if (faceProfile(); as profile) {
+
+      <a
+        class="secondary-button"
+        [routerLink]="[
+          '/customers',
+          customerId,
+          'face-profile',
+          profile.id,
+          'edit'
+        ]">
+        Modifica profilo
+      </a>
+
+    }
+
+  </div>
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+  @if (loading()) {
+
+    <div class="state-card">
+
+      <span class="loader"></span>
+
+      <p>
+        Caricamento profilo del viso...
+      </p>
+
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <!-- ===================================================
+         ERRORE
+         =================================================== -->
+    <div class="error-card">
+
+      {{ errorMessage() }}
+
+      <button
+        type="button"
+        (click)="loadFaceProfile()">
+        Riprova
+      </button>
+
+    </div>
+
+  } @else if (profileNotFound()) {
+
+    <!-- ===================================================
+         PROFILO NON PRESENTE
+         =================================================== -->
+    <div class="empty-card">
+
+      <div class="empty-icon">
+        ◯
+      </div>
+
+      <div>
+
+        <h3>
+          Profilo del viso non compilato
+        </h3>
+
+        <p>
+          Aggiungi forma del viso, occhi,
+          naso, zigomi, mascella e altre
+          caratteristiche utili alla consulenza.
+        </p>
+
+      </div>
+
+      <a
+        class="primary-button"
+        [routerLink]="[
+          '/customers',
+          customerId,
+          'face-profile',
+          'new'
+        ]">
+        + Crea profilo viso
+      </a>
+
+    </div>
+
+  } @else if (
+    faceProfile();
+    as profile
+  ) {
+
+    <!-- ===================================================
+         FORMA GENERALE
+         =================================================== -->
+    <div class="profile-grid">
+
+      <article class="profile-card highlight-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            01
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              STRUTTURA
+            </span>
+
+            <h3>
+              Forma generale
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="face-shape-preview">
+
+          <div class="face-symbol">
+
+            @switch (profile.faceShape) {
+
+              @case ('OVAL') {
+                ◯
+              }
+
+              @case ('ROUND') {
+                ●
+              }
+
+              @case ('SQUARE') {
+                □
+              }
+
+              @case ('RECTANGULAR') {
+                ▯
+              }
+
+              @case ('OBLONG') {
+                ⬭
+              }
+
+              @case ('HEART') {
+                ♡
+              }
+
+              @case ('DIAMOND') {
+                ◇
+              }
+
+              @case ('TRIANGULAR') {
+                △
+              }
+
+              @case ('INVERTED_TRIANGLE') {
+                ▽
+              }
+
+              @default {
+                ◯
+              }
+
+            }
+
+          </div>
+
+          <div>
+
+            <span>
+              Forma del viso
+            </span>
+
+            <strong>
+              {{ label(profile.faceShape) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           FRONTE
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            02
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              ZONA SUPERIORE
+            </span>
+
+            <h3>
+              Fronte
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Altezza
+            </span>
+
+            <strong>
+              {{ label(profile.foreheadHeight) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Larghezza
+            </span>
+
+            <strong>
+              {{ label(profile.foreheadWidth) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Attaccatura
+            </span>
+
+            <strong>
+              {{ label(profile.hairlineShape) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           OCCHI
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            03
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              SGUARDO
+            </span>
+
+            <h3>
+              Occhi
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Forma
+            </span>
+
+            <strong>
+              {{ label(profile.eyeShape) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Orientamento
+            </span>
+
+            <strong>
+              {{ label(profile.eyeOrientation) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Distanza
+            </span>
+
+            <strong>
+              {{ label(profile.eyeSpacing) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Dimensione
+            </span>
+
+            <strong>
+              {{ label(profile.eyeSize) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Colore
+            </span>
+
+            <strong>
+              {{ label(profile.eyeColor) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+        @if (profile.eyeColorNotes) {
+
+          <div class="detail-note">
+
+            {{ profile.eyeColorNotes }}
+
+          </div>
+
+        }
+
+      </article>
+
+      <!-- =================================================
+           SOPRACCIGLIA
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            04
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              SOPRACCIGLIA
+            </span>
+
+            <h3>
+              Struttura sopracciglia
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Forma
+            </span>
+
+            <strong>
+              {{ label(profile.eyebrowShape) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Spessore
+            </span>
+
+            <strong>
+              {{ label(profile.eyebrowThickness) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           NASO
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            05
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              PROFILO CENTRALE
+            </span>
+
+            <h3>
+              Naso
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Lunghezza
+            </span>
+
+            <strong>
+              {{ label(profile.noseLength) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Larghezza
+            </span>
+
+            <strong>
+              {{ label(profile.noseWidth) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Profilo
+            </span>
+
+            <strong>
+              {{ label(profile.noseProfile) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Punta
+            </span>
+
+            <strong>
+              {{ label(profile.noseTip) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           ZIGOMI
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            06
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              STRUTTURA LATERALE
+            </span>
+
+            <h3>
+              Zigomi
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Larghezza
+            </span>
+
+            <strong>
+              {{ label(profile.cheekboneWidth) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Prominenza
+            </span>
+
+            <strong>
+              {{ label(profile.cheekboneProminence) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           MASCELLA
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            07
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              LINEA INFERIORE
+            </span>
+
+            <h3>
+              Mascella
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Larghezza
+            </span>
+
+            <strong>
+              {{ label(profile.jawWidth) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Definizione
+            </span>
+
+            <strong>
+              {{ label(profile.jawDefinition) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Forma
+            </span>
+
+            <strong>
+              {{ label(profile.jawShape) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           MENTO
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            08
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              PROFILO INFERIORE
+            </span>
+
+            <h3>
+              Mento
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Forma
+            </span>
+
+            <strong>
+              {{ label(profile.chinShape) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Proiezione
+            </span>
+
+            <strong>
+              {{ label(profile.chinProjection) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           BOCCA E LABBRA
+           ================================================= -->
+      <article class="profile-card">
+
+        <div class="card-heading">
+
+          <span class="card-number">
+            09
+          </span>
+
+          <div>
+
+            <span class="card-label">
+              BOCCA
+            </span>
+
+            <h3>
+              Bocca e labbra
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="properties">
+
+          <div class="property">
+
+            <span>
+              Larghezza bocca
+            </span>
+
+            <strong>
+              {{ label(profile.mouthWidth) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Volume labbra
+            </span>
+
+            <strong>
+              {{ label(profile.lipFullness) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Equilibrio
+            </span>
+
+            <strong>
+              {{ label(profile.lipBalance) }}
+            </strong>
+
+          </div>
+
+          <div class="property">
+
+            <span>
+              Forma
+            </span>
+
+            <strong>
+              {{ label(profile.lipShape) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+    <!-- ===================================================
+         NOTE E OBIETTIVI
+         =================================================== -->
+    <div class="notes-grid">
+
+      <article class="note-card">
+
+        <span>
+          NOTE PROFESSIONALI
+        </span>
+
+        <p>
+          {{
+            profile.notes ||
+            'Nessuna nota inserita.'
+          }}
+        </p>
+
+      </article>
+
+      <article class="note-card goals-card">
+
+        <span>
+          OBIETTIVO STYLING
+        </span>
+
+        <p>
+          {{
+            profile.stylingGoals ||
+            'Nessun obiettivo inserito.'
+          }}
+        </p>
+
+      </article>
+
+    </div>
+
+  }
+
+</section>
