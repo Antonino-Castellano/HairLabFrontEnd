@@ -18,7 +18,7 @@
       <p>
         Raccomandazioni generate combinando
         morfologia del viso, profilo capelli
-        e analisi cromatica.
+        e analisi cromatica della cliente.
       </p>
 
     </div>
@@ -33,8 +33,8 @@
 
         {{
           loading()
-            ? 'Analisi...'
-            : '↻ Rigenera suggerimenti'
+            ? 'Analisi in corso...'
+            : '↻ Rigenera analisi'
         }}
 
       </button>
@@ -46,7 +46,10 @@
   <!-- =====================================================
        LOADING
        ===================================================== -->
-  @if (loading() && !recommendations()) {
+  @if (
+    loading() &&
+    !recommendations()
+  ) {
 
     <div class="loading-card">
 
@@ -59,12 +62,12 @@
       </div>
 
       <strong>
-        HairLab sta analizzando il profilo...
+        HairLab sta analizzando il profilo
       </strong>
 
       <p>
-        Elaborazione delle caratteristiche
-        disponibili della cliente.
+        Stiamo combinando le informazioni
+        tecniche disponibili della cliente.
       </p>
 
     </div>
@@ -91,7 +94,9 @@
       <button
         type="button"
         (click)="loadRecommendations()">
+
         Riprova
+
       </button>
 
     </div>
@@ -102,92 +107,132 @@
   ) {
 
     <!-- ===================================================
-         STATO PROFILI
+         INTRO ANALISI
          =================================================== -->
-    <div class="analysis-status">
+    <section class="analysis-overview">
 
-      <div
-        class="status-item"
-        [class.available]="
-          data.hairProfileAvailable
-        ">
+      <div>
 
-        <span class="status-dot"></span>
+        <span class="overview-kicker">
+          PROFILI UTILIZZATI
+        </span>
 
-        <div>
+        <h3>
+          Base dell'analisi
+        </h3>
 
-          <strong>
-            Profilo capelli
-          </strong>
-
-          <small>
-            {{
-              data.hairProfileAvailable
-                ? 'Utilizzato nell’analisi'
-                : 'Non disponibile'
-            }}
-          </small>
-
-        </div>
+        <p>
+          Maggiore è il numero di profili completi,
+          più articolati possono essere
+          i suggerimenti generati.
+        </p>
 
       </div>
 
-      <div
-        class="status-item"
-        [class.available]="
-          data.faceProfileAvailable
-        ">
+      <!-- =================================================
+           STATO PROFILI
+           ================================================= -->
+      <div class="analysis-status">
 
-        <span class="status-dot"></span>
+        <!-- CAPELLI -->
+        <article
+          class="status-item"
+          [class.available]="
+            data.hairProfileAvailable
+          ">
 
-        <div>
+          <span class="status-icon">
+            ≋
+          </span>
 
-          <strong>
-            Profilo viso
-          </strong>
+          <div>
 
-          <small>
-            {{
-              data.faceProfileAvailable
-                ? 'Utilizzato nell’analisi'
-                : 'Non disponibile'
-            }}
-          </small>
+            <strong>
+              Profilo capelli
+            </strong>
 
-        </div>
+            <small>
+              {{
+                data.hairProfileAvailable
+                  ? 'Disponibile e utilizzato'
+                  : 'Non disponibile'
+              }}
+            </small>
+
+          </div>
+
+          <span class="status-dot"></span>
+
+        </article>
+
+        <!-- VISO -->
+        <article
+          class="status-item"
+          [class.available]="
+            data.faceProfileAvailable
+          ">
+
+          <span class="status-icon">
+            ◯
+          </span>
+
+          <div>
+
+            <strong>
+              Profilo viso
+            </strong>
+
+            <small>
+              {{
+                data.faceProfileAvailable
+                  ? 'Disponibile e utilizzato'
+                  : 'Non disponibile'
+              }}
+            </small>
+
+          </div>
+
+          <span class="status-dot"></span>
+
+        </article>
+
+        <!-- ARMOCROMIA -->
+        <article
+          class="status-item"
+          [class.available]="
+            data.colorAnalysisAvailable
+          ">
+
+          <span class="status-icon">
+            ◐
+          </span>
+
+          <div>
+
+            <strong>
+              Armocromia
+            </strong>
+
+            <small>
+              {{
+                data.colorAnalysisAvailable
+                  ? 'Disponibile e utilizzata'
+                  : 'Non disponibile'
+              }}
+            </small>
+
+          </div>
+
+          <span class="status-dot"></span>
+
+        </article>
 
       </div>
 
-      <div
-        class="status-item"
-        [class.available]="
-          data.colorAnalysisAvailable
-        ">
-
-        <span class="status-dot"></span>
-
-        <div>
-
-          <strong>
-            Armocromia
-          </strong>
-
-          <small>
-            {{
-              data.colorAnalysisAvailable
-                ? 'Utilizzata nell’analisi'
-                : 'Non disponibile'
-            }}
-          </small>
-
-        </div>
-
-      </div>
-
-    </div>
+    </section>
 
     <!-- ===================================================
-         NESSUN SUGGERIMENTO
+         DATI INSUFFICIENTI
          =================================================== -->
     @if (!hasRecommendations(data)) {
 
@@ -205,7 +250,7 @@
 
           <p>
             Completa almeno il profilo del viso
-            o l’analisi cromatica per ottenere
+            o l'analisi cromatica per ottenere
             suggerimenti più dettagliati.
           </p>
 
@@ -240,6 +285,11 @@
               Tagli consigliati
             </h3>
 
+            <p>
+              Proposte costruite sulla morfologia
+              e sulle caratteristiche dei capelli.
+            </p>
+
           </div>
 
         </div>
@@ -268,7 +318,7 @@
               ) {
 
                 <span class="best-badge">
-                  ✦ Prima scelta
+                  ✦ PRIMA SCELTA
                 </span>
 
               }
@@ -346,7 +396,7 @@
                 <div class="reasons">
 
                   <span class="reasons-title">
-                    PERCHÉ
+                    PERCHÉ HAIRLAB LO CONSIGLIA
                   </span>
 
                   @for (
@@ -407,6 +457,11 @@
               Frange e ciuffi
             </h3>
 
+            <p>
+              Soluzioni pensate per riequilibrare
+              proporzioni e direzioni del volto.
+            </p>
+
           </div>
 
         </div>
@@ -435,7 +490,7 @@
               ) {
 
                 <span class="best-badge">
-                  ✦ Prima scelta
+                  ✦ PRIMA SCELTA
                 </span>
 
               }
@@ -445,7 +500,7 @@
                 <div>
 
                   <span class="recommendation-type">
-                    FRANGIA
+                    FRANGIA / CIUFFO
                   </span>
 
                   <h4>
@@ -513,7 +568,7 @@
                 <div class="reasons">
 
                   <span class="reasons-title">
-                    PERCHÉ
+                    PERCHÉ HAIRLAB LO CONSIGLIA
                   </span>
 
                   @for (
@@ -550,7 +605,7 @@
     }
 
     <!-- ===================================================
-         COLORE
+         COLORI CAPELLI
          =================================================== -->
     @if (
       data.colorRecommendations.length > 0
@@ -573,6 +628,11 @@
             <h3>
               Colori capelli consigliati
             </h3>
+
+            <p>
+              Direzioni cromatiche coerenti
+              con stagione e sottostagione.
+            </p>
 
           </div>
 
@@ -602,7 +662,7 @@
               ) {
 
                 <span class="best-badge">
-                  ✦ Prima scelta
+                  ✦ PRIMA SCELTA
                 </span>
 
               }
@@ -680,7 +740,7 @@
                 <div class="reasons">
 
                   <span class="reasons-title">
-                    PERCHÉ
+                    PERCHÉ HAIRLAB LO CONSIGLIA
                   </span>
 
                   @for (
@@ -741,6 +801,11 @@
               Styling consigliato
             </h3>
 
+            <p>
+              Indicazioni per valorizzare texture,
+              volumi e proporzioni.
+            </p>
+
           </div>
 
         </div>
@@ -784,6 +849,24 @@
 
               <div class="compatibility">
 
+                <div class="compatibility-header">
+
+                  <span>
+                    {{
+                      scoreLabel(
+                        item.compatibilityScore
+                      )
+                    }}
+                  </span>
+
+                  <strong>
+                    {{
+                      item.compatibilityScore
+                    }}/100
+                  </strong>
+
+                </div>
+
                 <div class="score-track">
 
                   <span
@@ -807,6 +890,10 @@
               ) {
 
                 <div class="reasons">
+
+                  <span class="reasons-title">
+                    MOTIVAZIONI
+                  </span>
 
                   @for (
                     reason of item.reasons;
@@ -865,6 +952,11 @@
             <h3>
               Cautele prima del servizio
             </h3>
+
+            <p>
+              Informazioni da verificare
+              prima di procedere con trasformazioni tecniche.
+            </p>
 
           </div>
 

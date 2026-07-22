@@ -12,23 +12,13 @@ import {
 /**
  * Dizionario:
  *
- * nome colore -> codice HEX.
- *
- * Esempio:
- *
- * {
- *   "Borgogna": "#6D213C",
- *   "Blu notte": "#172A46"
- * }
+ * nome colore -> HEX.
  */
-export type ColorPalette = Record<
-  string,
-  string
->;
+export type ColorPalette =
+  Record<string, string>;
 
 /**
- * Rappresenta l'analisi cromatica
- * della cliente.
+ * Analisi cromatica / armocromatica.
  */
 export interface ColorAnalysis {
 
@@ -36,29 +26,78 @@ export interface ColorAnalysis {
 
   customerId: number;
 
-  skinTone?: SkinTone | null;
+  /*
+   * ==========================================================
+   * PELLE
+   * ==========================================================
+   */
 
-  undertone?: Undertone | null;
+  /**
+   * Classificazione generale
+   * della profondità.
+   */
+  skinTone?:
+    SkinTone | null;
 
-  season?: ColorSeason | null;
+  /**
+   * Colore HEX reale scelto
+   * come riferimento della pelle.
+   *
+   * Esempio:
+   *
+   * #C58A70
+   */
+  skinReferenceColor?:
+    string | null;
 
-  subSeason?: ColorSubSeason | null;
+  undertone?:
+    Undertone | null;
 
-  colorValue?: ColorValue | null;
+  /*
+   * ==========================================================
+   * ARMOCROMIA
+   * ==========================================================
+   */
+  season?:
+    ColorSeason | null;
 
-  contrastLevel?: ContrastLevel | null;
+  subSeason?:
+    ColorSubSeason | null;
 
-  chroma?: Chroma | null;
+  colorValue?:
+    ColorValue | null;
 
-  bestColors: ColorPalette;
+  contrastLevel?:
+    ContrastLevel | null;
 
-  avoidColors: ColorPalette;
+  chroma?:
+    Chroma | null;
 
-  bestMetals: MetalType[];
+  /*
+   * ==========================================================
+   * PALETTE
+   * ==========================================================
+   */
+  bestColors:
+    ColorPalette;
 
-  notes?: string | null;
+  avoidColors:
+    ColorPalette;
 
-  createdAt?: string;
+  bestMetals:
+    MetalType[];
 
-  updatedAt?: string;
+  /*
+   * ==========================================================
+   * NOTE
+   * ==========================================================
+   */
+  notes?:
+    string | null;
+
+  createdAt?:
+    string;
+
+  updatedAt?:
+    string;
 }

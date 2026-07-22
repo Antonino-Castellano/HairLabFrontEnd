@@ -20,8 +20,9 @@
       </h1>
 
       <p>
-        Definisci caratteristiche cromatiche,
-        stagione, palette e metalli consigliati.
+        Analizza pelle, sottotono,
+        intensità e armonia cromatica
+        della cliente.
       </p>
 
     </div>
@@ -34,7 +35,9 @@
           '/customers',
           customerId
         ]">
+
         ← Torna alla cliente
+
       </a>
 
     }
@@ -44,9 +47,7 @@
   @if (errorMessage()) {
 
     <div class="error-message">
-
       {{ errorMessage() }}
-
     </div>
 
   }
@@ -56,7 +57,7 @@
     (ngSubmit)="submit()">
 
     <!-- ===================================================
-         1. PELLE
+         01 - TONALITÀ PELLE
          =================================================== -->
     <section class="form-section">
 
@@ -69,75 +70,127 @@
         <div>
 
           <h2>
-            Pelle
+            Tonalità della pelle
           </h2>
 
           <p>
-            Profondità cromatica apparente
-            e sottotono.
+            Seleziona la profondità cromatica
+            più vicina alla pelle della cliente.
+            Il campione potrà poi essere
+            personalizzato.
           </p>
 
         </div>
 
       </div>
 
-      <div class="control-group">
+      <div class="skin-tone-grid">
 
-        <label>
-          Tonalità della pelle
-        </label>
+        @for (
+          value of skinTones;
+          track value
+        ) {
 
-        <div class="chip-row">
+          <button
+            type="button"
+            class="skin-tone-option"
+            [class.selected]="
+              analysisForm.controls
+                .skinTone
+                .value === value
+            "
+            (click)="
+              selectSkinTone(value)
+            ">
 
-          @for (
-            value of skinTones;
-            track value
-          ) {
-
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                analysisForm.controls.skinTone.value === value
-              "
-              (click)="
-                analysisForm.controls.skinTone.setValue(value)
+            <span
+              class="skin-swatch"
+              [style.background]="
+                visual(
+                  skinToneVisuals,
+                  value
+                ).color
               ">
-              {{ label(value) }}
-            </button>
+            </span>
 
-          }
+            <div>
 
-        </div>
+              <strong>
+                {{ label(value) }}
+              </strong>
+
+              <small>
+
+                {{
+                  visual(
+                    skinToneVisuals,
+                    value
+                  ).description
+                }}
+
+              </small>
+
+            </div>
+
+          </button>
+
+        }
 
       </div>
 
-      <div class="control-group">
+      <!-- ===============================================
+           REFERENCE REALE PELLE
+           =============================================== -->
+      <div class="skin-reference-panel">
 
-        <label>
-          Sottotono
-        </label>
+        <div class="reference-preview">
 
-        <div class="chip-row">
+          <span
+            class="skin-reference-color"
+            [style.background]="
+              analysisForm.controls
+                .skinReferenceColor
+                .value
+            ">
+          </span>
 
-          @for (
-            value of undertones;
-            track value
-          ) {
+        </div>
 
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                analysisForm.controls.undertone.value === value
-              "
-              (click)="
-                analysisForm.controls.undertone.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
+        <div class="reference-data">
 
-          }
+          <span class="mini-eyebrow">
+            REFERENCE REALE CLIENTE
+          </span>
+
+          <h3>
+            Colore della pelle di riferimento
+          </h3>
+
+          <p>
+            La classificazione definisce
+            la profondità generale.
+            Questo campione conserva invece
+            un riferimento cromatico più preciso
+            della singola cliente.
+          </p>
+
+          <div class="reference-picker-row">
+
+            <input
+              type="color"
+              formControlName="skinReferenceColor">
+
+            <strong>
+
+              {{
+                analysisForm.controls
+                  .skinReferenceColor
+                  .value
+              }}
+
+            </strong>
+
+          </div>
 
         </div>
 
@@ -146,7 +199,7 @@
     </section>
 
     <!-- ===================================================
-         2. STAGIONE
+         02 - SOTTOTONO
          =================================================== -->
     <section class="form-section">
 
@@ -159,11 +212,103 @@
         <div>
 
           <h2>
+            Sottotono
+          </h2>
+
+          <p>
+            Definisci la direzione termica
+            predominante della pelle.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="undertone-grid">
+
+        @for (
+          value of undertones;
+          track value
+        ) {
+
+          <button
+            type="button"
+            class="undertone-option"
+            [class.selected]="
+              analysisForm.controls
+                .undertone
+                .value === value
+            "
+            (click)="
+              analysisForm.controls
+                .undertone
+                .setValue(value)
+            ">
+
+            <span class="undertone-symbol">
+
+              @switch (value) {
+
+                @case ('COOL') {
+                  ❄
+                }
+
+                @case ('NEUTRAL_COOL') {
+                  ◐
+                }
+
+                @case ('NEUTRAL') {
+                  ◯
+                }
+
+                @case ('NEUTRAL_WARM') {
+                  ◑
+                }
+
+                @case ('WARM') {
+                  ☀
+                }
+
+                @case ('OLIVE') {
+                  ◉
+                }
+
+              }
+
+            </span>
+
+            <strong>
+              {{ label(value) }}
+            </strong>
+
+          </button>
+
+        }
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         03 - STAGIONE
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          03
+        </span>
+
+        <div>
+
+          <h2>
             Stagione armocromatica
           </h2>
 
           <p>
-            Seleziona prima la macro stagione.
+            Seleziona la macro stagione
+            risultante dall'analisi complessiva.
           </p>
 
         </div>
@@ -180,10 +325,18 @@
           <button
             type="button"
             class="season-option"
-            [class.spring]="season === 'SPRING'"
-            [class.summer]="season === 'SUMMER'"
-            [class.autumn]="season === 'AUTUMN'"
-            [class.winter]="season === 'WINTER'"
+            [class.spring]="
+              season === 'SPRING'
+            "
+            [class.summer]="
+              season === 'SUMMER'
+            "
+            [class.autumn]="
+              season === 'AUTUMN'
+            "
+            [class.winter]="
+              season === 'WINTER'
+            "
             [class.selected]="
               selectedSeason() === season
             "
@@ -191,7 +344,7 @@
               selectSeason(season)
             ">
 
-            <span>
+            <span class="season-kicker">
               STAGIONE
             </span>
 
@@ -200,28 +353,32 @@
             </strong>
 
             <small>
+              {{ seasonDescription(season) }}
+            </small>
+
+            <span class="season-decoration">
 
               @switch (season) {
 
                 @case ('SPRING') {
-                  Calda · luminosa
+                  ✦
                 }
 
                 @case ('SUMMER') {
-                  Fredda · delicata
+                  ≋
                 }
 
                 @case ('AUTUMN') {
-                  Calda · profonda
+                  ◆
                 }
 
                 @case ('WINTER') {
-                  Fredda · intensa
+                  ❄
                 }
 
               }
 
-            </small>
+            </span>
 
           </button>
 
@@ -243,14 +400,14 @@
     </section>
 
     <!-- ===================================================
-         3. SOTTOSTAGIONE
+         04 - SOTTOSTAGIONE
          =================================================== -->
     <section class="form-section">
 
       <div class="section-heading">
 
         <span class="section-number">
-          03
+          04
         </span>
 
         <div>
@@ -260,8 +417,9 @@
           </h2>
 
           <p>
-            Vengono mostrate solamente
-            le sottostagioni compatibili.
+            Dopo aver scelto la stagione
+            vengono mostrate solamente
+            le tre varianti compatibili.
           </p>
 
         </div>
@@ -281,13 +439,23 @@
               type="button"
               class="subseason-option"
               [class.selected]="
-                analysisForm.controls.subSeason.value === value
+                analysisForm.controls
+                  .subSeason
+                  .value === value
               "
               (click)="
-                analysisForm.controls.subSeason.setValue(value)
+                analysisForm.controls
+                  .subSeason
+                  .setValue(value)
               ">
 
-              {{ label(value) }}
+              <span>
+                VARIANTE
+              </span>
+
+              <strong>
+                {{ label(value) }}
+              </strong>
 
             </button>
 
@@ -299,8 +467,22 @@
 
         <div class="hint-card">
 
-          Seleziona prima una stagione
-          per visualizzare le sottostagioni.
+          <span class="hint-icon">
+            i
+          </span>
+
+          <div>
+
+            <strong>
+              Seleziona prima una stagione
+            </strong>
+
+            <p>
+              Le relative sottostagioni
+              appariranno automaticamente.
+            </p>
+
+          </div>
 
         </div>
 
@@ -309,132 +491,7 @@
     </section>
 
     <!-- ===================================================
-         4. PARAMETRI
-         =================================================== -->
-    <section class="form-section">
-
-      <div class="section-heading">
-
-        <span class="section-number">
-          04
-        </span>
-
-        <div>
-
-          <h2>
-            Parametri cromatici
-          </h2>
-
-          <p>
-            Profondità, contrasto
-            e intensità complessiva.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="three-columns">
-
-        <div class="control-group">
-
-          <label>
-            Valore
-          </label>
-
-          <div class="vertical-options">
-
-            @for (
-              value of colorValues;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  analysisForm.controls.colorValue.value === value
-                "
-                (click)="
-                  analysisForm.controls.colorValue.setValue(value)
-                ">
-                {{ colorValueLabel(value) }}
-              </button>
-
-            }
-
-          </div>
-
-        </div>
-
-        <div class="control-group">
-
-          <label>
-            Contrasto
-          </label>
-
-          <div class="vertical-options">
-
-            @for (
-              value of contrastLevels;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  analysisForm.controls.contrastLevel.value === value
-                "
-                (click)="
-                  analysisForm.controls.contrastLevel.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
-
-            }
-
-          </div>
-
-        </div>
-
-        <div class="control-group">
-
-          <label>
-            Croma
-          </label>
-
-          <div class="vertical-options">
-
-            @for (
-              value of chromaValues;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  analysisForm.controls.chroma.value === value
-                "
-                (click)="
-                  analysisForm.controls.chroma.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
-
-            }
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- ===================================================
-         5. COLORI CONSIGLIATI
+         05 - PARAMETRI CROMATICI
          =================================================== -->
     <section class="form-section">
 
@@ -447,11 +504,169 @@
         <div>
 
           <h2>
+            Parametri cromatici
+          </h2>
+
+          <p>
+            Valuta profondità,
+            contrasto e intensità cromatica.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="parameter-grid">
+
+        <!-- VALORE -->
+        <div class="parameter-card">
+
+          <span class="parameter-label">
+            VALORE
+          </span>
+
+          <p>
+            Profondità complessiva
+            della palette personale.
+          </p>
+
+          <div class="parameter-options">
+
+            @for (
+              value of colorValues;
+              track value
+            ) {
+
+              <button
+                type="button"
+                [class.selected]="
+                  analysisForm.controls
+                    .colorValue
+                    .value === value
+                "
+                (click)="
+                  analysisForm.controls
+                    .colorValue
+                    .setValue(value)
+                ">
+
+                {{ colorValueLabel(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+        <!-- CONTRASTO -->
+        <div class="parameter-card">
+
+          <span class="parameter-label">
+            CONTRASTO
+          </span>
+
+          <p>
+            Differenza visiva tra
+            pelle, occhi e capelli.
+          </p>
+
+          <div class="parameter-options">
+
+            @for (
+              value of contrastLevels;
+              track value
+            ) {
+
+              <button
+                type="button"
+                [class.selected]="
+                  analysisForm.controls
+                    .contrastLevel
+                    .value === value
+                "
+                (click)="
+                  analysisForm.controls
+                    .contrastLevel
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+        <!-- CROMA -->
+        <div class="parameter-card">
+
+          <span class="parameter-label">
+            CROMA
+          </span>
+
+          <p>
+            Intensità o morbidezza
+            dei colori armonici.
+          </p>
+
+          <div class="parameter-options">
+
+            @for (
+              value of chromaValues;
+              track value
+            ) {
+
+              <button
+                type="button"
+                [class.selected]="
+                  analysisForm.controls
+                    .chroma
+                    .value === value
+                "
+                (click)="
+                  analysisForm.controls
+                    .chroma
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         06 - PALETTE CONSIGLIATA
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          06
+        </span>
+
+        <div>
+
+          <h2>
             Palette consigliata
           </h2>
 
           <p>
-            Inserisci i colori che valorizzano
+            Salva colori reali che valorizzano
             maggiormente la cliente.
           </p>
 
@@ -491,7 +706,9 @@
           type="button"
           class="add-color-button"
           (click)="addBestColor()">
-          + Aggiungi
+
+          + Aggiungi colore
+
         </button>
 
       </div>
@@ -504,11 +721,13 @@
           let index = $index
         ) {
 
-          <div class="selected-color">
+          <article class="selected-color">
 
             <span
-              class="swatch"
-              [style.background]="color.hex">
+              class="palette-swatch"
+              [style.background]="
+                color.hex
+              ">
             </span>
 
             <div>
@@ -529,16 +748,20 @@
               (click)="
                 removeBestColor(index)
               ">
+
               ×
+
             </button>
 
-          </div>
+          </article>
 
         } @empty {
 
-          <span class="empty-text">
+          <div class="empty-palette">
+
             Nessun colore aggiunto.
-          </span>
+
+          </div>
 
         }
 
@@ -547,14 +770,14 @@
     </section>
 
     <!-- ===================================================
-         6. COLORI MENO ARMONICI
+         07 - COLORI MENO ARMONICI
          =================================================== -->
     <section class="form-section">
 
       <div class="section-heading">
 
         <span class="section-number">
-          06
+          07
         </span>
 
         <div>
@@ -564,8 +787,9 @@
           </h2>
 
           <p>
-            Tonalità da utilizzare con maggiore
-            attenzione rispetto alla palette.
+            Registra tonalità che richiedono
+            maggiore attenzione o risultano
+            meno valorizzanti.
           </p>
 
         </div>
@@ -604,7 +828,9 @@
           type="button"
           class="add-color-button muted"
           (click)="addAvoidColor()">
-          + Aggiungi
+
+          + Aggiungi colore
+
         </button>
 
       </div>
@@ -617,11 +843,13 @@
           let index = $index
         ) {
 
-          <div class="selected-color">
+          <article class="selected-color">
 
             <span
-              class="swatch"
-              [style.background]="color.hex">
+              class="palette-swatch"
+              [style.background]="
+                color.hex
+              ">
             </span>
 
             <div>
@@ -642,16 +870,20 @@
               (click)="
                 removeAvoidColor(index)
               ">
+
               ×
+
             </button>
 
-          </div>
+          </article>
 
         } @empty {
 
-          <span class="empty-text">
+          <div class="empty-palette">
+
             Nessun colore aggiunto.
-          </span>
+
+          </div>
 
         }
 
@@ -660,58 +892,7 @@
     </section>
 
     <!-- ===================================================
-         7. METALLI
-         =================================================== -->
-    <section class="form-section">
-
-      <div class="section-heading">
-
-        <span class="section-number">
-          07
-        </span>
-
-        <div>
-
-          <h2>
-            Metalli consigliati
-          </h2>
-
-          <p>
-            È possibile selezionare
-            più di un metallo.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="chip-row">
-
-        @for (
-          metal of metals;
-          track metal
-        ) {
-
-          <button
-            type="button"
-            class="choice-chip"
-            [class.selected]="
-              isMetalSelected(metal)
-            "
-            (click)="
-              toggleMetal(metal)
-            ">
-            {{ label(metal) }}
-          </button>
-
-        }
-
-      </div>
-
-    </section>
-
-    <!-- ===================================================
-         8. NOTE
+         08 - METALLI
          =================================================== -->
     <section class="form-section">
 
@@ -724,27 +905,98 @@
         <div>
 
           <h2>
-            Note professionali
+            Metalli consigliati
           </h2>
 
           <p>
-            Osservazioni aggiuntive
-            sull'analisi cromatica.
+            Seleziona uno o più metalli
+            coerenti con l'analisi cromatica.
           </p>
 
         </div>
 
       </div>
 
-      <div class="control-group">
+      <div class="metal-grid">
 
-        <textarea
-          rows="6"
-          formControlName="notes"
-          placeholder="Es. elevato contrasto naturale, ottima resa con tonalità profonde e fredde...">
-        </textarea>
+        @for (
+          metal of metals;
+          track metal
+        ) {
+
+          <button
+            type="button"
+            class="metal-option"
+            [class.selected]="
+              isMetalSelected(metal)
+            "
+            (click)="
+              toggleMetal(metal)
+            ">
+
+            <span
+              class="metal-symbol"
+              [class.silver]="
+                metal === 'SILVER' ||
+                metal === 'WHITE_GOLD'
+              "
+              [class.gold]="
+                metal === 'YELLOW_GOLD'
+              "
+              [class.rose]="
+                metal === 'ROSE_GOLD'
+              "
+              [class.bronze]="
+                metal === 'BRONZE'
+              "
+              [class.copper]="
+                metal === 'COPPER'
+              ">
+            </span>
+
+            <strong>
+              {{ label(metal) }}
+            </strong>
+
+          </button>
+
+        }
 
       </div>
+
+    </section>
+
+    <!-- ===================================================
+         09 - NOTE
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          09
+        </span>
+
+        <div>
+
+          <h2>
+            Note professionali
+          </h2>
+
+          <p>
+            Registra osservazioni aggiuntive
+            utili alla consulenza.
+          </p>
+
+        </div>
+
+      </div>
+
+      <textarea
+        rows="7"
+        formControlName="notes"
+        placeholder="Es. contrasto naturale elevato, ottima resa con colori profondi e freddi...">
+      </textarea>
 
     </section>
 
@@ -761,7 +1013,9 @@
             '/customers',
             customerId
           ]">
+
           Annulla
+
         </a>
 
       }

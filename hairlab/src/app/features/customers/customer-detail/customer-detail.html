@@ -1,7 +1,7 @@
 <section class="detail-page">
 
   <!-- =====================================================
-       CARICAMENTO CLIENTE
+       STATO DI CARICAMENTO
        ===================================================== -->
   @if (loading()) {
 
@@ -11,6 +11,9 @@
 
   } @else if (errorMessage()) {
 
+    <!-- ===================================================
+         ERRORE
+         =================================================== -->
     <div class="error-message">
       {{ errorMessage() }}
     </div>
@@ -21,7 +24,7 @@
   ) {
 
     <!-- ===================================================
-         HEADER PAGINA
+         HEADER DELLA PAGINA
          =================================================== -->
     <div class="page-header">
 
@@ -37,8 +40,8 @@
         </h1>
 
         <p>
-          Scheda cliente, analisi tecnica
-          e storico professionale.
+          Profilo cliente, analisi tecniche
+          e consulenza professionale HairLab.
         </p>
 
       </div>
@@ -70,14 +73,14 @@
     </div>
 
     <!-- ===================================================
-         PROFILO PRINCIPALE
+         HERO CLIENTE
          =================================================== -->
     <section class="customer-hero">
 
       <div class="customer-identity">
 
         <!-- ===============================================
-             AVATAR
+             FOTO / AVATAR
              =============================================== -->
         <div class="large-avatar">
 
@@ -86,11 +89,8 @@
           ) {
 
             <img
-              [src]="
-                selectedCustomer.profileImage
-              "
+              [src]="selectedCustomer.profileImage"
               [alt]="
-                'Foto di ' +
                 selectedCustomer.firstName +
                 ' ' +
                 selectedCustomer.lastName
@@ -118,10 +118,8 @@
           <div class="name-row">
 
             <h2>
-
               {{ selectedCustomer.firstName }}
               {{ selectedCustomer.lastName }}
-
             </h2>
 
             <span
@@ -145,12 +143,11 @@
 
           </div>
 
+          <!-- CONTATTI -->
           <div class="contact-row">
 
             <span>
-
               {{ selectedCustomer.email }}
-
             </span>
 
             <span class="separator">
@@ -158,27 +155,51 @@
             </span>
 
             <span>
-
               {{ selectedCustomer.phoneNumber }}
-
             </span>
 
           </div>
 
+          <!-- META -->
           <div class="customer-meta">
 
             <span>
-              ID cliente
+
+              ID CLIENTE
+
               <strong>
                 #{{ selectedCustomer.id }}
               </strong>
+
             </span>
 
             <span>
-              Data di nascita
+
+              DATA DI NASCITA
+
               <strong>
-                {{ selectedCustomer.dob }}
+                {{
+                  selectedCustomer.dob ||
+                  'Non specificata'
+                }}
               </strong>
+
+            </span>
+
+            <span>
+
+              STATO
+
+              <strong>
+
+                {{
+                  selectedCustomer.active
+                    ? 'Attivo'
+                    : 'Non attivo'
+                }}
+
+              </strong>
+
             </span>
 
           </div>
@@ -190,7 +211,7 @@
     </section>
 
     <!-- ===================================================
-         NAVIGAZIONE INTERNA
+         NAVIGAZIONE PROFILO CLIENTE
          =================================================== -->
     <nav
       class="profile-tabs"
@@ -207,12 +228,10 @@
         ">
 
         <span class="tab-icon">
-          ◫
+          ⌂
         </span>
 
-        <span>
-          Panoramica
-        </span>
+        Panoramica
 
       </button>
 
@@ -230,9 +249,7 @@
           ≋
         </span>
 
-        <span>
-          Capelli
-        </span>
+        Capelli
 
       </button>
 
@@ -250,9 +267,7 @@
           ◯
         </span>
 
-        <span>
-          Viso
-        </span>
+        Viso
 
       </button>
 
@@ -270,9 +285,7 @@
           ◐
         </span>
 
-        <span>
-          Armocromia
-        </span>
+        Armocromia
 
       </button>
 
@@ -295,18 +308,16 @@
           ✦
         </span>
 
-        <span>
-          Suggerimenti
-        </span>
+        Suggerimenti
 
       </button>
 
     </nav>
 
     <!-- ===================================================
-         CONTENUTO TAB
+         CONTENUTO DELLE TAB
          =================================================== -->
-    <section class="tab-content">
+    <div class="tab-content">
 
       @switch (activeSection()) {
 
@@ -315,16 +326,16 @@
              ================================================= -->
         @case ('overview') {
 
-          <div class="overview-grid">
+          <section class="module-panel">
 
-            <!-- =============================================
-                 INFORMAZIONI PERSONALI
-                 ============================================= -->
-            <article class="overview-card">
+            <div class="overview-grid">
 
-              <div class="card-header">
+              <!-- =========================================
+                   DATI PERSONALI
+                   ========================================= -->
+              <article class="overview-card">
 
-                <div>
+                <div class="card-header">
 
                   <span class="card-eyebrow">
                     ANAGRAFICA
@@ -336,354 +347,347 @@
 
                 </div>
 
-              </div>
+                <div class="info-grid">
 
-              <div class="info-grid">
+                  <div>
 
-                <div>
+                    <span>
+                      Nome
+                    </span>
 
-                  <span>
-                    Nome
-                  </span>
+                    <strong>
+                      {{
+                        selectedCustomer.firstName
+                      }}
+                    </strong>
 
-                  <strong>
-                    {{
-                      selectedCustomer.firstName
-                    }}
-                  </strong>
+                  </div>
 
-                </div>
+                  <div>
 
-                <div>
+                    <span>
+                      Cognome
+                    </span>
 
-                  <span>
-                    Cognome
-                  </span>
+                    <strong>
+                      {{
+                        selectedCustomer.lastName
+                      }}
+                    </strong>
 
-                  <strong>
-                    {{
-                      selectedCustomer.lastName
-                    }}
-                  </strong>
+                  </div>
 
-                </div>
+                  <div>
 
-                <div>
+                    <span>
+                      Email
+                    </span>
 
-                  <span>
-                    Email
-                  </span>
+                    <strong>
+                      {{
+                        selectedCustomer.email
+                      }}
+                    </strong>
 
-                  <strong>
-                    {{
-                      selectedCustomer.email
-                    }}
-                  </strong>
+                  </div>
 
-                </div>
+                  <div>
 
-                <div>
+                    <span>
+                      Telefono
+                    </span>
 
-                  <span>
-                    Telefono
-                  </span>
+                    <strong>
+                      {{
+                        selectedCustomer.phoneNumber
+                      }}
+                    </strong>
 
-                  <strong>
-                    {{
-                      selectedCustomer.phoneNumber
-                    }}
-                  </strong>
+                  </div>
 
-                </div>
+                  <div>
 
-                <div>
+                    <span>
+                      Data di nascita
+                    </span>
 
-                  <span>
-                    Data di nascita
-                  </span>
+                    <strong>
 
-                  <strong>
-                    {{
-                      selectedCustomer.dob
-                    }}
-                  </strong>
+                      {{
+                        selectedCustomer.dob ||
+                        'Non specificata'
+                      }}
 
-                </div>
+                    </strong>
 
-                <div>
+                  </div>
 
-                  <span>
-                    Stato
-                  </span>
+                  <div>
 
-                  <strong>
+                    <span>
+                      ID cliente
+                    </span>
 
-                    {{
-                      selectedCustomer.active
-                        ? 'Attivo'
-                        : 'Non attivo'
-                    }}
+                    <strong>
+                      #{{ selectedCustomer.id }}
+                    </strong>
 
-                  </strong>
+                  </div>
 
                 </div>
 
-              </div>
+              </article>
 
-            </article>
+              <!-- =========================================
+                   ACCESSI RAPIDI
+                   ========================================= -->
+              <article class="overview-card">
 
-            <!-- =============================================
-                 PROFILI TECNICI
-                 ============================================= -->
-            <article class="overview-card">
-
-              <div class="card-header">
-
-                <div>
+                <div class="card-header">
 
                   <span class="card-eyebrow">
-                    ANALISI
+                    CUSTOMER ANALYSIS
                   </span>
 
                   <h3>
-                    Profilo tecnico
+                    Profili professionali
                   </h3>
 
                 </div>
 
+                <div class="profile-shortcuts">
+
+                  <!-- CAPELLI -->
+                  <button
+                    type="button"
+                    class="shortcut-card"
+                    (click)="
+                      selectSection('hair')
+                    ">
+
+                    <span class="shortcut-icon">
+                      ≋
+                    </span>
+
+                    <div>
+
+                      <strong>
+                        Profilo capelli
+                      </strong>
+
+                      <small>
+                        Tono, riflesso,
+                        struttura e storico tecnico.
+                      </small>
+
+                    </div>
+
+                    <span class="shortcut-arrow">
+                      →
+                    </span>
+
+                  </button>
+
+                  <!-- VISO -->
+                  <button
+                    type="button"
+                    class="shortcut-card"
+                    (click)="
+                      selectSection('face')
+                    ">
+
+                    <span class="shortcut-icon">
+                      ◯
+                    </span>
+
+                    <div>
+
+                      <strong>
+                        Profilo viso
+                      </strong>
+
+                      <small>
+                        Morfologia, proporzioni
+                        e caratteristiche del volto.
+                      </small>
+
+                    </div>
+
+                    <span class="shortcut-arrow">
+                      →
+                    </span>
+
+                  </button>
+
+                  <!-- ARMOCROMIA -->
+                  <button
+                    type="button"
+                    class="shortcut-card"
+                    (click)="
+                      selectSection('color')
+                    ">
+
+                    <span class="shortcut-icon">
+                      ◐
+                    </span>
+
+                    <div>
+
+                      <strong>
+                        Armocromia
+                      </strong>
+
+                      <small>
+                        Pelle, stagione,
+                        palette e metalli.
+                      </small>
+
+                    </div>
+
+                    <span class="shortcut-arrow">
+                      →
+                    </span>
+
+                  </button>
+
+                  <!-- SUGGERIMENTI -->
+                  <button
+                    type="button"
+                    class="
+                      shortcut-card
+                      recommendation-shortcut
+                    "
+                    (click)="
+                      selectSection(
+                        'recommendations'
+                      )
+                    ">
+
+                    <span class="shortcut-icon">
+                      ✦
+                    </span>
+
+                    <div>
+
+                      <strong>
+                        Suggerimenti HairLab
+                      </strong>
+
+                      <small>
+                        Tagli, colore,
+                        styling e cautele.
+                      </small>
+
+                    </div>
+
+                    <span class="shortcut-arrow">
+                      →
+                    </span>
+
+                  </button>
+
+                </div>
+
+              </article>
+
+            </div>
+
+            <!-- ===========================================
+                 STORICO HAIRLAB
+                 =========================================== -->
+            <section class="history-card">
+
+              <div class="section-title">
+
+                <span class="card-eyebrow">
+                  STORICO HAIRLAB
+                </span>
+
+                <h2>
+                  Attività della cliente
+                </h2>
+
+                <p>
+                  Appuntamenti, consulenze
+                  e formule tecniche collegate.
+                </p>
+
               </div>
 
-              <div class="profile-shortcuts">
+              <div class="hairlab-sections">
 
-                <!-- CAPELLI -->
-                <button
-                  type="button"
-                  class="shortcut-card"
-                  (click)="
-                    selectSection('hair')
-                  ">
+                <!-- APPUNTAMENTI -->
+                <div class="placeholder-box">
 
-                  <span class="shortcut-icon">
-                    ≋
+                  <span class="placeholder-icon">
+                    ◷
                   </span>
 
                   <div>
 
                     <strong>
-                      Capelli
+                      Appuntamenti
                     </strong>
 
-                    <small>
-                      Profilo tecnico,
-                      tono e caratteristiche
-                    </small>
+                    <p>
+                      Qui verrà visualizzato
+                      lo storico degli appuntamenti
+                      della cliente.
+                    </p>
 
                   </div>
 
-                  <span class="shortcut-arrow">
-                    →
-                  </span>
+                </div>
 
-                </button>
+                <!-- CONSULENZE -->
+                <div class="placeholder-box">
 
-                <!-- VISO -->
-                <button
-                  type="button"
-                  class="shortcut-card"
-                  (click)="
-                    selectSection('face')
-                  ">
-
-                  <span class="shortcut-icon">
-                    ◯
+                  <span class="placeholder-icon">
+                    ◇
                   </span>
 
                   <div>
 
                     <strong>
-                      Profilo del viso
+                      Consulenze
                     </strong>
 
-                    <small>
-                      Morfologia e proporzioni
-                    </small>
+                    <p>
+                      Diagnosi, obiettivi,
+                      valutazioni tecniche
+                      e proposte professionali.
+                    </p>
 
                   </div>
 
-                  <span class="shortcut-arrow">
-                    →
-                  </span>
+                </div>
 
-                </button>
+                <!-- FORMULE -->
+                <div class="placeholder-box">
 
-                <!-- ARMOCROMIA -->
-                <button
-                  type="button"
-                  class="shortcut-card"
-                  (click)="
-                    selectSection('color')
-                  ">
-
-                  <span class="shortcut-icon">
-                    ◐
-                  </span>
-
-                  <div>
-
-                    <strong>
-                      Armocromia
-                    </strong>
-
-                    <small>
-                      Stagione e palette cromatica
-                    </small>
-
-                  </div>
-
-                  <span class="shortcut-arrow">
-                    →
-                  </span>
-
-                </button>
-
-                <!-- SUGGERIMENTI -->
-                <button
-                  type="button"
-                  class="
-                    shortcut-card
-                    recommendation-shortcut
-                  "
-                  (click)="
-                    selectSection(
-                      'recommendations'
-                    )
-                  ">
-
-                  <span class="shortcut-icon">
+                  <span class="placeholder-icon">
                     ✦
                   </span>
 
                   <div>
 
                     <strong>
-                      Suggerimenti HairLab
+                      Formule colore
                     </strong>
 
-                    <small>
-                      Taglio, colore e styling
-                    </small>
+                    <p>
+                      Storico delle formule
+                      tecniche utilizzate
+                      e relativi risultati.
+                    </p>
 
                   </div>
 
-                  <span class="shortcut-arrow">
-                    →
-                  </span>
-
-                </button>
-
-              </div>
-
-            </article>
-
-          </div>
-
-          <!-- ===============================================
-               STORICO HAIRLAB
-               =============================================== -->
-          <section class="history-card">
-
-            <div class="section-title">
-
-              <div>
-
-                <span class="card-eyebrow">
-                  STORICO
-                </span>
-
-                <h2>
-                  Storico HairLab
-                </h2>
-
-                <p>
-                  Attività e storico professionale
-                  della cliente.
-                </p>
-
-              </div>
-
-            </div>
-
-            <div class="hairlab-sections">
-
-              <!-- APPUNTAMENTI -->
-              <div class="placeholder-box">
-
-                <span class="placeholder-icon">
-                  ▣
-                </span>
-
-                <div>
-
-                  <strong>
-                    Appuntamenti
-                  </strong>
-
-                  <p>
-                    Qui visualizzeremo
-                    lo storico degli appuntamenti
-                    della cliente.
-                  </p>
-
                 </div>
 
               </div>
 
-              <!-- CONSULENZE -->
-              <div class="placeholder-box">
-
-                <span class="placeholder-icon">
-                  ◫
-                </span>
-
-                <div>
-
-                  <strong>
-                    Consulenze
-                  </strong>
-
-                  <p>
-                    Qui verranno visualizzate
-                    le consulenze tecniche
-                    associate.
-                  </p>
-
-                </div>
-
-              </div>
-
-              <!-- FORMULE -->
-              <div class="placeholder-box">
-
-                <span class="placeholder-icon">
-                  ◉
-                </span>
-
-                <div>
-
-                  <strong>
-                    Formule colore
-                  </strong>
-
-                  <p>
-                    Qui collegheremo formule
-                    e storico delle colorazioni.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
+            </section>
 
           </section>
 
@@ -694,7 +698,7 @@
              ================================================= -->
         @case ('hair') {
 
-          <div class="module-panel">
+          <section class="module-panel">
 
             <app-hair-profile-detail
               [customerId]="
@@ -702,7 +706,7 @@
               ">
             </app-hair-profile-detail>
 
-          </div>
+          </section>
 
         }
 
@@ -711,7 +715,7 @@
              ================================================= -->
         @case ('face') {
 
-          <div class="module-panel">
+          <section class="module-panel">
 
             <app-face-profile-detail
               [customerId]="
@@ -719,7 +723,7 @@
               ">
             </app-face-profile-detail>
 
-          </div>
+          </section>
 
         }
 
@@ -728,7 +732,7 @@
              ================================================= -->
         @case ('color') {
 
-          <div class="module-panel">
+          <section class="module-panel">
 
             <app-color-analysis-detail
               [customerId]="
@@ -736,16 +740,16 @@
               ">
             </app-color-analysis-detail>
 
-          </div>
+          </section>
 
         }
 
         <!-- =================================================
-             SUGGERIMENTI HAIRLAB
+             SUGGERIMENTI
              ================================================= -->
         @case ('recommendations') {
 
-          <div class="module-panel">
+          <section class="module-panel">
 
             <app-style-recommendation-detail
               [customerId]="
@@ -753,13 +757,13 @@
               ">
             </app-style-recommendation-detail>
 
-          </div>
+          </section>
 
         }
 
       }
 
-    </section>
+    </div>
 
   }
 

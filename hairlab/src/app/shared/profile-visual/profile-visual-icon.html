@@ -1,0 +1,31 @@
+<!--
+  Icona vettoriale HairLab.
+
+  Tutte le forme utilizzano:
+  - stesso viewBox;
+  - stesso spessore;
+  - stesso stile lineare;
+  - currentColor.
+
+  currentColor permette al CSS del componente padre
+  di controllare automaticamente il colore dell'icona.
+-->
+<svg
+  viewBox="0 0 120 80"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false">
+
+  @for (
+    path of paths;
+    track $index
+  ) {
+
+    <path
+      [attr.d]="path"
+      vector-effect="non-scaling-stroke">
+    </path>
+
+  }
+
+</svg>

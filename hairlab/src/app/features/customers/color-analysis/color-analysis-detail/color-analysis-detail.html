@@ -16,13 +16,17 @@
       </h2>
 
       <p>
-        Stagione, sottotono, contrasto
-        e palette cromatica della cliente.
+        Analisi visuale di pelle,
+        temperatura, intensità
+        e armonia cromatica.
       </p>
 
     </div>
 
-    @if (colorAnalysis(); as analysis) {
+    @if (
+      colorAnalysis();
+      as analysis
+    ) {
 
       <a
         class="secondary-button"
@@ -33,48 +37,51 @@
           analysis.id,
           'edit'
         ]">
+
         Modifica analisi
+
       </a>
 
     }
 
   </div>
 
-  <!-- =====================================================
-       LOADING
-       ===================================================== -->
   @if (loading()) {
 
     <div class="state-card">
 
-      <p>
-        Caricamento analisi cromatica...
-      </p>
+      Caricamento analisi cromatica...
 
     </div>
 
   } @else if (errorMessage()) {
 
-    <!-- ===================================================
-         ERRORE
-         =================================================== -->
     <div class="error-card">
 
-      {{ errorMessage() }}
+      <div>
+
+        <strong>
+          Analisi non disponibile
+        </strong>
+
+        <p>
+          {{ errorMessage() }}
+        </p>
+
+      </div>
 
       <button
         type="button"
         (click)="loadColorAnalysis()">
+
         Riprova
+
       </button>
 
     </div>
 
   } @else if (analysisNotFound()) {
 
-    <!-- ===================================================
-         ANALISI NON PRESENTE
-         =================================================== -->
     <div class="empty-card">
 
       <div class="empty-icon">
@@ -88,9 +95,9 @@
         </h3>
 
         <p>
-          Definisci sottotono, stagione,
-          sottostagione, contrasto, intensità
-          e palette cromatica della cliente.
+          Registra pelle, sottotono,
+          stagione, palette e metalli
+          della cliente.
         </p>
 
       </div>
@@ -103,7 +110,9 @@
           'color-analysis',
           'new'
         ]">
+
         + Crea analisi cromatica
+
       </a>
 
     </div>
@@ -114,144 +123,283 @@
   ) {
 
     <!-- ===================================================
-         HERO STAGIONE
+         PELLE
          =================================================== -->
-    <article
-      class="season-card"
-      [class.spring]="analysis.season === 'SPRING'"
-      [class.summer]="analysis.season === 'SUMMER'"
-      [class.autumn]="analysis.season === 'AUTUMN'"
-      [class.winter]="analysis.season === 'WINTER'">
+    <section class="analysis-block">
 
-      <span class="season-kicker">
-        STAGIONE ARMOCROMATICA
-      </span>
+      <div class="block-heading">
 
-      <h3>
-        {{ label(analysis.season) }}
-      </h3>
+        <span class="block-number">
+          01
+        </span>
 
-      <strong>
-        {{ label(analysis.subSeason) }}
-      </strong>
+        <div>
 
-      <div class="season-line"></div>
+          <span class="block-eyebrow">
+            BASE CROMATICA
+          </span>
 
-    </article>
+          <h3>
+            Pelle
+          </h3>
+
+        </div>
+
+      </div>
+
+      <article class="skin-analysis-card">
+
+        <div class="skin-reference">
+
+          <span
+            class="large-skin-reference"
+            [style.background]="
+              getSkinReferenceColor(
+                analysis
+              )
+            ">
+          </span>
+
+        </div>
+
+        <div class="skin-data">
+
+          <span class="block-eyebrow">
+            TONALITÀ RILEVATA
+          </span>
+
+          <h4>
+            {{ label(analysis.skinTone) }}
+          </h4>
+
+          <p>
+
+            {{
+              visual(
+                skinToneVisuals,
+                analysis.skinTone
+              ).description
+            }}
+
+          </p>
+
+          <div class="skin-properties">
+
+            <div>
+
+              <span>
+                REFERENCE
+              </span>
+
+              <strong>
+
+                {{
+                  getSkinReferenceColor(
+                    analysis
+                  )
+                }}
+
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                SOTTOTONO
+              </span>
+
+              <strong>
+                {{ label(analysis.undertone) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
 
     <!-- ===================================================
-         PARAMETRI PRINCIPALI
+         STAGIONE
          =================================================== -->
-    <div class="analysis-grid">
+    <section class="analysis-block">
 
-      <article class="analysis-card">
+      <div class="block-heading">
 
-        <span class="card-label">
-          PELLE
+        <span class="block-number">
+          02
         </span>
 
-        <h3>
-          Caratteristiche cromatiche
-        </h3>
+        <div>
 
-        <div class="properties">
+          <span class="block-eyebrow">
+            CLASSIFICAZIONE
+          </span>
 
-          <div class="property">
+          <h3>
+            Stagione armocromatica
+          </h3>
 
-            <span>
-              Tonalità pelle
-            </span>
+        </div>
 
-            <strong>
-              {{ label(analysis.skinTone) }}
-            </strong>
+      </div>
 
-          </div>
+      <article
+        class="season-card"
+        [class.spring]="
+          analysis.season === 'SPRING'
+        "
+        [class.summer]="
+          analysis.season === 'SUMMER'
+        "
+        [class.autumn]="
+          analysis.season === 'AUTUMN'
+        "
+        [class.winter]="
+          analysis.season === 'WINTER'
+        ">
 
-          <div class="property">
+        <span>
+          STAGIONE
+        </span>
 
-            <span>
-              Sottotono
-            </span>
+        <h4>
+          {{ label(analysis.season) }}
+        </h4>
 
-            <strong>
-              {{ label(analysis.undertone) }}
-            </strong>
+        <strong>
+          {{ label(analysis.subSeason) }}
+        </strong>
 
-          </div>
+        <div class="season-symbol">
+
+          @switch (analysis.season) {
+
+            @case ('SPRING') {
+              ✦
+            }
+
+            @case ('SUMMER') {
+              ≋
+            }
+
+            @case ('AUTUMN') {
+              ◆
+            }
+
+            @case ('WINTER') {
+              ❄
+            }
+
+          }
 
         </div>
 
       </article>
 
-      <article class="analysis-card">
+    </section>
 
-        <span class="card-label">
-          PARAMETRI ARMOCROMATICI
+    <!-- ===================================================
+         PARAMETRI
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          03
         </span>
 
-        <h3>
-          Equilibrio cromatico
-        </h3>
+        <div>
 
-        <div class="properties three">
+          <span class="block-eyebrow">
+            EQUILIBRIO CROMATICO
+          </span>
 
-          <div class="property">
-
-            <span>
-              Valore
-            </span>
-
-            <strong>
-              {{
-                colorValueLabel(
-                  analysis.colorValue
-                )
-              }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Contrasto
-            </span>
-
-            <strong>
-              {{ label(analysis.contrastLevel) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Croma
-            </span>
-
-            <strong>
-              {{ label(analysis.chroma) }}
-            </strong>
-
-          </div>
+          <h3>
+            Parametri principali
+          </h3>
 
         </div>
 
-      </article>
+      </div>
 
-    </div>
+      <div class="parameter-result-grid">
+
+        <article>
+
+          <span>
+            VALORE
+          </span>
+
+          <strong>
+            {{
+              colorValueLabel(
+                analysis.colorValue
+              )
+            }}
+          </strong>
+
+          <p>
+            Profondità cromatica complessiva
+          </p>
+
+        </article>
+
+        <article>
+
+          <span>
+            CONTRASTO
+          </span>
+
+          <strong>
+            {{ label(analysis.contrastLevel) }}
+          </strong>
+
+          <p>
+            Differenza tra gli elementi naturali
+          </p>
+
+        </article>
+
+        <article>
+
+          <span>
+            CROMA
+          </span>
+
+          <strong>
+            {{ label(analysis.chroma) }}
+          </strong>
+
+          <p>
+            Intensità della palette armonica
+          </p>
+
+        </article>
+
+      </div>
+
+    </section>
 
     <!-- ===================================================
          COLORI CONSIGLIATI
          =================================================== -->
-    <article class="palette-card">
+    <section class="analysis-block">
 
-      <div class="palette-header">
+      <div class="block-heading">
+
+        <span class="block-number">
+          04
+        </span>
 
         <div>
 
-          <span class="card-label">
+          <span class="block-eyebrow">
             PALETTE
           </span>
 
@@ -261,15 +409,6 @@
 
         </div>
 
-        <span class="palette-count">
-          {{
-            paletteEntries(
-              analysis.bestColors
-            ).length
-          }}
-          colori
-        </span>
-
       </div>
 
       @if (
@@ -278,7 +417,7 @@
         ).length > 0
       ) {
 
-        <div class="color-grid">
+        <div class="palette-grid">
 
           @for (
             color of paletteEntries(
@@ -287,11 +426,13 @@
             track color[0]
           ) {
 
-            <div class="color-item">
+            <article class="palette-item">
 
               <span
-                class="color-swatch"
-                [style.background]="color[1]">
+                class="palette-color"
+                [style.background]="
+                  color[1]
+                ">
               </span>
 
               <div>
@@ -300,13 +441,13 @@
                   {{ color[0] }}
                 </strong>
 
-                <span>
+                <small>
                   {{ color[1] }}
-                </span>
+                </small>
 
               </div>
 
-            </div>
+            </article>
 
           }
 
@@ -314,24 +455,28 @@
 
       } @else {
 
-        <p class="empty-text">
+        <div class="empty-palette">
           Nessun colore consigliato inserito.
-        </p>
+        </div>
 
       }
 
-    </article>
+    </section>
 
     <!-- ===================================================
-         COLORI DA LIMITARE
+         COLORI MENO ARMONICI
          =================================================== -->
-    <article class="palette-card avoid-card">
+    <section class="analysis-block">
 
-      <div class="palette-header">
+      <div class="block-heading">
+
+        <span class="block-number">
+          05
+        </span>
 
         <div>
 
-          <span class="card-label">
+          <span class="block-eyebrow">
             ATTENZIONE CROMATICA
           </span>
 
@@ -349,7 +494,7 @@
         ).length > 0
       ) {
 
-        <div class="color-grid">
+        <div class="palette-grid">
 
           @for (
             color of paletteEntries(
@@ -358,11 +503,13 @@
             track color[0]
           ) {
 
-            <div class="color-item">
+            <article class="palette-item muted">
 
               <span
-                class="color-swatch"
-                [style.background]="color[1]">
+                class="palette-color"
+                [style.background]="
+                  color[1]
+                ">
               </span>
 
               <div>
@@ -371,13 +518,13 @@
                   {{ color[0] }}
                 </strong>
 
-                <span>
+                <small>
                   {{ color[1] }}
-                </span>
+                </small>
 
               </div>
 
-            </div>
+            </article>
 
           }
 
@@ -385,22 +532,38 @@
 
       } @else {
 
-        <p class="empty-text">
+        <div class="empty-palette">
           Nessun colore da limitare inserito.
-        </p>
+        </div>
 
       }
 
-    </article>
+    </section>
 
     <!-- ===================================================
          METALLI
          =================================================== -->
-    <article class="metals-card">
+    <section class="analysis-block">
 
-      <span class="card-label">
-        METALLI CONSIGLIATI
-      </span>
+      <div class="block-heading">
+
+        <span class="block-number">
+          06
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            ACCESSORI E METALLI
+          </span>
+
+          <h3>
+            Metalli consigliati
+          </h3>
+
+        </div>
+
+      </div>
 
       <div class="metal-list">
 
@@ -410,12 +573,14 @@
         ) {
 
           <span class="metal-chip">
+
             {{ label(metal) }}
+
           </span>
 
         } @empty {
 
-          <span class="empty-text">
+          <span class="empty-palette">
             Nessun metallo specificato.
           </span>
 
@@ -423,25 +588,47 @@
 
       </div>
 
-    </article>
+    </section>
 
     <!-- ===================================================
          NOTE
          =================================================== -->
-    <article class="notes-card">
+    <section class="analysis-block">
 
-      <span class="card-label">
-        NOTE PROFESSIONALI
-      </span>
+      <div class="block-heading">
 
-      <p>
-        {{
-          analysis.notes ||
-          'Nessuna nota inserita.'
-        }}
-      </p>
+        <span class="block-number">
+          07
+        </span>
 
-    </article>
+        <div>
+
+          <span class="block-eyebrow">
+            VALUTAZIONE PROFESSIONALE
+          </span>
+
+          <h3>
+            Note
+          </h3>
+
+        </div>
+
+      </div>
+
+      <article class="notes-card">
+
+        <p>
+
+          {{
+            analysis.notes ||
+            'Nessuna nota inserita.'
+          }}
+
+        </p>
+
+      </article>
+
+    </section>
 
   }
 

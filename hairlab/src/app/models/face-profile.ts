@@ -22,8 +22,7 @@ import {
 } from './enums/face-profile-enums';
 
 /**
- * Rappresenta il profilo morfologico
- * del viso di una cliente.
+ * Profilo morfologico del viso.
  *
  * Corrisponde a FaceProfileDto
  * del backend.
@@ -35,94 +34,164 @@ export interface FaceProfile {
   customerId: number;
 
   /*
-   * FORMA GENERALE.
+   * ==========================================================
+   * FORMA GENERALE
+   * ==========================================================
    */
-  faceShape?: FaceShape | null;
+  faceShape?:
+    FaceShape | null;
 
   /*
-   * FRONTE.
+   * ==========================================================
+   * FRONTE
+   * ==========================================================
    */
-  foreheadHeight?: FaceLevel | null;
+  foreheadHeight?:
+    FaceLevel | null;
 
-  foreheadWidth?: FaceWidth | null;
+  foreheadWidth?:
+    FaceWidth | null;
 
-  hairlineShape?: HairlineShape | null;
+  hairlineShape?:
+    HairlineShape | null;
 
   /*
-   * OCCHI.
+   * ==========================================================
+   * OCCHI
+   * ==========================================================
    */
-  eyeShape?: EyeShape | null;
+  eyeShape?:
+    EyeShape | null;
 
-  eyeOrientation?: EyeOrientation | null;
+  eyeOrientation?:
+    EyeOrientation | null;
 
-  eyeSpacing?: EyeSpacing | null;
+  eyeSpacing?:
+    EyeSpacing | null;
 
-  eyeSize?: FaceSize | null;
+  eyeSize?:
+    FaceSize | null;
 
-  eyeColor?: EyeColor | null;
+  /**
+   * Classificazione generale.
+   *
+   * Esempio:
+   *
+   * HAZEL
+   * DARK_BROWN
+   */
+  eyeColor?:
+    EyeColor | null;
 
-  eyeColorNotes?: string | null;
+  /**
+   * Colore HEX reale utilizzato
+   * come riferimento visivo.
+   *
+   * Esempio:
+   *
+   * #80603E
+   */
+  eyeReferenceColor?:
+    string | null;
+
+  eyeColorNotes?:
+    string | null;
 
   /*
-   * SOPRACCIGLIA.
+   * ==========================================================
+   * SOPRACCIGLIA
+   * ==========================================================
    */
-  eyebrowShape?: EyebrowShape | null;
+  eyebrowShape?:
+    EyebrowShape | null;
 
-  eyebrowThickness?: FaceThickness | null;
+  eyebrowThickness?:
+    FaceThickness | null;
 
   /*
-   * NASO.
+   * ==========================================================
+   * NASO
+   * ==========================================================
    */
-  noseLength?: FaceLength | null;
+  noseLength?:
+    FaceLength | null;
 
-  noseWidth?: FaceWidth | null;
+  noseWidth?:
+    FaceWidth | null;
 
-  noseProfile?: NoseProfile | null;
+  noseProfile?:
+    NoseProfile | null;
 
-  noseTip?: NoseTip | null;
+  noseTip?:
+    NoseTip | null;
 
   /*
-   * ZIGOMI.
+   * ==========================================================
+   * ZIGOMI
+   * ==========================================================
    */
-  cheekboneWidth?: FaceWidth | null;
+  cheekboneWidth?:
+    FaceWidth | null;
 
-  cheekboneProminence?: FaceLevel | null;
+  cheekboneProminence?:
+    FaceLevel | null;
 
   /*
-   * MASCELLA.
+   * ==========================================================
+   * MASCELLA
+   * ==========================================================
    */
-  jawWidth?: FaceWidth | null;
+  jawWidth?:
+    FaceWidth | null;
 
-  jawDefinition?: FaceLevel | null;
+  jawDefinition?:
+    FaceLevel | null;
 
-  jawShape?: JawShape | null;
+  jawShape?:
+    JawShape | null;
 
   /*
-   * MENTO.
+   * ==========================================================
+   * MENTO
+   * ==========================================================
    */
-  chinShape?: ChinShape | null;
+  chinShape?:
+    ChinShape | null;
 
-  chinProjection?: ChinProjection | null;
+  chinProjection?:
+    ChinProjection | null;
 
   /*
-   * BOCCA E LABBRA.
+   * ==========================================================
+   * BOCCA E LABBRA
+   * ==========================================================
    */
-  mouthWidth?: FaceWidth | null;
+  mouthWidth?:
+    FaceWidth | null;
 
-  lipFullness?: LipFullness | null;
+  lipFullness?:
+    LipFullness | null;
 
-  lipBalance?: LipBalance | null;
+  lipBalance?:
+    LipBalance | null;
 
-  lipShape?: LipShape | null;
+  lipShape?:
+    LipShape | null;
 
   /*
-   * NOTE.
+   * ==========================================================
+   * NOTE
+   * ==========================================================
    */
-  notes?: string | null;
+  notes?:
+    string | null;
 
-  stylingGoals?: string | null;
+  stylingGoals?:
+    string | null;
 
-  createdAt?: string;
+  createdAt?:
+    string;
 
-  updatedAt?: string;
+  updatedAt?:
+    string;
 }

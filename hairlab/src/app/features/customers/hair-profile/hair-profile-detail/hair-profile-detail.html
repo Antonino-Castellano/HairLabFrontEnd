@@ -1,18 +1,14 @@
-<!--
-  Sezione dedicata al profilo tecnico
-  dei capelli del cliente.
--->
-<section class="hair-profile-card">
+<section class="hair-profile-section">
 
   <!-- =====================================================
-       INTESTAZIONE
+       HEADER PRINCIPALE
        ===================================================== -->
   <div class="section-header">
 
-    <div>
+    <div class="header-title">
 
       <span class="eyebrow">
-        PROFILO TECNICO
+        ANALISI TECNICA
       </span>
 
       <h2>
@@ -20,15 +16,13 @@
       </h2>
 
       <p>
-        Analisi tecnica e caratteristiche dei capelli del cliente.
+        Diagnosi tecnica della fibra, struttura,
+        colore e storico professionale dei capelli
+        della cliente.
       </p>
 
     </div>
 
-    <!--
-      Mostriamo Modifica ed Elimina
-      solamente quando il profilo esiste.
-    -->
     @if (hairProfile(); as profile) {
 
       <div class="header-actions">
@@ -42,14 +36,18 @@
             profile.id,
             'edit'
           ]">
-          Modifica
+
+          Modifica profilo
+
         </a>
 
         <button
           class="danger-button"
           type="button"
           (click)="deleteHairProfile()">
+
           Elimina
+
         </button>
 
       </div>
@@ -59,181 +57,566 @@
   </div>
 
   <!-- =====================================================
-       STATI DEL COMPONENTE
+       CARICAMENTO
        ===================================================== -->
-
   @if (loading()) {
 
-    <div class="state-message">
-      Caricamento profilo capelli...
+    <div class="state-card">
+
+      <div class="state-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <strong>
+        Caricamento profilo capelli
+      </strong>
+
+      <p>
+        Recupero dei dati tecnici della cliente...
+      </p>
+
     </div>
 
   } @else if (errorMessage()) {
 
-    <div class="error-message">
-      {{ errorMessage() }}
+    <!-- ===================================================
+         ERRORE
+         =================================================== -->
+    <div class="error-card">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          Impossibile caricare il profilo capelli
+        </strong>
+
+        <p>
+          {{ errorMessage() }}
+        </p>
+
+      </div>
+
     </div>
 
   } @else if (hairProfile(); as profile) {
 
     <!-- ===================================================
-         DATI TECNICI PRINCIPALI
+         01 - DIAGNOSI CROMATICA
          =================================================== -->
-    <div class="profile-grid">
+    <section class="analysis-block">
 
-      <!-- TONO NATURALE -->
-      <div class="profile-item">
+      <div class="block-heading">
 
-        <span class="profile-label">
-          Tono naturale
+        <span class="block-number">
+          01
         </span>
 
-        <div class="tone-value">
+        <div>
 
-          <!--
-            Banda colorata associata
-            all'altezza di tono.
-          -->
-          <span
-            class="tone-band"
-            [style.background]="
-              toneLevelColors[profile.naturalTone]
-            ">
+          <span class="block-eyebrow">
+            DIAGNOSI CROMATICA
           </span>
 
-          <strong>
-            {{ toneLevelLabels[profile.naturalTone] }}
-          </strong>
+          <h3>
+            Tonalità e riflesso
+          </h3>
+
+          <p>
+            Confronto tra base naturale,
+            situazione cromatica attuale
+            e riflesso predominante.
+          </p>
 
         </div>
 
       </div>
 
-      <!-- TONO ATTUALE -->
-      <div class="profile-item">
+      <!-- TONI -->
+      <div class="tone-grid">
 
-        <span class="profile-label">
-          Tono attuale
-        </span>
+        <!-- TONO NATURALE -->
+        <article class="tone-card">
 
-        <div class="tone-value">
+          <div class="tone-card-header">
+
+            <div class="tone-icon">
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+
+                <path
+                  d="M12 3C8.5 7.3 6 10.2 6 14a6 6 0 0 0 12 0c0-3.8-2.5-6.7-6-11Z">
+                </path>
+
+              </svg>
+
+            </div>
+
+            <div>
+
+              <span class="data-label">
+                TONO NATURALE
+              </span>
+
+              <h4>
+                {{
+                  toneLevelLabels[
+                    profile.naturalTone
+                  ]
+                }}
+              </h4>
+
+            </div>
+
+          </div>
 
           <span
-            class="tone-band"
+            class="large-tone-swatch"
             [style.background]="
-              toneLevelColors[profile.currentTone]
+              toneLevelColors[
+                profile.naturalTone
+              ]
             ">
           </span>
 
-          <strong>
-            {{ toneLevelLabels[profile.currentTone] }}
-          </strong>
+          <p>
+            Altezza di tono naturale
+            della cliente prima delle
+            modifiche cosmetiche.
+          </p>
 
-        </div>
+        </article>
+
+        <!-- TONO ATTUALE -->
+        <article class="tone-card">
+
+          <div class="tone-card-header">
+
+            <div class="tone-icon">
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+
+                <path
+                  d="M4 17.5 12 4l8 13.5">
+                </path>
+
+                <path
+                  d="M7 13h10">
+                </path>
+
+                <path
+                  d="M9.5 17h5">
+                </path>
+
+              </svg>
+
+            </div>
+
+            <div>
+
+              <span class="data-label">
+                TONO ATTUALE
+              </span>
+
+              <h4>
+                {{
+                  toneLevelLabels[
+                    profile.currentTone
+                  ]
+                }}
+              </h4>
+
+            </div>
+
+          </div>
+
+          <span
+            class="large-tone-swatch"
+            [style.background]="
+              toneLevelColors[
+                profile.currentTone
+              ]
+            ">
+          </span>
+
+          <p>
+            Altezza di tono attualmente
+            visibile sulla capigliatura.
+          </p>
+
+        </article>
 
       </div>
 
       <!-- RIFLESSO -->
-      <div class="profile-item">
+      <article class="reflection-card">
 
-        <span class="profile-label">
-          Riflesso
-        </span>
+        <div
+          class="reflection-preview"
+          [style.background]="
+            reflectionColors[
+              profile.reflection
+            ]
+          ">
 
-        <div class="reflection-value">
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
 
-          <span
-            class="reflection-dot"
-            [style.background]="
-              reflectionColors[profile.reflection]
-            ">
+            <path
+              d="M12 3v18">
+            </path>
+
+            <path
+              d="M3 12h18">
+            </path>
+
+            <path
+              d="m5.6 5.6 12.8 12.8">
+            </path>
+
+            <path
+              d="m18.4 5.6-12.8 12.8">
+            </path>
+
+          </svg>
+
+        </div>
+
+        <div class="reflection-data">
+
+          <span class="data-label">
+            RIFLESSO ATTUALE
           </span>
 
-          <strong>
-            {{ reflectionLabels[profile.reflection] }}
-          </strong>
+          <h4>
+            {{
+              reflectionLabels[
+                profile.reflection
+              ]
+            }}
+          </h4>
+
+          <p>
+            Direzione cromatica predominante
+            rilevata sul colore attuale.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- ===================================================
+         02 - STRUTTURA CAPILLARE
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          02
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            STRUTTURA CAPILLARE
+          </span>
+
+          <h3>
+            Caratteristiche fisiche
+          </h3>
+
+          <p>
+            Struttura e comportamento
+            della fibra capillare.
+          </p>
 
         </div>
 
       </div>
 
-      <!-- TIPO CAPELLO -->
-      <div class="profile-item">
+      <div class="characteristics-grid">
 
-        <span class="profile-label">
-          Tipo capelli
-        </span>
+        <!-- TIPO CAPELLO -->
+        <article class="characteristic-card">
 
-        <strong>
-          {{ hairTypeLabels[profile.hairType] }}
-        </strong>
+          <div class="line-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
+
+              <path
+                d="M4 8c2.7-4 5.3 4 8 0s5.3 4 8 0">
+              </path>
+
+              <path
+                d="M4 16c2.7-4 5.3 4 8 0s5.3 4 8 0">
+              </path>
+
+            </svg>
+
+          </div>
+
+          <span class="data-label">
+            TIPO CAPELLO
+          </span>
+
+          <strong>
+            {{
+              hairTypeLabels[
+                profile.hairType
+              ]
+            }}
+          </strong>
+
+          <p>
+            Forma naturale
+            della fibra.
+          </p>
+
+        </article>
+
+        <!-- TEXTURE -->
+        <article class="characteristic-card">
+
+          <div class="line-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
+
+              <path d="M7 4v16"></path>
+              <path d="M12 4v16"></path>
+              <path d="M17 4v16"></path>
+
+            </svg>
+
+          </div>
+
+          <span class="data-label">
+            TEXTURE
+          </span>
+
+          <strong>
+            {{
+              hairTextureLabels[
+                profile.texture
+              ]
+            }}
+          </strong>
+
+          <p>
+            Spessore percepito
+            della singola fibra.
+          </p>
+
+        </article>
+
+        <!-- POROSITÀ -->
+        <article class="characteristic-card">
+
+          <div class="line-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
+
+              <path
+                d="M12 3C8.7 7.3 7 10 7 13a5 5 0 0 0 10 0c0-3-1.7-5.7-5-10Z">
+              </path>
+
+              <path
+                d="M10 14c.7 1.3 1.5 2 3 2">
+              </path>
+
+            </svg>
+
+          </div>
+
+          <span class="data-label">
+            POROSITÀ
+          </span>
+
+          <strong>
+            {{
+              physicalValueLabels[
+                profile.porosity
+              ]
+            }}
+          </strong>
+
+          <p>
+            Capacità della fibra
+            di assorbire e trattenere.
+          </p>
+
+        </article>
+
+        <!-- DENSITÀ -->
+        <article class="characteristic-card">
+
+          <div class="line-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
+
+              <path d="M5 6h14"></path>
+              <path d="M5 10h14"></path>
+              <path d="M5 14h14"></path>
+              <path d="M5 18h14"></path>
+
+            </svg>
+
+          </div>
+
+          <span class="data-label">
+            DENSITÀ
+          </span>
+
+          <strong>
+            {{
+              physicalValueLabels[
+                profile.density
+              ]
+            }}
+          </strong>
+
+          <p>
+            Quantità visiva
+            complessiva dei capelli.
+          </p>
+
+        </article>
 
       </div>
 
-      <!-- TEXTURE -->
-      <div class="profile-item">
-
-        <span class="profile-label">
-          Texture
-        </span>
-
-        <strong>
-          {{ hairTextureLabels[profile.texture] }}
-        </strong>
-
-      </div>
-
-      <!-- POROSITÀ -->
-      <div class="profile-item">
-
-        <span class="profile-label">
-          Porosità
-        </span>
-
-        <strong>
-          {{ physicalValueLabels[profile.porosity] }}
-        </strong>
-
-      </div>
-
-      <!-- DENSITÀ -->
-      <div class="profile-item">
-
-        <span class="profile-label">
-          Densità
-        </span>
-
-        <strong>
-          {{ physicalValueLabels[profile.density] }}
-        </strong>
-
-      </div>
-
-      <!-- CONDIZIONE -->
-      <div class="profile-item">
-
-        <span class="profile-label">
-          Condizione
-        </span>
-
-        <strong>
-          {{ hairConditionLabels[profile.hairCondition] }}
-        </strong>
-
-      </div>
-
-    </div>
+    </section>
 
     <!-- ===================================================
-         CONDIZIONI DELLA CUTE
+         03 - CONDIZIONE DEL CAPELLO
          =================================================== -->
-    <div class="technical-section">
+    <section class="analysis-block">
 
-      <h3>
-        Condizioni della cute
-      </h3>
+      <div class="block-heading">
 
-      @if (profile.scalpCondition.length > 0) {
+        <span class="block-number">
+          03
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            STATO DELLA FIBRA
+          </span>
+
+          <h3>
+            Condizione generale
+          </h3>
+
+          <p>
+            Stato tecnico attuale
+            della struttura capillare.
+          </p>
+
+        </div>
+
+      </div>
+
+      <article class="condition-card">
+
+        <div class="condition-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <path
+              d="M12 3 20 8v8l-8 5-8-5V8Z">
+            </path>
+
+            <path
+              d="m8.5 12 2.2 2.2 4.8-5">
+            </path>
+
+          </svg>
+
+        </div>
+
+        <div>
+
+          <span class="data-label">
+            CONDIZIONE RILEVATA
+          </span>
+
+          <h4>
+            {{
+              hairConditionLabels[
+                profile.hairCondition
+              ]
+            }}
+          </h4>
+
+          <p>
+            Questo parametro contribuisce
+            a determinare fattibilità,
+            priorità e cautele tecniche
+            dei servizi successivi.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- ===================================================
+         04 - CUTE
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          04
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            ANALISI CUTE
+          </span>
+
+          <h3>
+            Condizioni della cute
+          </h3>
+
+          <p>
+            Informazioni rilevanti
+            prima di servizi tecnici.
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (
+        profile.scalpCondition &&
+        profile.scalpCondition.length > 0
+      ) {
 
         <div class="tags">
 
@@ -243,7 +626,11 @@
           ) {
 
             <span class="tag">
+
+              <span class="tag-dot"></span>
+
               {{ condition }}
+
             </span>
 
           }
@@ -252,24 +639,60 @@
 
       } @else {
 
-        <p class="empty-text">
-          Nessuna informazione registrata.
-        </p>
+        <div class="empty-data positive">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <path
+              d="m5 12 4 4L19 6">
+            </path>
+
+          </svg>
+
+          Nessuna condizione particolare registrata.
+
+        </div>
 
       }
 
-    </div>
+    </section>
 
     <!-- ===================================================
-         STORICO CHIMICO
+         05 - STORICO CHIMICO
          =================================================== -->
-    <div class="technical-section">
+    <section class="analysis-block">
 
-      <h3>
-        Storico chimico
-      </h3>
+      <div class="block-heading">
 
-      @if (profile.chemicalHistory.length > 0) {
+        <span class="block-number">
+          05
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            STORICO TECNICO
+          </span>
+
+          <h3>
+            Trattamenti chimici precedenti
+          </h3>
+
+          <p>
+            Informazioni utili per valutare
+            sovrapposizioni e compatibilità.
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (
+        profile.chemicalHistory &&
+        profile.chemicalHistory.length > 0
+      ) {
 
         <div class="tags">
 
@@ -278,8 +701,32 @@
             track history
           ) {
 
-            <span class="tag">
+            <span class="tag history">
+
+              <span class="tag-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <path
+                    d="M9 3h6">
+                  </path>
+
+                  <path
+                    d="M10 3v5l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 17l-5-9V3">
+                  </path>
+
+                  <path
+                    d="M7.5 15h9">
+                  </path>
+
+                </svg>
+
+              </span>
+
               {{ history }}
+
             </span>
 
           }
@@ -288,24 +735,50 @@
 
       } @else {
 
-        <p class="empty-text">
-          Nessun trattamento registrato.
-        </p>
+        <div class="empty-data">
+
+          Nessun trattamento chimico registrato.
+
+        </div>
 
       }
 
-    </div>
+    </section>
 
     <!-- ===================================================
-         SENSIBILITÀ
+         06 - SENSIBILITÀ
          =================================================== -->
-    <div class="technical-section">
+    <section class="analysis-block">
 
-      <h3>
-        Sensibilità
-      </h3>
+      <div class="block-heading">
 
-      @if (profile.sensitivities.length > 0) {
+        <span class="block-number warning-number">
+          06
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow warning-eyebrow">
+            ATTENZIONE
+          </span>
+
+          <h3>
+            Sensibilità
+          </h3>
+
+          <p>
+            Condizioni che richiedono
+            particolare attenzione professionale.
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (
+        profile.sensitivities &&
+        profile.sensitivities.length > 0
+      ) {
 
         <div class="tags">
 
@@ -324,35 +797,97 @@
 
       } @else {
 
-        <p class="empty-text">
+        <div class="empty-data positive">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <path
+              d="m5 12 4 4L19 6">
+            </path>
+
+          </svg>
+
           Nessuna sensibilità registrata.
-        </p>
+
+        </div>
 
       }
 
-    </div>
+    </section>
 
     <!-- ===================================================
-         CONTROINDICAZIONI
+         07 - CONTROINDICAZIONI
          =================================================== -->
-    <div class="technical-section">
+    <section class="analysis-block">
 
-      <h3>
-        Controindicazioni
-      </h3>
+      <div class="block-heading">
 
-      @if (profile.contraindications.length > 0) {
+        <span class="block-number danger-number">
+          07
+        </span>
 
-        <div class="tags">
+        <div>
+
+          <span class="block-eyebrow danger-eyebrow">
+            CAUTELE TECNICHE
+          </span>
+
+          <h3>
+            Controindicazioni
+          </h3>
+
+          <p>
+            Informazioni da verificare
+            sempre prima di procedere.
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (
+        profile.contraindications &&
+        profile.contraindications.length > 0
+      ) {
+
+        <div class="contraindication-panel">
 
           @for (
             contraindication of profile.contraindications;
             track contraindication
           ) {
 
-            <span class="tag danger">
-              {{ contraindication }}
-            </span>
+            <article class="contraindication-item">
+
+              <div class="contraindication-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <path
+                    d="M12 3 2.8 19h18.4Z">
+                  </path>
+
+                  <path
+                    d="M12 9v4">
+                  </path>
+
+                  <path
+                    d="M12 17h.01">
+                  </path>
+
+                </svg>
+
+              </div>
+
+              <p>
+                {{ contraindication }}
+              </p>
+
+            </article>
 
           }
 
@@ -360,48 +895,142 @@
 
       } @else {
 
-        <p class="empty-text">
+        <div class="empty-data positive">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <path
+              d="m5 12 4 4L19 6">
+            </path>
+
+          </svg>
+
           Nessuna controindicazione registrata.
-        </p>
+
+        </div>
 
       }
 
-    </div>
+    </section>
 
     <!-- ===================================================
-         NOTE
+         08 - NOTE
          =================================================== -->
-    <div class="technical-section notes-section">
+    <section class="analysis-block">
 
-      <h3>
-        Note tecniche
-      </h3>
+      <div class="block-heading">
 
-      <p>
-        {{ profile.notes || 'Nessuna nota inserita.' }}
-      </p>
+        <span class="block-number">
+          08
+        </span>
 
-    </div>
+        <div>
+
+          <span class="block-eyebrow">
+            VALUTAZIONE PROFESSIONALE
+          </span>
+
+          <h3>
+            Note tecniche
+          </h3>
+
+          <p>
+            Osservazioni aggiuntive
+            registrate dal professionista.
+          </p>
+
+        </div>
+
+      </div>
+
+      <article class="notes-card">
+
+        <div class="notes-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <path
+              d="M5 4h14v16H5Z">
+            </path>
+
+            <path
+              d="M8 8h8">
+            </path>
+
+            <path
+              d="M8 12h8">
+            </path>
+
+            <path
+              d="M8 16h5">
+            </path>
+
+          </svg>
+
+        </div>
+
+        <p>
+          {{
+            profile.notes ||
+            'Nessuna nota tecnica inserita.'
+          }}
+        </p>
+
+      </article>
+
+    </section>
 
   } @else {
 
     <!-- ===================================================
-         CLIENTE SENZA PROFILO
+         NESSUN PROFILO
          =================================================== -->
     <div class="empty-state">
 
       <div class="empty-icon">
-        ✦
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true">
+
+          <path
+            d="M7 4c3 3 3 13 0 16">
+          </path>
+
+          <path
+            d="M12 4c3 3 3 13 0 16">
+          </path>
+
+          <path
+            d="M17 4c3 3 3 13 0 16">
+          </path>
+
+        </svg>
+
       </div>
 
-      <h3>
-        Nessun profilo capelli
-      </h3>
+      <div class="empty-content">
 
-      <p>
-        Crea il profilo tecnico per registrare tono,
-        riflesso, struttura, condizione e storico chimico.
-      </p>
+        <span class="block-eyebrow">
+          PROFILO NON DISPONIBILE
+        </span>
+
+        <h3>
+          Nessun profilo capelli
+        </h3>
+
+        <p>
+          Crea il profilo tecnico per registrare
+          tonalità, riflesso, struttura,
+          stato della fibra, storico chimico
+          e cautele professionali.
+        </p>
+
+      </div>
 
       <a
         class="primary-button"
@@ -411,7 +1040,9 @@
           'hair-profile',
           'new'
         ]">
+
         + Crea profilo capelli
+
       </a>
 
     </div>

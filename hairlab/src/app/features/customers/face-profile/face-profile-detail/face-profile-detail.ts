@@ -20,21 +20,40 @@ import {
 } from '../../../../models/enums/profile-enum-labels';
 
 import {
+  CHIN_SHAPE_VISUALS,
+  EYE_COLOR_VISUALS,
+  EYE_ORIENTATION_VISUALS,
+  EYE_SHAPE_VISUALS,
+  EYEBROW_SHAPE_VISUALS,
+  FACE_SHAPE_VISUALS,
+  JAW_SHAPE_VISUALS,
+  LIP_SHAPE_VISUALS,
+  NOSE_PROFILE_VISUALS,
+  ProfileVisualReference,
+  getVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import {
   FaceProfileService
 } from '../../../../service/face-profile-service';
 
+import {
+  ProfileVisualIconComponent
+} from '../../../../shared/profile-visual/profile-visual-icon';
+
 /**
- * Mostra il profilo morfologico
- * del viso di una cliente.
+ * Visualizza il profilo morfologico
+ * del viso della cliente.
  *
- * Il componente riceve customerId
- * dal componente padre CustomerDetail.
+ * Utilizza lo stesso sistema
+ * di icone SVG lineari del form.
  */
 @Component({
   selector: 'app-face-profile-detail',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    ProfileVisualIconComponent
   ],
   templateUrl: './face-profile-detail.html',
   styleUrl: './face-profile-detail.css'
@@ -42,73 +61,68 @@ import {
 export class FaceProfileDetailComponent
     implements OnChanges {
 
-  /**
-   * Service utilizzato per comunicare
-   * con il backend.
-   */
   private readonly faceProfileService =
     inject(FaceProfileService);
 
-  /**
-   * ID della cliente.
-   *
-   * Verrà passato dal CustomerDetail:
-   *
-   * <app-face-profile-detail
-   *   [customerId]="customer.id">
-   * </app-face-profile-detail>
-   */
   @Input({
     required: true
   })
   customerId!: number;
 
-  /**
-   * Profilo ricevuto dal backend.
-   */
   protected readonly faceProfile =
-    signal<FaceProfile | null>(null);
+    signal<FaceProfile | null>(
+      null
+    );
 
-  /**
-   * Stato di caricamento.
-   */
   protected readonly loading =
     signal(false);
 
-  /**
-   * Errore generico.
-   */
   protected readonly errorMessage =
     signal('');
 
-  /**
-   * Indica che il cliente non possiede
-   * ancora un FaceProfile.
-   */
   protected readonly profileNotFound =
     signal(false);
 
-  /**
-   * Quando cambia customerId
-   * ricarichiamo il profilo.
-   */
+  protected readonly faceShapeVisuals =
+    FACE_SHAPE_VISUALS;
+
+  protected readonly eyeShapeVisuals =
+    EYE_SHAPE_VISUALS;
+
+  protected readonly eyeOrientationVisuals =
+    EYE_ORIENTATION_VISUALS;
+
+  protected readonly eyeColorVisuals =
+    EYE_COLOR_VISUALS;
+
+  protected readonly eyebrowShapeVisuals =
+    EYEBROW_SHAPE_VISUALS;
+
+  protected readonly noseProfileVisuals =
+    NOSE_PROFILE_VISUALS;
+
+  protected readonly jawShapeVisuals =
+    JAW_SHAPE_VISUALS;
+
+  protected readonly chinShapeVisuals =
+    CHIN_SHAPE_VISUALS;
+
+  protected readonly lipShapeVisuals =
+    LIP_SHAPE_VISUALS;
+
   ngOnChanges(
     changes: SimpleChanges
   ): void {
 
     if (
       changes['customerId'] &&
-      this.customerId
+      this.customerId > 0
     ) {
 
       this.loadFaceProfile();
     }
   }
 
-  /**
-   * Recupera il profilo del viso
-   * tramite customerId.
-   */
   protected loadFaceProfile(): void {
 
     this.loading.set(true);
@@ -140,14 +154,6 @@ export class FaceProfileDetailComponent
             null
           );
 
-          /**
-           * Il backend attuale può restituire
-           * 400 quando il profilo non esiste.
-           *
-           * Consideriamo 400 e 404 come:
-           *
-           * "profilo non ancora presente".
-           */
           if (
             error.status === 400 ||
             error.status === 404
@@ -167,10 +173,6 @@ export class FaceProfileDetailComponent
       });
   }
 
-  /**
-   * Traduce un valore Enum tecnico
-   * nella relativa etichetta italiana.
-   */
   protected label(
     value:
       string |
@@ -181,5 +183,50 @@ export class FaceProfileDetailComponent
     return getProfileEnumLabel(
       value
     );
+  }
+
+  protected visual(
+    collection:
+      Record<
+        string,
+        ProfileVisualReference
+      >,
+    value:
+      string |
+      null |
+      undefined
+  ): ProfileVisualReference {
+
+    return getVisualReference(
+      collection,
+      value
+    );
+  }
+
+  protected getEyeReferenceColor(
+    profile: FaceProfile
+  ): string {
+
+    if (
+      profile.eyeReferenceColor
+    ) {
+
+      return profile.eyeReferenceColor;
+    }
+
+    if (
+      profile.eyeColor
+    ) {
+
+      return (
+        this.visual(
+          this.eyeColorVisuals,
+          profile.eyeColor
+        ).color ??
+        '#B8AAA2'
+      );
+    }
+
+    return '#B8AAA2';
   }
 }

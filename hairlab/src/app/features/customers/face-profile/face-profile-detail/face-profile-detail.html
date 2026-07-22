@@ -16,13 +16,17 @@
       </h2>
 
       <p>
-        Caratteristiche morfologiche utili
-        alla consulenza di taglio e styling.
+        Analisi visuale dei lineamenti
+        e delle proporzioni utilizzate
+        nella consulenza HairLab.
       </p>
 
     </div>
 
-    @if (faceProfile(); as profile) {
+    @if (
+      faceProfile();
+      as profile
+    ) {
 
       <a
         class="secondary-button"
@@ -33,66 +37,66 @@
           profile.id,
           'edit'
         ]">
+
         Modifica profilo
+
       </a>
 
     }
 
   </div>
 
-  <!-- =====================================================
-       LOADING
-       ===================================================== -->
   @if (loading()) {
 
     <div class="state-card">
-
-      <span class="loader"></span>
-
-      <p>
-        Caricamento profilo del viso...
-      </p>
-
+      Caricamento profilo del viso...
     </div>
 
   } @else if (errorMessage()) {
 
-    <!-- ===================================================
-         ERRORE
-         =================================================== -->
     <div class="error-card">
 
-      {{ errorMessage() }}
+      <div>
+
+        <strong>
+          Impossibile caricare il profilo
+        </strong>
+
+        <p>
+          {{ errorMessage() }}
+        </p>
+
+      </div>
 
       <button
         type="button"
         (click)="loadFaceProfile()">
+
         Riprova
+
       </button>
 
     </div>
 
   } @else if (profileNotFound()) {
 
-    <!-- ===================================================
-         PROFILO NON PRESENTE
-         =================================================== -->
     <div class="empty-card">
 
       <div class="empty-icon">
         ◯
       </div>
 
-      <div>
+      <div class="empty-content">
 
         <h3>
           Profilo del viso non compilato
         </h3>
 
         <p>
-          Aggiungi forma del viso, occhi,
-          naso, zigomi, mascella e altre
-          caratteristiche utili alla consulenza.
+          Crea una nuova analisi morfologica
+          per registrare forma del viso,
+          occhi, sopracciglia, naso,
+          mascella e proporzioni.
         </p>
 
       </div>
@@ -105,7 +109,9 @@
           'face-profile',
           'new'
         ]">
+
         + Crea profilo viso
+
       </a>
 
     </div>
@@ -116,694 +122,873 @@
   ) {
 
     <!-- ===================================================
-         FORMA GENERALE
+         01 - FORMA VISO
          =================================================== -->
-    <div class="profile-grid">
+    <section class="analysis-block">
 
-      <article class="profile-card highlight-card">
+      <div class="block-heading">
 
-        <div class="card-heading">
+        <span class="block-number">
+          01
+        </span>
 
-          <span class="card-number">
-            01
+        <div>
+
+          <span class="block-eyebrow">
+            STRUTTURA GENERALE
           </span>
 
-          <div>
-
-            <span class="card-label">
-              STRUTTURA
-            </span>
-
-            <h3>
-              Forma generale
-            </h3>
-
-          </div>
+          <h3>
+            Forma del viso
+          </h3>
 
         </div>
 
-        <div class="face-shape-preview">
+      </div>
 
-          <div class="face-symbol">
+      <article class="hero-analysis-card">
 
-            @switch (profile.faceShape) {
+        <div class="hero-symbol">
 
-              @case ('OVAL') {
-                ◯
-              }
+          <app-profile-visual-icon
+            type="face"
+            [value]="profile.faceShape">
+          </app-profile-visual-icon>
 
-              @case ('ROUND') {
-                ●
-              }
+        </div>
 
-              @case ('SQUARE') {
-                □
-              }
+        <div class="hero-data">
 
-              @case ('RECTANGULAR') {
-                ▯
-              }
+          <span>
+            FORMA RILEVATA
+          </span>
 
-              @case ('OBLONG') {
-                ⬭
-              }
+          <h4>
+            {{ label(profile.faceShape) }}
+          </h4>
 
-              @case ('HEART') {
-                ♡
-              }
-
-              @case ('DIAMOND') {
-                ◇
-              }
-
-              @case ('TRIANGULAR') {
-                △
-              }
-
-              @case ('INVERTED_TRIANGLE') {
-                ▽
-              }
-
-              @default {
-                ◯
-              }
-
-            }
-
-          </div>
-
-          <div>
-
-            <span>
-              Forma del viso
-            </span>
-
-            <strong>
-              {{ label(profile.faceShape) }}
-            </strong>
-
-          </div>
+          <p>
+            {{
+              visual(
+                faceShapeVisuals,
+                profile.faceShape
+              ).description
+            }}
+          </p>
 
         </div>
 
       </article>
 
-      <!-- =================================================
-           FRONTE
-           ================================================= -->
-      <article class="profile-card">
+    </section>
 
-        <div class="card-heading">
+    <!-- ===================================================
+         02 - FRONTE
+         =================================================== -->
+    <section class="analysis-block">
 
-          <span class="card-number">
-            02
+      <div class="block-heading">
+
+        <span class="block-number">
+          02
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            ZONA SUPERIORE
           </span>
 
-          <div>
-
-            <span class="card-label">
-              ZONA SUPERIORE
-            </span>
-
-            <h3>
-              Fronte
-            </h3>
-
-          </div>
+          <h3>
+            Fronte e attaccatura
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="data-grid three">
+
+        <article class="data-card">
+
+          <span>
+            ALTEZZA
+          </span>
+
+          <strong>
+            {{ label(profile.foreheadHeight) }}
+          </strong>
+
+        </article>
+
+        <article class="data-card">
+
+          <span>
+            LARGHEZZA
+          </span>
+
+          <strong>
+            {{ label(profile.foreheadWidth) }}
+          </strong>
+
+        </article>
+
+        <article class="data-card">
+
+          <span>
+            ATTACCATURA
+          </span>
+
+          <strong>
+            {{ label(profile.hairlineShape) }}
+          </strong>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         03 - OCCHI
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          03
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            SGUARDO
+          </span>
+
+          <h3>
+            Occhi
+          </h3>
+
+        </div>
+
+      </div>
+
+      <div class="visual-result-grid">
+
+        <!-- FORMA -->
+        <article class="visual-result-card">
+
+          <span class="visual-title">
+            FORMA
+          </span>
+
+          <div class="visual-result-symbol">
+
+            <app-profile-visual-icon
+              type="eye"
+              [value]="profile.eyeShape">
+            </app-profile-visual-icon>
+
+          </div>
+
+          <strong>
+            {{ label(profile.eyeShape) }}
+          </strong>
+
+          <p>
+            {{
+              visual(
+                eyeShapeVisuals,
+                profile.eyeShape
+              ).description
+            }}
+          </p>
+
+        </article>
+
+        <!-- ORIENTAMENTO -->
+        <article class="visual-result-card">
+
+          <span class="visual-title">
+            ORIENTAMENTO
+          </span>
+
+          <div class="visual-result-symbol">
+
+            <app-profile-visual-icon
+              type="eye-orientation"
+              [value]="profile.eyeOrientation">
+            </app-profile-visual-icon>
+
+          </div>
+
+          <strong>
+            {{ label(profile.eyeOrientation) }}
+          </strong>
+
+          <p>
+            {{
+              visual(
+                eyeOrientationVisuals,
+                profile.eyeOrientation
+              ).description
+            }}
+          </p>
+
+        </article>
+
+        <!-- DISTANZA -->
+        <article class="visual-result-card simple">
+
+          <span class="visual-title">
+            DISTANZA
+          </span>
+
+          <div class="visual-result-symbol">
+
+            <app-profile-visual-icon
+              type="eye-spacing"
+              [value]="profile.eyeSpacing">
+            </app-profile-visual-icon>
+
+          </div>
+
+          <strong>
+            {{ label(profile.eyeSpacing) }}
+          </strong>
+
+        </article>
+
+        <!-- DIMENSIONE -->
+        <article class="visual-result-card simple">
+
+          <span class="visual-title">
+            DIMENSIONE
+          </span>
+
+          <div class="visual-result-symbol">
+
+            <app-profile-visual-icon
+              type="eye-size"
+              [value]="profile.eyeSize">
+            </app-profile-visual-icon>
+
+          </div>
+
+          <strong>
+            {{ label(profile.eyeSize) }}
+          </strong>
+
+        </article>
+
+      </div>
+
+      <!-- =================================================
+           COLORE OCCHI
+           ================================================= -->
+      <article class="eye-color-card">
+
+        <div class="eye-reference">
+
+          <span
+            class="large-eye-swatch"
+            [style.background]="
+              getEyeReferenceColor(
+                profile
+              )
+            ">
+          </span>
+
+        </div>
+
+        <div class="eye-color-data">
+
+          <span class="block-eyebrow">
+            COLORE OCCHI
+          </span>
+
+          <h4>
+            {{ label(profile.eyeColor) }}
+          </h4>
+
+          <p>
+            {{
+              visual(
+                eyeColorVisuals,
+                profile.eyeColor
+              ).description
+            }}
+          </p>
+
+          <div class="hex-reference">
 
             <span>
-              Altezza
+              REFERENCE
             </span>
 
             <strong>
-              {{ label(profile.foreheadHeight) }}
+              {{
+                getEyeReferenceColor(
+                  profile
+                )
+              }}
             </strong>
 
           </div>
 
-          <div class="property">
+          @if (
+            profile.eyeColorNotes
+          ) {
 
-            <span>
-              Larghezza
-            </span>
+            <div class="detail-note">
+              {{ profile.eyeColorNotes }}
+            </div>
 
-            <strong>
-              {{ label(profile.foreheadWidth) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Attaccatura
-            </span>
-
-            <strong>
-              {{ label(profile.hairlineShape) }}
-            </strong>
-
-          </div>
+          }
 
         </div>
 
       </article>
 
-      <!-- =================================================
-           OCCHI
-           ================================================= -->
-      <article class="profile-card">
+    </section>
 
-        <div class="card-heading">
+    <!-- ===================================================
+         04 - SOPRACCIGLIA
+         =================================================== -->
+    <section class="analysis-block">
 
-          <span class="card-number">
-            03
+      <div class="block-heading">
+
+        <span class="block-number">
+          04
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            STRUTTURA DELLO SGUARDO
           </span>
 
-          <div>
-
-            <span class="card-label">
-              SGUARDO
-            </span>
-
-            <h3>
-              Occhi
-            </h3>
-
-          </div>
+          <h3>
+            Sopracciglia
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="feature-layout">
 
-            <span>
-              Forma
-            </span>
+        <article class="feature-visual">
 
-            <strong>
-              {{ label(profile.eyeShape) }}
-            </strong>
+          <span class="feature-symbol">
 
-          </div>
+            <app-profile-visual-icon
+              type="eyebrow"
+              [value]="profile.eyebrowShape">
+            </app-profile-visual-icon>
 
-          <div class="property">
-
-            <span>
-              Orientamento
-            </span>
-
-            <strong>
-              {{ label(profile.eyeOrientation) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Distanza
-            </span>
-
-            <strong>
-              {{ label(profile.eyeSpacing) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Dimensione
-            </span>
-
-            <strong>
-              {{ label(profile.eyeSize) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Colore
-            </span>
-
-            <strong>
-              {{ label(profile.eyeColor) }}
-            </strong>
-
-          </div>
-
-        </div>
-
-        @if (profile.eyeColorNotes) {
-
-          <div class="detail-note">
-
-            {{ profile.eyeColorNotes }}
-
-          </div>
-
-        }
-
-      </article>
-
-      <!-- =================================================
-           SOPRACCIGLIA
-           ================================================= -->
-      <article class="profile-card">
-
-        <div class="card-heading">
-
-          <span class="card-number">
-            04
           </span>
 
-          <div>
+          <strong>
+            {{ label(profile.eyebrowShape) }}
+          </strong>
 
-            <span class="card-label">
-              SOPRACCIGLIA
-            </span>
+          <p>
+            {{
+              visual(
+                eyebrowShapeVisuals,
+                profile.eyebrowShape
+              ).description
+            }}
+          </p>
 
-            <h3>
-              Struttura sopracciglia
-            </h3>
+        </article>
 
-          </div>
+        <article class="feature-property">
 
-        </div>
-
-        <div class="properties">
-
-          <div class="property">
-
-            <span>
-              Forma
-            </span>
-
-            <strong>
-              {{ label(profile.eyebrowShape) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Spessore
-            </span>
-
-            <strong>
-              {{ label(profile.eyebrowThickness) }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </article>
-
-      <!-- =================================================
-           NASO
-           ================================================= -->
-      <article class="profile-card">
-
-        <div class="card-heading">
-
-          <span class="card-number">
-            05
+          <span>
+            SPESSORE
           </span>
 
-          <div>
+          <strong>
+            {{ label(profile.eyebrowThickness) }}
+          </strong>
 
-            <span class="card-label">
-              PROFILO CENTRALE
-            </span>
+        </article>
 
-            <h3>
-              Naso
-            </h3>
+      </div>
 
-          </div>
+    </section>
+
+    <!-- ===================================================
+         05 - NASO
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          05
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            PROFILO CENTRALE
+          </span>
+
+          <h3>
+            Naso
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="feature-layout">
+
+        <article class="feature-visual">
+
+          <span class="feature-symbol nose">
+
+            <app-profile-visual-icon
+              type="nose"
+              [value]="profile.noseProfile">
+            </app-profile-visual-icon>
+
+          </span>
+
+          <strong>
+            {{ label(profile.noseProfile) }}
+          </strong>
+
+          <p>
+            {{
+              visual(
+                noseProfileVisuals,
+                profile.noseProfile
+              ).description
+            }}
+          </p>
+
+        </article>
+
+        <div class="data-grid">
+
+          <article class="data-card">
 
             <span>
-              Lunghezza
+              LUNGHEZZA
             </span>
 
             <strong>
               {{ label(profile.noseLength) }}
             </strong>
 
-          </div>
+          </article>
 
-          <div class="property">
+          <article class="data-card">
 
             <span>
-              Larghezza
+              LARGHEZZA
             </span>
 
             <strong>
               {{ label(profile.noseWidth) }}
             </strong>
 
-          </div>
+          </article>
 
-          <div class="property">
-
-            <span>
-              Profilo
-            </span>
-
-            <strong>
-              {{ label(profile.noseProfile) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
+          <article class="data-card">
 
             <span>
-              Punta
+              PUNTA
             </span>
 
             <strong>
               {{ label(profile.noseTip) }}
             </strong>
 
-          </div>
+          </article>
 
         </div>
 
-      </article>
+      </div>
 
-      <!-- =================================================
-           ZIGOMI
-           ================================================= -->
-      <article class="profile-card">
+    </section>
 
-        <div class="card-heading">
+    <!-- ===================================================
+         06 - ZIGOMI
+         =================================================== -->
+    <section class="analysis-block">
 
-          <span class="card-number">
-            06
+      <div class="block-heading">
+
+        <span class="block-number">
+          06
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            STRUTTURA LATERALE
           </span>
 
-          <div>
-
-            <span class="card-label">
-              STRUTTURA LATERALE
-            </span>
-
-            <h3>
-              Zigomi
-            </h3>
-
-          </div>
+          <h3>
+            Zigomi
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="data-grid">
 
-            <span>
-              Larghezza
-            </span>
+        <article class="data-card">
 
-            <strong>
-              {{ label(profile.cheekboneWidth) }}
-            </strong>
-
-          </div>
-
-          <div class="property">
-
-            <span>
-              Prominenza
-            </span>
-
-            <strong>
-              {{ label(profile.cheekboneProminence) }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </article>
-
-      <!-- =================================================
-           MASCELLA
-           ================================================= -->
-      <article class="profile-card">
-
-        <div class="card-heading">
-
-          <span class="card-number">
-            07
+          <span>
+            LARGHEZZA
           </span>
 
-          <div>
+          <strong>
+            {{ label(profile.cheekboneWidth) }}
+          </strong>
 
-            <span class="card-label">
-              LINEA INFERIORE
-            </span>
+        </article>
 
-            <h3>
-              Mascella
-            </h3>
+        <article class="data-card">
 
-          </div>
+          <span>
+            PROMINENZA
+          </span>
+
+          <strong>
+            {{
+              label(
+                profile.cheekboneProminence
+              )
+            }}
+          </strong>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         07 - MASCELLA
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          07
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            LINEA INFERIORE
+          </span>
+
+          <h3>
+            Mascella
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="feature-layout">
+
+        <article class="feature-visual">
+
+          <span class="feature-symbol">
+
+            <app-profile-visual-icon
+              type="jaw"
+              [value]="profile.jawShape">
+            </app-profile-visual-icon>
+
+          </span>
+
+          <strong>
+            {{ label(profile.jawShape) }}
+          </strong>
+
+          <p>
+            {{
+              visual(
+                jawShapeVisuals,
+                profile.jawShape
+              ).description
+            }}
+          </p>
+
+        </article>
+
+        <div class="data-grid">
+
+          <article class="data-card">
 
             <span>
-              Larghezza
+              LARGHEZZA
             </span>
 
             <strong>
               {{ label(profile.jawWidth) }}
             </strong>
 
-          </div>
+          </article>
 
-          <div class="property">
+          <article class="data-card">
 
             <span>
-              Definizione
+              DEFINIZIONE
             </span>
 
             <strong>
               {{ label(profile.jawDefinition) }}
             </strong>
 
-          </div>
-
-          <div class="property">
-
-            <span>
-              Forma
-            </span>
-
-            <strong>
-              {{ label(profile.jawShape) }}
-            </strong>
-
-          </div>
+          </article>
 
         </div>
 
-      </article>
+      </div>
 
-      <!-- =================================================
-           MENTO
-           ================================================= -->
-      <article class="profile-card">
+    </section>
 
-        <div class="card-heading">
+    <!-- ===================================================
+         08 - MENTO
+         =================================================== -->
+    <section class="analysis-block">
 
-          <span class="card-number">
-            08
+      <div class="block-heading">
+
+        <span class="block-number">
+          08
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            PROFILO INFERIORE
           </span>
 
-          <div>
-
-            <span class="card-label">
-              PROFILO INFERIORE
-            </span>
-
-            <h3>
-              Mento
-            </h3>
-
-          </div>
+          <h3>
+            Mento
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="feature-layout">
 
-            <span>
-              Forma
-            </span>
+        <article class="feature-visual">
 
-            <strong>
-              {{ label(profile.chinShape) }}
-            </strong>
+          <span class="feature-symbol">
 
-          </div>
+            <app-profile-visual-icon
+              type="chin"
+              [value]="profile.chinShape">
+            </app-profile-visual-icon>
 
-          <div class="property">
-
-            <span>
-              Proiezione
-            </span>
-
-            <strong>
-              {{ label(profile.chinProjection) }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </article>
-
-      <!-- =================================================
-           BOCCA E LABBRA
-           ================================================= -->
-      <article class="profile-card">
-
-        <div class="card-heading">
-
-          <span class="card-number">
-            09
           </span>
 
-          <div>
+          <strong>
+            {{ label(profile.chinShape) }}
+          </strong>
 
-            <span class="card-label">
-              BOCCA
-            </span>
+          <p>
+            {{
+              visual(
+                chinShapeVisuals,
+                profile.chinShape
+              ).description
+            }}
+          </p>
 
-            <h3>
-              Bocca e labbra
-            </h3>
+        </article>
 
-          </div>
+        <article class="feature-property">
+
+          <span>
+            PROIEZIONE
+          </span>
+
+          <strong>
+            {{ label(profile.chinProjection) }}
+          </strong>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         09 - BOCCA E LABBRA
+         =================================================== -->
+    <section class="analysis-block">
+
+      <div class="block-heading">
+
+        <span class="block-number">
+          09
+        </span>
+
+        <div>
+
+          <span class="block-eyebrow">
+            BOCCA
+          </span>
+
+          <h3>
+            Bocca e labbra
+          </h3>
 
         </div>
 
-        <div class="properties">
+      </div>
 
-          <div class="property">
+      <div class="feature-layout">
+
+        <article class="feature-visual">
+
+          <span class="feature-symbol">
+
+            <app-profile-visual-icon
+              type="lip"
+              [value]="profile.lipShape">
+            </app-profile-visual-icon>
+
+          </span>
+
+          <strong>
+            {{ label(profile.lipShape) }}
+          </strong>
+
+          <p>
+            {{
+              visual(
+                lipShapeVisuals,
+                profile.lipShape
+              ).description
+            }}
+          </p>
+
+        </article>
+
+        <div class="data-grid">
+
+          <article class="data-card">
 
             <span>
-              Larghezza bocca
+              LARGHEZZA BOCCA
             </span>
 
             <strong>
               {{ label(profile.mouthWidth) }}
             </strong>
 
-          </div>
+          </article>
 
-          <div class="property">
+          <article class="data-card">
 
             <span>
-              Volume labbra
+              VOLUME LABBRA
             </span>
 
             <strong>
               {{ label(profile.lipFullness) }}
             </strong>
 
-          </div>
+          </article>
 
-          <div class="property">
+          <article class="data-card">
 
             <span>
-              Equilibrio
+              EQUILIBRIO
             </span>
 
             <strong>
               {{ label(profile.lipBalance) }}
             </strong>
 
-          </div>
-
-          <div class="property">
-
-            <span>
-              Forma
-            </span>
-
-            <strong>
-              {{ label(profile.lipShape) }}
-            </strong>
-
-          </div>
+          </article>
 
         </div>
 
-      </article>
+      </div>
 
-    </div>
+    </section>
 
     <!-- ===================================================
-         NOTE E OBIETTIVI
+         10 - NOTE
          =================================================== -->
-    <div class="notes-grid">
+    <section class="analysis-block">
 
-      <article class="note-card">
+      <div class="block-heading">
 
-        <span>
-          NOTE PROFESSIONALI
+        <span class="block-number">
+          10
         </span>
 
-        <p>
-          {{
-            profile.notes ||
-            'Nessuna nota inserita.'
-          }}
-        </p>
+        <div>
 
-      </article>
+          <span class="block-eyebrow">
+            VALUTAZIONE PROFESSIONALE
+          </span>
 
-      <article class="note-card goals-card">
+          <h3>
+            Note e obiettivi
+          </h3>
 
-        <span>
-          OBIETTIVO STYLING
-        </span>
+        </div>
 
-        <p>
-          {{
-            profile.stylingGoals ||
-            'Nessun obiettivo inserito.'
-          }}
-        </p>
+      </div>
 
-      </article>
+      <div class="notes-grid">
 
-    </div>
+        <article class="note-card">
+
+          <span>
+            NOTE PROFESSIONALI
+          </span>
+
+          <p>
+            {{
+              profile.notes ||
+              'Nessuna nota inserita.'
+            }}
+          </p>
+
+        </article>
+
+        <article class="note-card goal">
+
+          <span>
+            OBIETTIVI STYLING
+          </span>
+
+          <p>
+            {{
+              profile.stylingGoals ||
+              'Nessun obiettivo inserito.'
+            }}
+          </p>
+
+        </article>
+
+      </div>
+
+    </section>
 
   }
 

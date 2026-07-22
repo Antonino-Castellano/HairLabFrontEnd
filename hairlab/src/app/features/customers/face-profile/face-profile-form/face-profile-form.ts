@@ -49,6 +49,20 @@ import {
 } from '../../../../models/enums/profile-enum-labels';
 
 import {
+  CHIN_SHAPE_VISUALS,
+  EYE_COLOR_VISUALS,
+  EYE_ORIENTATION_VISUALS,
+  EYE_SHAPE_VISUALS,
+  EYEBROW_SHAPE_VISUALS,
+  FACE_SHAPE_VISUALS,
+  JAW_SHAPE_VISUALS,
+  LIP_SHAPE_VISUALS,
+  NOSE_PROFILE_VISUALS,
+  ProfileVisualReference,
+  getVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import {
   FaceProfile
 } from '../../../../models/face-profile';
 
@@ -56,18 +70,29 @@ import {
   FaceProfileService
 } from '../../../../service/face-profile-service';
 
+import {
+  ProfileVisualIconComponent
+} from '../../../../shared/profile-visual/profile-visual-icon';
+
 /**
- * Form utilizzato sia per:
+ * Form completo di analisi morfologica del viso.
  *
- * - creare FaceProfile;
- * - modificare FaceProfile.
+ * Utilizzato sia per:
+ *
+ * - creare un nuovo FaceProfile;
+ * - modificare un FaceProfile esistente.
+ *
+ * Le rappresentazioni morfologiche
+ * utilizzano ora icone SVG lineari
+ * coerenti con lo stile della sidebar HairLab.
  */
 @Component({
   selector: 'app-face-profile-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink
+    RouterLink,
+    ProfileVisualIconComponent
   ],
   templateUrl: './face-profile-form.html',
   styleUrl: './face-profile-form.css'
@@ -87,16 +112,8 @@ export class FaceProfileFormComponent
   private readonly router =
     inject(Router);
 
-  /**
-   * Cliente proprietario del profilo.
-   */
   protected customerId?: number;
 
-  /**
-   * ID del FaceProfile.
-   *
-   * Presente solamente in modifica.
-   */
   protected profileId?: number;
 
   protected readonly isEditMode =
@@ -110,7 +127,7 @@ export class FaceProfileFormComponent
 
   /*
    * ============================================================
-   * ENUM DISPONIBILI AL TEMPLATE
+   * ENUM
    * ============================================================
    */
 
@@ -231,6 +248,11 @@ export class FaceProfileFormComponent
           EyeColor | null
         >(null),
 
+      eyeReferenceColor:
+        this.formBuilder.control<string>(
+          '#6A4634'
+        ),
+
       eyeColorNotes:
         this.formBuilder.control<string>(
           ''
@@ -332,9 +354,6 @@ export class FaceProfileFormComponent
         )
     });
 
-  /**
-   * Recupera parametri dalla route.
-   */
   ngOnInit(): void {
 
     const customerIdParam =
@@ -374,10 +393,6 @@ export class FaceProfileFormComponent
     this.customerId =
       customerId;
 
-    /**
-     * Se profileId esiste:
-     * siamo in modifica.
-     */
     if (profileIdParam) {
 
       const profileId =
@@ -408,14 +423,13 @@ export class FaceProfileFormComponent
     }
   }
 
-  /**
-   * Carica profilo in modifica.
-   */
   private loadProfile(
     profileId: number
   ): void {
 
     this.loading.set(true);
+
+    this.errorMessage.set('');
 
     this.faceProfileService
       .getById(profileId)
@@ -424,6 +438,7 @@ export class FaceProfileFormComponent
         next: profile => {
 
           this.faceForm.patchValue({
+
             faceShape:
               profile.faceShape ?? null,
 
@@ -450,6 +465,12 @@ export class FaceProfileFormComponent
 
             eyeColor:
               profile.eyeColor ?? null,
+
+            eyeReferenceColor:
+              profile.eyeReferenceColor ??
+              this.getDefaultEyeColor(
+                profile.eyeColor
+              ),
 
             eyeColorNotes:
               profile.eyeColorNotes ?? '',
@@ -518,7 +539,7 @@ export class FaceProfileFormComponent
         error: () => {
 
           this.errorMessage.set(
-            'Impossibile caricare il profilo.'
+            'Impossibile caricare il profilo del viso.'
           );
 
           this.loading.set(false);
@@ -526,9 +547,30 @@ export class FaceProfileFormComponent
       });
   }
 
-  /**
-   * Traduce gli enum.
-   */
+  protected selectEyeColor(
+    value: EyeColor
+  ): void {
+
+    this.faceForm.controls
+      .eyeColor
+      .setValue(value);
+
+    const reference =
+      this.visual(
+        EYE_COLOR_VISUALS,
+        value
+      );
+
+    if (reference.color) {
+
+      this.faceForm.controls
+        .eyeReferenceColor
+        .setValue(
+          reference.color
+        );
+    }
+  }
+
   protected label(
     value:
       string |
@@ -541,9 +583,51 @@ export class FaceProfileFormComponent
     );
   }
 
-  /**
-   * Salva il form.
-   */
+  protected visual(
+    collection:
+      Record<
+        string,
+        ProfileVisualReference
+      >,
+    value:
+      string |
+      null |
+      undefined
+  ): ProfileVisualReference {
+
+    return getVisualReference(
+      collection,
+      value
+    );
+  }
+
+  protected readonly faceShapeVisuals =
+    FACE_SHAPE_VISUALS;
+
+  protected readonly eyeShapeVisuals =
+    EYE_SHAPE_VISUALS;
+
+  protected readonly eyeOrientationVisuals =
+    EYE_ORIENTATION_VISUALS;
+
+  protected readonly eyeColorVisuals =
+    EYE_COLOR_VISUALS;
+
+  protected readonly eyebrowShapeVisuals =
+    EYEBROW_SHAPE_VISUALS;
+
+  protected readonly noseProfileVisuals =
+    NOSE_PROFILE_VISUALS;
+
+  protected readonly jawShapeVisuals =
+    JAW_SHAPE_VISUALS;
+
+  protected readonly chinShapeVisuals =
+    CHIN_SHAPE_VISUALS;
+
+  protected readonly lipShapeVisuals =
+    LIP_SHAPE_VISUALS;
+
   protected submit(): void {
 
     if (
@@ -553,6 +637,10 @@ export class FaceProfileFormComponent
 
       this.faceForm
         .markAllAsTouched();
+
+      this.errorMessage.set(
+        'Controlla i campi obbligatori.'
+      );
 
       return;
     }
@@ -569,12 +657,14 @@ export class FaceProfileFormComponent
       customerId:
         this.customerId,
 
-      ...value
+      ...value,
+
+      eyeReferenceColor:
+        value.eyeReferenceColor
+          ?.toUpperCase() ??
+        null
     };
 
-    /*
-     * MODIFICA.
-     */
     if (
       this.isEditMode() &&
       this.profileId
@@ -597,9 +687,6 @@ export class FaceProfileFormComponent
       return;
     }
 
-    /*
-     * CREAZIONE.
-     */
     this.faceProfileService
       .insert(profile)
       .subscribe({
@@ -612,9 +699,6 @@ export class FaceProfileFormComponent
       });
   }
 
-  /**
-   * Torna al dettaglio cliente.
-   */
   private navigateToCustomer(): void {
 
     this.router.navigate([
@@ -623,9 +707,25 @@ export class FaceProfileFormComponent
     ]);
   }
 
-  /**
-   * Gestione errori HTTP.
-   */
+  private getDefaultEyeColor(
+    value:
+      EyeColor |
+      null |
+      undefined
+  ): string {
+
+    if (!value) {
+
+      return '#6A4634';
+    }
+
+    return (
+      EYE_COLOR_VISUALS[value]
+        ?.color ??
+      '#6A4634'
+    );
+  }
+
   private handleError(
     error: HttpErrorResponse
   ): void {
@@ -633,17 +733,28 @@ export class FaceProfileFormComponent
     this.loading.set(false);
 
     if (
-      error.status === 400 &&
-      error.error
+      error.error &&
+      typeof error.error === 'object'
     ) {
 
-      this.errorMessage.set(
-        typeof error.error === 'string'
-          ? error.error
-          : 'I dati inseriti non sono validi.'
-      );
+      const message =
+        Object.values(
+          error.error
+        ).find(
+          value =>
+            typeof value === 'string'
+        );
 
-      return;
+      if (
+        typeof message === 'string'
+      ) {
+
+        this.errorMessage.set(
+          message
+        );
+
+        return;
+      }
     }
 
     this.errorMessage.set(

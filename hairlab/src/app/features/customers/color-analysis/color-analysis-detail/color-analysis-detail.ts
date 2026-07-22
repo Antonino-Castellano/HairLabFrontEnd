@@ -21,12 +21,35 @@ import {
 } from '../../../../models/enums/profile-enum-labels';
 
 import {
+  SKIN_TONE_VISUALS,
+  getVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import type {
+  ProfileVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import {
   ColorAnalysisService
 } from '../../../../service/color-analysis-service';
 
 /**
- * Mostra l'analisi cromatica e armocromatica
- * associata a una cliente.
+ * Visualizza l'analisi cromatica
+ * della cliente.
+ *
+ * Mostra:
+ *
+ * - pelle;
+ * - reference cromatica reale;
+ * - sottotono;
+ * - stagione;
+ * - sottostagione;
+ * - valore;
+ * - contrasto;
+ * - croma;
+ * - palette;
+ * - metalli;
+ * - note.
  */
 @Component({
   selector: 'app-color-analysis-detail',
@@ -43,20 +66,15 @@ export class ColorAnalysisDetailComponent
   private readonly colorAnalysisService =
     inject(ColorAnalysisService);
 
-  /**
-   * ID della cliente ricevuto
-   * dal componente CustomerDetail.
-   */
   @Input({
     required: true
   })
   customerId!: number;
 
-  /**
-   * Analisi caricata dal backend.
-   */
   protected readonly colorAnalysis =
-    signal<ColorAnalysis | null>(null);
+    signal<ColorAnalysis | null>(
+      null
+    );
 
   protected readonly loading =
     signal(false);
@@ -64,12 +82,11 @@ export class ColorAnalysisDetailComponent
   protected readonly errorMessage =
     signal('');
 
-  /**
-   * Indica che per la cliente
-   * non esiste ancora un'analisi cromatica.
-   */
   protected readonly analysisNotFound =
     signal(false);
+
+  protected readonly skinToneVisuals =
+    SKIN_TONE_VISUALS;
 
   ngOnChanges(
     changes: SimpleChanges
@@ -77,16 +94,13 @@ export class ColorAnalysisDetailComponent
 
     if (
       changes['customerId'] &&
-      this.customerId
+      this.customerId > 0
     ) {
 
       this.loadColorAnalysis();
     }
   }
 
-  /**
-   * Recupera l'analisi tramite customerId.
-   */
   protected loadColorAnalysis(): void {
 
     this.loading.set(true);
@@ -118,11 +132,6 @@ export class ColorAnalysisDetailComponent
             null
           );
 
-          /**
-           * Il backend attuale può restituire
-           * 400 oppure 404 quando l'analisi
-           * non è ancora presente.
-           */
           if (
             error.status === 400 ||
             error.status === 404
@@ -142,9 +151,6 @@ export class ColorAnalysisDetailComponent
       });
   }
 
-  /**
-   * Traduzione generica degli Enum.
-   */
   protected label(
     value:
       string |
@@ -157,14 +163,24 @@ export class ColorAnalysisDetailComponent
     );
   }
 
-  /**
-   * Traduzione specifica del valore cromatico.
-   *
-   * Evitiamo di usare la traduzione generica
-   * di LIGHT perché nel contesto SkinTone
-   * significa "Chiara", mentre qui significa
-   * "Chiaro".
-   */
+  protected visual(
+    collection:
+      Record<
+        string,
+        ProfileVisualReference
+      >,
+    value:
+      string |
+      null |
+      undefined
+  ): ProfileVisualReference {
+
+    return getVisualReference(
+      collection,
+      value
+    );
+  }
+
   protected colorValueLabel(
     value:
       string |
@@ -188,15 +204,6 @@ export class ColorAnalysisDetailComponent
     }
   }
 
-  /**
-   * Trasforma:
-   *
-   * {
-   *   "Borgogna": "#6D213C"
-   * }
-   *
-   * in un array utilizzabile nel template.
-   */
   protected paletteEntries(
     palette:
       ColorPalette |
@@ -211,5 +218,42 @@ export class ColorAnalysisDetailComponent
     return Object.entries(
       palette
     );
+  }
+
+  /**
+   * Reference pelle visualizzata.
+   *
+   * Priorità:
+   *
+   * 1. valore personalizzato;
+   * 2. colore associato a SkinTone;
+   * 3. fallback.
+   */
+  protected getSkinReferenceColor(
+    analysis: ColorAnalysis
+  ): string {
+
+    if (
+      analysis.skinReferenceColor
+    ) {
+
+      return analysis
+        .skinReferenceColor;
+    }
+
+    if (
+      analysis.skinTone
+    ) {
+
+      return (
+        this.visual(
+          this.skinToneVisuals,
+          analysis.skinTone
+        ).color ??
+        '#BC7D5E'
+      );
+    }
+
+    return '#BC7D5E';
   }
 }

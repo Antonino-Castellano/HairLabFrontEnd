@@ -42,20 +42,57 @@ import {
 } from '../../../../models/enums/profile-enum-labels';
 
 import {
+  SKIN_TONE_VISUALS,
+  getVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import type {
+  ProfileVisualReference
+} from '../../../../models/enums/profile-visual-references';
+
+import {
   ColorAnalysisService
 } from '../../../../service/color-analysis-service';
 
 /**
- * Elemento visuale della palette.
+ * Singolo colore inserito in una palette.
+ *
+ * Il backend utilizza:
+ *
+ * Map<String, String>
+ *
+ * mentre nel frontend è più semplice
+ * lavorare con un array di elementi.
  */
 interface PaletteEntry {
+
   name: string;
+
   hex: string;
 }
 
 /**
- * Form utilizzato per creare o modificare
- * l'analisi cromatica di una cliente.
+ * Form completo dell'analisi cromatica.
+ *
+ * Utilizzato sia per:
+ *
+ * - creazione;
+ * - modifica.
+ *
+ * Gestisce:
+ *
+ * - tonalità pelle;
+ * - colore reference reale;
+ * - sottotono;
+ * - stagione;
+ * - sottostagione;
+ * - valore;
+ * - contrasto;
+ * - croma;
+ * - colori consigliati;
+ * - colori meno armonici;
+ * - metalli;
+ * - note.
  */
 @Component({
   selector: 'app-color-analysis-form',
@@ -82,8 +119,14 @@ export class ColorAnalysisFormComponent
   private readonly router =
     inject(Router);
 
+  /**
+   * Cliente proprietaria dell'analisi.
+   */
   protected customerId?: number;
 
+  /**
+   * ID dell'analisi in modifica.
+   */
   protected analysisId?: number;
 
   protected readonly isEditMode =
@@ -96,22 +139,25 @@ export class ColorAnalysisFormComponent
     signal('');
 
   /**
-   * Stagione attualmente selezionata.
+   * Stagione selezionata.
    *
-   * Serve per mostrare solamente
-   * le 3 sottostagioni compatibili.
+   * Serve per filtrare automaticamente
+   * le sottostagioni.
    */
   protected readonly selectedSeason =
-    signal<ColorSeason | null>(null);
+    signal<ColorSeason | null>(
+      null
+    );
 
   /**
-   * Palette gestite separatamente
-   * dal FormGroup perché sono strutture
-   * dinamiche nome -> HEX.
+   * Palette consigliata.
    */
   protected readonly bestColors =
     signal<PaletteEntry[]>([]);
 
+  /**
+   * Palette meno armonica.
+   */
   protected readonly avoidColors =
     signal<PaletteEntry[]>([]);
 
@@ -123,7 +169,7 @@ export class ColorAnalysisFormComponent
 
   /*
    * ============================================================
-   * ENUM DISPONIBILI
+   * ENUM
    * ============================================================
    */
 
@@ -150,6 +196,15 @@ export class ColorAnalysisFormComponent
 
   /*
    * ============================================================
+   * RIFERIMENTI VISUALI
+   * ============================================================
+   */
+
+  protected readonly skinToneVisuals =
+    SKIN_TONE_VISUALS;
+
+  /*
+   * ============================================================
    * FORM
    * ============================================================
    */
@@ -157,16 +212,30 @@ export class ColorAnalysisFormComponent
   protected readonly analysisForm =
     this.formBuilder.group({
 
+      /*
+       * PELLE.
+       */
       skinTone:
         this.formBuilder.control<
           SkinTone | null
         >(null),
+
+      /**
+       * HEX reale della pelle.
+       */
+      skinReferenceColor:
+        this.formBuilder.control<string>(
+          '#BC7D5E'
+        ),
 
       undertone:
         this.formBuilder.control<
           Undertone | null
         >(null),
 
+      /*
+       * STAGIONE.
+       */
       season:
         this.formBuilder.control<
           ColorSeason | null
@@ -183,6 +252,9 @@ export class ColorAnalysisFormComponent
           Validators.required
         ),
 
+      /*
+       * PARAMETRI.
+       */
       colorValue:
         this.formBuilder.control<
           ColorValue | null
@@ -198,14 +270,17 @@ export class ColorAnalysisFormComponent
           Chroma | null
         >(null),
 
+      /*
+       * NOTE.
+       */
       notes:
         this.formBuilder.control<string>(
           ''
         ),
 
       /*
-       * Campi temporanei utilizzati
-       * per aggiungere colori.
+       * CAMPI TEMPORANEI
+       * PER AGGIUNGERE COLORI.
        */
       bestColorName:
         this.formBuilder.control<string>(
@@ -228,6 +303,9 @@ export class ColorAnalysisFormComponent
         )
     });
 
+  /**
+   * Recupera i parametri dalla route.
+   */
   ngOnInit(): void {
 
     const customerIdParam =
@@ -267,9 +345,9 @@ export class ColorAnalysisFormComponent
     this.customerId =
       customerId;
 
-    /*
-     * Se analysisId è presente
-     * siamo in modalità modifica.
+    /**
+     * Se analysisId esiste,
+     * siamo in modifica.
      */
     if (analysisIdParam) {
 
@@ -302,8 +380,7 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Carica l'analisi esistente
-   * in modalità modifica.
+   * Carica l'analisi esistente.
    */
   private loadAnalysis(
     analysisId: number
@@ -311,10 +388,10 @@ export class ColorAnalysisFormComponent
 
     this.loading.set(true);
 
+    this.errorMessage.set('');
+
     this.colorAnalysisService
-      .getById(
-        analysisId
-      )
+      .getById(analysisId)
       .subscribe({
 
         next: analysis => {
@@ -327,6 +404,12 @@ export class ColorAnalysisFormComponent
 
             skinTone:
               analysis.skinTone ?? null,
+
+            skinReferenceColor:
+              analysis.skinReferenceColor ??
+              this.getDefaultSkinColor(
+                analysis.skinTone
+              ),
 
             undertone:
               analysis.undertone ?? null,
@@ -382,11 +465,54 @@ export class ColorAnalysisFormComponent
       });
   }
 
+  /*
+   * ============================================================
+   * PELLE
+   * ============================================================
+   */
+
   /**
-   * Seleziona la macro stagione.
+   * Seleziona la profondità della pelle.
    *
-   * Quando cambia stagione azzeriamo
-   * una eventuale sottostagione incompatibile.
+   * Quando viene scelta una classificazione
+   * impostiamo automaticamente anche
+   * il relativo HEX di riferimento iniziale.
+   *
+   * Il professionista potrà poi modificarlo
+   * tramite color picker.
+   */
+  protected selectSkinTone(
+    value: SkinTone
+  ): void {
+
+    this.analysisForm.controls
+      .skinTone
+      .setValue(value);
+
+    const reference =
+      this.visual(
+        this.skinToneVisuals,
+        value
+      );
+
+    if (reference.color) {
+
+      this.analysisForm.controls
+        .skinReferenceColor
+        .setValue(
+          reference.color
+        );
+    }
+  }
+
+  /*
+   * ============================================================
+   * STAGIONE
+   * ============================================================
+   */
+
+  /**
+   * Seleziona una macro stagione.
    */
   protected selectSeason(
     season: ColorSeason
@@ -407,6 +533,11 @@ export class ColorAnalysisFormComponent
         .subSeason
         .value;
 
+    /**
+     * Se la sottostagione precedentemente
+     * selezionata non appartiene alla nuova stagione,
+     * viene azzerata.
+     */
     if (
       currentSubSeason &&
       !this.availableSubSeasons()
@@ -420,8 +551,8 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Restituisce solamente le 3 sottostagioni
-   * compatibili con la stagione selezionata.
+   * Restituisce solamente le tre
+   * sottostagioni compatibili.
    */
   protected availableSubSeasons():
     ColorSubSeason[] {
@@ -468,8 +599,14 @@ export class ColorAnalysisFormComponent
     }
   }
 
+  /*
+   * ============================================================
+   * PALETTE
+   * ============================================================
+   */
+
   /**
-   * Aggiunge un colore alla palette consigliata.
+   * Aggiunge un colore consigliato.
    */
   protected addBestColor(): void {
 
@@ -514,8 +651,7 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Aggiunge un colore alla palette
-   * meno armonica.
+   * Aggiunge un colore meno armonico.
    */
   protected addAvoidColor(): void {
 
@@ -576,7 +712,7 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Rimuove un colore da evitare.
+   * Rimuove un colore meno armonico.
    */
   protected removeAvoidColor(
     index: number
@@ -591,8 +727,14 @@ export class ColorAnalysisFormComponent
     );
   }
 
+  /*
+   * ============================================================
+   * METALLI
+   * ============================================================
+   */
+
   /**
-   * Seleziona/deseleziona un metallo.
+   * Seleziona o deseleziona un metallo.
    */
   protected toggleMetal(
     metal: MetalType
@@ -620,8 +762,8 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Verifica se un metallo
-   * è attualmente selezionato.
+   * Verifica se il metallo
+   * è selezionato.
    */
   protected isMetalSelected(
     metal: MetalType
@@ -633,9 +775,97 @@ export class ColorAnalysisFormComponent
       );
   }
 
-  /**
-   * Salvataggio.
+  /*
+   * ============================================================
+   * VISUAL
+   * ============================================================
    */
+
+  /**
+   * Traduzione Enum.
+   */
+  protected label(
+    value:
+      string |
+      null |
+      undefined
+  ): string {
+
+    return getProfileEnumLabel(
+      value
+    );
+  }
+
+  /**
+   * Recupera riferimento visuale.
+   */
+  protected visual(
+    collection:
+      Record<
+        string,
+        ProfileVisualReference
+      >,
+    value:
+      string |
+      null |
+      undefined
+  ): ProfileVisualReference {
+
+    return getVisualReference(
+      collection,
+      value
+    );
+  }
+
+  /**
+   * Etichetta contestuale del valore cromatico.
+   */
+  protected colorValueLabel(
+    value: ColorValue
+  ): string {
+
+    switch (value) {
+
+      case ColorValue.LIGHT:
+        return 'Chiaro';
+
+      case ColorValue.MEDIUM:
+        return 'Medio';
+
+      case ColorValue.DEEP:
+        return 'Profondo';
+    }
+  }
+
+  /**
+   * Descrizione sintetica della stagione.
+   */
+  protected seasonDescription(
+    season: ColorSeason
+  ): string {
+
+    switch (season) {
+
+      case ColorSeason.SPRING:
+        return 'Calda · luminosa · fresca';
+
+      case ColorSeason.SUMMER:
+        return 'Fredda · delicata · morbida';
+
+      case ColorSeason.AUTUMN:
+        return 'Calda · ricca · avvolgente';
+
+      case ColorSeason.WINTER:
+        return 'Fredda · intensa · contrastata';
+    }
+  }
+
+  /*
+   * ============================================================
+   * SALVATAGGIO
+   * ============================================================
+   */
+
   protected submit(): void {
 
     if (
@@ -669,6 +899,11 @@ export class ColorAnalysisFormComponent
 
         skinTone:
           value.skinTone,
+
+        skinReferenceColor:
+          value.skinReferenceColor
+            ?.toUpperCase() ??
+          null,
 
         undertone:
           value.undertone,
@@ -747,37 +982,11 @@ export class ColorAnalysisFormComponent
       });
   }
 
-  protected label(
-    value:
-      string |
-      null |
-      undefined
-  ): string {
-
-    return getProfileEnumLabel(
-      value
-    );
-  }
-
-  /**
-   * Etichetta contestuale del valore cromatico.
+  /*
+   * ============================================================
+   * UTILITY PRIVATE
+   * ============================================================
    */
-  protected colorValueLabel(
-    value: ColorValue
-  ): string {
-
-    switch (value) {
-
-      case ColorValue.LIGHT:
-        return 'Chiaro';
-
-      case ColorValue.MEDIUM:
-        return 'Medio';
-
-      case ColorValue.DEEP:
-        return 'Profondo';
-    }
-  }
 
   private navigateToCustomer(): void {
 
@@ -788,8 +997,27 @@ export class ColorAnalysisFormComponent
   }
 
   /**
-   * Converte Record in array.
+   * Restituisce il colore predefinito
+   * associato alla profondità pelle.
    */
+  private getDefaultSkinColor(
+    value:
+      SkinTone |
+      null |
+      undefined
+  ): string {
+
+    if (!value) {
+      return '#BC7D5E';
+    }
+
+    return (
+      this.skinToneVisuals[value]
+        ?.color ??
+      '#BC7D5E'
+    );
+  }
+
   private paletteToEntries(
     palette:
       ColorPalette |
@@ -811,13 +1039,6 @@ export class ColorAnalysisFormComponent
     );
   }
 
-  /**
-   * Converte array in:
-   *
-   * {
-   *   nome: "#HEX"
-   * }
-   */
   private entriesToPalette(
     entries: PaletteEntry[]
   ): ColorPalette {
@@ -837,10 +1058,6 @@ export class ColorAnalysisFormComponent
     return palette;
   }
 
-  /**
-   * Se esiste già un colore con lo stesso nome,
-   * lo sostituiamo invece di duplicarlo.
-   */
   private addOrReplaceColor(
     colors: PaletteEntry[],
     name: string,
@@ -858,14 +1075,12 @@ export class ColorAnalysisFormComponent
       ...filtered,
       {
         name,
-        hex: hex.toUpperCase()
+        hex:
+          hex.toUpperCase()
       }
     ];
   }
 
-  /**
-   * Validazione HEX.
-   */
   private isValidHex(
     value:
       string |
@@ -878,9 +1093,7 @@ export class ColorAnalysisFormComponent
     }
 
     return /^#[0-9A-Fa-f]{6}$/
-      .test(
-        value
-      );
+      .test(value);
   }
 
   private handleError(

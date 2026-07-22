@@ -20,8 +20,8 @@
       </h1>
 
       <p>
-        Analizza le caratteristiche del volto
-        utili alla consulenza HairLab.
+        Analizza visivamente proporzioni,
+        lineamenti e caratteristiche del volto.
       </p>
 
     </div>
@@ -34,7 +34,9 @@
           '/customers',
           customerId
         ]">
+
         ← Torna alla cliente
+
       </a>
 
     }
@@ -54,7 +56,7 @@
     (ngSubmit)="submit()">
 
     <!-- ===================================================
-         1. FORMA DEL VISO
+         01 - FORMA VISO
          =================================================== -->
     <section class="form-section">
 
@@ -67,19 +69,20 @@
         <div>
 
           <h2>
-            Forma del viso
+            Forma generale del viso
           </h2>
 
           <p>
-            Seleziona la struttura generale
-            che descrive meglio il volto.
+            Confronta le strutture visuali
+            e seleziona quella più vicina
+            alla morfologia della cliente.
           </p>
 
         </div>
 
       </div>
 
-      <div class="face-grid">
+      <div class="visual-grid face-grid">
 
         @for (
           value of faceShapes;
@@ -88,61 +91,39 @@
 
           <button
             type="button"
-            class="face-option"
+            class="visual-option"
             [class.selected]="
-              faceForm.controls.faceShape.value === value
+              faceForm.controls
+                .faceShape
+                .value === value
             "
             (click)="
-              faceForm.controls.faceShape.setValue(value)
+              faceForm.controls
+                .faceShape
+                .setValue(value)
             ">
 
-            <span class="face-outline">
+            <span class="visual-symbol face-symbol">
 
-              @switch (value) {
-
-                @case ('OVAL') {
-                  ◯
-                }
-
-                @case ('ROUND') {
-                  ●
-                }
-
-                @case ('SQUARE') {
-                  □
-                }
-
-                @case ('RECTANGULAR') {
-                  ▯
-                }
-
-                @case ('OBLONG') {
-                  ⬭
-                }
-
-                @case ('HEART') {
-                  ♡
-                }
-
-                @case ('DIAMOND') {
-                  ◇
-                }
-
-                @case ('TRIANGULAR') {
-                  △
-                }
-
-                @case ('INVERTED_TRIANGLE') {
-                  ▽
-                }
-
-              }
+              <app-profile-visual-icon
+                type="face"
+                [value]="value">
+              </app-profile-visual-icon>
 
             </span>
 
             <strong>
               {{ label(value) }}
             </strong>
+
+            <small>
+              {{
+                visual(
+                  faceShapeVisuals,
+                  value
+                ).description
+              }}
+            </small>
 
           </button>
 
@@ -164,7 +145,7 @@
     </section>
 
     <!-- ===================================================
-         2. FRONTE
+         02 - FRONTE
          =================================================== -->
     <section class="form-section">
 
@@ -181,40 +162,87 @@
           </h2>
 
           <p>
-            Valuta proporzioni e forma
-            dell'attaccatura frontale.
+            Valuta altezza, larghezza
+            e forma dell'attaccatura.
           </p>
 
         </div>
 
       </div>
 
-      <div class="control-group">
+      <div class="two-columns">
 
-        <label>
-          Altezza fronte
-        </label>
+        <div class="control-group">
 
-        <div class="chip-row">
+          <label>
+            Altezza fronte
+          </label>
 
-          @for (
-            value of levels;
-            track value
-          ) {
+          <div class="chip-row">
 
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                faceForm.controls.foreheadHeight.value === value
-              "
-              (click)="
-                faceForm.controls.foreheadHeight.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
+            @for (
+              value of levels;
+              track value
+            ) {
 
-          }
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .foreheadHeight
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .foreheadHeight
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+        <div class="control-group">
+
+          <label>
+            Larghezza fronte
+          </label>
+
+          <div class="chip-row">
+
+            @for (
+              value of widths;
+              track value
+            ) {
+
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .foreheadWidth
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .foreheadWidth
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
 
         </div>
 
@@ -223,38 +251,7 @@
       <div class="control-group">
 
         <label>
-          Larghezza fronte
-        </label>
-
-        <div class="chip-row">
-
-          @for (
-            value of widths;
-            track value
-          ) {
-
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                faceForm.controls.foreheadWidth.value === value
-              "
-              (click)="
-                faceForm.controls.foreheadWidth.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
-
-          }
-
-        </div>
-
-      </div>
-
-      <div class="control-group">
-
-        <label>
-          Attaccatura dei capelli
+          Forma attaccatura
         </label>
 
         <div class="chip-row">
@@ -268,12 +265,18 @@
               type="button"
               class="choice-chip"
               [class.selected]="
-                faceForm.controls.hairlineShape.value === value
+                faceForm.controls
+                  .hairlineShape
+                  .value === value
               "
               (click)="
-                faceForm.controls.hairlineShape.setValue(value)
+                faceForm.controls
+                  .hairlineShape
+                  .setValue(value)
               ">
+
               {{ label(value) }}
+
             </button>
 
           }
@@ -285,7 +288,7 @@
     </section>
 
     <!-- ===================================================
-         3. OCCHI
+         03 - OCCHI
          =================================================== -->
     <section class="form-section">
 
@@ -302,8 +305,8 @@
           </h2>
 
           <p>
-            Forma, orientamento,
-            distanza, dimensione e colore.
+            Analizza forma, inclinazione,
+            proporzioni e colore.
           </p>
 
         </div>
@@ -316,7 +319,7 @@
           Forma degli occhi
         </label>
 
-        <div class="chip-row">
+        <div class="visual-grid">
 
           @for (
             value of eyeShapes;
@@ -325,14 +328,98 @@
 
             <button
               type="button"
-              class="choice-chip"
+              class="visual-option compact"
               [class.selected]="
-                faceForm.controls.eyeShape.value === value
+                faceForm.controls
+                  .eyeShape
+                  .value === value
               "
               (click)="
-                faceForm.controls.eyeShape.setValue(value)
+                faceForm.controls
+                  .eyeShape
+                  .setValue(value)
               ">
-              {{ label(value) }}
+
+              <span class="visual-symbol eye-symbol">
+
+                <app-profile-visual-icon
+                  type="eye"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
+                {{ label(value) }}
+              </strong>
+
+              <small>
+                {{
+                  visual(
+                    eyeShapeVisuals,
+                    value
+                  ).description
+                }}
+              </small>
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- ORIENTAMENTO -->
+      <div class="control-group">
+
+        <label>
+          Orientamento degli occhi
+        </label>
+
+        <div class="visual-grid small-grid">
+
+          @for (
+            value of eyeOrientations;
+            track value
+          ) {
+
+            <button
+              type="button"
+              class="visual-option compact"
+              [class.selected]="
+                faceForm.controls
+                  .eyeOrientation
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .eyeOrientation
+                  .setValue(value)
+              ">
+
+              <span class="visual-symbol orientation-symbol">
+
+                <app-profile-visual-icon
+                  type="eye-orientation"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
+                {{ label(value) }}
+              </strong>
+
+              <small>
+                {{
+                  visual(
+                    eyeOrientationVisuals,
+                    value
+                  ).description
+                }}
+              </small>
+
             </button>
 
           }
@@ -346,38 +433,7 @@
         <div class="control-group">
 
           <label>
-            Orientamento
-          </label>
-
-          <div class="chip-row">
-
-            @for (
-              value of eyeOrientations;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.eyeOrientation.value === value
-                "
-                (click)="
-                  faceForm.controls.eyeOrientation.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
-
-            }
-
-          </div>
-
-        </div>
-
-        <div class="control-group">
-
-          <label>
-            Distanza
+            Distanza degli occhi
           </label>
 
           <div class="chip-row">
@@ -391,12 +447,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.eyeSpacing.value === value
+                  faceForm.controls
+                    .eyeSpacing
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.eyeSpacing.setValue(value)
+                  faceForm.controls
+                    .eyeSpacing
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
+
               </button>
 
             }
@@ -405,14 +467,10 @@
 
         </div>
 
-      </div>
-
-      <div class="two-columns">
-
         <div class="control-group">
 
           <label>
-            Dimensione
+            Dimensione degli occhi
           </label>
 
           <div class="chip-row">
@@ -426,12 +484,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.eyeSize.value === value
+                  faceForm.controls
+                    .eyeSize
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.eyeSize.setValue(value)
+                  faceForm.controls
+                    .eyeSize
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
+
               </button>
 
             }
@@ -440,54 +504,156 @@
 
         </div>
 
-        <div class="control-group">
+      </div>
 
-          <label>
-            Colore
-          </label>
+      <!-- =================================================
+           COLORE OCCHI
+           ================================================= -->
+      <div class="color-analysis-box">
 
-          <select
-            formControlName="eyeColor">
+        <div class="color-analysis-heading">
 
-            <option [ngValue]="null">
-              Non specificato
-            </option>
+          <div>
 
-            @for (
-              value of eyeColors;
-              track value
-            ) {
+            <span class="mini-eyebrow">
+              COLORE OCCHI
+            </span>
 
-              <option [ngValue]="value">
-                {{ label(value) }}
-              </option>
+            <h3>
+              Classificazione cromatica
+            </h3>
 
-            }
+            <p>
+              Seleziona una categoria iniziale
+              e perfeziona il colore reference.
+            </p>
 
-          </select>
+          </div>
 
         </div>
 
-      </div>
+        <div class="eye-color-grid">
 
-      <div class="control-group">
+          @for (
+            value of eyeColors;
+            track value
+          ) {
 
-        <label for="eyeColorNotes">
-          Dettagli colore occhi
-        </label>
+            <button
+              type="button"
+              class="eye-color-option"
+              [class.selected]="
+                faceForm.controls
+                  .eyeColor
+                  .value === value
+              "
+              (click)="
+                selectEyeColor(value)
+              ">
 
-        <input
-          id="eyeColorNotes"
-          type="text"
-          formControlName="eyeColorNotes"
-          placeholder="Es. verde-grigio con anello centrale ambrato">
+              <span
+                class="eye-color-swatch"
+                [style.background]="
+                  visual(
+                    eyeColorVisuals,
+                    value
+                  ).color
+                ">
+              </span>
+
+              <div>
+
+                <strong>
+                  {{ label(value) }}
+                </strong>
+
+                <small>
+                  {{
+                    visual(
+                      eyeColorVisuals,
+                      value
+                    ).description
+                  }}
+                </small>
+
+              </div>
+
+            </button>
+
+          }
+
+        </div>
+
+        <div class="reference-color-panel">
+
+          <div class="reference-preview">
+
+            <span
+              class="large-color-reference"
+              [style.background]="
+                faceForm.controls
+                  .eyeReferenceColor
+                  .value
+              ">
+            </span>
+
+          </div>
+
+          <div class="reference-data">
+
+            <span class="mini-eyebrow">
+              REFERENCE REALE CLIENTE
+            </span>
+
+            <h4>
+              Colore occhi di riferimento
+            </h4>
+
+            <p>
+              Il valore può essere perfezionato
+              rispetto alla categoria selezionata.
+            </p>
+
+            <div class="color-picker-row">
+
+              <input
+                type="color"
+                formControlName="eyeReferenceColor">
+
+              <strong>
+                {{
+                  faceForm.controls
+                    .eyeReferenceColor
+                    .value
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="control-group notes-input">
+
+          <label for="eyeColorNotes">
+            Dettagli colore occhi
+          </label>
+
+          <input
+            id="eyeColorNotes"
+            type="text"
+            formControlName="eyeColorNotes"
+            placeholder="Es. nocciola con anello verde esterno e centro ambrato">
+
+        </div>
 
       </div>
 
     </section>
 
     <!-- ===================================================
-         4. SOPRACCIGLIA
+         04 - SOPRACCIGLIA
          =================================================== -->
     <section class="form-section">
 
@@ -504,74 +670,103 @@
           </h2>
 
           <p>
-            Forma e spessore prevalente.
+            Analizza struttura, arco
+            e spessore prevalente.
           </p>
 
         </div>
 
       </div>
 
-      <div class="two-columns">
+      <div class="control-group">
 
-        <div class="control-group">
+        <label>
+          Forma sopracciglia
+        </label>
 
-          <label>
-            Forma
-          </label>
+        <div class="visual-grid">
 
-          <div class="chip-row">
+          @for (
+            value of eyebrowShapes;
+            track value
+          ) {
 
-            @for (
-              value of eyebrowShapes;
-              track value
-            ) {
+            <button
+              type="button"
+              class="visual-option compact"
+              [class.selected]="
+                faceForm.controls
+                  .eyebrowShape
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .eyebrowShape
+                  .setValue(value)
+              ">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.eyebrowShape.value === value
-                "
-                (click)="
-                  faceForm.controls.eyebrowShape.setValue(value)
-                ">
+              <span class="visual-symbol brow-symbol">
+
+                <app-profile-visual-icon
+                  type="eyebrow"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
                 {{ label(value) }}
-              </button>
+              </strong>
 
-            }
+              <small>
+                {{
+                  visual(
+                    eyebrowShapeVisuals,
+                    value
+                  ).description
+                }}
+              </small>
 
-          </div>
+            </button>
+
+          }
 
         </div>
 
-        <div class="control-group">
+      </div>
 
-          <label>
-            Spessore
-          </label>
+      <div class="control-group">
 
-          <div class="chip-row">
+        <label>
+          Spessore sopracciglia
+        </label>
 
-            @for (
-              value of thicknesses;
-              track value
-            ) {
+        <div class="chip-row">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.eyebrowThickness.value === value
-                "
-                (click)="
-                  faceForm.controls.eyebrowThickness.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
+          @for (
+            value of thicknesses;
+            track value
+          ) {
 
-            }
+            <button
+              type="button"
+              class="choice-chip"
+              [class.selected]="
+                faceForm.controls
+                  .eyebrowThickness
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .eyebrowThickness
+                  .setValue(value)
+              ">
 
-          </div>
+              {{ label(value) }}
+
+            </button>
+
+          }
 
         </div>
 
@@ -580,7 +775,7 @@
     </section>
 
     <!-- ===================================================
-         5. NASO
+         05 - NASO
          =================================================== -->
     <section class="form-section">
 
@@ -597,8 +792,8 @@
           </h2>
 
           <p>
-            Lunghezza, larghezza,
-            profilo e forma della punta.
+            Valuta proporzioni,
+            profilo laterale e punta.
           </p>
 
         </div>
@@ -624,12 +819,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.noseLength.value === value
+                  faceForm.controls
+                    .noseLength
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.noseLength.setValue(value)
+                  faceForm.controls
+                    .noseLength
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
+
               </button>
 
             }
@@ -655,12 +856,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.noseWidth.value === value
+                  faceForm.controls
+                    .noseWidth
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.noseWidth.setValue(value)
+                  faceForm.controls
+                    .noseWidth
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
+
               </button>
 
             }
@@ -671,67 +878,95 @@
 
       </div>
 
-      <div class="two-columns">
+      <div class="control-group">
 
-        <div class="control-group">
+        <label>
+          Profilo del naso
+        </label>
 
-          <label>
-            Profilo
-          </label>
+        <div class="visual-grid">
 
-          <div class="chip-row">
+          @for (
+            value of noseProfiles;
+            track value
+          ) {
 
-            @for (
-              value of noseProfiles;
-              track value
-            ) {
+            <button
+              type="button"
+              class="visual-option compact"
+              [class.selected]="
+                faceForm.controls
+                  .noseProfile
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .noseProfile
+                  .setValue(value)
+              ">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.noseProfile.value === value
-                "
-                (click)="
-                  faceForm.controls.noseProfile.setValue(value)
-                ">
+              <span class="visual-symbol nose-symbol">
+
+                <app-profile-visual-icon
+                  type="nose"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
                 {{ label(value) }}
-              </button>
+              </strong>
 
-            }
+              <small>
+                {{
+                  visual(
+                    noseProfileVisuals,
+                    value
+                  ).description
+                }}
+              </small>
 
-          </div>
+            </button>
+
+          }
 
         </div>
 
-        <div class="control-group">
+      </div>
 
-          <label>
-            Punta
-          </label>
+      <div class="control-group">
 
-          <div class="chip-row">
+        <label>
+          Punta del naso
+        </label>
 
-            @for (
-              value of noseTips;
-              track value
-            ) {
+        <div class="chip-row">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.noseTip.value === value
-                "
-                (click)="
-                  faceForm.controls.noseTip.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
+          @for (
+            value of noseTips;
+            track value
+          ) {
 
-            }
+            <button
+              type="button"
+              class="choice-chip"
+              [class.selected]="
+                faceForm.controls
+                  .noseTip
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .noseTip
+                  .setValue(value)
+              ">
 
-          </div>
+              {{ label(value) }}
+
+            </button>
+
+          }
 
         </div>
 
@@ -740,7 +975,7 @@
     </section>
 
     <!-- ===================================================
-         6. ZIGOMI
+         06 - ZIGOMI
          =================================================== -->
     <section class="form-section">
 
@@ -757,7 +992,114 @@
           </h2>
 
           <p>
-            Larghezza e prominenza.
+            Valuta larghezza
+            e prominenza della zona zigomatica.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="two-columns">
+
+        <div class="control-group">
+
+          <label>
+            Larghezza zigomi
+          </label>
+
+          <div class="chip-row">
+
+            @for (
+              value of widths;
+              track value
+            ) {
+
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .cheekboneWidth
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .cheekboneWidth
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+        <div class="control-group">
+
+          <label>
+            Prominenza zigomi
+          </label>
+
+          <div class="chip-row">
+
+            @for (
+              value of levels;
+              track value
+            ) {
+
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .cheekboneProminence
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .cheekboneProminence
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         07 - MASCELLA
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          07
+        </span>
+
+        <div>
+
+          <h2>
+            Mascella
+          </h2>
+
+          <p>
+            Analizza larghezza,
+            definizione e geometria inferiore.
           </p>
 
         </div>
@@ -783,12 +1125,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.cheekboneWidth.value === value
+                  faceForm.controls
+                    .jawWidth
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.cheekboneWidth.setValue(value)
+                  faceForm.controls
+                    .jawWidth
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
+
               </button>
 
             }
@@ -796,99 +1144,6 @@
           </div>
 
         </div>
-
-        <div class="control-group">
-
-          <label>
-            Prominenza
-          </label>
-
-          <div class="chip-row">
-
-            @for (
-              value of levels;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.cheekboneProminence.value === value
-                "
-                (click)="
-                  faceForm.controls.cheekboneProminence.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
-
-            }
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- ===================================================
-         7. MASCELLA
-         =================================================== -->
-    <section class="form-section">
-
-      <div class="section-heading">
-
-        <span class="section-number">
-          07
-        </span>
-
-        <div>
-
-          <h2>
-            Mascella
-          </h2>
-
-          <p>
-            Larghezza, definizione e forma.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="control-group">
-
-        <label>
-          Larghezza
-        </label>
-
-        <div class="chip-row">
-
-          @for (
-            value of widths;
-            track value
-          ) {
-
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                faceForm.controls.jawWidth.value === value
-              "
-              (click)="
-                faceForm.controls.jawWidth.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
-
-          }
-
-        </div>
-
-      </div>
-
-      <div class="two-columns">
 
         <div class="control-group">
 
@@ -907,43 +1162,18 @@
                 type="button"
                 class="choice-chip"
                 [class.selected]="
-                  faceForm.controls.jawDefinition.value === value
+                  faceForm.controls
+                    .jawDefinition
+                    .value === value
                 "
                 (click)="
-                  faceForm.controls.jawDefinition.setValue(value)
+                  faceForm.controls
+                    .jawDefinition
+                    .setValue(value)
                 ">
+
                 {{ label(value) }}
-              </button>
 
-            }
-
-          </div>
-
-        </div>
-
-        <div class="control-group">
-
-          <label>
-            Forma
-          </label>
-
-          <div class="chip-row">
-
-            @for (
-              value of jawShapes;
-              track value
-            ) {
-
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.jawShape.value === value
-                "
-                (click)="
-                  faceForm.controls.jawShape.setValue(value)
-                ">
-                {{ label(value) }}
               </button>
 
             }
@@ -954,10 +1184,67 @@
 
       </div>
 
+      <div class="control-group">
+
+        <label>
+          Forma mascella
+        </label>
+
+        <div class="visual-grid small-grid">
+
+          @for (
+            value of jawShapes;
+            track value
+          ) {
+
+            <button
+              type="button"
+              class="visual-option compact"
+              [class.selected]="
+                faceForm.controls
+                  .jawShape
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .jawShape
+                  .setValue(value)
+              ">
+
+              <span class="visual-symbol jaw-symbol">
+
+                <app-profile-visual-icon
+                  type="jaw"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
+                {{ label(value) }}
+              </strong>
+
+              <small>
+                {{
+                  visual(
+                    jawShapeVisuals,
+                    value
+                  ).description
+                }}
+              </small>
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
     </section>
 
     <!-- ===================================================
-         8. MENTO
+         08 - MENTO
          =================================================== -->
     <section class="form-section">
 
@@ -974,74 +1261,103 @@
           </h2>
 
           <p>
-            Forma e proiezione laterale.
+            Valuta forma frontale
+            e proiezione laterale.
           </p>
 
         </div>
 
       </div>
 
-      <div class="two-columns">
+      <div class="control-group">
 
-        <div class="control-group">
+        <label>
+          Forma del mento
+        </label>
 
-          <label>
-            Forma
-          </label>
+        <div class="visual-grid small-grid">
 
-          <div class="chip-row">
+          @for (
+            value of chinShapes;
+            track value
+          ) {
 
-            @for (
-              value of chinShapes;
-              track value
-            ) {
+            <button
+              type="button"
+              class="visual-option compact"
+              [class.selected]="
+                faceForm.controls
+                  .chinShape
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .chinShape
+                  .setValue(value)
+              ">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.chinShape.value === value
-                "
-                (click)="
-                  faceForm.controls.chinShape.setValue(value)
-                ">
+              <span class="visual-symbol chin-symbol">
+
+                <app-profile-visual-icon
+                  type="chin"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
                 {{ label(value) }}
-              </button>
+              </strong>
 
-            }
+              <small>
+                {{
+                  visual(
+                    chinShapeVisuals,
+                    value
+                  ).description
+                }}
+              </small>
 
-          </div>
+            </button>
+
+          }
 
         </div>
 
-        <div class="control-group">
+      </div>
 
-          <label>
-            Proiezione
-          </label>
+      <div class="control-group">
 
-          <div class="chip-row">
+        <label>
+          Proiezione del mento
+        </label>
 
-            @for (
-              value of chinProjections;
-              track value
-            ) {
+        <div class="chip-row">
 
-              <button
-                type="button"
-                class="choice-chip"
-                [class.selected]="
-                  faceForm.controls.chinProjection.value === value
-                "
-                (click)="
-                  faceForm.controls.chinProjection.setValue(value)
-                ">
-                {{ label(value) }}
-              </button>
+          @for (
+            value of chinProjections;
+            track value
+          ) {
 
-            }
+            <button
+              type="button"
+              class="choice-chip"
+              [class.selected]="
+                faceForm.controls
+                  .chinProjection
+                  .value === value
+              "
+              (click)="
+                faceForm.controls
+                  .chinProjection
+                  .setValue(value)
+              ">
 
-          </div>
+              {{ label(value) }}
+
+            </button>
+
+          }
 
         </div>
 
@@ -1050,7 +1366,7 @@
     </section>
 
     <!-- ===================================================
-         9. BOCCA E LABBRA
+         09 - BOCCA E LABBRA
          =================================================== -->
     <section class="form-section">
 
@@ -1067,70 +1383,87 @@
           </h2>
 
           <p>
-            Proporzioni, volume e forma.
+            Analizza ampiezza,
+            volume, equilibrio e forma.
           </p>
 
         </div>
 
       </div>
 
-      <div class="control-group">
+      <div class="two-columns">
 
-        <label>
-          Larghezza bocca
-        </label>
+        <div class="control-group">
 
-        <div class="chip-row">
+          <label>
+            Larghezza bocca
+          </label>
 
-          @for (
-            value of widths;
-            track value
-          ) {
+          <div class="chip-row">
 
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                faceForm.controls.mouthWidth.value === value
-              "
-              (click)="
-                faceForm.controls.mouthWidth.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
+            @for (
+              value of widths;
+              track value
+            ) {
 
-          }
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .mouthWidth
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .mouthWidth
+                    .setValue(value)
+                ">
+
+                {{ label(value) }}
+
+              </button>
+
+            }
+
+          </div>
 
         </div>
 
-      </div>
+        <div class="control-group">
 
-      <div class="control-group">
+          <label>
+            Volume labbra
+          </label>
 
-        <label>
-          Volume labbra
-        </label>
+          <div class="chip-row">
 
-        <div class="chip-row">
+            @for (
+              value of lipFullnessValues;
+              track value
+            ) {
 
-          @for (
-            value of lipFullnessValues;
-            track value
-          ) {
+              <button
+                type="button"
+                class="choice-chip"
+                [class.selected]="
+                  faceForm.controls
+                    .lipFullness
+                    .value === value
+                "
+                (click)="
+                  faceForm.controls
+                    .lipFullness
+                    .setValue(value)
+                ">
 
-            <button
-              type="button"
-              class="choice-chip"
-              [class.selected]="
-                faceForm.controls.lipFullness.value === value
-              "
-              (click)="
-                faceForm.controls.lipFullness.setValue(value)
-              ">
-              {{ label(value) }}
-            </button>
+                {{ label(value) }}
 
-          }
+              </button>
+
+            }
+
+          </div>
 
         </div>
 
@@ -1153,12 +1486,18 @@
               type="button"
               class="choice-chip"
               [class.selected]="
-                faceForm.controls.lipBalance.value === value
+                faceForm.controls
+                  .lipBalance
+                  .value === value
               "
               (click)="
-                faceForm.controls.lipBalance.setValue(value)
+                faceForm.controls
+                  .lipBalance
+                  .setValue(value)
               ">
+
               {{ label(value) }}
+
             </button>
 
           }
@@ -1170,10 +1509,10 @@
       <div class="control-group">
 
         <label>
-          Forma
+          Forma delle labbra
         </label>
 
-        <div class="chip-row">
+        <div class="visual-grid">
 
           @for (
             value of lipShapes;
@@ -1182,14 +1521,40 @@
 
             <button
               type="button"
-              class="choice-chip"
+              class="visual-option compact"
               [class.selected]="
-                faceForm.controls.lipShape.value === value
+                faceForm.controls
+                  .lipShape
+                  .value === value
               "
               (click)="
-                faceForm.controls.lipShape.setValue(value)
+                faceForm.controls
+                  .lipShape
+                  .setValue(value)
               ">
-              {{ label(value) }}
+
+              <span class="visual-symbol lip-symbol">
+
+                <app-profile-visual-icon
+                  type="lip"
+                  [value]="value">
+                </app-profile-visual-icon>
+
+              </span>
+
+              <strong>
+                {{ label(value) }}
+              </strong>
+
+              <small>
+                {{
+                  visual(
+                    lipShapeVisuals,
+                    value
+                  ).description
+                }}
+              </small>
+
             </button>
 
           }
@@ -1201,7 +1566,7 @@
     </section>
 
     <!-- ===================================================
-         10. NOTE E OBIETTIVI
+         10 - NOTE
          =================================================== -->
     <section class="form-section">
 
@@ -1218,8 +1583,8 @@
           </h2>
 
           <p>
-            Aggiungi osservazioni e obiettivi
-            concordati con la cliente.
+            Registra osservazioni tecniche
+            e obiettivi concordati.
           </p>
 
         </div>
@@ -1231,14 +1596,14 @@
         <div class="control-group">
 
           <label for="notes">
-            Note
+            Note professionali
           </label>
 
           <textarea
             id="notes"
-            rows="6"
+            rows="7"
             formControlName="notes"
-            placeholder="Osservazioni sulla morfologia del volto...">
+            placeholder="Osservazioni sulla morfologia, proporzioni e caratteristiche rilevate...">
           </textarea>
 
         </div>
@@ -1251,9 +1616,9 @@
 
           <textarea
             id="stylingGoals"
-            rows="6"
+            rows="7"
             formControlName="stylingGoals"
-            placeholder="Es. valorizzare gli zigomi e riequilibrare visivamente la fronte...">
+            placeholder="Es. valorizzare gli zigomi, alleggerire visivamente la mandibola, riequilibrare la fronte...">
           </textarea>
 
         </div>
@@ -1275,7 +1640,9 @@
             '/customers',
             customerId
           ]">
+
           Annulla
+
         </a>
 
       }
