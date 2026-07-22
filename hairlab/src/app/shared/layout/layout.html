@@ -180,7 +180,11 @@
       </div>
 
       <!-- DIPENDENTI -->
-      <div class="nav-item disabled">
+      <a
+        class="nav-item"
+        routerLink="/employee"
+        routerLinkActive="active"
+        (click)="closeSidebarAfterNavigation()">
 
         <span class="nav-icon">
 
@@ -198,11 +202,7 @@
           Dipendenti
         </span>
 
-        <span class="coming-soon">
-          Presto
-        </span>
-
-      </div>
+      </a>
 
       <!-- SERVIZI -->
       <div class="nav-item disabled">

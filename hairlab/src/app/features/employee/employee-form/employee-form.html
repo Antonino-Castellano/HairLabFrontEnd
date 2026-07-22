@@ -1,0 +1,188 @@
+<section class="employee-form-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">DIPENDENTI</span>
+      <h1>{{ isEditMode() ? 'Modifica dipendente' : 'Nuovo dipendente' }}</h1>
+      <p>Inserisci i dati anagrafici e la fotografia del dipendente.</p>
+    </div>
+
+    <a class="back-button" routerLink="/employees">← Torna ai dipendenti</a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <form class="form-card" [formGroup]="employeeForm" (ngSubmit)="submit()">
+
+    <!-- FOTO PROFILO -->
+    <section class="form-section">
+      <div class="section-title">
+        <h2>Foto dipendente</h2>
+        <p>Aggiungi una fotografia per riconoscere rapidamente il dipendente nel gestionale.</p>
+      </div>
+
+      <div class="photo-editor">
+        <div class="photo-preview">
+          @if (profileImage()) {
+            <img [src]="profileImage()" alt="Foto profilo dipendente">
+          } @else {
+            <span>{{ getPreviewInitials() }}</span>
+          }
+        </div>
+
+        <div class="photo-controls">
+          <div>
+            <strong>Fotografia profilo</strong>
+            <p>JPG, PNG o altra immagine. Verrà ritagliata automaticamente in formato quadrato 400 × 400.</p>
+          </div>
+
+          <input
+            #fileInput
+            class="hidden-file-input"
+            type="file"
+            accept="image/*"
+            (change)="onImageSelected($event)">
+
+          <div class="photo-actions">
+            <button
+              class="secondary-button"
+              type="button"
+              [disabled]="processingImage()"
+              (click)="fileInput.click()">
+              {{ processingImage() ? 'Elaborazione...' : profileImage() ? 'Cambia foto' : 'Scegli foto' }}
+            </button>
+
+            @if (profileImage()) {
+              <button class="remove-photo-button" type="button" (click)="removeImage()">
+                Rimuovi foto
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATI ANAGRAFICI E RUOLO -->
+    <section class="form-section">
+      <div class="section-title">
+        <h2>Dati anagrafici e ruolo</h2>
+        <p>Informazioni personali, contrattuali e recapiti del dipendente.</p>
+      </div>
+
+      <div class="form-grid">
+
+        <!-- NOME -->
+        <div class="form-group">
+          <label for="firstName">Nome *</label>
+          <input id="firstName" type="text" formControlName="firstName" placeholder="Nome">
+
+          @if (employeeForm.controls.firstName.touched && employeeForm.controls.firstName.invalid) {
+            <span class="field-error">Il nome è obbligatorio.</span>
+          }
+        </div>
+
+        <!-- COGNOME -->
+        <div class="form-group">
+          <label for="lastName">Cognome *</label>
+          <input id="lastName" type="text" formControlName="lastName" placeholder="Cognome">
+
+          @if (employeeForm.controls.lastName.touched && employeeForm.controls.lastName.invalid) {
+            <span class="field-error">Il cognome è obbligatorio.</span>
+          }
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input id="email" type="email" formControlName="email" placeholder="dipendente@email.it">
+
+          @if (employeeForm.controls.email.touched && employeeForm.controls.email.invalid) {
+            <span class="field-error">
+              @if (employeeForm.controls.email.hasError('required')) {
+                L'email è obbligatoria.
+              } @else {
+                Inserisci un indirizzo email valido.
+              }
+            </span>
+          }
+        </div>
+
+        <!-- TELEFONO -->
+        <div class="form-group">
+          <label for="telephoneNumber">Telefono *</label>
+          <input id="telephoneNumber" type="tel" formControlName="telephoneNumber" placeholder="3331234567">
+
+          @if (employeeForm.controls.telephoneNumber.touched && employeeForm.controls.telephoneNumber.invalid) {
+            <span class="field-error">Il numero di telefono è obbligatorio.</span>
+          }
+        </div>
+
+        <!-- RUOLO (JOB TITLE) -->
+        <div class="form-group">
+          <label for="jobTitle">Ruolo *</label>
+          <select id="jobTitle" formControlName="jobTitle">
+            <option value="" disabled>Seleziona un ruolo</option>
+            @for (title of jobTitles; track title) {
+              <option [value]="title">{{ title }}</option>
+            }
+          </select>
+
+          @if (employeeForm.controls.jobTitle.touched && employeeForm.controls.jobTitle.invalid) {
+            <span class="field-error">Il ruolo è obbligatorio.</span>
+          }
+        </div>
+
+        <!-- DATA ASSUNZIONE -->
+        <div class="form-group">
+          <label for="hireDate">Data di assunzione *</label>
+          <input id="hireDate" type="date" formControlName="hireDate">
+
+          @if (employeeForm.controls.hireDate.touched && employeeForm.controls.hireDate.invalid) {
+            <span class="field-error">La data di assunzione è obbligatoria.</span>
+          }
+        </div>
+
+        <!-- NOTE -->
+        <div class="form-group full-width">
+          <label for="notes">Note</label>
+          <textarea id="notes" formControlName="notes" rows="3" placeholder="Note aggiuntive sul dipendente..."></textarea>
+        </div>
+
+        <!-- STATO -->
+        <div class="form-group">
+          <label>Stato dipendente</label>
+          <label class="switch-row">
+            <input type="checkbox" formControlName="active">
+            <span class="switch"></span>
+            <span>Dipendente attivo</span>
+          </label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- AZIONI -->
+    <div class="form-actions">
+      <a class="secondary-button" routerLink="/employees">Annulla</a>
+
+      <button
+        class="primary-button"
+        type="submit"
+        [disabled]="loading() || processingImage()">
+        {{
+          loading()
+            ? 'Salvataggio...'
+            : isEditMode()
+              ? 'Salva modifiche'
+              : 'Crea dipendente'
+        }}
+      </button>
+    </div>
+
+  </form>
+
+</section>

@@ -19,6 +19,7 @@ import { FaceProfileFormComponent } from './features/customers/face-profile/face
 import { HairProfileFormComponent } from './features/customers/hair-profile/hair-profile-form/hair-profile-form';
 
 import { LayoutComponent } from './shared/layout/layout';
+import { EmployeeListComponent } from './features/employee/employee-list/employee-list';
 
 /**
  * Configurazione principale delle route Angular.
@@ -56,9 +57,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [
-      authGuard
-    ],
+    canActivate: [authGuard],
 
     children: [
 
@@ -213,7 +212,12 @@ export const routes: Routes = [
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
-      }
+      },
+
+      {
+        path: 'employee',
+        component: EmployeeListComponent
+      },
     ]
   },
 
