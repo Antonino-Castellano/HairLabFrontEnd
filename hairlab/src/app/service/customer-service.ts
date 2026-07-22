@@ -1,23 +1,40 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { Customer } from '../models/customer';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  Customer
+} from '../models/customer';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  private readonly http = inject(HttpClient);
+  private readonly http =
+    inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/customer';
+    hairLabApi('customer');
 
   /**
-   * Recupera tutti i clienti.
+   * Tutti i clienti.
    */
-  getAll(): Observable<Customer[]> {
+  getAll():
+    Observable<Customer[]> {
 
     return this.http.get<Customer[]>(
       this.apiUrl
@@ -25,19 +42,39 @@ export class CustomerService {
   }
 
   /**
-   * Recupera un cliente tramite ID.
+   * Solo clienti attivi.
    */
-  getById(id: number): Observable<Customer> {
+  getActive():
+    Observable<Customer[]> {
+
+    return this.http.get<Customer[]>(
+      `${this.apiUrl}/active`
+    );
+  }
+
+  /**
+   * Solo clienti disattivati.
+   */
+  getInactive():
+    Observable<Customer[]> {
+
+    return this.http.get<Customer[]>(
+      `${this.apiUrl}/inactive`
+    );
+  }
+
+  getById(
+    id: number
+  ): Observable<Customer> {
 
     return this.http.get<Customer>(
       `${this.apiUrl}/${id}`
     );
   }
 
-  /**
-   * Inserisce un nuovo cliente.
-   */
-  insert(customer: Customer): Observable<Customer> {
+  insert(
+    customer: Customer
+  ): Observable<Customer> {
 
     return this.http.post<Customer>(
       this.apiUrl,
@@ -45,9 +82,6 @@ export class CustomerService {
     );
   }
 
-  /**
-   * Modifica un cliente esistente.
-   */
   update(
     id: number,
     customer: Customer
@@ -59,14 +93,32 @@ export class CustomerService {
     );
   }
 
-  /**
-   * Elimina un cliente.
-   */
-  delete(id: number): Observable<unknown> {
+  deactivate(
+    id: number
+  ): Observable<Customer> {
+
+    return this.http.patch<Customer>(
+      `${this.apiUrl}/${id}/deactivate`,
+      {}
+    );
+  }
+
+  activate(
+    id: number
+  ): Observable<Customer> {
+
+    return this.http.patch<Customer>(
+      `${this.apiUrl}/${id}/activate`,
+      {}
+    );
+  }
+
+  delete(
+    id: number
+  ): Observable<unknown> {
 
     return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
-
 }

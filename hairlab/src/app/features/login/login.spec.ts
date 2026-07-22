@@ -1,22 +1,73 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient
+} from '@angular/common/http';
 
-import { Login } from './login';
+import {
+  ComponentFixture,
+  TestBed
+} from '@angular/core/testing';
 
-describe('Login', () => {
-  let component: Login;
-  let fixture: ComponentFixture<Login>;
+import {
+  provideRouter
+} from '@angular/router';
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Login],
-    }).compileComponents();
+import {
+  LoginComponent
+} from './login';
 
-    fixture = TestBed.createComponent(Login);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
+describe(
+  'LoginComponent',
+  () => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    let component:
+      LoginComponent;
+
+    let fixture:
+      ComponentFixture<
+        LoginComponent
+      >;
+
+    beforeEach(
+      async () => {
+
+        await TestBed
+          .configureTestingModule({
+
+            imports: [
+              LoginComponent
+            ],
+
+            providers: [
+
+              provideHttpClient(),
+
+              provideRouter([])
+
+            ]
+
+          })
+          .compileComponents();
+
+        fixture =
+          TestBed.createComponent(
+            LoginComponent
+          );
+
+        component =
+          fixture.componentInstance;
+
+        fixture.detectChanges();
+      }
+    );
+
+    it(
+      'should create',
+      () => {
+
+        expect(
+          component
+        ).toBeTruthy();
+      }
+    );
+  }
+);

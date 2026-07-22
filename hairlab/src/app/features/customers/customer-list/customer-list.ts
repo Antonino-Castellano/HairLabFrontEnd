@@ -1,112 +1,490 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Customer } from '../../../models/customer';
-import { CustomerService } from '../../../service/customer-service';
+import {
+  HttpErrorResponse
+} from '@angular/common/http';
+
+import {
+  Component,
+  inject,
+  OnInit,
+  signal
+} from '@angular/core';
+
+import {
+  RouterLink
+} from '@angular/router';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  Customer
+} from '../../../models/customer';
+
+import {
+  CustomerService
+} from '../../../service/customer-service';
+
+/**
+ * Filtri disponibili nella pagina clienti.
+ */
+type CustomerStatusFilter =
+  | 'ACTIVE'
+  | 'INACTIVE'
+  | 'ALL';
 
 @Component({
   selector: 'app-customer-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './customer-list.html',
   styleUrl: './customer-list.css'
 })
-export class CustomerListComponent implements OnInit {
-  private readonly customerService = inject(CustomerService);
+export class CustomerListComponent
+  implements OnInit {
 
-  protected readonly customers = signal<Customer[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly errorMessage = signal('');
+  private readonly customerService =
+    inject(CustomerService);
 
   /**
-   * Quando il componente viene inizializzato
-   * recupera automaticamente i clienti dal backend.
+   * Clienti visualizzati nella tabella.
    */
+  protected readonly customers =
+    signal<Customer[]>([]);
+
+  /**
+   * Filtro corrente.
+   *
+   * Di default mostriamo solamente
+   * i clienti attivi.
+   */
+  protected readonly selectedFilter =
+    signal<CustomerStatusFilter>(
+      'ACTIVE'
+    );
+
+  protected readonly loading =
+    signal(false);
+
+  protected readonly errorMessage =
+    signal('');
+
+  protected readonly successMessage =
+    signal('');
+
   ngOnInit(): void {
+
     this.loadCustomers();
   }
 
   /**
-   * Recupera tutti i clienti tramite CustomerService.
+   * Gestisce il selettore:
+   *
+   * ACTIVE
+   * INACTIVE
+   * ALL
    */
-  protected loadCustomers(): void {
-    this.loading.set(true);
-    this.errorMessage.set('');
+  protected onFilterChange(
+    event: Event
+  ): void {
 
-    this.customerService.getAll().subscribe({
-      next: (customers: Customer[]) => {
-        this.customers.set(customers ?? []);
-        this.loading.set(false);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.loading.set(false);
+    const select =
+      event.target as HTMLSelectElement;
 
-        if (error.status === 401) {
-          this.errorMessage.set(
-            'Sessione scaduta o autenticazione non valida.'
-          );
-        } else if (error.status === 403) {
-          this.errorMessage.set(
-            'Non hai i permessi per visualizzare i clienti.'
-          );
-        } else if (error.status === 404) {
-          this.errorMessage.set(
-            'Endpoint clienti non trovato.'
-          );
-        } else if (error.status === 0) {
-          this.errorMessage.set(
-            'Impossibile comunicare con il backend.'
-          );
-        } else {
-          this.errorMessage.set(
-            'Impossibile caricare i clienti.'
-          );
-        }
-      }
-    });
-  }
+    const value =
+      select.value as CustomerStatusFilter;
 
-  /**
-   * Crea le iniziali utilizzate nell'avatar del cliente.
-   */
-  protected getCustomerInitials(customer: Customer): string {
-    const firstNameInitial = customer.firstName
-      ? customer.firstName.charAt(0).toUpperCase()
-      : '';
-
-    const lastNameInitial = customer.lastName
-      ? customer.lastName.charAt(0).toUpperCase()
-      : '';
-
-    return `${firstNameInitial}${lastNameInitial}` || '?';
-  }
-
-  /**
-   * Elimina il cliente selezionato dopo una conferma.
-   * Dopo l'eliminazione ricarica la lista aggiornata.
-   */
-  protected deleteCustomer(customer: Customer): void {
-    if (!customer.id) {
-      return;
-    }
-
-    const confirmed = confirm(
-      `Vuoi eliminare ${customer.firstName} ${customer.lastName}?`
+    this.selectedFilter.set(
+      value
     );
 
-    if (!confirmed) {
-      return;
+    this.loadCustomers();
+  }
+
+  /**
+   * Carica i clienti in base
+   * al filtro selezionato.
+   */
+  protected loadCustomers(): void {
+
+    this.loading.set(
+      true
+    );
+
+    this.errorMessage.set(
+      ''
+    );
+
+    let request:
+      Observable<Customer[]>;
+
+    switch (
+      this.selectedFilter()
+    ) {
+
+      case 'INACTIVE':
+
+        request =
+          this.customerService
+            .getInactive();
+
+        break;
+
+      case 'ALL':
+
+        request =
+          this.customerService
+            .getAll();
+
+        break;
+
+      case 'ACTIVE':
+
+      default:
+
+        request =
+          this.customerService
+            .getActive();
+
+        break;
     }
 
-    this.customerService.delete(customer.id).subscribe({
-      next: () => {
-        this.loadCustomers();
+    request.subscribe({
+
+      next: (
+        customers: Customer[]
+      ) => {
+
+        this.customers.set(
+          customers ?? []
+        );
+
+        this.loading.set(
+          false
+        );
       },
-      error: () => {
+
+      error: (
+        error: HttpErrorResponse
+      ) => {
+
+        this.loading.set(
+          false
+        );
+
         this.errorMessage.set(
-          'Impossibile eliminare il cliente.'
+          this.getErrorMessage(
+            error,
+            'Impossibile caricare i clienti.'
+          )
         );
       }
     });
+  }
+
+  /**
+   * Disattiva il cliente.
+   */
+  protected deactivateCustomer(
+    customer: Customer
+  ): void {
+
+    if (
+      !customer.id
+    ) {
+      return;
+    }
+
+    const confirmed =
+      confirm(
+        `Vuoi disattivare ` +
+        `${customer.firstName} ` +
+        `${customer.lastName}?\n\n` +
+        `Il cliente resterà nel database ` +
+        `e conserverà tutto lo storico.`
+      );
+
+    if (
+      !confirmed
+    ) {
+      return;
+    }
+
+    this.clearMessages();
+
+    this.customerService
+      .deactivate(
+        customer.id
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.successMessage.set(
+            'Cliente disattivato correttamente.'
+          );
+
+          /*
+           * Se stiamo guardando gli attivi,
+           * il cliente appena disattivato
+           * sparirà dalla lista.
+           */
+          this.loadCustomers();
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile disattivare il cliente.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Riattiva il cliente.
+   */
+  protected activateCustomer(
+    customer: Customer
+  ): void {
+
+    if (
+      !customer.id
+    ) {
+      return;
+    }
+
+    this.clearMessages();
+
+    this.customerService
+      .activate(
+        customer.id
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.successMessage.set(
+            'Cliente riattivato correttamente.'
+          );
+
+          /*
+           * Se stiamo guardando i disattivati,
+           * il cliente riattivato
+           * sparirà automaticamente dalla lista.
+           */
+          this.loadCustomers();
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile riattivare il cliente.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Elimina DEFINITIVAMENTE
+   * il cliente.
+   *
+   * Il pulsante è disponibile sia
+   * per clienti attivi sia disattivati.
+   *
+   * Il backend blocca comunque
+   * l'eliminazione se esiste storico.
+   */
+  protected deleteCustomer(
+    customer: Customer
+  ): void {
+
+    if (
+      !customer.id
+    ) {
+      return;
+    }
+
+    const confirmed =
+      confirm(
+        `ATTENZIONE\n\n` +
+        `Vuoi eliminare definitivamente ` +
+        `${customer.firstName} ` +
+        `${customer.lastName}?\n\n` +
+        `Questa operazione rimuove realmente ` +
+        `il cliente dal database e non può ` +
+        `essere annullata.\n\n` +
+        `Se il cliente possiede storico, ` +
+        `HairLab bloccherà automaticamente ` +
+        `l'eliminazione.`
+      );
+
+    if (
+      !confirmed
+    ) {
+      return;
+    }
+
+    this.clearMessages();
+
+    this.customerService
+      .delete(
+        customer.id
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.successMessage.set(
+            'Cliente eliminato definitivamente.'
+          );
+
+          this.loadCustomers();
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile eliminare definitivamente il cliente.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Restituisce le iniziali
+   * da usare come fallback avatar.
+   */
+  protected getCustomerInitials(
+    customer: Customer
+  ): string {
+
+    const firstNameInitial =
+      customer.firstName
+        ? customer.firstName
+            .charAt(0)
+            .toUpperCase()
+        : '';
+
+    const lastNameInitial =
+      customer.lastName
+        ? customer.lastName
+            .charAt(0)
+            .toUpperCase()
+        : '';
+
+    return (
+      `${firstNameInitial}${lastNameInitial}` ||
+      '?'
+    );
+  }
+
+  /**
+   * Testo mostrato nello stato vuoto.
+   */
+  protected getEmptyMessage(): string {
+
+    switch (
+      this.selectedFilter()
+    ) {
+
+      case 'INACTIVE':
+
+        return (
+          'Non ci sono clienti disattivati.'
+        );
+
+      case 'ALL':
+
+        return (
+          'Non ci sono clienti registrati.'
+        );
+
+      case 'ACTIVE':
+
+      default:
+
+        return (
+          'Non ci sono clienti attivi.'
+        );
+    }
+  }
+
+  private clearMessages(): void {
+
+    this.errorMessage.set(
+      ''
+    );
+
+    this.successMessage.set(
+      ''
+    );
+  }
+
+  /**
+   * Recupera il messaggio restituito
+   * dal GlobalExceptionHandler.
+   */
+  private getErrorMessage(
+    error: HttpErrorResponse,
+    fallback: string
+  ): string {
+
+    const backendMessage =
+      error.error?.message;
+
+    if (
+      typeof backendMessage === 'string' &&
+      backendMessage.trim()
+    ) {
+
+      return backendMessage;
+    }
+
+    if (
+      error.status === 401
+    ) {
+
+      return (
+        'Sessione scaduta o autenticazione non valida.'
+      );
+    }
+
+    if (
+      error.status === 403
+    ) {
+
+      return (
+        'Non hai i permessi necessari per questa operazione.'
+      );
+    }
+
+    if (
+      error.status === 0
+    ) {
+
+      return (
+        'Impossibile comunicare con il backend.'
+      );
+    }
+
+    return fallback;
   }
 }

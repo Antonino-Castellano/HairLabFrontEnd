@@ -1,32 +1,94 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Customer } from '../models/customer';
+import {
+  HttpClient
+} from '@angular/common/http';
 
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  Consultation
+} from '../models/consultation';
+
+/**
+ * Service Angular dedicato alle consulenze.
+ *
+ * Questo file sostituisce definitivamente
+ * la vecchia copia errata del CustomerService.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerService {
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/hairlab/api/customer';
+export class ConsultationService {
 
-  getAll(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiUrl);
+  private readonly http =
+    inject(HttpClient);
+
+  private readonly apiUrl =
+    hairLabApi('consultation');
+
+  getAll():
+    Observable<Consultation[]> {
+
+    return this.http.get<Consultation[]>(
+      this.apiUrl
+    );
   }
 
-  getById(id: number): Observable<Customer> {
-    return this.http.get<Customer>(`${this.apiUrl}/${id}`);
+  getById(
+    id: number
+  ): Observable<Consultation> {
+
+    return this.http.get<Consultation>(
+      `${this.apiUrl}/${id}`
+    );
   }
 
-  insert(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(this.apiUrl, customer);
+  getByCustomerId(
+    customerId: number
+  ): Observable<Consultation[]> {
+
+    return this.http.get<Consultation[]>(
+      `${this.apiUrl}/customer/${customerId}`
+    );
   }
 
-  update(id: number, customer: Customer): Observable<Customer> {
-    return this.http.put<Customer>(`${this.apiUrl}/${id}`, customer);
+  insert(
+    consultation: Consultation
+  ): Observable<Consultation> {
+
+    return this.http.post<Consultation>(
+      this.apiUrl,
+      consultation
+    );
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  update(
+    id: number,
+    consultation: Consultation
+  ): Observable<Consultation> {
+
+    return this.http.put<Consultation>(
+      `${this.apiUrl}/${id}`,
+      consultation
+    );
+  }
+
+  delete(
+    id: number
+  ): Observable<unknown> {
+
+    return this.http.delete(
+      `${this.apiUrl}/${id}`
+    );
   }
 }

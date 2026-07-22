@@ -1,38 +1,60 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { ColorFormulaItem } from '../models/color-formula-item';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  ColorFormulaItem
+} from '../models/color-formula-item';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColorFormulaItemService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/color-formula-item';
+    hairLabApi('color-formula-item');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<ColorFormulaItem[]> {
+  getAll():
+    Observable<ColorFormulaItem[]> {
 
     return this.http.get<ColorFormulaItem[]>(
       this.apiUrl
     );
   }
 
-
-  getById(id: number): Observable<ColorFormulaItem> {
+  getById(
+    id: number
+  ): Observable<ColorFormulaItem> {
 
     return this.http.get<ColorFormulaItem>(
       `${this.apiUrl}/${id}`
     );
   }
 
+  getByFormulaId(
+    colorFormulaId: number
+  ): Observable<ColorFormulaItem[]> {
+
+    return this.http.get<ColorFormulaItem[]>(
+      `${this.apiUrl}/formula/${colorFormulaId}`
+    );
+  }
 
   insert(
     item: ColorFormulaItem
@@ -43,7 +65,6 @@ export class ColorFormulaItemService {
       item
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +77,12 @@ export class ColorFormulaItemService {
     );
   }
 
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
-
 }

@@ -1,38 +1,59 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { HairDye } from '../models/hair-dye';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  HairDye
+} from '../models/hair-dye';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HairDyeService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/hair-dye';
+    hairLabApi('hair-dye');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<HairDye[]> {
+  getAll():
+    Observable<HairDye[]> {
 
     return this.http.get<HairDye[]>(
       this.apiUrl
     );
   }
 
+  getActive():
+    Observable<HairDye[]> {
 
-  getById(id: number): Observable<HairDye> {
+    return this.http.get<HairDye[]>(
+      `${this.apiUrl}/active`
+    );
+  }
+
+  getById(
+    id: number
+  ): Observable<HairDye> {
 
     return this.http.get<HairDye>(
       `${this.apiUrl}/${id}`
     );
   }
-
 
   insert(
     hairDye: HairDye
@@ -43,7 +64,6 @@ export class HairDyeService {
       hairDye
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +76,22 @@ export class HairDyeService {
     );
   }
 
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
 
+  activate(
+    id: number
+  ): Observable<HairDye> {
+
+    return this.http.patch<HairDye>(
+      `${this.apiUrl}/${id}/activate`,
+      {}
+    );
+  }
 }

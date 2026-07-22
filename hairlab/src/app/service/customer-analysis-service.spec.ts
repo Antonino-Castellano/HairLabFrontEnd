@@ -7,15 +7,15 @@ import {
 } from '@angular/core/testing';
 
 import {
-  ConsultationService
-} from './consultation-service';
+  CustomerAnalysisService
+} from './customer-analysis-service';
 
 describe(
-  'ConsultationService',
+  'CustomerAnalysisService',
   () => {
 
     let service:
-      ConsultationService;
+      CustomerAnalysisService;
 
     beforeEach(() => {
 
@@ -29,7 +29,7 @@ describe(
 
       service =
         TestBed.inject(
-          ConsultationService
+          CustomerAnalysisService
         );
     });
 

@@ -1,29 +1,110 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from './auth-service';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn
+} from '@angular/common/http';
 
-export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+import {
+  inject
+} from '@angular/core';
 
-  // Recupera il JWT salvato dopo il login.
-  const token = authService.getToken();
+import {
+  catchError,
+  throwError
+} from 'rxjs';
 
-  // Controlla che la richiesta sia diretta al backend HairLab.
-  const isHairLabApi = req.url.startsWith('http://localhost:8080/hairlab/api');
+import {
+  HAIRLAB_API_BASE_URL
+} from '../config/api.config';
 
-  // La richiesta di login non deve contenere un vecchio JWT.
-  const isLoginRequest = req.url.endsWith('/auth/login');
+import {
+  AuthService
+} from './auth-service';
 
-  // Se esiste un token e la richiesta è verso un endpoint protetto,
-  // clona la richiesta e aggiunge l'header Authorization.
-  if (token && isHairLabApi && !isLoginRequest) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+/**
+ * Interceptor JWT globale.
+ *
+ * Responsabilità:
+ *
+ * - aggiunge Bearer token alle API HairLab;
+ * - non aggiunge token alla richiesta di login;
+ * - intercetta 401 provenienti dal backend;
+ * - esegue logout quando il token non è più valido.
+ *
+ * L'URL base viene ora letto dalla configurazione
+ * centralizzata e non duplicato nell'interceptor.
+ */
+export const jwtInterceptor:
+  HttpInterceptorFn =
+(
+  request,
+  next
+) => {
+
+  const authService =
+    inject(AuthService);
+
+  const token =
+    authService.getToken();
+
+  const isHairLabApi =
+    request.url.startsWith(
+      HAIRLAB_API_BASE_URL
+    );
+
+  const isLoginRequest =
+    request.url.endsWith(
+      '/auth/login'
+    );
+
+  if (
+    token &&
+    isHairLabApi &&
+    !isLoginRequest
+  ) {
+
+    request =
+      request.clone({
+
+        setHeaders: {
+
+          Authorization:
+            `Bearer ${token}`
+        }
+      });
   }
 
-  // Continua la catena degli interceptor e invia la richiesta.
-  return next(req);
+  return next(
+    request
+  ).pipe(
+
+    catchError(
+      (
+        error:
+          HttpErrorResponse
+      ) => {
+
+        /*
+         * Un 401 sulle API protette indica
+         * normalmente token mancante,
+         * scaduto o non più valido.
+         *
+         * Non eseguiamo logout sul login stesso:
+         * credenziali errate devono semplicemente
+         * essere mostrate come errore di login.
+         */
+        if (
+          error.status === 401 &&
+          isHairLabApi &&
+          !isLoginRequest
+        ) {
+
+          authService.logout();
+        }
+
+        return throwError(
+          () => error
+        );
+      }
+    )
+  );
 };

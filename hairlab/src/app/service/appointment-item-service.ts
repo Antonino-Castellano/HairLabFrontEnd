@@ -1,38 +1,60 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { AppointmentItem } from '../models/appointment-item';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  AppointmentItem
+} from '../models/appointment-item';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentItemService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/appointment-item';
+    hairLabApi('appointment-item');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<AppointmentItem[]> {
+  getAll():
+    Observable<AppointmentItem[]> {
 
     return this.http.get<AppointmentItem[]>(
       this.apiUrl
     );
   }
 
-
-  getById(id: number): Observable<AppointmentItem> {
+  getById(
+    id: number
+  ): Observable<AppointmentItem> {
 
     return this.http.get<AppointmentItem>(
       `${this.apiUrl}/${id}`
     );
   }
 
+  getByAppointmentId(
+    appointmentId: number
+  ): Observable<AppointmentItem[]> {
+
+    return this.http.get<AppointmentItem[]>(
+      `${this.apiUrl}/appointment/${appointmentId}`
+    );
+  }
 
   insert(
     item: AppointmentItem
@@ -43,7 +65,6 @@ export class AppointmentItemService {
       item
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +77,12 @@ export class AppointmentItemService {
     );
   }
 
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
-
 }

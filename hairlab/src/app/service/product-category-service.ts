@@ -1,38 +1,59 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { ProductCategory } from '../models/product-category';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  ProductCategory
+} from '../models/product-category';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductCategoryService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/product-category';
+    hairLabApi('product-category');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<ProductCategory[]> {
+  getAll():
+    Observable<ProductCategory[]> {
 
     return this.http.get<ProductCategory[]>(
       this.apiUrl
     );
   }
 
+  getActive():
+    Observable<ProductCategory[]> {
 
-  getById(id: number): Observable<ProductCategory> {
+    return this.http.get<ProductCategory[]>(
+      `${this.apiUrl}/active`
+    );
+  }
+
+  getById(
+    id: number
+  ): Observable<ProductCategory> {
 
     return this.http.get<ProductCategory>(
       `${this.apiUrl}/${id}`
     );
   }
-
 
   insert(
     category: ProductCategory
@@ -43,7 +64,6 @@ export class ProductCategoryService {
       category
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +76,22 @@ export class ProductCategoryService {
     );
   }
 
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
 
+  activate(
+    id: number
+  ): Observable<ProductCategory> {
+
+    return this.http.patch<ProductCategory>(
+      `${this.apiUrl}/${id}/activate`,
+      {}
+    );
+  }
 }

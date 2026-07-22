@@ -1,33 +1,43 @@
 /**
  * Traduzioni visuali degli Enum.
  *
- * Il backend continua a utilizzare
- * valori tecnici inglesi.
+ * Il backend mantiene valori tecnici
+ * in inglese.
  *
- * Il frontend visualizza
- * etichette comprensibili in italiano.
+ * Il frontend mostra invece
+ * etichette leggibili in italiano.
  */
-
 export const PROFILE_ENUM_LABELS:
   Record<string, string> = {
 
   /*
-   * FORMA VISO.
+   * ========================================================
+   * FORMA VISO
+   * ========================================================
    */
+
   OVAL: 'Ovale',
   ROUND: 'Rotondo',
   SQUARE: 'Quadrato',
   RECTANGULAR: 'Rettangolare',
   OBLONG: 'Allungato',
   HEART: 'A cuore',
+
   INVERTED_TRIANGLE:
     'Triangolo inverso',
-  TRIANGULAR: 'Triangolare',
-  DIAMOND: 'Diamante',
+
+  TRIANGULAR:
+    'Triangolare',
+
+  DIAMOND:
+    'Diamante',
 
   /*
-   * VALORI GENERICI.
+   * ========================================================
+   * VALORI GENERICI
+   * ========================================================
    */
+
   LOW: 'Basso',
   MEDIUM: 'Medio',
   HIGH: 'Alto',
@@ -45,31 +55,64 @@ export const PROFILE_ENUM_LABELS:
   THICK: 'Spesso',
 
   /*
-   * ATTACCATURA.
+   * ========================================================
+   * ATTACCATURA
+   * ========================================================
    */
-  STRAIGHT: 'Dritto',
-  ROUNDED: 'Arrotondato',
+
+  STRAIGHT:
+    'Dritto',
+
+  ROUNDED:
+    'Arrotondato',
+
   WIDOW_PEAK:
     'Punta della vedova',
-  M_SHAPED: 'Forma a M',
-  IRREGULAR: 'Irregolare',
+
+  M_SHAPED:
+    'Forma a M',
+
+  IRREGULAR:
+    'Irregolare',
 
   /*
-   * OCCHI.
+   * ========================================================
+   * OCCHI
+   * ========================================================
    */
-  ALMOND: 'A mandorla',
-  MONOLID: 'Monopalpebra',
-  HOODED: 'Incappucciati',
-  DEEP_SET: 'Infossati',
-  PROTRUDING: 'Prominenti',
 
-  UPTURNED: 'Ascendente',
-  NEUTRAL: 'Neutro',
-  DOWNTURNED: 'Discendente',
+  ALMOND:
+    'A mandorla',
 
-  CLOSE_SET: 'Ravvicinati',
-  PROPORTIONATE: 'Proporzionati',
-  WIDE_SET: 'Distanziati',
+  MONOLID:
+    'Monopalpebra',
+
+  HOODED:
+    'Incappucciati',
+
+  DEEP_SET:
+    'Infossati',
+
+  PROTRUDING:
+    'Prominenti',
+
+  UPTURNED:
+    'Ascendente',
+
+  NEUTRAL:
+    'Neutro',
+
+  DOWNTURNED:
+    'Discendente',
+
+  CLOSE_SET:
+    'Ravvicinati',
+
+  PROPORTIONATE:
+    'Proporzionati',
+
+  WIDE_SET:
+    'Distanziati',
 
   VERY_DARK_BROWN:
     'Castano molto scuro',
@@ -108,8 +151,11 @@ export const PROFILE_ENUM_LABELS:
     'Altro',
 
   /*
-   * SOPRACCIGLIA.
+   * ========================================================
+   * SOPRACCIGLIA
+   * ========================================================
    */
+
   SOFT_ARCH:
     'Arco morbido',
 
@@ -120,16 +166,24 @@ export const PROFILE_ENUM_LABELS:
     'Angolare',
 
   /*
-   * NASO.
+   * ========================================================
+   * NASO
+   * ========================================================
    */
+
   CONVEX:
     'Convesso',
 
   CONCAVE:
     'Concavo',
 
+  /*
+   * Corretto:
+   * prima l'ultima lettera era una
+   * omicron greca anziché una normale "o".
+   */
   AQUILINE:
-    'Aquilinο',
+    'Aquilino',
 
   FINE:
     'Fine',
@@ -138,8 +192,11 @@ export const PROFILE_ENUM_LABELS:
     'Verso il basso',
 
   /*
-   * MENTO.
+   * ========================================================
+   * MENTO
+   * ========================================================
    */
+
   POINTED:
     'Appuntito',
 
@@ -156,8 +213,11 @@ export const PROFILE_ENUM_LABELS:
     'Prominente',
 
   /*
-   * LABBRA.
+   * ========================================================
+   * LABBRA
+   * ========================================================
    */
+
   FULL:
     'Piene',
 
@@ -174,8 +234,11 @@ export const PROFILE_ENUM_LABELS:
     'Arco di Cupido definito',
 
   /*
-   * PELLE.
+   * ========================================================
+   * PELLE
+   * ========================================================
    */
+
   VERY_LIGHT:
     'Molto chiara',
 
@@ -195,8 +258,11 @@ export const PROFILE_ENUM_LABELS:
     'Molto scura',
 
   /*
-   * SOTTOTONO.
+   * ========================================================
+   * SOTTOTONO
+   * ========================================================
    */
+
   COOL:
     'Freddo',
 
@@ -213,8 +279,11 @@ export const PROFILE_ENUM_LABELS:
     'Oliva',
 
   /*
-   * STAGIONI.
+   * ========================================================
+   * STAGIONI
+   * ========================================================
    */
+
   SPRING:
     'Primavera',
 
@@ -264,14 +333,20 @@ export const PROFILE_ENUM_LABELS:
     'Inverno profondo',
 
   /*
-   * PROFONDITÀ.
+   * ========================================================
+   * PROFONDITÀ
+   * ========================================================
    */
+
   DEEP:
     'Profondo',
 
   /*
-   * CROMA.
+   * ========================================================
+   * CROMA
+   * ========================================================
    */
+
   SOFT:
     'Soft',
 
@@ -279,8 +354,11 @@ export const PROFILE_ENUM_LABELS:
     'Brillante',
 
   /*
-   * METALLI.
+   * ========================================================
+   * METALLI
+   * ========================================================
    */
+
   SILVER:
     'Argento',
 
@@ -301,19 +379,22 @@ export const PROFILE_ENUM_LABELS:
 };
 
 /**
- * Funzione riutilizzabile.
+ * Restituisce la traduzione italiana
+ * associata a un valore Enum.
  *
- * Restituisce la traduzione italiana.
- *
- * Se manca una traduzione,
- * restituisce comunque il valore originale.
+ * Se il valore non è presente
+ * nel dizionario viene restituito
+ * il valore originale.
  */
 export function getProfileEnumLabel(
   value:
-    string | null | undefined
+    string |
+    null |
+    undefined
 ): string {
 
   if (!value) {
+
     return 'Non specificato';
   }
 

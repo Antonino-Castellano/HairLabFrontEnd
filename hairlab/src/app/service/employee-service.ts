@@ -1,38 +1,59 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { Employee } from '../models/employee';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  Employee
+} from '../models/employee';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/employee';
+    hairLabApi('employee');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<Employee[]> {
+  getAll():
+    Observable<Employee[]> {
 
     return this.http.get<Employee[]>(
       this.apiUrl
     );
   }
 
+  getActive():
+    Observable<Employee[]> {
 
-  getById(id: number): Observable<Employee> {
+    return this.http.get<Employee[]>(
+      `${this.apiUrl}/active`
+    );
+  }
+
+  getById(
+    id: number
+  ): Observable<Employee> {
 
     return this.http.get<Employee>(
       `${this.apiUrl}/${id}`
     );
   }
-
 
   insert(
     employee: Employee
@@ -43,7 +64,6 @@ export class EmployeeService {
       employee
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +76,26 @@ export class EmployeeService {
     );
   }
 
+  /**
+   * Il backend esegue soft-delete:
+   * active = false.
+   */
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
 
+  activate(
+    id: number
+  ): Observable<Employee> {
+
+    return this.http.patch<Employee>(
+      `${this.apiUrl}/${id}/activate`,
+      {}
+    );
+  }
 }

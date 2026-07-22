@@ -12,13 +12,13 @@ import {
 } from 'rxjs';
 
 import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
   FaceProfile
 } from '../models/face-profile';
 
-/**
- * Service Angular dedicato
- * alle API FaceProfile.
- */
 @Injectable({
   providedIn: 'root'
 })
@@ -27,93 +27,61 @@ export class FaceProfileService {
   private readonly http =
     inject(HttpClient);
 
-  /**
-   * Endpoint backend.
-   */
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/face-profile';
+    hairLabApi('face-profile');
 
-  /**
-   * Recupera tutti i profili.
-   */
   getAll():
     Observable<FaceProfile[]> {
 
-    return this.http.get<
-      FaceProfile[]
-    >(
+    return this.http.get<FaceProfile[]>(
       this.apiUrl
     );
   }
 
-  /**
-   * Recupera un profilo tramite ID.
-   */
   getById(
     id: number
   ): Observable<FaceProfile> {
 
-    return this.http.get<
-      FaceProfile
-    >(
+    return this.http.get<FaceProfile>(
       `${this.apiUrl}/${id}`
     );
   }
 
-  /**
-   * Recupera il profilo
-   * associato a una cliente.
-   */
   getByCustomerId(
     customerId: number
   ): Observable<FaceProfile> {
 
-    return this.http.get<
-      FaceProfile
-    >(
+    return this.http.get<FaceProfile>(
       `${this.apiUrl}/customer/${customerId}`
     );
   }
 
-  /**
-   * Crea un nuovo profilo.
-   */
   insert(
-    faceProfile: FaceProfile
+    profile: FaceProfile
   ): Observable<FaceProfile> {
 
-    return this.http.post<
-      FaceProfile
-    >(
+    return this.http.post<FaceProfile>(
       this.apiUrl,
-      faceProfile
+      profile
     );
   }
 
-  /**
-   * Modifica un profilo.
-   */
   update(
     id: number,
-    faceProfile: FaceProfile
+    profile: FaceProfile
   ): Observable<FaceProfile> {
 
-    return this.http.put<
-      FaceProfile
-    >(
+    return this.http.put<FaceProfile>(
       `${this.apiUrl}/${id}`,
-      faceProfile
+      profile
     );
   }
 
-  /**
-   * Elimina un profilo.
-   */
   delete(
     id: number
-  ): Observable<void> {
+  ): Observable<unknown> {
 
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }

@@ -1,22 +1,73 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient
+} from '@angular/common/http';
 
-import { Dashboard } from './dashboard';
+import {
+  ComponentFixture,
+  TestBed
+} from '@angular/core/testing';
 
-describe('Dashboard', () => {
-  let component: Dashboard;
-  let fixture: ComponentFixture<Dashboard>;
+import {
+  provideRouter
+} from '@angular/router';
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Dashboard],
-    }).compileComponents();
+import {
+  DashboardComponent
+} from './dashboard';
 
-    fixture = TestBed.createComponent(Dashboard);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
+describe(
+  'DashboardComponent',
+  () => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    let component:
+      DashboardComponent;
+
+    let fixture:
+      ComponentFixture<
+        DashboardComponent
+      >;
+
+    beforeEach(
+      async () => {
+
+        await TestBed
+          .configureTestingModule({
+
+            imports: [
+              DashboardComponent
+            ],
+
+            providers: [
+
+              provideHttpClient(),
+
+              provideRouter([])
+
+            ]
+
+          })
+          .compileComponents();
+
+        fixture =
+          TestBed.createComponent(
+            DashboardComponent
+          );
+
+        component =
+          fixture.componentInstance;
+
+        fixture.detectChanges();
+      }
+    );
+
+    it(
+      'should create',
+      () => {
+
+        expect(
+          component
+        ).toBeTruthy();
+      }
+    );
+  }
+);

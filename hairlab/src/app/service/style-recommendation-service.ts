@@ -12,16 +12,13 @@ import {
 } from 'rxjs';
 
 import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
   StyleRecommendation
 } from '../models/style-recommendation';
 
-/**
- * Service del motore suggerimenti HairLab.
- *
- * Non esegue insert/update/delete perché
- * le raccomandazioni vengono calcolate
- * dinamicamente dal backend.
- */
 @Injectable({
   providedIn: 'root'
 })
@@ -31,19 +28,13 @@ export class StyleRecommendationService {
     inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/style-recommendation';
+    hairLabApi('style-recommendation');
 
-  /**
-   * Genera/recupera i suggerimenti
-   * aggiornati per una cliente.
-   */
   getByCustomerId(
     customerId: number
   ): Observable<StyleRecommendation> {
 
-    return this.http.get<
-      StyleRecommendation
-    >(
+    return this.http.get<StyleRecommendation>(
       `${this.apiUrl}/customer/${customerId}`
     );
   }

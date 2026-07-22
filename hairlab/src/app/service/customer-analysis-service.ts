@@ -12,21 +12,23 @@ import {
 } from 'rxjs';
 
 import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
   CustomerAnalysis
 } from '../models/customer-analysis';
 
 /**
- * Service dedicato alla scheda
- * tecnica aggregata della cliente.
+ * Service aggregatore della scheda cliente.
  *
- * Permette di recuperare con una
- * singola richiesta:
+ * Nome corretto:
  *
- * - Customer;
- * - HairProfile;
- * - FaceProfile;
- * - ColorAnalysis;
- * - StyleRecommendation.
+ * customer-analysis-service.ts
+ *
+ * Eliminare il vecchio file:
+ *
+ * costumer-analysis-service.ts
  */
 @Injectable({
   providedIn: 'root'
@@ -37,19 +39,13 @@ export class CustomerAnalysisService {
     inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/customer-analysis';
+    hairLabApi('customer-analysis');
 
-  /**
-   * Recupera l'intera scheda tecnica
-   * di una cliente.
-   */
   getByCustomerId(
     customerId: number
   ): Observable<CustomerAnalysis> {
 
-    return this.http.get<
-      CustomerAnalysis
-    >(
+    return this.http.get<CustomerAnalysis>(
       `${this.apiUrl}/customer/${customerId}`
     );
   }

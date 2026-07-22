@@ -1,38 +1,68 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpClient
+} from '@angular/common/http';
 
-import { SalonProduct } from '../models/salon-product';
+import {
+  inject,
+  Injectable
+} from '@angular/core';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
+  SalonProduct
+} from '../models/salon-product';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalonProductService {
 
+  private readonly http =
+    inject(HttpClient);
+
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/salon-product';
+    hairLabApi('salon-product');
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
-  getAll(): Observable<SalonProduct[]> {
+  getAll():
+    Observable<SalonProduct[]> {
 
     return this.http.get<SalonProduct[]>(
       this.apiUrl
     );
   }
 
+  getActive():
+    Observable<SalonProduct[]> {
 
-  getById(id: number): Observable<SalonProduct> {
+    return this.http.get<SalonProduct[]>(
+      `${this.apiUrl}/active`
+    );
+  }
+
+  getByCategoryId(
+    categoryId: number
+  ): Observable<SalonProduct[]> {
+
+    return this.http.get<SalonProduct[]>(
+      `${this.apiUrl}/category/${categoryId}`
+    );
+  }
+
+  getById(
+    id: number
+  ): Observable<SalonProduct> {
 
     return this.http.get<SalonProduct>(
       `${this.apiUrl}/${id}`
     );
   }
-
 
   insert(
     product: SalonProduct
@@ -43,7 +73,6 @@ export class SalonProductService {
       product
     );
   }
-
 
   update(
     id: number,
@@ -56,12 +85,22 @@ export class SalonProductService {
     );
   }
 
+  delete(
+    id: number
+  ): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
 
+  activate(
+    id: number
+  ): Observable<SalonProduct> {
+
+    return this.http.patch<SalonProduct>(
+      `${this.apiUrl}/${id}/activate`,
+      {}
+    );
+  }
 }

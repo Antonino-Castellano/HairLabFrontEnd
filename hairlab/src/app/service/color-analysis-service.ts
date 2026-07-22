@@ -12,13 +12,13 @@ import {
 } from 'rxjs';
 
 import {
+  hairLabApi
+} from '../core/config/api.config';
+
+import {
   ColorAnalysis
 } from '../models/color-analysis';
 
-/**
- * Service Angular dedicato
- * all'analisi cromatica.
- */
 @Injectable({
   providedIn: 'root'
 })
@@ -28,14 +28,12 @@ export class ColorAnalysisService {
     inject(HttpClient);
 
   private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/color-analysis';
+    hairLabApi('color-analysis');
 
   getAll():
     Observable<ColorAnalysis[]> {
 
-    return this.http.get<
-      ColorAnalysis[]
-    >(
+    return this.http.get<ColorAnalysis[]>(
       this.apiUrl
     );
   }
@@ -44,9 +42,7 @@ export class ColorAnalysisService {
     id: number
   ): Observable<ColorAnalysis> {
 
-    return this.http.get<
-      ColorAnalysis
-    >(
+    return this.http.get<ColorAnalysis>(
       `${this.apiUrl}/${id}`
     );
   }
@@ -55,9 +51,7 @@ export class ColorAnalysisService {
     customerId: number
   ): Observable<ColorAnalysis> {
 
-    return this.http.get<
-      ColorAnalysis
-    >(
+    return this.http.get<ColorAnalysis>(
       `${this.apiUrl}/customer/${customerId}`
     );
   }
@@ -66,9 +60,7 @@ export class ColorAnalysisService {
     analysis: ColorAnalysis
   ): Observable<ColorAnalysis> {
 
-    return this.http.post<
-      ColorAnalysis
-    >(
+    return this.http.post<ColorAnalysis>(
       this.apiUrl,
       analysis
     );
@@ -79,9 +71,7 @@ export class ColorAnalysisService {
     analysis: ColorAnalysis
   ): Observable<ColorAnalysis> {
 
-    return this.http.put<
-      ColorAnalysis
-    >(
+    return this.http.put<ColorAnalysis>(
       `${this.apiUrl}/${id}`,
       analysis
     );
@@ -89,9 +79,9 @@ export class ColorAnalysisService {
 
   delete(
     id: number
-  ): Observable<void> {
+  ): Observable<unknown> {
 
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }
