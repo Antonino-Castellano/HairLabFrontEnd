@@ -6,8 +6,14 @@ import { jwtInterceptor } from './core/auth/jwt-auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    // Registra la gestione globale degli errori del browser.
     provideBrowserGlobalErrorListeners(),
+
+    // Attiva il Router utilizzando le route definite in app.routes.ts.
     provideRouter(routes),
+
+    // Rende disponibile HttpClient in tutta l'applicazione
+    // e fa passare le richieste HTTP attraverso il JWT interceptor.
     provideHttpClient(
       withInterceptors([jwtInterceptor])
     )

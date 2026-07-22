@@ -1,0 +1,533 @@
+<!--
+  Form utilizzato sia per creare
+  sia per modificare un HairProfile.
+-->
+<section class="hair-profile-form-page">
+
+  <!-- =====================================================
+       INTESTAZIONE
+       ===================================================== -->
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        PROFILO TECNICO
+      </span>
+
+      <h1>
+        {{
+          isEditMode()
+            ? 'Modifica profilo capelli'
+            : 'Nuovo profilo capelli'
+        }}
+      </h1>
+
+      <p>
+        Registra le caratteristiche tecniche
+        dei capelli del cliente.
+      </p>
+
+    </div>
+
+    <a
+      class="back-button"
+      [routerLink]="[
+        '/customers',
+        customerId
+      ]">
+      ← Torna al cliente
+    </a>
+
+  </div>
+
+  <!-- =====================================================
+       ERRORE
+       ===================================================== -->
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <!-- =====================================================
+       FORM
+       ===================================================== -->
+  <form
+    class="form-card"
+    [formGroup]="hairProfileForm"
+    (ngSubmit)="submit()">
+
+    <!-- ===================================================
+         ANALISI COLORE
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Analisi colore
+        </h2>
+
+        <p>
+          Seleziona visivamente tono naturale,
+          tono attuale e riflesso principale.
+        </p>
+
+      </div>
+
+      <!-- TONO NATURALE -->
+      <div class="visual-field">
+
+        <label class="field-label">
+          Tono naturale *
+        </label>
+
+        <div class="tone-selector">
+
+          @for (
+            tone of toneLevels;
+            track tone
+          ) {
+
+            <!--
+              Ogni elemento contiene un vero radio button.
+
+              Il radio è nascosto graficamente,
+              ma rimane collegato al Reactive Form.
+            -->
+            <label
+              class="tone-option"
+              [class.selected]="
+                hairProfileForm.controls.naturalTone.value === tone
+              ">
+
+              <input
+                type="radio"
+                formControlName="naturalTone"
+                [value]="tone">
+
+              <!-- Banda colore -->
+              <span
+                class="tone-color"
+                [style.background]="
+                  toneLevelColors[tone]
+                ">
+              </span>
+
+              <!-- Nome italiano -->
+              <span class="tone-name">
+                {{ toneLevelLabels[tone] }}
+              </span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- TONO ATTUALE -->
+      <div class="visual-field">
+
+        <label class="field-label">
+          Tono attuale *
+        </label>
+
+        <div class="tone-selector">
+
+          @for (
+            tone of toneLevels;
+            track tone
+          ) {
+
+            <label
+              class="tone-option"
+              [class.selected]="
+                hairProfileForm.controls.currentTone.value === tone
+              ">
+
+              <input
+                type="radio"
+                formControlName="currentTone"
+                [value]="tone">
+
+              <span
+                class="tone-color"
+                [style.background]="
+                  toneLevelColors[tone]
+                ">
+              </span>
+
+              <span class="tone-name">
+                {{ toneLevelLabels[tone] }}
+              </span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- RIFLESSO -->
+      <div class="visual-field">
+
+        <label class="field-label">
+          Riflesso principale *
+        </label>
+
+        <div class="reflection-selector">
+
+          @for (
+            reflection of reflections;
+            track reflection
+          ) {
+
+            <label
+              class="reflection-option"
+              [class.selected]="
+                hairProfileForm.controls.reflection.value === reflection
+              ">
+
+              <input
+                type="radio"
+                formControlName="reflection"
+                [value]="reflection">
+
+              <span
+                class="reflection-color"
+                [style.background]="
+                  reflectionColors[reflection]
+                ">
+              </span>
+
+              <span>
+                {{ reflectionLabels[reflection] }}
+              </span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         STRUTTURA DEL CAPELLO
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Struttura e condizione
+        </h2>
+
+        <p>
+          Definisci forma, texture, porosità,
+          densità e stato generale del capello.
+        </p>
+
+      </div>
+
+      <div class="form-grid">
+
+        <!-- TIPO CAPELLI -->
+        <div class="form-group">
+
+          <label for="hairType">
+            Tipo capelli *
+          </label>
+
+          <select
+            id="hairType"
+            formControlName="hairType">
+
+            @for (
+              type of hairTypes;
+              track type
+            ) {
+
+              <option [value]="type">
+                {{ hairTypeLabels[type] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+        <!-- TEXTURE -->
+        <div class="form-group">
+
+          <label for="texture">
+            Texture *
+          </label>
+
+          <select
+            id="texture"
+            formControlName="texture">
+
+            @for (
+              texture of textures;
+              track texture
+            ) {
+
+              <option [value]="texture">
+                {{ hairTextureLabels[texture] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+        <!-- POROSITÀ -->
+        <div class="form-group">
+
+          <label for="porosity">
+            Porosità *
+          </label>
+
+          <select
+            id="porosity"
+            formControlName="porosity">
+
+            @for (
+              value of physicalValues;
+              track value
+            ) {
+
+              <option [value]="value">
+                {{ physicalValueLabels[value] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+        <!-- DENSITÀ -->
+        <div class="form-group">
+
+          <label for="density">
+            Densità *
+          </label>
+
+          <select
+            id="density"
+            formControlName="density">
+
+            @for (
+              value of physicalValues;
+              track value
+            ) {
+
+              <option [value]="value">
+                {{ physicalValueLabels[value] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+        <!-- CONDIZIONE DEL CAPELLO -->
+        <div class="form-group">
+
+          <label for="hairCondition">
+            Condizione del capello *
+          </label>
+
+          <select
+            id="hairCondition"
+            formControlName="hairCondition">
+
+            @for (
+              condition of hairConditions;
+              track condition
+            ) {
+
+              <option [value]="condition">
+                {{ hairConditionLabels[condition] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         DIAGNOSI E STORICO
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Diagnosi e storico
+        </h2>
+
+        <p>
+          Inserisci una voce per riga
+          oppure separa le voci con una virgola.
+        </p>
+
+      </div>
+
+      <div class="form-grid textarea-grid">
+
+        <!-- CUTE -->
+        <div class="form-group">
+
+          <label for="scalpConditionText">
+            Condizioni della cute
+          </label>
+
+          <textarea
+            id="scalpConditionText"
+            formControlName="scalpConditionText"
+            rows="5"
+            placeholder="Esempio:&#10;Cute normale&#10;Cute sensibile">
+          </textarea>
+
+        </div>
+
+        <!-- STORICO CHIMICO -->
+        <div class="form-group">
+
+          <label for="chemicalHistoryText">
+            Storico chimico
+          </label>
+
+          <textarea
+            id="chemicalHistoryText"
+            formControlName="chemicalHistoryText"
+            rows="5"
+            placeholder="Esempio:&#10;Colore permanente&#10;Schiariture precedenti">
+          </textarea>
+
+        </div>
+
+        <!-- SENSIBILITÀ -->
+        <div class="form-group">
+
+          <label for="sensitivitiesText">
+            Sensibilità
+          </label>
+
+          <textarea
+            id="sensitivitiesText"
+            formControlName="sensitivitiesText"
+            rows="5"
+            placeholder="Esempio:&#10;Lunghezze sensibilizzate">
+          </textarea>
+
+        </div>
+
+        <!-- CONTROINDICAZIONI -->
+        <div class="form-group">
+
+          <label for="contraindicationsText">
+            Controindicazioni
+          </label>
+
+          <textarea
+            id="contraindicationsText"
+            formControlName="contraindicationsText"
+            rows="5"
+            placeholder="Inserisci eventuali controindicazioni">
+          </textarea>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         NOTE
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Note tecniche
+        </h2>
+
+        <p>
+          Inserisci eventuali osservazioni
+          utili ai professionisti del salone.
+        </p>
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="notes">
+          Note
+        </label>
+
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="6"
+          placeholder="Inserisci osservazioni tecniche sul capello...">
+        </textarea>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         AZIONI
+         =================================================== -->
+    <div class="form-actions">
+
+      <a
+        class="secondary-button"
+        [routerLink]="[
+          '/customers',
+          customerId
+        ]">
+        Annulla
+      </a>
+
+      <button
+        class="primary-button"
+        type="submit"
+        [disabled]="loading()">
+
+        {{
+          loading()
+            ? 'Salvataggio...'
+            : isEditMode()
+              ? 'Salva modifiche'
+              : 'Crea profilo'
+        }}
+
+      </button>
+
+    </div>
+
+  </form>
+
+</section>

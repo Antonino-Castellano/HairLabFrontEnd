@@ -1,51 +1,353 @@
-<div class="dashboard">
-  <header class="dashboard-header">
+<!--
+  Dashboard principale di HairLab.
+
+  Contiene:
+  - riepilogo generale;
+  - statistiche;
+  - agenda;
+  - azioni rapide.
+-->
+<section class="dashboard">
+
+  <!-- =====================================================
+       INTESTAZIONE
+       ===================================================== -->
+  <div class="page-header">
+
     <div>
-      <h1>HairLab</h1>
-      <p>Gestionale salone</p>
+
+      <span class="eyebrow">
+        DASHBOARD
+      </span>
+
+      <h1>
+        Bentornato,
+        {{ user?.username || 'Utente' }}
+      </h1>
+
+      <p>
+        Ecco una panoramica delle attività del tuo salone.
+      </p>
+
     </div>
 
-    <div class="user-area">
-      <span>{{ user?.username }}</span>
-      <span>{{ user?.role }}</span>
-      <button type="button" (click)="logout()">Logout</button>
-    </div>
-  </header>
+    <!--
+      Il modulo Appuntamenti non è ancora stato implementato.
 
-  <main class="dashboard-content">
-    <h2>Dashboard</h2>
-    <p>Benvenuto, {{ user?.username }}</p>
+      Per questo il pulsante rimane temporaneamente disabilitato.
+    -->
+    <button
+      class="primary-button"
+      type="button"
+      disabled>
+      + Nuovo appuntamento
+    </button>
 
-    <div class="cards">
-      <div class="card">
-        <h3>Clienti</h3>
-        <p>Gestione anagrafica e profilo capelli</p>
+  </div>
+
+  <!-- =====================================================
+       STATISTICHE
+       ===================================================== -->
+  <div class="stats-grid">
+
+    <!-- APPUNTAMENTI -->
+    <article class="stat-card">
+
+      <div class="stat-header">
+
+        <span>
+          Appuntamenti oggi
+        </span>
+
+        <div class="stat-icon">
+          ▣
+        </div>
+
       </div>
 
-      <div class="card">
-        <h3>Appuntamenti</h3>
-        <p>Agenda e gestione appuntamenti</p>
+      <!--
+        Verrà collegato ad AppointmentService
+        quando implementeremo il modulo appuntamenti.
+      -->
+      <strong>
+        0
+      </strong>
+
+      <p>
+        Nessun appuntamento programmato
+      </p>
+
+    </article>
+
+    <!-- CLIENTI ATTIVI -->
+    <article class="stat-card">
+
+      <div class="stat-header">
+
+        <span>
+          Clienti attivi
+        </span>
+
+        <div class="stat-icon">
+          ♙
+        </div>
+
       </div>
 
-      <div class="card">
-        <h3>Dipendenti</h3>
-        <p>Operatori e specializzazioni</p>
+      <!--
+        Durante la richiesta HTTP
+        mostriamo temporaneamente "...".
+
+        Quando arrivano i clienti,
+        activeCustomerCount() viene calcolato
+        automaticamente.
+      -->
+      <strong>
+
+        @if (loadingCustomers()) {
+
+          ...
+
+        } @else {
+
+          {{ activeCustomerCount() }}
+
+        }
+
+      </strong>
+
+      <!--
+        Mostriamo anche il numero totale
+        dei clienti registrati.
+      -->
+      <p>
+
+        @if (customerError()) {
+
+          {{ customerError() }}
+
+        } @else {
+
+          {{ totalCustomerCount() }}
+          clienti registrati nel gestionale
+
+        }
+
+      </p>
+
+    </article>
+
+    <!-- OPERATORI -->
+    <article class="stat-card">
+
+      <div class="stat-header">
+
+        <span>
+          Operatori
+        </span>
+
+        <div class="stat-icon">
+          ♢
+        </div>
+
       </div>
 
-      <div class="card">
-        <h3>Consulenze</h3>
-        <p>Diagnosi e consulenze tecniche</p>
+      <!--
+        Verrà collegato ad EmployeeService
+        quando implementeremo Employee.
+      -->
+      <strong>
+        0
+      </strong>
+
+      <p>
+        Dipendenti attualmente attivi
+      </p>
+
+    </article>
+
+    <!-- CONSULENZE -->
+    <article class="stat-card">
+
+      <div class="stat-header">
+
+        <span>
+          Consulenze
+        </span>
+
+        <div class="stat-icon">
+          ◫
+        </div>
+
       </div>
 
-      <div class="card">
-        <h3>Color Lab</h3>
-        <p>Formule colore e tinte</p>
+      <!--
+        Verrà collegato a ConsultationService
+        quando implementeremo il modulo Consulenze.
+      -->
+      <strong>
+        0
+      </strong>
+
+      <p>
+        Consulenze registrate
+      </p>
+
+    </article>
+
+  </div>
+
+  <!-- =====================================================
+       PARTE INFERIORE DELLA DASHBOARD
+       ===================================================== -->
+  <div class="dashboard-grid">
+
+    <!-- ===================================================
+         AGENDA
+         =================================================== -->
+    <section class="panel agenda-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2>
+            Agenda di oggi
+          </h2>
+
+          <p>
+            Gli appuntamenti programmati per la giornata.
+          </p>
+
+        </div>
+
+        <!--
+          Verrà attivato quando creeremo
+          la pagina Agenda.
+        -->
+        <button
+          class="text-button"
+          type="button"
+          disabled>
+          Vedi agenda
+        </button>
+
       </div>
 
-      <div class="card">
-        <h3>Servizi</h3>
-        <p>Categorie e listino servizi</p>
+      <!--
+        Stato temporaneo.
+
+        Più avanti qui visualizzeremo
+        gli appuntamenti reali della giornata.
+      -->
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          ▣
+        </div>
+
+        <h3>
+          Nessun appuntamento
+        </h3>
+
+        <p>
+          Quando saranno presenti appuntamenti
+          compariranno qui.
+        </p>
+
       </div>
-    </div>
-  </main>
-</div>
+
+    </section>
+
+    <!-- ===================================================
+         AZIONI RAPIDE
+         =================================================== -->
+    <aside class="panel quick-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2>
+            Azioni rapide
+          </h2>
+
+          <p>
+            Le operazioni utilizzate più spesso.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="quick-actions">
+
+        <!--
+          Questa azione è ora funzionante.
+
+          routerLink porta direttamente alla route:
+
+          /customers/new
+
+          che apre CustomerFormComponent
+          in modalità creazione.
+        -->
+        <a
+          class="quick-action"
+          routerLink="/customers/new">
+
+          <span>
+            +
+          </span>
+
+          Nuovo cliente
+
+        </a>
+
+        <!--
+          Queste azioni verranno attivate
+          quando implementeremo i relativi moduli.
+        -->
+        <button
+          type="button"
+          disabled>
+
+          <span>
+            +
+          </span>
+
+          Nuovo appuntamento
+
+        </button>
+
+        <button
+          type="button"
+          disabled>
+
+          <span>
+            +
+          </span>
+
+          Nuova consulenza
+
+        </button>
+
+        <button
+          type="button"
+          disabled>
+
+          <span>
+            +
+          </span>
+
+          Nuova formula colore
+
+        </button>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</section>

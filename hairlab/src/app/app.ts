@@ -1,8 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoginComponent } from './features/login/login';
-import { DashboardComponent } from './features/dashboard/dashboard';
-
 
 @Component({
   selector: 'app-root',
@@ -10,6 +7,4 @@ import { DashboardComponent } from './features/dashboard/dashboard';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('hairlab');
-}
+export class App {}

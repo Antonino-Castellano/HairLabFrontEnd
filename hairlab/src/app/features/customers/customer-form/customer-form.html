@@ -1,0 +1,393 @@
+<!--
+  Pagina utilizzata sia per creare
+  sia per modificare un cliente.
+-->
+<section class="customer-form-page">
+
+  <!-- =====================================================
+       INTESTAZIONE
+       ===================================================== -->
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        CLIENTI
+      </span>
+
+      <h1>
+        {{
+          isEditMode()
+            ? 'Modifica cliente'
+            : 'Nuovo cliente'
+        }}
+      </h1>
+
+      <p>
+        Inserisci i dati anagrafici
+        e la fotografia del cliente.
+      </p>
+
+    </div>
+
+    <a
+      class="back-button"
+      routerLink="/customers">
+      ← Torna ai clienti
+    </a>
+
+  </div>
+
+  <!-- =====================================================
+       ERRORE
+       ===================================================== -->
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <!-- =====================================================
+       FORM
+       ===================================================== -->
+  <form
+    class="form-card"
+    [formGroup]="customerForm"
+    (ngSubmit)="submit()">
+
+    <!-- ===================================================
+         FOTO PROFILO
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Foto cliente
+        </h2>
+
+        <p>
+          Aggiungi una fotografia per riconoscere
+          rapidamente la cliente nel gestionale.
+        </p>
+
+      </div>
+
+      <div class="photo-editor">
+
+        <!--
+          Anteprima dell'avatar.
+
+          Se esiste profileImage mostriamo la foto.
+
+          Altrimenti utilizziamo le iniziali.
+        -->
+        <div class="photo-preview">
+
+          @if (profileImage()) {
+
+            <img
+              [src]="profileImage()"
+              alt="Foto profilo cliente">
+
+          } @else {
+
+            <span>
+              {{ getPreviewInitials() }}
+            </span>
+
+          }
+
+        </div>
+
+        <div class="photo-controls">
+
+          <div>
+
+            <strong>
+              Fotografia profilo
+            </strong>
+
+            <p>
+              JPG, PNG o altra immagine.
+              Verrà ritagliata automaticamente
+              in formato quadrato 400 × 400.
+            </p>
+
+          </div>
+
+          <!--
+            Input file nascosto.
+
+            Il pulsante sottostante richiama
+            fileInput.click().
+          -->
+          <input
+            #fileInput
+            class="hidden-file-input"
+            type="file"
+            accept="image/*"
+            (change)="onImageSelected($event)">
+
+          <div class="photo-actions">
+
+            <button
+              class="secondary-button"
+              type="button"
+              [disabled]="processingImage()"
+              (click)="fileInput.click()">
+
+              {{
+                processingImage()
+                  ? 'Elaborazione...'
+                  : profileImage()
+                    ? 'Cambia foto'
+                    : 'Scegli foto'
+              }}
+
+            </button>
+
+            @if (profileImage()) {
+
+              <button
+                class="remove-photo-button"
+                type="button"
+                (click)="removeImage()">
+                Rimuovi foto
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         DATI ANAGRAFICI
+         =================================================== -->
+    <section class="form-section">
+
+      <div class="section-title">
+
+        <h2>
+          Dati anagrafici
+        </h2>
+
+        <p>
+          Informazioni personali e recapiti del cliente.
+        </p>
+
+      </div>
+
+      <div class="form-grid">
+
+        <!-- NOME -->
+        <div class="form-group">
+
+          <label for="firstName">
+            Nome *
+          </label>
+
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Nome">
+
+          @if (
+            customerForm.controls.firstName.touched &&
+            customerForm.controls.firstName.invalid
+          ) {
+
+            <span class="field-error">
+              Il nome è obbligatorio.
+            </span>
+
+          }
+
+        </div>
+
+        <!-- COGNOME -->
+        <div class="form-group">
+
+          <label for="lastName">
+            Cognome *
+          </label>
+
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Cognome">
+
+          @if (
+            customerForm.controls.lastName.touched &&
+            customerForm.controls.lastName.invalid
+          ) {
+
+            <span class="field-error">
+              Il cognome è obbligatorio.
+            </span>
+
+          }
+
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+
+          <label for="email">
+            Email *
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="cliente@email.it">
+
+          @if (
+            customerForm.controls.email.touched &&
+            customerForm.controls.email.invalid
+          ) {
+
+            <span class="field-error">
+
+              @if (
+                customerForm.controls.email
+                  .hasError('required')
+              ) {
+
+                L'email è obbligatoria.
+
+              } @else {
+
+                Inserisci un indirizzo email valido.
+
+              }
+
+            </span>
+
+          }
+
+        </div>
+
+        <!-- TELEFONO -->
+        <div class="form-group">
+
+          <label for="phoneNumber">
+            Telefono *
+          </label>
+
+          <input
+            id="phoneNumber"
+            type="tel"
+            formControlName="phoneNumber"
+            placeholder="3331234567">
+
+          @if (
+            customerForm.controls.phoneNumber.touched &&
+            customerForm.controls.phoneNumber.invalid
+          ) {
+
+            <span class="field-error">
+              Il numero di telefono è obbligatorio.
+            </span>
+
+          }
+
+        </div>
+
+        <!-- DATA NASCITA -->
+        <div class="form-group">
+
+          <label for="dob">
+            Data di nascita *
+          </label>
+
+          <input
+            id="dob"
+            type="date"
+            formControlName="dob">
+
+          @if (
+            customerForm.controls.dob.touched &&
+            customerForm.controls.dob.invalid
+          ) {
+
+            <span class="field-error">
+              La data di nascita è obbligatoria.
+            </span>
+
+          }
+
+        </div>
+
+        <!-- STATO -->
+        <div class="form-group">
+
+          <label>
+            Stato cliente
+          </label>
+
+          <label class="switch-row">
+
+            <input
+              type="checkbox"
+              formControlName="active">
+
+            <span class="switch">
+            </span>
+
+            <span>
+              Cliente attivo
+            </span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         AZIONI
+         =================================================== -->
+    <div class="form-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/customers">
+        Annulla
+      </a>
+
+      <button
+        class="primary-button"
+        type="submit"
+        [disabled]="
+          loading() ||
+          processingImage()
+        ">
+
+        {{
+          loading()
+            ? 'Salvataggio...'
+            : isEditMode()
+              ? 'Salva modifiche'
+              : 'Crea cliente'
+        }}
+
+      </button>
+
+    </div>
+
+  </form>
+
+</section>

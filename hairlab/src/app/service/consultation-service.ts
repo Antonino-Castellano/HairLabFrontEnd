@@ -1,67 +1,32 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { Consultation } from '../models/consultation';
+import { Customer } from '../models/customer';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConsultationService {
+export class CustomerService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8080/hairlab/api/customer';
 
-  private readonly apiUrl =
-    'http://localhost:8080/hairlab/api/consultation';
-
-  constructor(
-    private http: HttpClient
-  ) {
+  getAll(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.apiUrl);
   }
 
-
-  getAll(): Observable<Consultation[]> {
-
-    return this.http.get<Consultation[]>(
-      this.apiUrl
-    );
+  getById(id: number): Observable<Customer> {
+    return this.http.get<Customer>(`${this.apiUrl}/${id}`);
   }
 
-
-  getById(id: number): Observable<Consultation> {
-
-    return this.http.get<Consultation>(
-      `${this.apiUrl}/${id}`
-    );
+  insert(customer: Customer): Observable<Customer> {
+    return this.http.post<Customer>(this.apiUrl, customer);
   }
 
-
-  insert(
-    consultation: Consultation
-  ): Observable<Consultation> {
-
-    return this.http.post<Consultation>(
-      this.apiUrl,
-      consultation
-    );
+  update(id: number, customer: Customer): Observable<Customer> {
+    return this.http.put<Customer>(`${this.apiUrl}/${id}`, customer);
   }
-
-
-  update(
-    id: number,
-    consultation: Consultation
-  ): Observable<Consultation> {
-
-    return this.http.put<Consultation>(
-      `${this.apiUrl}/${id}`,
-      consultation
-    );
-  }
-
 
   delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
-      `${this.apiUrl}/${id}`
-    );
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-
 }

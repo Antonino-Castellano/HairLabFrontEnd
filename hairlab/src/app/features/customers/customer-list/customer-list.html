@@ -1,0 +1,251 @@
+<!--
+  Pagina contenente la lista
+  di tutti i clienti.
+-->
+<section class="customers-page">
+
+  <!-- =====================================================
+       INTESTAZIONE
+       ===================================================== -->
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        CLIENTI
+      </span>
+
+      <h1>
+        Gestione clienti
+      </h1>
+
+      <p>
+        Consulta, inserisci e modifica
+        i clienti del salone.
+      </p>
+
+    </div>
+
+    <a
+      class="primary-button"
+      routerLink="/customers/new">
+      + Nuovo cliente
+    </a>
+
+  </div>
+
+  <!-- =====================================================
+       ERRORE
+       ===================================================== -->
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <div class="customer-card">
+
+    <!-- CARICAMENTO -->
+    @if (loading()) {
+
+      <div class="state-message">
+        Caricamento clienti...
+      </div>
+
+    } @else if (
+      customers().length === 0
+    ) {
+
+      <!-- NESSUN CLIENTE -->
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          +
+        </div>
+
+        <h2>
+          Nessun cliente presente
+        </h2>
+
+        <p>
+          Inserisci il primo cliente
+          per iniziare a utilizzare HairLab.
+        </p>
+
+        <a
+          class="primary-button"
+          routerLink="/customers/new">
+          + Nuovo cliente
+        </a>
+
+      </div>
+
+    } @else {
+
+      <!-- =================================================
+           TABELLA CLIENTI
+           ================================================= -->
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Cliente</th>
+              <th>Email</th>
+              <th>Telefono</th>
+              <th>Data di nascita</th>
+              <th>Stato</th>
+              <th>Azioni</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              customer of customers();
+              track customer.id
+            ) {
+
+              <tr>
+
+                <!-- CLIENTE + AVATAR -->
+                <td>
+
+                  <div class="customer-name">
+
+                    <div class="customer-avatar">
+
+                      <!--
+                        Se il cliente possiede una foto
+                        mostriamo l'immagine.
+                      -->
+                      @if (customer.profileImage) {
+
+                        <img
+                          [src]="customer.profileImage"
+                          [alt]="
+                            'Foto di ' +
+                            customer.firstName +
+                            ' ' +
+                            customer.lastName
+                          ">
+
+                      } @else {
+
+                        <!--
+                          In assenza della foto
+                          mostriamo le iniziali.
+                        -->
+                        <span>
+                          {{ getCustomerInitials(customer) }}
+                        </span>
+
+                      }
+
+                    </div>
+
+                    <div class="customer-identity">
+
+                      <strong>
+                        {{ customer.firstName }}
+                        {{ customer.lastName }}
+                      </strong>
+
+                      <span>
+                        ID #{{ customer.id }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <!-- EMAIL -->
+                <td>
+                  {{ customer.email }}
+                </td>
+
+                <!-- TELEFONO -->
+                <td>
+                  {{ customer.phoneNumber }}
+                </td>
+
+                <!-- DATA NASCITA -->
+                <td>
+                  {{ customer.dob }}
+                </td>
+
+                <!-- STATO -->
+                <td>
+
+                  <span
+                    class="status"
+                    [class.active]="customer.active"
+                    [class.inactive]="!customer.active">
+
+                    {{
+                      customer.active
+                        ? 'Attivo'
+                        : 'Non attivo'
+                    }}
+
+                  </span>
+
+                </td>
+
+                <!-- AZIONI CRUD -->
+                <td>
+
+                  <div class="actions">
+
+                    <a
+                      class="action-button"
+                      [routerLink]="[
+                        '/customers',
+                        customer.id
+                      ]">
+                      Dettagli
+                    </a>
+
+                    <a
+                      class="action-button"
+                      [routerLink]="[
+                        '/customers',
+                        customer.id,
+                        'edit'
+                      ]">
+                      Modifica
+                    </a>
+
+                    <button
+                      class="action-button delete"
+                      type="button"
+                      (click)="deleteCustomer(customer)">
+                      Elimina
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

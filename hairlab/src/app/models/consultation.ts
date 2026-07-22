@@ -1,5 +1,5 @@
-import { ConsultationType } from './enums/consultationType';
-import { FeasibilityStatus } from './enums/feasibilityStatus';
+import { ConsultationType } from './enums/consultation-type';
+import { FeasibilityStatus } from './enums/feasibility-status';
 
 export interface Consultation {
 

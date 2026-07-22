@@ -1,0 +1,284 @@
+/*
+ * Il componente occupa tutta la larghezza
+ * disponibile nella griglia del dettaglio cliente.
+ */
+:host {
+  display: block;
+  grid-column: 1 / -1;
+}
+
+/*
+ * Card principale.
+ */
+.hair-profile-card {
+  overflow: hidden;
+  border: 1px solid #ebe5e1;
+  border-radius: 13px;
+  background: white;
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
+}
+
+/*
+ * Intestazione.
+ */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px;
+  border-bottom: 1px solid #eee9e6;
+}
+
+.eyebrow {
+  color: #a06f50;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.section-header h2 {
+  margin: 6px 0 5px;
+  color: #3b332f;
+  font-size: 19px;
+}
+
+.section-header p {
+  margin: 0;
+  color: #958a84;
+  font-size: 12px;
+}
+
+/*
+ * Pulsanti.
+ */
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.primary-button,
+.secondary-button,
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 0;
+  background: #3b312c;
+  color: white;
+}
+
+.secondary-button {
+  border: 1px solid #ddd4ce;
+  background: white;
+  color: #675a53;
+}
+
+.danger-button {
+  border: 1px solid #edcccc;
+  background: #fff5f5;
+  color: #a54242;
+}
+
+/*
+ * Griglia dei dati tecnici.
+ */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: #eee9e6;
+}
+
+.profile-item {
+  min-height: 105px;
+  padding: 20px;
+  background: white;
+}
+
+.profile-label {
+  display: block;
+  margin-bottom: 9px;
+  color: #9a8f88;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.profile-item strong {
+  color: #4a403a;
+  font-size: 13px;
+}
+
+/*
+ * Rappresentazione visiva dell'altezza di tono.
+ */
+.tone-value {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tone-band {
+  width: 100%;
+  height: 28px;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+}
+
+/*
+ * Rappresentazione visiva del riflesso.
+ */
+.reflection-value {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.reflection-dot {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+/*
+ * Sezioni tecniche.
+ */
+.technical-section {
+  padding: 20px 24px;
+  border-top: 1px solid #eee9e6;
+}
+
+.technical-section h3 {
+  margin: 0 0 12px;
+  color: #514640;
+  font-size: 13px;
+}
+
+/*
+ * Etichette utilizzate per valori multipli.
+ */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #f3ece7;
+  color: #765846;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tag.warning {
+  background: #fff4d9;
+  color: #8a6827;
+}
+
+.tag.danger {
+  background: #fbe8e8;
+  color: #9a4646;
+}
+
+.empty-text,
+.notes-section p {
+  margin: 0;
+  color: #938881;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/*
+ * Stato vuoto.
+ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 25px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: #f4ece7;
+  color: #966a50;
+  font-size: 21px;
+}
+
+.empty-state h3 {
+  margin: 0;
+  color: #473d38;
+  font-size: 16px;
+}
+
+.empty-state p {
+  max-width: 480px;
+  margin: 8px 0 20px;
+  color: #958a84;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.state-message,
+.error-message {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.error-message {
+  color: #a54242;
+}
+
+/*
+ * Tablet.
+ */
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/*
+ * Smartphone.
+ */
+@media (max-width: 600px) {
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .secondary-button,
+  .danger-button {
+    flex: 1;
+  }
+}

@@ -1,64 +1,360 @@
+/*
+ * Il componente Dashboard occupa
+ * tutta la larghezza disponibile.
+ */
+:host {
+  display: block;
+}
+
+/*
+ * Contenitore principale.
+ */
 .dashboard {
-  min-height: 100vh;
-  background: #f5f5f5;
+  max-width: 1500px;
+  margin: 0 auto;
 }
 
-.dashboard-header {
+/*
+ * ==========================================================
+ * INTESTAZIONE
+ * ==========================================================
+ */
+.page-header {
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px 32px;
-  background: white;
-  border-bottom: 1px solid #ddd;
+  gap: 20px;
+  margin-bottom: 28px;
 }
 
-.dashboard-header h1 {
+.eyebrow {
+  color: #a06f50;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.page-header h1 {
+  margin: 6px 0 7px;
+  color: #302925;
+  font-size: 30px;
+  letter-spacing: -0.7px;
+}
+
+.page-header p {
   margin: 0;
+  color: #857a74;
+  font-size: 14px;
 }
 
-.dashboard-header p {
-  margin: 4px 0 0;
-  color: #666;
+/*
+ * Pulsante principale.
+ */
+.primary-button {
+  padding: 11px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: #3b312c;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.user-area {
+.primary-button:disabled {
+  opacity: 0.55;
+}
+
+/*
+ * ==========================================================
+ * STATISTICHE
+ * ==========================================================
+ */
+.stats-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+/*
+ * Singola card statistica.
+ */
+.stat-card {
+  padding: 21px;
+  border: 1px solid #ebe5e1;
+  border-radius: 13px;
+  background: white;
+  box-shadow:
+    0 3px 14px rgba(49, 39, 33, 0.035);
+}
+
+/*
+ * Parte superiore della card.
+ */
+.stat-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  color: #81766f;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.user-area button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  background: #222;
-  color: white;
-  cursor: pointer;
-}
-
-.dashboard-content {
-  padding: 32px;
-}
-
-.cards {
+/*
+ * Icona della statistica.
+ */
+.stat-icon {
+  width: 34px;
+  height: 34px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  place-items: center;
+  border-radius: 9px;
+  background: #f5eee9;
+  color: #946b51;
+  font-size: 16px;
+}
+
+/*
+ * Numero principale della statistica.
+ */
+.stat-card strong {
+  display: block;
+  margin-top: 18px;
+  color: #302925;
+  font-size: 29px;
+}
+
+/*
+ * Descrizione sotto il numero.
+ */
+.stat-card p {
+  margin: 5px 0 0;
+  color: #a0958f;
+  font-size: 11px;
+}
+
+/*
+ * ==========================================================
+ * GRIGLIA INFERIORE
+ * ==========================================================
+ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(280px, 0.8fr);
   gap: 20px;
-  margin-top: 24px;
 }
 
-.card {
-  padding: 24px;
+/*
+ * Card utilizzate per Agenda
+ * e Azioni rapide.
+ */
+.panel {
+  border: 1px solid #ebe5e1;
+  border-radius: 13px;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 3px 14px rgba(49, 39, 33, 0.035);
 }
 
-.card h3 {
-  margin: 0 0 10px;
+/*
+ * Intestazione delle card.
+ */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px;
+  border-bottom: 1px solid #eee9e6;
 }
 
-.card p {
+.panel-header h2 {
   margin: 0;
-  color: #666;
+  color: #342d29;
+  font-size: 16px;
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+  color: #978c85;
+  font-size: 11px;
+}
+
+/*
+ * Pulsante testuale utilizzato per Agenda.
+ */
+.text-button {
+  border: 0;
+  background: transparent;
+  color: #93664a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.text-button:disabled {
+  opacity: 0.55;
+}
+
+/*
+ * ==========================================================
+ * STATO VUOTO AGENDA
+ * ==========================================================
+ */
+.empty-state {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: #f5efeb;
+  color: #a4775b;
+  font-size: 20px;
+}
+
+.empty-state h3 {
+  margin: 0;
+  color: #493f39;
+  font-size: 14px;
+}
+
+.empty-state p {
+  max-width: 290px;
+  margin: 7px 0 0;
+  color: #9c918b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/*
+ * ==========================================================
+ * AZIONI RAPIDE
+ * ==========================================================
+ */
+.quick-actions {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+/*
+ * Stile condiviso da:
+ *
+ * - link funzionanti;
+ * - pulsanti non ancora implementati.
+ */
+.quick-actions button,
+.quick-action {
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 13px;
+  border: 1px solid #e9e2de;
+  border-radius: 9px;
+  background: #fcfbfa;
+  color: #5c5049;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  text-decoration: none;
+}
+
+/*
+ * Icona + delle azioni rapide.
+ */
+.quick-actions button span,
+.quick-action span {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #f0e7e1;
+  color: #96694e;
+}
+
+/*
+ * Il link Nuovo cliente è cliccabile.
+ */
+.quick-action {
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/*
+ * Feedback visivo quando passiamo
+ * sopra un'azione disponibile.
+ */
+.quick-action:hover {
+  transform: translateY(-1px);
+  border-color: #d7c8bf;
+  background: #f8f3f0;
+  box-shadow:
+    0 4px 12px rgba(49, 39, 33, 0.06);
+}
+
+/*
+ * Pulsanti non ancora disponibili.
+ */
+.quick-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/*
+ * ==========================================================
+ * RESPONSIVE TABLET
+ * ==========================================================
+ */
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * ==========================================================
+ * RESPONSIVE SMARTPHONE
+ * ==========================================================
+ */
+@media (max-width: 600px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
 }

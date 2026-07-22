@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ColorFormulaItem } from '../models/colorFormulaItem';
+import { ColorFormulaItem } from '../models/color-formula-item';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import { Oxygen } from './enums/oxygen';
-import { MixingRatio } from './enums/mixingRatio';
-import { ColorFormulaStatus } from './enums/colorFormulaStatus';
+import { MixingRatio } from './enums/mixing-ratio';
+import { ColorFormulaStatus } from './enums/color-formula-status';
 
 export interface ColorFormula {
 

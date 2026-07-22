@@ -1,4 +1,4 @@
-import { JobTitle } from './enums/jobTitle';
+import { JobTitle } from './enums/job-title';
 import { Specialization } from './enums/specialization';
 
 export interface Employee {

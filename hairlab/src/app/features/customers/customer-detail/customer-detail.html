@@ -1,0 +1,315 @@
+<section class="detail-page">
+
+  <!-- =====================================================
+       CARICAMENTO CLIENTE
+       ===================================================== -->
+  @if (loading()) {
+
+    <div class="state-message">
+      Caricamento cliente...
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  } @else if (
+    customer();
+    as selectedCustomer
+  ) {
+
+    <!-- ===================================================
+         HEADER
+         =================================================== -->
+    <div class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          CLIENTE
+        </span>
+
+        <h1>
+          {{ selectedCustomer.firstName }}
+          {{ selectedCustomer.lastName }}
+        </h1>
+
+        <p>
+          Profilo anagrafico e informazioni del cliente.
+        </p>
+
+      </div>
+
+      <div class="header-actions">
+
+        <a
+          class="secondary-button"
+          routerLink="/customers">
+          ← Clienti
+        </a>
+
+        <a
+          class="primary-button"
+          [routerLink]="[
+            '/customers',
+            selectedCustomer.id,
+            'edit'
+          ]">
+          Modifica
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="detail-grid">
+
+      <!-- =================================================
+           PROFILO PRINCIPALE
+           ================================================= -->
+      <section class="detail-card customer-main-card">
+
+        <div class="customer-profile">
+
+          <!--
+            Avatar grande.
+
+            Foto se disponibile,
+            iniziali come fallback.
+          -->
+          <div class="large-avatar">
+
+            @if (
+              selectedCustomer.profileImage
+            ) {
+
+              <img
+                [src]="
+                  selectedCustomer.profileImage
+                "
+                [alt]="
+                  'Foto di ' +
+                  selectedCustomer.firstName +
+                  ' ' +
+                  selectedCustomer.lastName
+                ">
+
+            } @else {
+
+              <span>
+                {{
+                  getCustomerInitials(
+                    selectedCustomer
+                  )
+                }}
+              </span>
+
+            }
+
+          </div>
+
+          <div class="profile-summary">
+
+            <h2>
+              {{ selectedCustomer.firstName }}
+              {{ selectedCustomer.lastName }}
+            </h2>
+
+            <span
+              class="status"
+              [class.active]="
+                selectedCustomer.active
+              "
+              [class.inactive]="
+                !selectedCustomer.active
+              ">
+
+              {{
+                selectedCustomer.active
+                  ? 'Cliente attivo'
+                  : 'Cliente non attivo'
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =================================================
+           INFORMAZIONI PERSONALI
+           ================================================= -->
+      <section class="detail-card">
+
+        <h2>
+          Informazioni personali
+        </h2>
+
+        <div class="info-grid">
+
+          <div>
+
+            <span>
+              Email
+            </span>
+
+            <strong>
+              {{ selectedCustomer.email }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Telefono
+            </span>
+
+            <strong>
+              {{ selectedCustomer.phoneNumber }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Data di nascita
+            </span>
+
+            <strong>
+              {{ selectedCustomer.dob }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              ID cliente
+            </span>
+
+            <strong>
+              #{{ selectedCustomer.id }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =================================================
+           PROFILO CAPELLI
+           ================================================= -->
+
+      <!--
+        Componente figlio dedicato
+        al profilo tecnico HairProfile.
+      -->
+      <app-hair-profile-detail
+        [customerId]="selectedCustomer.id!">
+      </app-hair-profile-detail>
+
+      <!-- =================================================
+           STORICO FUTURO
+           ================================================= -->
+      <section class="detail-card full-width">
+
+        <div class="section-title">
+
+          <div>
+
+            <h2>
+              Storico HairLab
+            </h2>
+
+            <p>
+              Attività e storico professionale del cliente.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="hairlab-sections">
+
+          <!-- APPUNTAMENTI -->
+          <div class="placeholder-box">
+
+            <span class="placeholder-icon">
+              ▣
+            </span>
+
+            <div>
+
+              <strong>
+                Appuntamenti
+              </strong>
+
+              <p>
+                Qui visualizzeremo lo storico
+                degli appuntamenti del cliente.
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- CONSULENZE -->
+          <div class="placeholder-box">
+
+            <span class="placeholder-icon">
+              ◫
+            </span>
+
+            <div>
+
+              <strong>
+                Consulenze
+              </strong>
+
+              <p>
+                Qui verranno visualizzate
+                le consulenze tecniche associate.
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- FORMULE -->
+          <div class="placeholder-box">
+
+            <span class="placeholder-icon">
+              ◉
+            </span>
+
+            <div>
+
+              <strong>
+                Formule colore
+              </strong>
+
+              <p>
+                Qui collegheremo formule
+                e storico delle colorazioni.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  }
+
+</section>

@@ -1,24 +1,71 @@
 <div class="login-page">
+  <div class="login-decoration"></div>
+
   <form class="login-card" [formGroup]="loginForm" (ngSubmit)="submit()">
+    <div class="brand">
+      <div class="brand-mark">HL</div>
+      <div>
+        <h1>HairLab</h1>
+        <p>Salon Management</p>
+      </div>
+    </div>
+
     <div class="login-header">
-      <h1>HairLab</h1>
-      <p>Accedi al gestionale</p>
+      <h2>Bentornato</h2>
+      <p>Accedi per gestire il tuo salone.</p>
     </div>
 
     <div class="form-group">
       <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" placeholder="Inserisci la tua email">
+      <input id="email" type="email" formControlName="email" placeholder="nome@hairlab.it" autocomplete="email">
+
+      @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('required')) {
+        <small class="field-error">Inserisci l'email.</small>
+      }
+
+      @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+        <small class="field-error">Inserisci un indirizzo email valido.</small>
+      }
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input id="password" type="password" formControlName="password" placeholder="Inserisci la password">
+
+      <div class="password-field">
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Inserisci la password"
+          autocomplete="current-password">
+
+        <button
+          class="password-toggle"
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-pressed]="showPassword"
+          [attr.aria-label]="showPassword ? 'Nascondi password' : 'Mostra password'">
+          {{ showPassword ? 'Nascondi' : 'Mostra' }}
+        </button>
+      </div>
+
+      @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('required')) {
+        <small class="field-error">Inserisci la password.</small>
+      }
     </div>
 
-    <p class="error-message">{{ errorMessage }}</p>
+    @if (errorMessage) {
+      <div class="login-error" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
 
-    <button type="submit" [disabled]="loginForm.invalid || loading">
+    <button class="login-button" type="submit" [disabled]="loginForm.invalid || loading">
       {{ loading ? 'Accesso in corso...' : 'Accedi' }}
     </button>
+
+    <p class="login-footer">
+      HairLab · Gestionale professionale per saloni
+    </p>
   </form>
 </div>

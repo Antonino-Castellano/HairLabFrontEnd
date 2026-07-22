@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Customer } from '../models/customer';
@@ -9,15 +9,14 @@ import { Customer } from '../models/customer';
 })
 export class CustomerService {
 
+  private readonly http = inject(HttpClient);
+
   private readonly apiUrl =
     'http://localhost:8080/hairlab/api/customer';
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
-
-
+  /**
+   * Recupera tutti i clienti.
+   */
   getAll(): Observable<Customer[]> {
 
     return this.http.get<Customer[]>(
@@ -25,7 +24,9 @@ export class CustomerService {
     );
   }
 
-
+  /**
+   * Recupera un cliente tramite ID.
+   */
   getById(id: number): Observable<Customer> {
 
     return this.http.get<Customer>(
@@ -33,10 +34,10 @@ export class CustomerService {
     );
   }
 
-
-  insert(
-    customer: Customer
-  ): Observable<Customer> {
+  /**
+   * Inserisce un nuovo cliente.
+   */
+  insert(customer: Customer): Observable<Customer> {
 
     return this.http.post<Customer>(
       this.apiUrl,
@@ -44,7 +45,9 @@ export class CustomerService {
     );
   }
 
-
+  /**
+   * Modifica un cliente esistente.
+   */
   update(
     id: number,
     customer: Customer
@@ -56,10 +59,12 @@ export class CustomerService {
     );
   }
 
+  /**
+   * Elimina un cliente.
+   */
+  delete(id: number): Observable<unknown> {
 
-  delete(id: number): Observable<void> {
-
-    return this.http.delete<void>(
+    return this.http.delete(
       `${this.apiUrl}/${id}`
     );
   }

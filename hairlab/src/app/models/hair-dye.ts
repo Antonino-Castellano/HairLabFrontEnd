@@ -1,5 +1,5 @@
-import { ProductType } from './enums/productType';
-import { ToneLevel } from './enums/toneLevel';
+import { ProductType } from './enums/product-type';
+import { ToneLevel } from './enums/tone-level';
 import { Reflection } from './enums/reflection';
 
 export interface HairDye {
