@@ -1,0 +1,214 @@
+<section class="employees-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        DIPENDENTI
+      </span>
+
+      <h1>
+        Gestione dipendenti
+      </h1>
+
+      <p>
+        Consulta, inserisci e modifica
+        i dipendenti del salone.
+      </p>
+
+    </div>
+
+    <a
+      class="primary-button"
+      routerLink="/employees/new">
+      + Nuovo dipendente
+    </a>
+
+  </div>
+
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <div class="employee-card">
+
+    <!-- CARICAMENTO -->
+    @if (loading()) {
+
+      <div class="state-message">
+        Caricamento dipendenti...
+      </div>
+
+    } @else if (
+      employees().length === 0
+    ) {
+
+      <!-- NESSUN DIPENDENTE -->
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          +
+        </div>
+
+        <h2>
+          Nessun dipendente presente
+        </h2>
+
+        <p>
+          Inserisci il primo dipendente
+          per iniziare a utilizzare HairLab.
+        </p>
+
+        <a
+          class="primary-button"
+          routerLink="/employees/new">
+          + Nuovo dipendente
+        </a>
+
+      </div>
+
+    } @else {
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Dipendente</th>
+              <th>Ruolo</th>
+              <th>Email</th>
+              <th>Telefono</th>
+              <th>Data assunzione</th>
+              <th>Stato</th>
+              <th>Azioni</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              employee of employees();
+              track employee.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="employee-name">
+
+                    <div class="employee-avatar">
+
+                      <span>
+                        {{ getEmployeeInitials(employee) }}
+                      </span>
+
+                    </div>
+
+                    <div class="employee-identity">
+
+                      <strong>
+                        {{ employee.firstName }}
+                        {{ employee.lastName }}
+                      </strong>
+
+                      <span>
+                        ID #{{ employee.id }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {{ employee.jobTitle }}
+                </td>
+
+                <td>
+                  {{ employee.email }}
+                </td>
+
+                <td>
+                  {{ employee.telephoneNumber }}
+                </td>
+
+                <td>
+                  {{ employee.hireDate }}
+                </td>
+
+                <!-- STATO -->
+                <td>
+
+                  <span
+                    class="status"
+                    [class.active]="employee.active"
+                    [class.inactive]="!employee.active">
+
+                    {{
+                      employee.active
+                        ? 'Attivo'
+                        : 'Non attivo'
+                    }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="actions">
+
+                    <a
+                      class="action-button"
+                      [routerLink]="[
+                        '/employees',
+                        employee.id
+                      ]">
+                      Dettagli
+                    </a>
+
+                    <a
+                      class="action-button"
+                      [routerLink]="[
+                        '/employees',
+                        employee.id,
+                        'edit'
+                      ]">
+                      Modifica
+                    </a>
+
+                    <button
+                      class="action-button delete"
+                      type="button"
+                      (click)="deleteEmployee(employee)">
+                      Elimina
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>

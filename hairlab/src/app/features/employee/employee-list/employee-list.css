@@ -1,0 +1,285 @@
+/*
+ * Contenitore.
+ */
+:host {
+  display: block;
+}
+
+.employees-page {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+/*
+ * ==========================================================
+ * HEADER
+ * ==========================================================
+ */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  color: #a06f50;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.page-header h1 {
+  margin: 6px 0 7px;
+  color: #302925;
+  font-size: 30px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #857a74;
+  font-size: 14px;
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background: #3b312c;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/*
+ * ==========================================================
+ * CARD / TABELLA
+ * ==========================================================
+ */
+.employee-card {
+  overflow: hidden;
+  border: 1px solid #ebe5e1;
+  border-radius: 13px;
+  background: white;
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #faf8f7;
+}
+
+th {
+  padding: 14px 17px;
+  color: #8b7f78;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 14px 17px;
+  border-top: 1px solid #eee9e6;
+  color: #635750;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: #fcfaf9;
+}
+
+/*
+ * ==========================================================
+ * DIPENDENTE / AVATAR
+ * ==========================================================
+ */
+.employee-name {
+  min-width: 215px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+/*
+ * Avatar utilizzato nella lista.
+ */
+.employee-avatar {
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f0e4dc, #e5d5ca);
+  color: #705344;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/*
+ * La foto riempie completamente
+ * l'avatar circolare.
+ */
+.employee-avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.employee-identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.employee-identity strong {
+  color: #463c37;
+  font-size: 12px;
+}
+
+.employee-identity span {
+  margin-top: 3px;
+  color: #9e928b;
+  font-size: 9px;
+}
+
+/*
+ * ==========================================================
+ * STATO
+ * ==========================================================
+ */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.status.active {
+  background: #e9f4ec;
+  color: #52765a;
+}
+
+.status.inactive {
+  background: #f4eaea;
+  color: #946060;
+}
+
+/*
+ * ==========================================================
+ * AZIONI
+ * ==========================================================
+ */
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.action-button {
+  padding: 6px 8px;
+  border: 1px solid #e1d8d3;
+  border-radius: 6px;
+  background: white;
+  color: #695950;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background: #f7f2ef;
+}
+
+.action-button.delete {
+  border-color: #edcccc;
+  color: #a44242;
+}
+
+/*
+ * ==========================================================
+ * STATI
+ * ==========================================================
+ */
+.state-message,
+.error-message {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.error-message {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #fff3f3;
+  color: #a63232;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 55px 25px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: #f3e9e3;
+  color: #93664c;
+  font-size: 20px;
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: #453a35;
+  font-size: 16px;
+}
+
+.empty-state p {
+  margin: 7px 0 18px;
+  color: #978b84;
+  font-size: 12px;
+}
+
+/*
+ * Smartphone.
+ */
+@media (max-width: 650px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+}
