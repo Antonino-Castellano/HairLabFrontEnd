@@ -1,0 +1,274 @@
+<section class="agenda-page">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        AGENDA
+      </span>
+
+      <h1>
+        Appuntamenti
+      </h1>
+
+      <p>
+        Gestisci appuntamenti,
+        servizi e operatori del salone.
+      </p>
+
+    </div>
+
+    <a
+      class="primary-button"
+      routerLink="/appointments/new">
+      + Nuovo appuntamento
+    </a>
+
+  </div>
+
+  <!-- =====================================================
+       NAVIGAZIONE DATA
+       ===================================================== -->
+  <div class="date-toolbar">
+
+    <div class="date-navigation">
+
+      <button
+        type="button"
+        class="icon-button"
+        (click)="previousDay()">
+        ←
+      </button>
+
+      <input
+        type="date"
+        [value]="selectedDate()"
+        (change)="onDateChange($event)">
+
+      <button
+        type="button"
+        class="icon-button"
+        (click)="nextDay()">
+        →
+      </button>
+
+      <button
+        type="button"
+        class="today-button"
+        (click)="goToday()">
+        Oggi
+      </button>
+
+    </div>
+
+    <span class="appointment-count">
+
+      {{ appointments().length }}
+
+      {{
+        appointments().length === 1
+          ? 'appuntamento'
+          : 'appuntamenti'
+      }}
+
+    </span>
+
+  </div>
+
+  @if (successMessage()) {
+
+    <div class="success-message">
+      {{ successMessage() }}
+    </div>
+
+  }
+
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <!-- =====================================================
+       CONTENUTO
+       ===================================================== -->
+  <section class="agenda-panel">
+
+    @if (loading()) {
+
+      <div class="state-message">
+        Caricamento agenda...
+      </div>
+
+    } @else if (
+      appointments().length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          □
+        </div>
+
+        <h2>
+          Nessun appuntamento
+        </h2>
+
+        <p>
+          Non ci sono appuntamenti
+          programmati per questa giornata.
+        </p>
+
+        <a
+          class="primary-button"
+          routerLink="/appointments/new">
+          + Nuovo appuntamento
+        </a>
+
+      </div>
+
+    } @else {
+
+      <div class="appointment-list">
+
+        @for (
+          appointment of appointments();
+          track appointment.id
+        ) {
+
+          <article
+            class="appointment-card"
+            [class.cancelled]="
+              appointment.status ===
+              AppointmentStatus.CANCELLED
+            ">
+
+            <div class="time-column">
+
+              <strong>
+                {{
+                  appointment.startDateTime
+                    | date:'HH:mm'
+                }}
+              </strong>
+
+              <span>
+                {{
+                  appointment.startDateTime
+                    | date:'dd/MM'
+                }}
+              </span>
+
+            </div>
+
+            <div class="appointment-main">
+
+              <div class="appointment-title">
+
+                <div>
+
+                  <h2>
+                    {{
+                      getCustomerName(
+                        appointment.customerId
+                      )
+                    }}
+                  </h2>
+
+                  <p>
+                    {{
+                      appointment.notes ||
+                      'Nessuna nota'
+                    }}
+                  </p>
+
+                </div>
+
+                <span
+                  class="status-badge"
+                  [attr.data-status]="
+                    appointment.status
+                  ">
+
+                  {{
+                    statusLabels[
+                      appointment.status
+                    ]
+                  }}
+
+                </span>
+
+              </div>
+
+              <div class="appointment-actions">
+
+                <a
+                  class="action-button"
+                  [routerLink]="[
+                    '/appointments',
+                    appointment.id
+                  ]">
+                  Dettagli
+                </a>
+
+                @if (
+                  canEdit(
+                    appointment
+                  )
+                ) {
+
+                  <a
+                    class="action-button"
+                    [routerLink]="[
+                      '/appointments',
+                      appointment.id,
+                      'edit'
+                    ]">
+                    Modifica
+                  </a>
+
+                }
+
+                @if (
+                  canCancel(
+                    appointment
+                  )
+                ) {
+
+                  <button
+                    type="button"
+                    class="
+                      action-button
+                      danger
+                    "
+                    (click)="
+                      cancelAppointment(
+                        appointment
+                      )
+                    ">
+                    Cancella
+                  </button>
+
+                }
+
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+</section>

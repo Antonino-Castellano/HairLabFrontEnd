@@ -1,0 +1,302 @@
+<section class="detail-page">
+
+  @if (loading()) {
+
+    <div class="state-message">
+      Caricamento appuntamento...
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  } @else if (
+    detail();
+    as data
+  ) {
+
+    <!-- ===================================================
+         HEADER
+         =================================================== -->
+    <div class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          APPUNTAMENTO
+        </span>
+
+        <h1>
+          {{
+            getCustomerName(
+              data.appointment.customerId
+            )
+          }}
+        </h1>
+
+        <p>
+          {{
+            data.appointment.startDateTime
+              | date:'EEEE d MMMM y, HH:mm'
+          }}
+        </p>
+
+      </div>
+
+      <div class="header-actions">
+
+        <a
+          class="secondary-button"
+          routerLink="/appointments">
+          ← Agenda
+        </a>
+
+        @if (canEdit()) {
+
+          <a
+            class="primary-button"
+            [routerLink]="[
+              '/appointments',
+              data.appointment.id,
+              'edit'
+            ]">
+            Modifica
+          </a>
+
+          <button
+            type="button"
+            class="danger-button"
+            (click)="cancelAppointment()">
+            Cancella
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+    <!-- ===================================================
+         SUMMARY
+         =================================================== -->
+    <div class="summary-grid">
+
+      <article class="summary-card">
+
+        <span>
+          Stato
+        </span>
+
+        <strong>
+          {{
+            statusLabels[
+              data.appointment.status
+            ]
+          }}
+        </strong>
+
+      </article>
+
+      <article class="summary-card">
+
+        <span>
+          Servizi
+        </span>
+
+        <strong>
+          {{ data.items.length }}
+        </strong>
+
+      </article>
+
+      <article class="summary-card">
+
+        <span>
+          Durata totale
+        </span>
+
+        <strong>
+          {{ getTotalDuration() }}
+          min
+        </strong>
+
+      </article>
+
+      <article class="summary-card">
+
+        <span>
+          Totale previsto
+        </span>
+
+        <strong>
+          €
+          {{
+            getTotalPrice()
+              .toFixed(2)
+          }}
+        </strong>
+
+      </article>
+
+    </div>
+
+    <!-- ===================================================
+         SERVIZI
+         =================================================== -->
+    <section class="detail-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-number">
+            01
+          </span>
+
+          <div>
+
+            <h2>
+              Servizi programmati
+            </h2>
+
+            <p>
+              Sequenza tecnica dell'appuntamento.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="service-list">
+
+        @for (
+          item of data.items;
+          track item.id;
+          let index = $index
+        ) {
+
+          <article class="service-row">
+
+            <div class="service-index">
+              {{ index + 1 }}
+            </div>
+
+            <div class="service-content">
+
+              <div class="service-heading">
+
+                <div>
+
+                  <strong>
+                    {{
+                      getProductName(
+                        item.salonProductId
+                      )
+                    }}
+                  </strong>
+
+                  <span>
+
+                    {{
+                      item.scheduledTime
+                        | date:'HH:mm'
+                    }}
+
+                    ·
+
+                    {{ item.duration }}
+                    min
+
+                  </span>
+
+                </div>
+
+                <strong class="price">
+                  €
+                  {{
+                    item.agreedPrice
+                      .toFixed(2)
+                  }}
+                </strong>
+
+              </div>
+
+              <div class="operator">
+
+                Operatore:
+
+                <strong>
+                  {{
+                    getEmployeeName(
+                      item.employeeId
+                    )
+                  }}
+                </strong>
+
+              </div>
+
+              @if (item.resultNotes) {
+
+                <p class="notes">
+                  {{ item.resultNotes }}
+                </p>
+
+              }
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         NOTE
+         =================================================== -->
+    <section class="detail-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-number">
+            02
+          </span>
+
+          <div>
+
+            <h2>
+              Note appuntamento
+            </h2>
+
+            <p>
+              Informazioni generali.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="notes-box">
+
+        {{
+          data.appointment.notes ||
+          'Nessuna nota inserita.'
+        }}
+
+      </div>
+
+    </section>
+
+  }
+
+</section>

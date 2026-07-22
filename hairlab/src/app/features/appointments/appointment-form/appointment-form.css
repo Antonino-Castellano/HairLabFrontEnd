@@ -1,0 +1,295 @@
+:host {
+  display: block;
+}
+
+.appointment-form-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header,
+.section-header,
+.service-card-header,
+.form-actions,
+.summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header {
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  color: #a06f50;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.page-header h1 {
+  margin: 6px 0;
+  color: #302925;
+  font-size: 29px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #8b8079;
+  font-size: 12px;
+}
+
+.form-card,
+.state-card {
+  margin-bottom: 16px;
+  border: 1px solid #e9e2de;
+  border-radius: 13px;
+  background: white;
+  box-shadow:
+    0 3px 14px
+    rgba(49, 39, 33, 0.035);
+}
+
+.state-card {
+  padding: 30px;
+  text-align: center;
+}
+
+.section-header {
+  gap: 18px;
+  padding: 19px 21px;
+  border-bottom: 1px solid #eee8e4;
+}
+
+.section-header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-number {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #efe4dd;
+  color: #89614c;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #463b35;
+  font-size: 15px;
+}
+
+.section-header p {
+  margin: 3px 0 0;
+  color: #958981;
+  font-size: 9px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  padding: 21px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.full-width {
+  grid-column: 1 / -1;
+}
+
+.field > span {
+  color: #80736c;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ddd5d0;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #51453f;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.field input,
+.field select {
+  height: 40px;
+  padding: 0 11px;
+}
+
+.field textarea {
+  padding: 10px 11px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #aa816b;
+  box-shadow:
+    0 0 0 3px
+    rgba(170, 129, 107, 0.08);
+}
+
+.service-list {
+  padding: 14px;
+}
+
+.service-card {
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid #ebe4df;
+  border-radius: 10px;
+  background: #fcfbfa;
+}
+
+.service-card:last-child {
+  margin-bottom: 0;
+}
+
+.service-card-header {
+  gap: 15px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #ece5e1;
+  background: #f8f5f3;
+}
+
+.service-card-header > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-order {
+  color: #a0735c;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.service-card-header strong {
+  margin-top: 3px;
+  color: #5c4f48;
+  font-size: 10px;
+}
+
+.remove-button {
+  border: 0;
+  background: transparent;
+  color: #a14949;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.summary-bar {
+  gap: 20px;
+  padding: 16px 21px;
+  border-top: 1px solid #eee8e4;
+  background: #faf8f7;
+}
+
+.summary-bar > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-bar span {
+  color: #958981;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.summary-bar strong {
+  margin-top: 3px;
+  color: #4b403a;
+  font-size: 14px;
+}
+
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 15px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 0;
+  background: #3b312c;
+  color: white;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  border: 1px solid #ddd4ce;
+  background: white;
+  color: #675a53;
+}
+
+.form-actions {
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.error-message {
+  margin-bottom: 15px;
+  padding: 13px 16px;
+  border-radius: 9px;
+  background: #fff1f1;
+  color: #9a3e3e;
+  font-size: 10px;
+}
+
+@media (max-width: 700px) {
+
+  .page-header,
+  .section-header,
+  .form-actions,
+  .summary-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full-width {
+    grid-column: auto;
+  }
+}
