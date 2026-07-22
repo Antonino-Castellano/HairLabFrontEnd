@@ -1,0 +1,113 @@
+<section class="employee-detail-page">
+
+  <div class="page-header">
+    <a class="back-button" routerLink="/employees">← Torna ai dipendenti</a>
+
+    @if (employee(); as emp) {
+      <div class="header-actions">
+        <a class="secondary-button" [routerLink]="['/employees', emp.id, 'edit']">
+          Modifica dipendente
+        </a>
+      </div>
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="state-message">
+      Caricamento dettagli dipendente...
+    </div>
+  } @else if (employee(); as emp) {
+
+    <!-- SCHEDA PROFILO -->
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <span>{{ getEmployeeInitials(emp) }}</span>
+      </div>
+
+      <div class="profile-info">
+        <div class="profile-heading">
+          <h1>{{ emp.firstName }} {{ emp.lastName }}</h1>
+          <span class="status" [class.active]="emp.active" [class.inactive]="!emp.active">
+            {{ emp.active ? 'Attivo' : 'Non attivo' }}
+          </span>
+        </div>
+
+        <p class="job-title">{{ emp.jobTitle || 'Nessun ruolo assegnato' }}</p>
+
+        <div class="quick-contacts">
+          <span>📧 {{ emp.email }}</span>
+          <span>📞 {{ emp.telephoneNumber || 'Non specificato' }}</span>
+          <span>📅 Assunto/a il: {{ emp.hireDate || 'Non specificata' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="detail-tabs">
+      <button
+        class="tab-button"
+        [class.active]="isSectionActive('overview')"
+        (click)="selectSection('overview')">
+        Panoramica
+      </button>
+
+      <button
+        class="tab-button"
+        [class.active]="isSectionActive('info')"
+        (click)="selectSection('info')">
+        Informazioni
+      </button>
+    </div>
+
+    <!-- CONTENUTO SEZIONI -->
+    <div class="tab-content">
+      @if (isSectionActive('overview')) {
+        <div class="section-card">
+          <h2>Informazioni Generali</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Nome</label>
+              <p>{{ emp.firstName }}</p>
+            </div>
+            <div class="info-item">
+              <label>Cognome</label>
+              <p>{{ emp.lastName }}</p>
+            </div>
+            <div class="info-item">
+              <label>Ruolo</label>
+              <p>{{ emp.jobTitle }}</p>
+            </div>
+            <div class="info-item">
+              <label>Data Assunzione</label>
+              <p>{{ emp.hireDate }}</p>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (isSectionActive('info')) {
+        <div class="section-card">
+          <h2>Contatti & Dettagli</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Email</label>
+              <p>{{ emp.email }}</p>
+            </div>
+            <div class="info-item">
+              <label>Telefono</label>
+              <p>{{ emp.telephoneNumber || '-' }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+  }
+
+</section>

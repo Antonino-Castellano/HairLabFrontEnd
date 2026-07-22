@@ -20,6 +20,8 @@ import { HairProfileFormComponent } from './features/customers/hair-profile/hair
 
 import { LayoutComponent } from './shared/layout/layout';
 import { EmployeeListComponent } from './features/employee/employee-list/employee-list';
+import { EmployeeFormComponent } from './features/employee/employee-form/employee-form';
+import { EmployeeDetailComponent } from './features/employee/employee-detail/employee-detail';
 
 /**
  * Configurazione principale delle route Angular.
@@ -218,6 +220,22 @@ export const routes: Routes = [
         path: 'employee',
         component: EmployeeListComponent
       },
+
+      {
+        path: 'employees/new',
+        component: EmployeeFormComponent
+      },
+
+      {
+        path: 'employees/:id/edit',
+        component: EmployeeFormComponent
+      },
+
+      {
+        path: 'employees/:id',
+        component: EmployeeDetailComponent
+      },
+
     ]
   },
 
