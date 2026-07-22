@@ -1,0 +1,499 @@
+<section class="appointment-form-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        AGENDA
+      </span>
+
+      <h1>
+        {{
+          isEditMode()
+            ? 'Modifica appuntamento'
+            : 'Nuovo appuntamento'
+        }}
+      </h1>
+
+      <p>
+        Imposta cliente, orario,
+        servizi e operatori.
+      </p>
+
+    </div>
+
+    <a
+      class="secondary-button"
+      routerLink="/appointments">
+      ← Agenda
+    </a>
+
+  </div>
+
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  @if (loading()) {
+
+    <div class="state-card">
+      Caricamento...
+    </div>
+
+  } @else {
+
+    <!-- ===================================================
+         DATI GENERALI
+         =================================================== -->
+    <section class="form-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-number">
+            01
+          </span>
+
+          <div>
+
+            <h2>
+              Dati appuntamento
+            </h2>
+
+            <p>
+              Cliente, data,
+              ora e stato.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label class="field">
+
+          <span>
+            Cliente
+          </span>
+
+          <select
+            [value]="customerId() ?? ''"
+            (change)="onCustomerChange($event)">
+
+            <option value="">
+              Seleziona cliente
+            </option>
+
+            @for (
+              customer of customers();
+              track customer.id
+            ) {
+
+              <option
+                [value]="customer.id">
+
+                {{ customer.firstName }}
+                {{ customer.lastName }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </label>
+
+        <label class="field">
+
+          <span>
+            Data
+          </span>
+
+          <input
+            type="date"
+            [value]="appointmentDate()"
+            (input)="onDateChange($event)">
+
+        </label>
+
+        <label class="field">
+
+          <span>
+            Ora inizio
+          </span>
+
+          <input
+            type="time"
+            [value]="appointmentTime()"
+            (input)="onTimeChange($event)">
+
+        </label>
+
+        @if (isEditMode()) {
+
+          <label class="field">
+
+            <span>
+              Stato
+            </span>
+
+            <select
+              [value]="status()"
+              (change)="onStatusChange($event)">
+
+              @for (
+                itemStatus of editableStatuses;
+                track itemStatus
+              ) {
+
+                <option
+                  [value]="itemStatus">
+
+                  {{
+                    statusLabels[
+                      itemStatus
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+        }
+
+        <label class="field full-width">
+
+          <span>
+            Note appuntamento
+          </span>
+
+          <textarea
+            rows="3"
+            [value]="notes()"
+            (input)="onNotesInput($event)"
+            placeholder="
+              Informazioni generali,
+              richieste del cliente,
+              promemoria...
+            ">
+          </textarea>
+
+        </label>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         SERVIZI
+         =================================================== -->
+    <section class="form-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-number">
+            02
+          </span>
+
+          <div>
+
+            <h2>
+              Servizi programmati
+            </h2>
+
+            <p>
+              Ogni servizio ha
+              operatore, durata e prezzo.
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="addItem()">
+          + Aggiungi servizio
+        </button>
+
+      </div>
+
+      <div class="service-list">
+
+        @for (
+          item of items();
+          track $index;
+          let index = $index
+        ) {
+
+          <article class="service-card">
+
+            <div class="service-card-header">
+
+              <div>
+
+                <span class="service-order">
+                  Servizio {{ index + 1 }}
+                </span>
+
+                <strong>
+                  Inizio previsto:
+                  {{
+                    getItemStartTime(
+                      index
+                    )
+                  }}
+                </strong>
+
+              </div>
+
+              <button
+                type="button"
+                class="remove-button"
+                (click)="removeItem(index)">
+                Rimuovi
+              </button>
+
+            </div>
+
+            <div class="form-grid">
+
+              <label class="field">
+
+                <span>
+                  Servizio
+                </span>
+
+                <select
+                  [value]="
+                    item.salonProductId ?? ''
+                  "
+                  (change)="
+                    onProductChange(
+                      index,
+                      $event
+                    )
+                  ">
+
+                  <option value="">
+                    Seleziona servizio
+                  </option>
+
+                  @for (
+                    product of salonProducts();
+                    track product.id
+                  ) {
+
+                    <option
+                      [value]="product.id">
+
+                      {{ product.name }}
+
+                    </option>
+
+                  }
+
+                </select>
+
+              </label>
+
+              <label class="field">
+
+                <span>
+                  Operatore
+                </span>
+
+                <select
+                  [value]="
+                    item.employeeId ?? ''
+                  "
+                  (change)="
+                    onEmployeeChange(
+                      index,
+                      $event
+                    )
+                  ">
+
+                  <option value="">
+                    Seleziona operatore
+                  </option>
+
+                  @for (
+                    employee of employees();
+                    track employee.id
+                  ) {
+
+                    <option
+                      [value]="employee.id">
+
+                      {{ employee.firstName }}
+                      {{ employee.lastName }}
+
+                    </option>
+
+                  }
+
+                </select>
+
+              </label>
+
+              <label class="field">
+
+                <span>
+                  Durata minuti
+                </span>
+
+                <input
+                  type="number"
+                  min="1"
+                  step="5"
+                  [value]="item.duration"
+                  (input)="
+                    onDurationInput(
+                      index,
+                      $event
+                    )
+                  ">
+
+              </label>
+
+              <label class="field">
+
+                <span>
+                  Prezzo concordato €
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [value]="
+                    item.agreedPrice
+                  "
+                  (input)="
+                    onPriceInput(
+                      index,
+                      $event
+                    )
+                  ">
+
+              </label>
+
+              <label class="field full-width">
+
+                <span>
+                  Note servizio
+                </span>
+
+                <textarea
+                  rows="2"
+                  [value]="
+                    item.resultNotes
+                  "
+                  (input)="
+                    onResultNotesInput(
+                      index,
+                      $event
+                    )
+                  "
+                  placeholder="
+                    Note tecniche opzionali...
+                  ">
+                </textarea>
+
+              </label>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+      <!-- RIEPILOGO -->
+      <div class="summary-bar">
+
+        <div>
+
+          <span>
+            Durata totale
+          </span>
+
+          <strong>
+            {{ getTotalDuration() }}
+            min
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Totale previsto
+          </span>
+
+          <strong>
+            €
+            {{
+              getTotalPrice()
+                .toFixed(2)
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         AZIONI
+         =================================================== -->
+    <div class="form-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/appointments">
+        Annulla
+      </a>
+
+      <button
+        type="button"
+        class="primary-button"
+        [disabled]="saving()"
+        (click)="save()">
+
+        {{
+          saving()
+            ? 'Salvataggio...'
+            : (
+                isEditMode()
+                  ? 'Salva modifiche'
+                  : 'Crea appuntamento'
+              )
+        }}
+
+      </button>
+
+    </div>
+
+  }
+
+</section>
