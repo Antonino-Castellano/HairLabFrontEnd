@@ -1,0 +1,188 @@
+:host {
+  display: block;
+}
+
+.panel {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #ebe5e1;
+  border-radius: 13px;
+  background: white;
+  box-shadow:
+    0 3px 14px
+    rgba(49, 39, 33, 0.035);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #eee9e6;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #342d29;
+  font-size: 16px;
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+  color: #978c85;
+  font-size: 11px;
+}
+
+.text-button {
+  color: #93664a;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.agenda-list {
+  padding: 6px 18px;
+}
+
+.agenda-row {
+  display: grid;
+  grid-template-columns:
+    55px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee9e6;
+  color: inherit;
+  text-decoration: none;
+}
+
+.agenda-row:last-child {
+  border-bottom: 0;
+}
+
+.agenda-time {
+  color: #4b3f39;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.agenda-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.agenda-content strong {
+  overflow: hidden;
+  color: #4b403a;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agenda-content span {
+  overflow: hidden;
+  margin-top: 4px;
+  color: #978b84;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  padding: 5px 8px;
+  border-radius: 20px;
+  background: #f0e9e5;
+  color: #705e54;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.status[data-status='CONFIRMED'] {
+  background: #e8f1e8;
+  color: #58705a;
+}
+
+.status[data-status='IN_PROGRESS'] {
+  background: #fff1d9;
+  color: #8b6725;
+}
+
+.status[data-status='COMPLETED'] {
+  background: #e8eef4;
+  color: #50677e;
+}
+
+.status[data-status='NO_SHOW'] {
+  background: #eee7f2;
+  color: #745d81;
+}
+
+.state-message,
+.empty-state {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  color: #91857e;
+  font-size: 11px;
+  text-align: center;
+}
+
+.state-message.error {
+  color: #9c4c4c;
+}
+
+.empty-state {
+  flex-direction: column;
+}
+
+.empty-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 11px;
+  border-radius: 50%;
+  background: #f5efeb;
+  color: #9b7056;
+}
+
+.empty-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.empty-state h3 {
+  margin: 0;
+  color: #493f39;
+  font-size: 13px;
+}
+
+.empty-state p {
+  margin: 6px 0 0;
+  color: #9c918b;
+  font-size: 10px;
+}
+
+@media (
+  max-width: 650px
+) {
+
+  .agenda-row {
+    grid-template-columns:
+      48px minmax(0, 1fr);
+  }
+
+  .status {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

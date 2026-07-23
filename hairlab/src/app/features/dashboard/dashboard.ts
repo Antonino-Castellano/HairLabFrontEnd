@@ -3,13 +3,15 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth-service';
 import { Customer } from '../../models/customer';
 import { Employee } from '../../models/employee';
+import {DashboardAppointmentStatComponent} from './dashboard-appointment-stat/dashboard-appointment-stat';
+import {DashboardAgendaPreviewComponent} from './dashboard-agenda-preview/dashboard-agenda-preview';
 import { CustomerService } from '../../service/customer-service';
 import { EmployeeService } from '../../service/employee-service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DashboardAppointmentStatComponent,DashboardAgendaPreviewComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

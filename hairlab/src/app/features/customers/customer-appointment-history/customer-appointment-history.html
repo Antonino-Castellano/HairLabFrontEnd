@@ -1,0 +1,197 @@
+<section class="history-panel">
+
+  <div class="history-header">
+
+    <div>
+
+      <span class="eyebrow">
+        STORICO
+      </span>
+
+      <h2>
+        Appuntamenti cliente
+      </h2>
+
+      <p>
+        Cronologia completa delle prenotazioni
+        e dei servizi programmati.
+      </p>
+
+    </div>
+
+    <a
+      class="primary-button"
+      routerLink="/appointments/new"
+      [queryParams]="{
+        customerId: customerId
+      }">
+      + Nuovo appuntamento
+    </a>
+
+  </div>
+
+  <div class="summary-grid">
+
+    <article>
+
+      <span>
+        Totale
+      </span>
+
+      <strong>
+        {{ appointments().length }}
+      </strong>
+
+    </article>
+
+    <article>
+
+      <span>
+        Prossimi
+      </span>
+
+      <strong>
+        {{ upcomingCount() }}
+      </strong>
+
+    </article>
+
+    <article>
+
+      <span>
+        Completati
+      </span>
+
+      <strong>
+        {{ completedCount() }}
+      </strong>
+
+    </article>
+
+  </div>
+
+  @if (loading()) {
+
+    <div class="state-message">
+      Caricamento storico...
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  } @else if (
+    appointments().length === 0
+  ) {
+
+    <div class="empty-state">
+
+      <h3>
+        Nessun appuntamento
+      </h3>
+
+      <p>
+        Il cliente non possiede ancora
+        appuntamenti registrati.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="history-list">
+
+      @for (
+        appointment of appointments();
+        track appointment.id
+      ) {
+
+        <a
+          class="history-row"
+          [routerLink]="[
+            '/appointments',
+            appointment.id
+          ]">
+
+          <div class="date-box">
+
+            <strong>
+
+              {{
+                appointment.startDateTime
+                  | date:'dd'
+              }}
+
+            </strong>
+
+            <span>
+
+              {{
+                appointment.startDateTime
+                  | date:'MMM yyyy'
+              }}
+
+            </span>
+
+          </div>
+
+          <div class="history-content">
+
+            <strong>
+
+              {{
+                appointment.startDateTime
+                  | date:'HH:mm'
+              }}
+
+              ·
+
+              {{
+                appointment.notes ||
+                'Appuntamento HairLab'
+              }}
+
+            </strong>
+
+            <span>
+
+              Creato:
+
+              {{
+                appointment.createdAt
+                  ? (
+                      appointment.createdAt
+                        | date:'dd/MM/yyyy'
+                    )
+                  : '—'
+              }}
+
+            </span>
+
+          </div>
+
+          <span
+            class="status"
+            [attr.data-status]="
+              appointment.status
+            ">
+
+            {{
+              statusLabels[
+                appointment.status
+              ]
+            }}
+
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+  }
+
+</section>

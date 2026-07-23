@@ -1,0 +1,153 @@
+<section class="panel agenda-panel">
+
+  <div class="panel-header">
+
+    <div>
+
+      <h2>
+        Agenda di oggi
+      </h2>
+
+      <p>
+        I prossimi appuntamenti
+        programmati per la giornata.
+      </p>
+
+    </div>
+
+    <a
+      class="text-button"
+      routerLink="/appointments">
+      Vedi agenda
+    </a>
+
+  </div>
+
+  @if (loading()) {
+
+    <div class="state-message">
+      Caricamento agenda...
+    </div>
+
+  } @else if (error()) {
+
+    <div class="state-message error">
+      {{ error() }}
+    </div>
+
+  } @else if (
+    previewAppointments()
+      .length === 0
+  ) {
+
+    <div class="empty-state">
+
+      <div class="empty-icon">
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true">
+
+          <rect
+            x="4"
+            y="5"
+            width="16"
+            height="15"
+            rx="2">
+          </rect>
+
+          <path
+            d="
+              M8 3v4
+              M16 3v4
+              M4 10h16
+            ">
+          </path>
+
+        </svg>
+
+      </div>
+
+      <h3>
+        Nessun appuntamento
+      </h3>
+
+      <p>
+        Non ci sono appuntamenti
+        operativi per oggi.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="agenda-list">
+
+      @for (
+        appointment of
+          previewAppointments();
+        track appointment.id
+      ) {
+
+        <a
+          class="agenda-row"
+          [routerLink]="[
+            '/appointments',
+            appointment.id
+          ]">
+
+          <div class="agenda-time">
+
+            {{
+              appointment.startDateTime
+                | date:'HH:mm'
+            }}
+
+          </div>
+
+          <div class="agenda-content">
+
+            <strong>
+
+              {{
+                getCustomerName(
+                  appointment.customerId
+                )
+              }}
+
+            </strong>
+
+            <span>
+
+              {{
+                appointment.notes ||
+                'Appuntamento HairLab'
+              }}
+
+            </span>
+
+          </div>
+
+          <span
+            class="status"
+            [attr.data-status]="
+              appointment.status
+            ">
+
+            {{
+              statusLabels[
+                appointment.status
+              ]
+            }}
+
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+  }
+
+</section>

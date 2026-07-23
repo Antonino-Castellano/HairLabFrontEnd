@@ -103,7 +103,8 @@
 }
 
 .date-navigation input,
-.status-filter {
+.status-filter,
+.employee-filter {
   height: 36px;
   box-sizing: border-box;
   border: 1px solid #ded5cf;
@@ -118,7 +119,8 @@
   padding: 0 9px;
 }
 
-.status-filter {
+.status-filter,
+.employee-filter {
   min-width: 150px;
   padding: 0 9px;
 }

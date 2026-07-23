@@ -51,13 +51,19 @@
  * Pulsante principale.
  */
 .primary-button {
-  padding: 11px 17px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 17px;
   border: 0;
   border-radius: 9px;
   background: #3b312c;
   color: white;
   font-size: 13px;
   font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .primary-button:disabled {
@@ -357,4 +363,17 @@
   .primary-button {
     width: 100%;
   }
+}
+
+/*
+ * Icone SVG lineari usate nelle nuove integrazioni.
+ */
+.stat-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
 }
