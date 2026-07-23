@@ -1,5 +1,8 @@
 <section class="agenda-page">
 
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
   <div class="page-header">
 
     <div>
@@ -13,8 +16,8 @@
       </h1>
 
       <p>
-        Vista giornaliera o settimanale
-        delle attività del salone.
+        Gestione operativa giornaliera
+        e settimanale del salone.
       </p>
 
     </div>
@@ -26,6 +29,153 @@
     </a>
 
   </div>
+
+  <!-- =====================================================
+       INDICATORI OPERATIVI
+       ===================================================== -->
+  @if (
+    viewMode() !== 'OPERATORS'
+  ) {
+
+  <div class="operational-grid">
+
+    <button
+      type="button"
+      class="operational-card"
+      [class.active]="
+        operationalFilter() === 'ALL'
+      "
+      (click)="
+        setOperationalFilter(
+          'ALL'
+        )
+      ">
+
+      <span>
+        Tutti
+      </span>
+
+      <strong>
+        {{ appointments().length }}
+      </strong>
+
+      <small>
+        Nel periodo caricato
+      </small>
+
+    </button>
+
+    <button
+      type="button"
+      class="operational-card"
+      [class.active]="
+        operationalFilter() === 'UPCOMING'
+      "
+      (click)="
+        setOperationalFilter(
+          'UPCOMING'
+        )
+      ">
+
+      <span>
+        Prossimi
+      </span>
+
+      <strong>
+        {{ upcomingCount() }}
+      </strong>
+
+      <small>
+        Ancora da iniziare
+      </small>
+
+    </button>
+
+    <button
+      type="button"
+      class="
+        operational-card
+        late-card
+      "
+      [class.active]="
+        operationalFilter() === 'LATE'
+      "
+      (click)="
+        setOperationalFilter(
+          'LATE'
+        )
+      ">
+
+      <span>
+        In ritardo
+      </span>
+
+      <strong>
+        {{ lateCount() }}
+      </strong>
+
+      <small>
+        Orario già trascorso
+      </small>
+
+    </button>
+
+    <button
+      type="button"
+      class="operational-card"
+      [class.active]="
+        operationalFilter() === 'IN_PROGRESS'
+      "
+      (click)="
+        setOperationalFilter(
+          'IN_PROGRESS'
+        )
+      ">
+
+      <span>
+        In corso
+      </span>
+
+      <strong>
+        {{ inProgressCount() }}
+      </strong>
+
+      <small>
+        Lavorazioni attive
+      </small>
+
+    </button>
+
+    <button
+      type="button"
+      class="operational-card"
+      [class.active]="
+        operationalFilter() === 'FINISHED'
+      "
+      (click)="
+        setOperationalFilter(
+          'FINISHED'
+        )
+      ">
+
+      <span>
+        Chiusi
+      </span>
+
+      <strong>
+        {{ finishedCount() }}
+      </strong>
+
+      <small>
+        Completati o terminali
+      </small>
+
+    </button>
+
+  </div>
+
+  }
+
 
   <!-- =====================================================
        TOOLBAR
@@ -60,6 +210,19 @@
         Settimana
       </button>
 
+      <button
+        type="button"
+        [class.active]="
+          viewMode() === 'OPERATORS'
+        "
+        (click)="
+          setViewMode(
+            'OPERATORS'
+          )
+        ">
+        Operatori
+      </button>
+
     </div>
 
     <div class="date-navigation">
@@ -67,6 +230,7 @@
       <button
         type="button"
         class="icon-button"
+        aria-label="Periodo precedente"
         (click)="previousPeriod()">
         ←
       </button>
@@ -83,6 +247,7 @@
       <button
         type="button"
         class="icon-button"
+        aria-label="Periodo successivo"
         (click)="nextPeriod()">
         →
       </button>
@@ -95,6 +260,45 @@
       </button>
 
     </div>
+
+    @if (
+      viewMode() !== 'OPERATORS'
+    ) {
+
+    <!-- RICERCA CLIENTE / NOTE -->
+    <label class="search-field">
+
+      <span class="search-icon">
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true">
+
+          <circle
+            cx="11"
+            cy="11"
+            r="7">
+          </circle>
+
+          <path
+            d="m20 20-4-4">
+          </path>
+
+        </svg>
+
+      </span>
+
+      <input
+        type="search"
+        placeholder="Cerca cliente, note o ID..."
+        [value]="searchText()"
+        (input)="
+          onSearchInput(
+            $event
+          )
+        ">
+
+    </label>
 
     <!-- FILTRO STATO -->
     <select
@@ -172,6 +376,13 @@
 
     </select>
 
+    <button
+      type="button"
+      class="reset-button"
+      (click)="resetFilters()">
+      Azzera filtri
+    </button>
+
     <span class="appointment-count">
 
       {{
@@ -182,11 +393,19 @@
       {{
         filteredAppointments()
           .length === 1
-          ? 'appuntamento'
-          : 'appuntamenti'
+          ? 'risultato'
+          : 'risultati'
       }}
 
     </span>
+
+    } @else {
+
+      <span class="operator-view-label">
+        Timeline giornaliera per operatore
+      </span>
+
+    }
 
   </div>
 
@@ -210,6 +429,9 @@
 
   }
 
+  <!-- =====================================================
+       CONTENUTO
+       ===================================================== -->
   <section class="agenda-panel">
 
     @if (
@@ -221,6 +443,14 @@
       </div>
 
     } @else if (
+      viewMode() === 'OPERATORS'
+    ) {
+
+      <app-appointment-operator-timeline
+        [selectedDate]="selectedDate()">
+      </app-appointment-operator-timeline>
+
+    } @else if (
       filteredAppointments()
         .length === 0
     ) {
@@ -228,7 +458,29 @@
       <div class="empty-state">
 
         <div class="empty-icon">
-          □
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
+
+            <rect
+              x="4"
+              y="5"
+              width="16"
+              height="15"
+              rx="2">
+            </rect>
+
+            <path
+              d="
+                M8 3v4
+                M16 3v4
+                M4 10h16
+              ">
+            </path>
+
+          </svg>
+
         </div>
 
         <h2>
@@ -240,11 +492,22 @@
           alla data e ai filtri selezionati.
         </p>
 
-        <a
-          class="primary-button"
-          routerLink="/appointments/new">
-          + Nuovo appuntamento
-        </a>
+        <div class="empty-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="resetFilters()">
+            Azzera filtri
+          </button>
+
+          <a
+            class="primary-button"
+            routerLink="/appointments/new">
+            + Nuovo appuntamento
+          </a>
+
+        </div>
 
       </div>
 
@@ -252,6 +515,9 @@
       viewMode() === 'DAY'
     ) {
 
+      <!-- ===============================================
+           VISTA GIORNO
+           =============================================== -->
       <div class="appointment-list">
 
         @for (
@@ -264,6 +530,11 @@
             [class.cancelled]="
               appointment.status ===
               AppointmentStatus.CANCELLED
+            "
+            [class.late]="
+              isLate(
+                appointment
+              )
             ">
 
             <div class="time-column">
@@ -285,6 +556,18 @@
                 }}
 
               </span>
+
+              @if (
+                isLate(
+                  appointment
+                )
+              ) {
+
+                <small class="late-label">
+                  In ritardo
+                </small>
+
+              }
 
             </div>
 
@@ -394,6 +677,9 @@
 
     } @else {
 
+      <!-- ===============================================
+           VISTA SETTIMANA
+           =============================================== -->
       <div class="week-grid">
 
         @for (
@@ -449,6 +735,11 @@
 
                   <a
                     class="week-appointment"
+                    [class.late]="
+                      isLate(
+                        appointment
+                      )
+                    "
                     [attr.data-status]="
                       appointment.status
                     "
@@ -457,14 +748,30 @@
                       appointment.id
                     ]">
 
-                    <strong>
+                    <div class="week-time-row">
 
-                      {{
-                        appointment.startDateTime
-                          | date:'HH:mm'
-                      }}
+                      <strong>
 
-                    </strong>
+                        {{
+                          appointment.startDateTime
+                            | date:'HH:mm'
+                        }}
+
+                      </strong>
+
+                      @if (
+                        isLate(
+                          appointment
+                        )
+                      ) {
+
+                        <small class="week-late">
+                          ritardo
+                        </small>
+
+                      }
+
+                    </div>
 
                     <span>
 
