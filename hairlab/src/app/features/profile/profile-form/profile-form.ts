@@ -21,8 +21,9 @@ export class ProfileFormComponent implements OnInit {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: [''], // Vuoto in modifica se non si vuole cambiare
+    password: [''], 
     address: [''],
+    dob: ['', Validators.required],
     role: ['USER', Validators.required]
   });
 
@@ -38,25 +39,28 @@ export class ProfileFormComponent implements OnInit {
       this.userId.set(+idParam);
       this.isEditMode.set(true);
       this.loadUserData(+idParam);
-      // In modalità modifica la password non è obbligatoria
       this.userForm.get('password')?.clearValidators();
       this.userForm.get('password')?.updateValueAndValidity();
     }
   }
 
   loadUserData(id: number): void {
-    // Nota: se non hai un endpoint specifico per prendere l'utente per ID, 
-    // puoi recuperare la lista e filtrare, oppure aggiungere un getById nel service.
-    // Qui usiamo getAllUsers per semplicità se sono pochi, o un metodo dedicato.
     this.userService.getAllUsers().subscribe({
       next: (users) => {
         const found = users.find(u => u.id === id);
         if (found) {
+          let formattedDob = '';
+          if (found.dob) {
+            // Estrae YYYY-MM-DD dalla data esistente
+            formattedDob = new Date(found.dob).toISOString().split('T')[0];
+          }
+
           this.userForm.patchValue({
             firstName: found.firstName,
             lastName: found.lastName,
             email: found.email,
             address: found.address,
+            dob: formattedDob,
             role: found.role
           });
         } else {
@@ -75,10 +79,16 @@ export class ProfileFormComponent implements OnInit {
 
     this.submitting.set(true);
     this.errorMessage.set(null);
-    const formValue = this.userForm.value;
+
+    // Prepariamo i dati del form
+    const formValue = { ...this.userForm.value };
+
+    // Se la password è vuota in modifica, rimuoviamola per evitare di sovrascriverla con una stringa vuota sul backend
+    if (this.isEditMode() && !formValue.password) {
+      delete formValue.password;
+    }
 
     if (this.isEditMode() && this.userId() !== null) {
-      // Modifica
       this.userService.updateUser(this.userId()!, formValue).subscribe({
         next: () => {
           this.router.navigate(['/profile/all']);
@@ -89,7 +99,6 @@ export class ProfileFormComponent implements OnInit {
         }
       });
     } else {
-      // Inserimento nuovo
       this.userService.insertUser(formValue).subscribe({
         next: () => {
           this.router.navigate(['/profile/all']);

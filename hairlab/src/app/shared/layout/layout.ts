@@ -1,6 +1,9 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { signal } from '@angular/core';
+import { AuthService } from '../../core/auth/auth-service';
+
 
 @Component({
   selector: 'app-layout',
@@ -11,11 +14,13 @@ import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/rou
 })
 export class LayoutComponent {
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
-  // Proprietà utente necessaria per l'HTML
-  user = {
-    username: 'salvio',
-    role: 'ADMIN'
+  // Ricava dinamicamente l'utente decodificando il token JWT
+  user = this.authService.getUserFromToken() || {
+    username: 'Utente',
+    email: '',
+    role: 'USER'
   };
 
   // Stato per la gestione della sidebar
@@ -50,7 +55,7 @@ export class LayoutComponent {
   }
 
   logout(): void {
-    localStorage.clear();
-    this.router.navigate(['/login']);
+    // Sfrutta il metodo di logout del tuo AuthService che pulisce il token e reindirizza
+    this.authService.logout();
   }
 }

@@ -93,8 +93,22 @@
             placeholder="Via Roma 1, Città">
         </div>
 
-        <!-- RUOLO -->
+        <!-- DATA DI NASCITA -->
         <div class="form-group">
+          <label for="dob">Data di Nascita <span class="required">*</span></label>
+          <input 
+            type="date" 
+            id="dob" 
+            formControlName="dob">
+          @if (userForm.get('dob')?.invalid && userForm.get('dob')?.touched) {
+            <small class="error-text">La data di nascita è obbligatoria.</small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- RUOLO -->
+        <div class="form-group full-width">
           <label for="role">Ruolo di Sistema <span class="required">*</span></label>
           <select id="role" formControlName="role">
             <option value="USER">USER</option>

@@ -54,6 +54,11 @@
           </div>
 
           <div class="info-item">
+            <span class="info-label">Data di Nascita</span>
+            <strong>{{ user.dob ? (user.dob | date: 'dd/MM/yyyy') : 'Non specificata' }}</strong>
+          </div>
+
+          <div class="info-item">
             <span class="info-label">Ruolo di Sistema</span>
             <div class="roles-badges">
               <span class="badge">{{ user.role }}</span>
