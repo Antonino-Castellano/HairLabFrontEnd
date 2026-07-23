@@ -20,6 +20,7 @@ import { HairProfile } from '../../../../models/hair-profile';
 import { HairProfileService } from '../../../../service/hair-profile-service';
 
 import { HairCondition } from '../../../../models/enums/hair-condition';
+import { HairLength } from '../../../../models/enums/hair-length';
 import { HairTexture } from '../../../../models/enums/hair-texture';
 import { HairType } from '../../../../models/enums/hair-type';
 import { PhysicalValue } from '../../../../models/enums/physical-value';
@@ -28,6 +29,7 @@ import { ToneLevel } from '../../../../models/enums/tone-level';
 
 import {
   HAIR_CONDITION_LABELS,
+  HAIR_LENGTH_LABELS,
   HAIR_TEXTURE_LABELS,
   HAIR_TYPE_LABELS,
   PHYSICAL_VALUE_LABELS,
@@ -128,6 +130,9 @@ export class HairProfileFormComponent implements OnInit {
   protected readonly hairConditions =
     Object.values(HairCondition);
 
+  protected readonly hairLengths =
+    Object.values(HairLength);
+
   /**
    * Traduzioni e colori utilizzati dal template.
    */
@@ -154,6 +159,9 @@ export class HairProfileFormComponent implements OnInit {
 
   protected readonly hairConditionLabels =
     HAIR_CONDITION_LABELS;
+
+  protected readonly hairLengthLabels =
+    HAIR_LENGTH_LABELS;
 
   /**
    * Reactive Form del profilo capelli.
@@ -188,6 +196,11 @@ export class HairProfileFormComponent implements OnInit {
 
       texture: [
         HairTexture.MEDIUM,
+        Validators.required
+      ],
+
+      hairLength: [
+        HairLength.MEDIUM,
         Validators.required
       ],
 
@@ -324,6 +337,10 @@ export class HairProfileFormComponent implements OnInit {
             texture:
               profile.texture,
 
+            hairLength:
+              profile.hairLength ??
+              HairLength.MEDIUM,
+
             porosity:
               profile.porosity,
 
@@ -418,6 +435,9 @@ export class HairProfileFormComponent implements OnInit {
 
       texture:
         formValue.texture,
+
+      hairLength:
+        formValue.hairLength,
 
       porosity:
         formValue.porosity,

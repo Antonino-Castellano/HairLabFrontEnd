@@ -1,4 +1,5 @@
 import { HairCondition } from './enums/hair-condition';
+import { HairLength } from './enums/hair-length';
 import { HairTexture } from './enums/hair-texture';
 import { HairType } from './enums/hair-type';
 import { PhysicalValue } from './enums/physical-value';
@@ -57,6 +58,15 @@ export interface HairProfile {
    * Spessore della fibra capillare.
    */
   texture: HairTexture;
+
+  /**
+   * Fascia di lunghezza dei capelli.
+   *
+   * Temporaneamente opzionale:
+   * il form grafico verrà aggiornato
+   * nel prossimo blocco.
+   */
+  hairLength?: HairLength;
 
   /**
    * Capacità del capello di assorbire

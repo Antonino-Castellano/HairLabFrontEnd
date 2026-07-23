@@ -1,0 +1,115 @@
+<section class="form-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">COLOR LAB · LIBRERIA</span>
+      <h1>{{ isEditMode() ? 'Modifica prodotto tecnico' : 'Nuovo prodotto tecnico' }}</h1>
+      <p>Definisci identità commerciale e caratteristiche tecniche del prodotto.</p>
+    </div>
+    <a class="back-button" routerLink="/color-lab" [queryParams]="{tab:'library'}">← Torna al Color Lab</a>
+  </header>
+
+  @if (errorMessage()) { <div class="error-message">{{ errorMessage() }}</div> }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <section class="form-card">
+      <div class="section-heading">
+        <span>01</span>
+        <div><h2>Identità prodotto</h2><p>Marca, nome, codice commerciale e tipologia tecnica.</p></div>
+      </div>
+
+      <div class="form-grid">
+        <label><span>Marca *</span><input type="text" formControlName="brand" placeholder="Es. Wella"></label>
+        <label><span>Nome commerciale *</span><input type="text" formControlName="name" placeholder="Es. Koleston Perfect"></label>
+        <label><span>Codice *</span><input type="text" formControlName="code" placeholder="Es. 7/1"></label>
+        <label>
+          <span>Tipo prodotto *</span>
+          <select formControlName="productType">
+            @for (type of productTypes; track type) {
+              <option [value]="type">{{ productTypeLabels[type] }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="section-heading">
+        <span>02</span>
+        <div>
+          <h2>Profilo cromatico</h2>
+          <p>Opzionale per developer, trattamenti e prodotti non associati a un tono.</p>
+        </div>
+        <button type="button" class="clear-button" (click)="clearToneData()">Pulisci dati colore</button>
+      </div>
+
+      <div class="visual-grid">
+        <label class="select-field">
+          <span>Altezza di tono</span>
+          <select formControlName="toneLevel">
+            <option [ngValue]="null">Non applicabile</option>
+            @for (tone of toneLevels; track tone) {
+              <option [ngValue]="tone">{{ toneLevelLabels[tone] }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="select-field">
+          <span>Riflesso principale</span>
+          <select formControlName="primaryReflection">
+            <option [ngValue]="null">Non applicabile</option>
+            @for (reflection of reflections; track reflection) {
+              <option [ngValue]="reflection">{{ reflectionLabels[reflection] }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="select-field">
+          <span>Riflesso secondario</span>
+          <select formControlName="secondaryReflection">
+            <option [ngValue]="null">Nessuno</option>
+            @for (reflection of reflections; track reflection) {
+              <option [ngValue]="reflection">{{ reflectionLabels[reflection] }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="visual-preview">
+        <div>
+          <span>ANTEPRIMA TONO</span>
+          @if (form.controls.toneLevel.value; as tone) {
+            <i [style.background]="toneLevelColors[tone]"></i>
+            <strong>{{ toneLevelLabels[tone] }}</strong>
+          } @else { <em>Non definito</em> }
+        </div>
+        <div>
+          <span>RIFLESSO PRINCIPALE</span>
+          @if (form.controls.primaryReflection.value; as reflection) {
+            <i [style.background]="reflectionColors[reflection]"></i>
+            <strong>{{ reflectionLabels[reflection] }}</strong>
+          } @else { <em>Non definito</em> }
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="section-heading">
+        <span>03</span>
+        <div><h2>Disponibilità catalogo</h2><p>Disattivare un prodotto non elimina lo storico delle formule.</p></div>
+      </div>
+
+      <label class="switch-row">
+        <input type="checkbox" formControlName="active">
+        <span class="switch-control"></span>
+        <div><strong>Prodotto attivo</strong><small>Disponibile per nuove formule e operazioni Color Lab.</small></div>
+      </label>
+    </section>
+
+    <div class="form-actions">
+      <a class="secondary-button" routerLink="/color-lab" [queryParams]="{tab:'library'}">Annulla</a>
+      <button type="submit" class="primary-button" [disabled]="loading()">
+        {{ loading() ? 'Salvataggio...' : (isEditMode() ? 'Salva modifiche' : 'Crea prodotto') }}
+      </button>
+    </div>
+  </form>
+</section>

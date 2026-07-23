@@ -1,0 +1,388 @@
+<section class="color-lab-page">
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">LABORATORIO TECNICO</span>
+      <h1>Color Lab</h1>
+      <p>
+        Libreria tecnica, giacenze colore e fondamenta
+        per le formule intelligenti HairLab.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a class="secondary-button" routerLink="/color-lab/products/new">
+        + Nuovo prodotto
+      </a>
+      <button type="button" class="primary-button" (click)="setTab('INVENTORY')">
+        Gestisci magazzino
+      </button>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="message error">{{ errorMessage() }}</div>
+  }
+
+  @if (successMessage()) {
+    <div class="message success">{{ successMessage() }}</div>
+  }
+
+  <nav class="lab-tabs">
+    <button type="button" [class.active]="selectedTab() === 'OVERVIEW'" (click)="setTab('OVERVIEW')">
+      <span class="tab-index">01</span> Panoramica
+    </button>
+    <button type="button" [class.active]="selectedTab() === 'LIBRARY'" (click)="setTab('LIBRARY')">
+      <span class="tab-index">02</span> Libreria tecnica
+    </button>
+    <button type="button" [class.active]="selectedTab() === 'INVENTORY'" (click)="setTab('INVENTORY')">
+      <span class="tab-index">03</span> Magazzino
+    </button>
+    <div class="future-tab">
+      <span class="tab-index">04</span>
+      Formula Builder
+      <small>prossimo blocco</small>
+    </div>
+  </nav>
+
+  @if (loading()) {
+    <div class="state-card">Caricamento Color Lab...</div>
+  } @else {
+
+    @if (selectedTab() === 'OVERVIEW') {
+      <section class="overview-section">
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <span>PRODOTTI ATTIVI</span>
+            <strong>{{ activeProductsCount() }}</strong>
+            <small>nel catalogo tecnico</small>
+          </article>
+          <article class="kpi-card">
+            <span>MARCHE</span>
+            <strong>{{ brands().length }}</strong>
+            <small>linee presenti</small>
+          </article>
+          <article class="kpi-card" [class.warning]="lowStockCount() > 0">
+            <span>SCORTE BASSE</span>
+            <strong>{{ lowStockCount() }}</strong>
+            <small>sotto la soglia minima</small>
+          </article>
+          <article class="kpi-card" [class.danger]="outOfStockCount() > 0">
+            <span>ESAURITI</span>
+            <strong>{{ outOfStockCount() }}</strong>
+            <small>quantità pari a zero</small>
+          </article>
+        </div>
+
+        <div class="overview-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-eyebrow">STRUTTURA COLOR LAB</span>
+                <h2>Base pronta per le formule</h2>
+              </div>
+            </div>
+
+            <div class="flow-list">
+              <div class="flow-step ready">
+                <span class="flow-number">01</span>
+                <div>
+                  <strong>Profilo tecnico cliente</strong>
+                  <p>Tono, riflesso, lunghezza, densità, spessore e porosità.</p>
+                </div>
+                <span class="flow-status">PRONTO</span>
+              </div>
+              <div class="flow-step ready">
+                <span class="flow-number">02</span>
+                <div>
+                  <strong>Libreria prodotti</strong>
+                  <p>Tinte, toner, developer, decoloranti e additivi.</p>
+                </div>
+                <span class="flow-status">PRONTO</span>
+              </div>
+              <div class="flow-step ready">
+                <span class="flow-number">03</span>
+                <div>
+                  <strong>Magazzino reale</strong>
+                  <p>Quantità disponibili e soglie di scorta.</p>
+                </div>
+                <span class="flow-status">PRONTO</span>
+              </div>
+              <div class="flow-step next">
+                <span class="flow-number">04</span>
+                <div>
+                  <strong>Formula Builder</strong>
+                  <p>Composizione manuale, grammi e rapporto developer.</p>
+                </div>
+                <span class="flow-status">BLOCCO 3</span>
+              </div>
+              <div class="flow-step future">
+                <span class="flow-number">05</span>
+                <div>
+                  <strong>Smart Formula Engine</strong>
+                  <p>Base + obiettivo + stock + grammatura automatica.</p>
+                </div>
+                <span class="flow-status">IN ARRIVO</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel quick-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-eyebrow">AZIONI RAPIDE</span>
+                <h2>Gestione tecnica</h2>
+              </div>
+            </div>
+
+            <a class="quick-action" routerLink="/color-lab/products/new">
+              <span class="quick-icon">+</span>
+              <div>
+                <strong>Nuovo prodotto</strong>
+                <small>Aggiungi tinta o prodotto tecnico</small>
+              </div>
+            </a>
+
+            <button type="button" class="quick-action" (click)="setTab('LIBRARY')">
+              <span class="quick-icon">◫</span>
+              <div>
+                <strong>Apri libreria</strong>
+                <small>Cerca per tono, riflesso e marca</small>
+              </div>
+            </button>
+
+            <button type="button" class="quick-action" (click)="setTab('INVENTORY')">
+              <span class="quick-icon">≡</span>
+              <div>
+                <strong>Controlla scorte</strong>
+                <small>{{ lowStockCount() + outOfStockCount() }} prodotti richiedono attenzione</small>
+              </div>
+            </button>
+
+            @if (untrackedProductsCount() > 0) {
+              <div class="attention-note">
+                <strong>{{ untrackedProductsCount() }} prodotti senza giacenza</strong>
+                <p>
+                  Configurali nel Magazzino per renderli utilizzabili
+                  dal futuro motore automatico.
+                </p>
+              </div>
+            }
+          </aside>
+        </div>
+      </section>
+    }
+
+    @if (selectedTab() === 'LIBRARY') {
+      <section class="library-section">
+        <div class="section-heading">
+          <div>
+            <span class="panel-eyebrow">CATALOGO TECNICO</span>
+            <h2>Libreria prodotti colore</h2>
+            <p>
+              Il catalogo descrive i prodotti. Le quantità vengono
+              gestite separatamente nel Magazzino.
+            </p>
+          </div>
+          <a class="primary-button" routerLink="/color-lab/products/new">+ Aggiungi prodotto</a>
+        </div>
+
+        <div class="filters-card">
+          <label class="search-field">
+            <span>Cerca</span>
+            <input type="search" placeholder="Marca, nome o codice..." [value]="searchTerm()" (input)="onSearchChange($event)">
+          </label>
+
+          <label>
+            <span>Tipo</span>
+            <select [value]="productTypeFilter()" (change)="onProductTypeFilterChange($event)">
+              <option value="ALL">Tutti</option>
+              @for (type of productTypes; track type) {
+                <option [value]="type">{{ productTypeLabels[type] }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Marca</span>
+            <select [value]="brandFilter()" (change)="onBrandFilterChange($event)">
+              <option value="ALL">Tutte</option>
+              @for (brand of brands(); track brand) {
+                <option [value]="brand">{{ brand }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Tono</span>
+            <select [value]="toneFilter()" (change)="onToneFilterChange($event)">
+              <option value="ALL">Tutti</option>
+              @for (tone of toneLevels; track tone) {
+                <option [value]="tone">{{ toneLevelLabels[tone] }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Riflesso</span>
+            <select [value]="reflectionFilter()" (change)="onReflectionFilterChange($event)">
+              <option value="ALL">Tutti</option>
+              @for (reflection of reflections; track reflection) {
+                <option [value]="reflection">{{ reflectionLabels[reflection] }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Stato</span>
+            <select [value]="activeFilter()" (change)="onActiveFilterChange($event)">
+              <option value="ACTIVE">Attivi</option>
+              <option value="INACTIVE">Non attivi</option>
+              <option value="ALL">Tutti</option>
+            </select>
+          </label>
+
+          <button type="button" class="reset-button" (click)="resetLibraryFilters()">Reset</button>
+        </div>
+
+        <div class="result-line"><strong>{{ filteredProducts().length }}</strong> prodotti trovati</div>
+
+        @if (filteredProducts().length === 0) {
+          <div class="state-card">Nessun prodotto corrisponde ai filtri.</div>
+        } @else {
+          <div class="product-grid">
+            @for (product of filteredProducts(); track product.code) {
+              <article class="product-card" [class.inactive]="!product.active">
+                <div class="product-top">
+                  <span class="product-swatch" [style.background]="getProductSwatch(product)"></span>
+                  <div class="product-main">
+                    <span class="product-brand">{{ product.brand }}</span>
+                    <h3>{{ product.code }} <small>{{ product.name }}</small></h3>
+                  </div>
+                  <span class="status-dot" [class.off]="!product.active">
+                    {{ product.active ? 'Attivo' : 'Non attivo' }}
+                  </span>
+                </div>
+
+                <div class="technical-grid">
+                  <div><span>TIPO</span><strong>{{ productTypeLabels[product.productType] }}</strong></div>
+                  <div><span>TONO</span><strong>{{ getToneLabel(product) }}</strong></div>
+                  <div><span>RIFLESSO</span><strong>{{ getReflectionLabel(product) }}</strong></div>
+                  <div>
+                    <span>MAGAZZINO</span>
+                    <strong [attr.data-stock]="getStockState(product)">{{ getStockStateLabel(product) }}</strong>
+                  </div>
+                </div>
+
+                <div class="product-actions">
+                  @if (product.id) {
+                    <a class="small-button" [routerLink]="['/color-lab/products', product.id, 'edit']">Modifica</a>
+                    <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Scorta</a>
+                  }
+                  @if (product.active) {
+                    <button type="button" class="small-button danger-text" (click)="deactivateProduct(product)">Disattiva</button>
+                  } @else {
+                    <button type="button" class="small-button" (click)="activateProduct(product)">Riattiva</button>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    @if (selectedTab() === 'INVENTORY') {
+      <section class="inventory-section">
+        <div class="section-heading">
+          <div>
+            <span class="panel-eyebrow">GIACENZE COLOR LAB</span>
+            <h2>Magazzino prodotti tecnici</h2>
+            <p>
+              Le quantità registrate qui saranno il vincolo reale
+              del futuro Smart Formula Engine.
+            </p>
+          </div>
+        </div>
+
+        <div class="inventory-tools">
+          <label class="search-field">
+            <span>Cerca prodotto</span>
+            <input type="search" placeholder="Marca, nome o codice..." [value]="stockSearchTerm()" (input)="onStockSearchChange($event)">
+          </label>
+          <label>
+            <span>Stato scorta</span>
+            <select [value]="stockFilter()" (change)="onStockFilterChange($event)">
+              <option value="ALL">Tutti</option>
+              <option value="LOW">Scorta bassa</option>
+              <option value="OUT">Esauriti</option>
+              <option value="OK">Disponibili</option>
+              <option value="UNTRACKED">Da configurare</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="inventory-list">
+          @for (product of filteredInventoryProducts(); track product.code) {
+            @if (getInventoryForProduct(product.id); as inventory) {
+              <article class="inventory-row" [attr.data-stock]="getStockState(product)">
+                <div class="inventory-product">
+                  <span class="small-swatch" [style.background]="getProductSwatch(product)"></span>
+                  <div>
+                    <span>{{ product.brand }}</span>
+                    <strong>{{ product.code }} <small>{{ product.name }}</small></strong>
+                  </div>
+                </div>
+
+                <div class="inventory-quantity">
+                  <span>DISPONIBILE</span>
+                  <strong>
+                    {{ formatQuantity(inventory.quantityAvailable) }}
+                    {{ inventoryUnitLabels[inventory.unit] }}
+                  </strong>
+                </div>
+
+                <div class="stock-progress">
+                  <div><span [style.width.%]="getStockPercent(inventory)"></span></div>
+                  <small>
+                    Soglia: {{ formatQuantity(inventory.lowStockThreshold) }}
+                    {{ inventoryUnitLabels[inventory.unit] }}
+                  </small>
+                </div>
+
+                <span class="stock-badge" [attr.data-stock]="getStockState(product)">
+                  {{ getStockStateLabel(product) }}
+                </span>
+
+                @if (product.id) {
+                  <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Modifica scorta</a>
+                }
+              </article>
+            } @else {
+              <article class="inventory-row untracked" data-stock="UNTRACKED">
+                <div class="inventory-product">
+                  <span class="small-swatch" [style.background]="getProductSwatch(product)"></span>
+                  <div>
+                    <span>{{ product.brand }}</span>
+                    <strong>{{ product.code }} <small>{{ product.name }}</small></strong>
+                  </div>
+                </div>
+
+                <div class="inventory-missing">
+                  <strong>Giacenza non configurata</strong>
+                  <small>Il prodotto non potrà essere valutato dal motore automatico.</small>
+                </div>
+
+                <span class="stock-badge" data-stock="UNTRACKED">Da configurare</span>
+
+                @if (product.id) {
+                  <a class="primary-small-button" [routerLink]="['/color-lab/inventory', product.id]">Configura</a>
+                }
+              </article>
+            }
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

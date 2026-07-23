@@ -1,0 +1,321 @@
+<section class="detail-page">
+
+  @if (
+    errorMessage()
+  ) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-card">
+      Caricamento formula...
+    </div>
+
+  } @else if (
+    detail();
+    as current
+  ) {
+
+    <header class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          COLOR LAB · FORMULA
+        </span>
+
+        <h1>
+          {{ current.formula.name }}
+        </h1>
+
+        <p>
+
+          {{
+            getCustomerName(
+              current.formula.customerId
+            )
+          }}
+
+        </p>
+
+      </div>
+
+      <div class="header-actions">
+
+        <a
+          class="secondary-button"
+          routerLink="/color-lab/formulas">
+          Formule
+        </a>
+
+        @if (
+          current.formula.id
+        ) {
+
+          <a
+            class="primary-button"
+            routerLink="/color-lab/formulas/{{ current.formula.id }}/edit">
+            Modifica formula
+          </a>
+
+        }
+
+      </div>
+
+    </header>
+
+    <div class="status-line">
+
+      <span
+        class="status-badge"
+        [attr.data-status]="
+          current.formula.status
+        ">
+
+        {{
+          statusLabels[
+            current.formula.status
+          ]
+        }}
+
+      </span>
+
+      <strong>
+        {{ current.formula.targetResult }}
+      </strong>
+
+    </div>
+
+    <div class="detail-grid">
+
+      <section class="panel">
+
+        <span class="panel-eyebrow">
+          OBIETTIVO TECNICO
+        </span>
+
+        <div class="technical-grid">
+
+          <div>
+
+            <span>
+              TONO
+            </span>
+
+            <strong>
+
+              {{
+                current.formula.targetToneLevel
+                  ? toneLabels[
+                      current.formula.targetToneLevel
+                    ]
+                  : 'Non definito'
+              }}
+
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              RIFLESSO
+            </span>
+
+            <strong>
+
+              {{
+                current.formula.targetPrimaryReflection
+                  ? reflectionLabels[
+                      current.formula.targetPrimaryReflection
+                    ]
+                  : 'Non definito'
+              }}
+
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              APPLICAZIONE
+            </span>
+
+            <strong>
+
+              {{
+                current.formula.applicationType
+                  ? applicationLabels[
+                      current.formula.applicationType
+                    ]
+                  : 'Non definita'
+              }}
+
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              DEVELOPER
+            </span>
+
+            <strong>
+
+              {{
+                oxygenLabels[
+                  current.formula.volumeDeveloper
+                ]
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="panel">
+
+        <span class="panel-eyebrow">
+          CALCOLO MISCELA
+        </span>
+
+        <div class="total-grid">
+
+          <div>
+
+            <span>
+              COLORE
+            </span>
+
+            <strong>
+              {{ current.totalColorQuantity }}
+              g
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              RAPPORTO
+            </span>
+
+            <strong>
+              {{ getRatioLabel() }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              DEVELOPER
+            </span>
+
+            <strong>
+              {{ current.developerQuantity }}
+              g
+            </strong>
+
+          </div>
+
+          <div class="grand-total">
+
+            <span>
+              TOTALE
+            </span>
+
+            <strong>
+              {{ current.totalMixtureQuantity }}
+              g
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <section class="panel ingredients-panel">
+
+      <span class="panel-eyebrow">
+        INGREDIENTI
+      </span>
+
+      <div class="ingredient-table">
+
+        @for (
+          item of current.ingredients;
+          track item.id
+        ) {
+
+          <div class="ingredient-row">
+
+            <strong>
+              {{
+                getProductName(
+                  item.hairDyeId
+                )
+              }}
+            </strong>
+
+            <span>
+
+              {{
+                item.quantity
+              }}
+
+              g
+
+            </span>
+
+            <small>
+              {{
+                item.notes ||
+                '—'
+              }}
+            </small>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+    @if (
+      current.formula.notes
+    ) {
+
+      <section class="panel notes-panel">
+
+        <span class="panel-eyebrow">
+          NOTE TECNICHE
+        </span>
+
+        <p>
+          {{ current.formula.notes }}
+        </p>
+
+      </section>
+
+    }
+
+  }
+
+</section>

@@ -1,0 +1,829 @@
+<section class="builder-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        COLOR LAB · FORMULA BUILDER
+      </span>
+
+      <h1>
+
+        {{
+          isEditMode()
+            ? 'Modifica formula'
+            : 'Nuova formula colore'
+        }}
+
+      </h1>
+
+      <p>
+        Componi manualmente una formula,
+        calcola developer e verifica
+        la disponibilità degli ingredienti.
+      </p>
+
+    </div>
+
+    <a
+      class="back-button"
+      routerLink="/color-lab/formulas">
+      ← Formule salvate
+    </a>
+
+  </header>
+
+  @if (
+    errorMessage()
+  ) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-card">
+      Caricamento Formula Builder...
+    </div>
+
+  } @else {
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <!-- =================================================
+           01 CLIENTE E IDENTITÀ
+           ================================================= -->
+      <section class="form-card">
+
+        <div class="section-heading">
+
+          <span>
+            01
+          </span>
+
+          <div>
+
+            <h2>
+              Cliente e formula
+            </h2>
+
+            <p>
+              La formula viene salvata
+              direttamente nello storico
+              della cliente selezionata.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="form-grid two">
+
+          <label>
+
+            <span>
+              Cliente *
+            </span>
+
+            <select
+              formControlName="customerId">
+
+              <option [ngValue]="null">
+                Seleziona cliente
+              </option>
+
+              @for (
+                customer of customers();
+                track customer.id
+              ) {
+
+                <option
+                  [ngValue]="customer.id">
+
+                  {{ customer.firstName }}
+                  {{ customer.lastName }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Nome formula *
+            </span>
+
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Es. Chocolate freddo Maria">
+
+          </label>
+
+        </div>
+
+        <label class="full-field">
+
+          <span>
+            Obiettivo / risultato desiderato *
+          </span>
+
+          <textarea
+            rows="3"
+            formControlName="targetResult"
+            placeholder="Descrivi il risultato cromatico desiderato...">
+          </textarea>
+
+        </label>
+
+      </section>
+
+      <!-- =================================================
+           02 TARGET TECNICO
+           ================================================= -->
+      <section class="form-card">
+
+        <div class="section-heading">
+
+          <span>
+            02
+          </span>
+
+          <div>
+
+            <h2>
+              Obiettivo tecnico
+            </h2>
+
+            <p>
+              Struttura tono, riflesso
+              e area di applicazione.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="form-grid four">
+
+          <label>
+
+            <span>
+              Tono target
+            </span>
+
+            <select
+              formControlName="targetToneLevel">
+
+              <option [ngValue]="null">
+                Non definito
+              </option>
+
+              @for (
+                tone of toneLevels;
+                track tone
+              ) {
+
+                <option [ngValue]="tone">
+
+                  {{
+                    toneLabels[
+                      tone
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Riflesso principale
+            </span>
+
+            <select
+              formControlName="targetPrimaryReflection">
+
+              <option [ngValue]="null">
+                Non definito
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [ngValue]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Riflesso secondario
+            </span>
+
+            <select
+              formControlName="targetSecondaryReflection">
+
+              <option [ngValue]="null">
+                Nessuno
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [ngValue]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Applicazione *
+            </span>
+
+            <select
+              formControlName="applicationType">
+
+              @for (
+                application of applications;
+                track application
+              ) {
+
+                <option [value]="application">
+
+                  {{
+                    applicationLabels[
+                      application
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- =================================================
+           03 INGREDIENTI
+           ================================================= -->
+      <section class="form-card">
+
+        <div class="section-heading">
+
+          <span>
+            03
+          </span>
+
+          <div>
+
+            <h2>
+              Ingredienti colore
+            </h2>
+
+            <p>
+              Ogni prodotto viene registrato
+              con la sua grammatura precisa.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="add-button"
+            (click)="addIngredient()">
+            + Aggiungi ingrediente
+          </button>
+
+        </div>
+
+        <div
+          class="ingredient-list"
+          formArrayName="ingredients">
+
+          @for (
+            ingredient of
+              ingredients.controls;
+            track $index;
+            let index = $index
+          ) {
+
+            <div
+              class="ingredient-row"
+              [formGroupName]="index">
+
+              <div class="ingredient-number">
+                {{
+                  index + 1
+                }}
+              </div>
+
+              <label class="product-field">
+
+                <span>
+                  Prodotto tecnico *
+                </span>
+
+                <select
+                  formControlName="hairDyeId">
+
+                  <option [ngValue]="null">
+                    Seleziona prodotto
+                  </option>
+
+                  @for (
+                    product of
+                      formulaProducts();
+                    track product.id
+                  ) {
+
+                    <option
+                      [ngValue]="product.id">
+
+                      {{ product.brand }}
+                      ·
+                      {{ product.code }}
+                      ·
+                      {{ product.name }}
+
+                    </option>
+
+                  }
+
+                </select>
+
+                @if (
+                  ingredient.controls
+                    .hairDyeId
+                    .value;
+                  as productId
+                ) {
+
+                  @if (
+                    getProductById(
+                      productId
+                    );
+                    as product
+                  ) {
+
+                    <small class="product-meta">
+
+                      {{
+                        productTypeLabels[
+                          product.productType
+                        ]
+                      }}
+
+                      @if (
+                        product.toneLevel
+                      ) {
+
+                        ·
+                        {{
+                          toneLabels[
+                            product.toneLevel
+                          ]
+                        }}
+
+                      }
+
+                    </small>
+
+                  }
+
+                }
+
+              </label>
+
+              <label>
+
+                <span>
+                  Grammi *
+                </span>
+
+                <div class="quantity-input">
+
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.1"
+                    formControlName="quantity">
+
+                  <b>
+                    g
+                  </b>
+
+                </div>
+
+              </label>
+
+              <label>
+
+                <span>
+                  Nota ingrediente
+                </span>
+
+                <input
+                  type="text"
+                  formControlName="notes"
+                  placeholder="Opzionale">
+
+              </label>
+
+              <div
+                class="stock-info"
+                [attr.data-stock]="
+                  getStockState(
+                    index
+                  )
+                ">
+
+                <span>
+                  MAGAZZINO
+                </span>
+
+                <strong>
+
+                  {{
+                    getStockMessage(
+                      index
+                    )
+                  }}
+
+                </strong>
+
+              </div>
+
+              <button
+                type="button"
+                class="remove-button"
+                [disabled]="
+                  ingredients.length <=
+                  1
+                "
+                (click)="
+                  removeIngredient(
+                    index
+                  )
+                "
+                aria-label="Rimuovi ingrediente">
+                ×
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+        @if (
+          hasDuplicateProducts()
+        ) {
+
+          <div class="inline-warning">
+            Lo stesso prodotto è presente più volte.
+            Unisci le quantità in un solo ingrediente.
+          </div>
+
+        }
+
+      </section>
+
+      <!-- =================================================
+           04 DEVELOPER
+           ================================================= -->
+      <section class="form-card">
+
+        <div class="section-heading">
+
+          <span>
+            04
+          </span>
+
+          <div>
+
+            <h2>
+              Developer e rapporto
+            </h2>
+
+            <p>
+              HairLab calcola automaticamente
+              la quantità necessaria.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="form-grid three">
+
+          <label>
+
+            <span>
+              Volume *
+            </span>
+
+            <select
+              formControlName="volumeDeveloper">
+
+              @for (
+                oxygen of oxygens;
+                track oxygen
+              ) {
+
+                <option [value]="oxygen">
+
+                  {{
+                    oxygenLabels[
+                      oxygen
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Rapporto *
+            </span>
+
+            <select
+              formControlName="mixingRatio">
+
+              @for (
+                ratio of mixingRatios;
+                track ratio
+              ) {
+
+                <option [value]="ratio">
+
+                  {{
+                    mixingRatioLabels[
+                      ratio
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          @if (
+            isCustomRatio()
+          ) {
+
+            <label>
+
+              <span>
+                Moltiplicatore custom *
+              </span>
+
+              <div class="custom-ratio-input">
+
+                <b>
+                  1 :
+                </b>
+
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  formControlName="customDeveloperRatio">
+
+              </div>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="calculation-grid">
+
+          <article>
+
+            <span>
+              COLORE TOTALE
+            </span>
+
+            <strong>
+              {{
+                getTotalColorQuantity()
+              }}
+              g
+            </strong>
+
+          </article>
+
+          <article>
+
+            <span>
+              DEVELOPER
+            </span>
+
+            <strong>
+              {{
+                getDeveloperQuantity()
+              }}
+              g
+            </strong>
+
+            <small>
+
+              {{
+                oxygenLabels[
+                  form.controls
+                    .volumeDeveloper
+                    .value!
+                ]
+              }}
+
+            </small>
+
+          </article>
+
+          <article class="total-card">
+
+            <span>
+              TOTALE MISCELA
+            </span>
+
+            <strong>
+              {{
+                getTotalMixture()
+              }}
+              g
+            </strong>
+
+          </article>
+
+        </div>
+
+      </section>
+
+      <!-- =================================================
+           05 STATO / NOTE
+           ================================================= -->
+      <section class="form-card">
+
+        <div class="section-heading">
+
+          <span>
+            05
+          </span>
+
+          <div>
+
+            <h2>
+              Salvataggio e note
+            </h2>
+
+            <p>
+              Una bozza può essere modificata
+              prima di essere realmente utilizzata.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="form-grid two">
+
+          <label>
+
+            <span>
+              Stato *
+            </span>
+
+            <select
+              formControlName="status">
+
+              @for (
+                status of statuses;
+                track status
+              ) {
+
+                <option [value]="status">
+
+                  {{
+                    statusLabels[
+                      status
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Note tecniche
+            </span>
+
+            <input
+              type="text"
+              formControlName="notes"
+              placeholder="Applicazione, tempi, osservazioni...">
+
+          </label>
+
+        </div>
+
+      </section>
+
+      <div class="form-actions">
+
+        <a
+          class="secondary-button"
+          routerLink="/color-lab/formulas">
+          Annulla
+        </a>
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()">
+
+          {{
+            saving()
+              ? 'Salvataggio...'
+              : (
+                  isEditMode()
+                    ? 'Salva modifiche'
+                    : 'Salva formula'
+                )
+          }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</section>

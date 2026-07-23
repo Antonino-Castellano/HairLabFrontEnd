@@ -1,0 +1,63 @@
+<section class="inventory-form-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">COLOR LAB · MAGAZZINO</span>
+      <h1>Gestione giacenza</h1>
+      <p>Registra la quantità realmente disponibile e la soglia di scorta minima.</p>
+    </div>
+    <a class="back-button" routerLink="/color-lab" [queryParams]="{tab:'inventory'}">← Torna al magazzino</a>
+  </header>
+
+  @if (errorMessage()) { <div class="error-message">{{ errorMessage() }}</div> }
+
+  @if (product(); as currentProduct) {
+    <article class="product-summary">
+      <div class="product-code"><span>{{ currentProduct.brand }}</span><strong>{{ currentProduct.code }}</strong></div>
+      <div><span>PRODOTTO</span><strong>{{ currentProduct.name }}</strong></div>
+      <div><span>TIPO</span><strong>{{ productTypeLabels[currentProduct.productType] }}</strong></div>
+      <div><span>POSIZIONE</span><strong>{{ inventory() ? 'Configurata' : 'Nuova' }}</strong></div>
+    </article>
+  }
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="section-heading">
+      <span>01</span>
+      <div><h2>Quantità corrente</h2><p>Questi dati saranno usati per verificare se una formula è realmente eseguibile.</p></div>
+    </div>
+
+    <div class="form-grid">
+      <label><span>Quantità disponibile *</span><input type="number" min="0" step="0.01" formControlName="quantityAvailable"></label>
+      <label>
+        <span>Unità *</span>
+        <select formControlName="unit">
+          @for (unit of units; track unit) { <option [value]="unit">{{ unitLabels[unit] }}</option> }
+        </select>
+      </label>
+      <label><span>Soglia scorta minima *</span><input type="number" min="0" step="0.01" formControlName="lowStockThreshold"></label>
+    </div>
+
+    <div class="stock-preview" [attr.data-stock]="getStockPreview()">
+      <div><span>STATO PREVISTO</span><strong>{{ getStockPreviewLabel() }}</strong></div>
+      <p>
+        Quantità: <strong>{{ form.controls.quantityAvailable.value }} {{ unitLabels[form.controls.unit.value] }}</strong>
+        · soglia: <strong>{{ form.controls.lowStockThreshold.value }} {{ unitLabels[form.controls.unit.value] }}</strong>
+      </p>
+    </div>
+
+    <div class="technical-note">
+      <strong>Nota</strong>
+      <p>
+        In questo blocco modifichiamo la giacenza corrente direttamente.
+        Carichi, scarichi automatici e storico movimenti arriveranno
+        quando collegheremo l'utilizzo reale delle formule al magazzino.
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <a class="secondary-button" routerLink="/color-lab" [queryParams]="{tab:'inventory'}">Annulla</a>
+      <button type="submit" class="primary-button" [disabled]="loading()">
+        {{ loading() ? 'Salvataggio...' : (inventory() ? 'Aggiorna giacenza' : 'Crea giacenza') }}
+      </button>
+    </div>
+  </form>
+</section>

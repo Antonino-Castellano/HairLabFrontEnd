@@ -425,6 +425,37 @@
 
         </article>
 
+        <!-- LUNGHEZZA -->
+        <article class="characteristic-card">
+
+          <div class="line-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 4v16"></path>
+              <path d="M12 7v13"></path>
+              <path d="M17 10v10"></path>
+              <path d="M5 4h4"></path>
+              <path d="M10 7h4"></path>
+              <path d="M15 10h4"></path>
+            </svg>
+          </div>
+
+          <span class="data-label">LUNGHEZZA</span>
+
+          <strong>
+            @if (profile.hairLength) {
+              {{ hairLengthLabels[profile.hairLength] }}
+            } @else {
+              Non registrata
+            }
+          </strong>
+
+          <p>
+            Fascia tecnica usata per stimare
+            il fabbisogno di prodotto colore.
+          </p>
+
+        </article>
+
         <!-- POROSITÀ -->
         <article class="characteristic-card">
 

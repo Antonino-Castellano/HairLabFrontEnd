@@ -11,6 +11,7 @@ import { HairProfile } from '../../../../models/hair-profile';
 import { HairProfileService } from '../../../../service/hair-profile-service';
 import {
   HAIR_CONDITION_LABELS,
+  HAIR_LENGTH_LABELS,
   HAIR_TEXTURE_LABELS,
   HAIR_TYPE_LABELS,
   PHYSICAL_VALUE_LABELS,
@@ -91,6 +92,9 @@ export class HairProfileDetailComponent implements OnChanges {
 
   protected readonly hairConditionLabels =
     HAIR_CONDITION_LABELS;
+
+  protected readonly hairLengthLabels =
+    HAIR_LENGTH_LABELS;
 
   /**
    * Angular richiama questo metodo

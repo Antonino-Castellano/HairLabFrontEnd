@@ -56,6 +56,38 @@ export class ColorFormulaService {
     );
   }
 
+
+
+  /**
+   * Storico formule diretto della cliente.
+   */
+  getByCustomerId(
+    customerId:
+      number
+  ): Observable<ColorFormula[]> {
+
+    return this.http.get<
+      ColorFormula[]
+    >(
+      `${this.apiUrl}/customer/${customerId}`
+    );
+  }
+
+  /**
+   * Ultima formula effettivamente utilizzata.
+   */
+  getLatestUsedByCustomerId(
+    customerId:
+      number
+  ): Observable<ColorFormula> {
+
+    return this.http.get<
+      ColorFormula
+    >(
+      `${this.apiUrl}/customer/${customerId}/latest-used`
+    );
+  }
+
   insert(
     formula: ColorFormula
   ): Observable<ColorFormula> {
@@ -78,8 +110,10 @@ export class ColorFormulaService {
   }
 
   /**
-   * Il backend archivia la formula
-   * invece di distruggerla fisicamente.
+   * Elimina la formula tramite l'endpoint backend corrente.
+   *
+   * La strategia definitiva di archiviazione dello storico
+   * verrà raffinata nel blocco dedicato alle Formule salvate.
    */
   delete(
     id: number

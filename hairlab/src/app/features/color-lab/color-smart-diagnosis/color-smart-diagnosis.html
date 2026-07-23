@@ -1,0 +1,718 @@
+<section class="smart-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        COLOR LAB · SMART FORMULA
+      </span>
+
+      <h1>
+        Diagnosi tecnica colore
+      </h1>
+
+      <p>
+        Confronta la base reale della cliente
+        con l’obiettivo e definisce
+        la strategia tecnica prima della formula automatica.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab">
+        Color Lab
+      </a>
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab/formulas">
+        Formule
+      </a>
+
+    </div>
+
+  </header>
+
+  @if (
+    errorMessage()
+  ) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <div class="smart-grid">
+
+    <!-- ===================================================
+         INPUT
+         =================================================== -->
+    <section class="panel input-panel">
+
+      <div class="panel-heading">
+
+        <span>
+          01
+        </span>
+
+        <div>
+
+          <h2>
+            Cliente e obiettivo
+          </h2>
+
+          <p>
+            La base viene letta
+            dal Profilo Capelli salvato.
+          </p>
+
+        </div>
+
+      </div>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="analyze()">
+
+        <label>
+
+          <span>
+            Cliente *
+          </span>
+
+          <select
+            formControlName="customerId"
+            (change)="onCustomerChange()">
+
+            <option [ngValue]="null">
+              Seleziona cliente
+            </option>
+
+            @for (
+              customer of customers();
+              track customer.id
+            ) {
+
+              <option
+                [ngValue]="customer.id">
+
+                {{ customer.firstName }}
+                {{ customer.lastName }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </label>
+
+        @if (
+          loadingProfile()
+        ) {
+
+          <div class="mini-state">
+            Caricamento profilo tecnico...
+          </div>
+
+        }
+
+        @if (
+          selectedProfile();
+          as profile
+        ) {
+
+          <div class="base-summary">
+
+            <div class="summary-title">
+
+              <span>
+                BASE REGISTRATA
+              </span>
+
+              <strong>
+                {{ getCustomerName() }}
+              </strong>
+
+            </div>
+
+            <div class="base-grid">
+
+              <div>
+
+                <span>
+                  TONO ATTUALE
+                </span>
+
+                <strong>
+
+                  {{
+                    toneLabels[
+                      profile.currentTone
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  RIFLESSO
+                </span>
+
+                <strong>
+
+                  {{
+                    reflectionLabels[
+                      profile.reflection
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  LUNGHEZZA
+                </span>
+
+                <strong>
+
+                  {{
+                    profile.hairLength
+                      ? hairLengthLabels[
+                          profile.hairLength
+                        ]
+                      : 'Non registrata'
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  SPESSORE
+                </span>
+
+                <strong>
+
+                  {{
+                    hairTextureLabels[
+                      profile.texture
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  DENSITÀ
+                </span>
+
+                <strong>
+
+                  {{
+                    physicalValueLabels[
+                      profile.density
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  POROSITÀ
+                </span>
+
+                <strong>
+
+                  {{
+                    physicalValueLabels[
+                      profile.porosity
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  CONDIZIONE
+                </span>
+
+                <strong>
+
+                  {{
+                    hairConditionLabels[
+                      profile.hairCondition
+                    ]
+                  }}
+
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+        <div class="form-grid">
+
+          <label>
+
+            <span>
+              Tono target *
+            </span>
+
+            <select
+              formControlName="targetToneLevel">
+
+              <option [ngValue]="null">
+                Seleziona tono
+              </option>
+
+              @for (
+                tone of toneLevels;
+                track tone
+              ) {
+
+                <option [ngValue]="tone">
+
+                  {{
+                    toneLabels[
+                      tone
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Riflesso target *
+            </span>
+
+            <select
+              formControlName="targetPrimaryReflection">
+
+              <option [ngValue]="null">
+                Seleziona riflesso
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [ngValue]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Secondo riflesso
+            </span>
+
+            <select
+              formControlName="targetSecondaryReflection">
+
+              <option [ngValue]="null">
+                Nessuno
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [ngValue]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Applicazione *
+            </span>
+
+            <select
+              formControlName="applicationType">
+
+              @for (
+                application of applications;
+                track application
+              ) {
+
+                <option [value]="application">
+
+                  {{
+                    applicationLabels[
+                      application
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+        </div>
+
+        <label class="full-field">
+
+          <span>
+            Descrizione obiettivo
+          </span>
+
+          <textarea
+            rows="3"
+            formControlName="targetResult"
+            placeholder="Es. castano chiaro freddo, naturale e luminoso">
+          </textarea>
+
+        </label>
+
+        <button
+          type="submit"
+          class="primary-button analyze-button"
+          [disabled]="
+            analyzing()
+            ||
+            !selectedProfile()
+          ">
+
+          {{
+            analyzing()
+              ? 'Analisi in corso...'
+              : 'Analizza obiettivo'
+          }}
+
+        </button>
+
+      </form>
+
+    </section>
+
+    <!-- ===================================================
+         RISULTATO
+         =================================================== -->
+    <section class="panel result-panel">
+
+      <div class="panel-heading">
+
+        <span>
+          02
+        </span>
+
+        <div>
+
+          <h2>
+            Strategia tecnica
+          </h2>
+
+          <p>
+            Diagnosi deterministica
+            e motivazioni leggibili.
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (
+        diagnosis();
+        as result
+      ) {
+
+        <div class="result-hero">
+
+          <span>
+            FATTIBILITÀ
+          </span>
+
+          <strong>
+
+            {{
+              feasibilityLabels[
+                result.feasibility
+              ]
+            }}
+
+          </strong>
+
+          <small>
+
+            {{
+              getToneDifferenceLabel(
+                result.toneDifference
+              )
+            }}
+
+          </small>
+
+        </div>
+
+        <div class="strategy-card">
+
+          <span>
+            STRATEGIA
+          </span>
+
+          <strong>
+
+            {{
+              strategyLabels[
+                result.strategy
+              ]
+            }}
+
+          </strong>
+
+        </div>
+
+        <div class="diagnosis-columns">
+
+          <article>
+
+            <h3>
+              Perché
+            </h3>
+
+            @for (
+              reason of result.reasons;
+              track reason
+            ) {
+
+              <p class="reason">
+                {{ reason }}
+              </p>
+
+            }
+
+          </article>
+
+          <article>
+
+            <h3>
+              Warning
+            </h3>
+
+            @if (
+              result.warnings.length ===
+              0
+            ) {
+
+              <p class="empty-note">
+                Nessun warning aggiuntivo.
+              </p>
+
+            } @else {
+
+              @for (
+                warning of result.warnings;
+                track warning
+              ) {
+
+                <p class="warning">
+                  {{ warning }}
+                </p>
+
+              }
+
+            }
+
+          </article>
+
+        </div>
+
+        <div class="reflection-section">
+
+          <span>
+            DIREZIONE RIFLESSI
+          </span>
+
+          <div class="reflection-list">
+
+            @for (
+              reflection of
+                result.recommendedReflectionFamilies;
+              track reflection
+            ) {
+
+              <span>
+
+                {{
+                  reflectionLabels[
+                    reflection
+                  ]
+                }}
+
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+        <div class="readiness-grid">
+
+          <div
+            [class.ready]="
+              result.automaticFormulaCandidate
+            "
+            [class.not-ready]="
+              !result.automaticFormulaCandidate
+            ">
+
+            <span>
+              FORMULA AUTOMATICA
+            </span>
+
+            <strong>
+
+              {{
+                result.automaticFormulaCandidate
+                  ? 'Candidata alla generazione'
+                  : 'Richiede revisione prima della generazione'
+              }}
+
+            </strong>
+
+          </div>
+
+          <div
+            [class.warning-state]="
+              result.strandTestRecommended
+            ">
+
+            <span>
+              PROVA CIOCCA
+            </span>
+
+            <strong>
+
+              {{
+                result.strandTestRecommended
+                  ? 'Raccomandata'
+                  : 'Non evidenziata come necessaria'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+        <div class="result-actions">
+
+          <a
+            class="secondary-button"
+            [routerLink]="[
+              '/customers',
+              result.customerId
+            ]">
+            Apri cliente
+          </a>
+
+          <a
+            class="primary-button"
+            routerLink="/color-lab/formulas/new"
+            [queryParams]="{
+              customerId:
+                result.customerId,
+              targetToneLevel:
+                result.targetToneLevel,
+              targetPrimaryReflection:
+                result.targetPrimaryReflection,
+              targetSecondaryReflection:
+                result.targetSecondaryReflection,
+              applicationType:
+                result.applicationType,
+              targetResult:
+                result.targetResult
+            }">
+            Continua nel Formula Builder
+          </a>
+
+        </div>
+
+      } @else {
+
+        <div class="empty-result">
+
+          <strong>
+            Nessuna analisi ancora eseguita
+          </strong>
+
+          <p>
+            Seleziona una cliente con Profilo Capelli,
+            definisci l’obiettivo e premi
+            “Analizza obiettivo”.
+          </p>
+
+        </div>
+
+      }
+
+    </section>
+
+  </div>
+
+</section>

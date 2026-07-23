@@ -1,4 +1,5 @@
 import { HairCondition } from '../../../models/enums/hair-condition';
+import { HairLength } from '../../../models/enums/hair-length';
 import { HairTexture } from '../../../models/enums/hair-texture';
 import { HairType } from '../../../models/enums/hair-type';
 import { PhysicalValue } from '../../../models/enums/physical-value';
@@ -115,4 +116,13 @@ export const HAIR_CONDITION_LABELS: Record<HairCondition, string> = {
   [HairCondition.DRY]: 'Secco',
   [HairCondition.DAMAGED]: 'Danneggiato',
   [HairCondition.CHEMICALLY_TREATED]: 'Trattato chimicamente'
+};
+
+/** Traduzione delle fasce di lunghezza usate dal Color Lab. */
+export const HAIR_LENGTH_LABELS: Record<HairLength, string> = {
+  [HairLength.VERY_SHORT]: 'Molto corti',
+  [HairLength.SHORT]: 'Corti',
+  [HairLength.MEDIUM]: 'Medi',
+  [HairLength.LONG]: 'Lunghi',
+  [HairLength.VERY_LONG]: 'Molto lunghi'
 };

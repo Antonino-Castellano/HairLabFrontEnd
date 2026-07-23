@@ -30,6 +30,14 @@ import { ProfileViewComponent } from './features/profile/profile-view/profile-vi
 import { ProfileFormComponent } from './features/profile/profile-form/profile-form';
 import { ProfileListComponent } from './features/profile/profile-list/profile-list';
 
+import { ColorLabComponent } from './features/color-lab/color-lab/color-lab';
+import { HairDyeFormComponent } from './features/color-lab/hair-dye-form/hair-dye-form';
+import { HairDyeInventoryFormComponent } from './features/color-lab/hair-dye-inventory-form/hair-dye-inventory-form';
+import { ColorFormulaBuilderComponent } from './features/color-lab/color-formula-builder/color-formula-builder';
+import { ColorFormulaDetailComponent } from './features/color-lab/color-formula-detail/color-formula-detail';
+import { ColorFormulaListComponent } from './features/color-lab/color-formula-list/color-formula-list';
+import { ColorSmartDiagnosisComponent } from './features/color-lab/color-smart-diagnosis/color-smart-diagnosis';
+
 /**
  * Configurazione principale delle route Angular.
  *
@@ -217,6 +225,65 @@ export const routes: Routes = [
       {
         path: 'profile/all',
         component: ProfileListComponent
+      },
+
+      /*
+       * ========================================================
+       * COLOR LAB
+       * ========================================================
+       *
+       * Queste route sono integrate sulla versione aggiornata
+       * di app.routes.ts fornita dopo il Blocco 2.
+       *
+       * Mantengono quindi anche:
+       * - Appointments
+       * - Employees
+       * - Services
+       * - Consultations
+       * - Profile
+       */
+      {
+        path: 'color-lab/products/new',
+        component: HairDyeFormComponent
+      },
+      {
+        path: 'color-lab/products/:id/edit',
+        component: HairDyeFormComponent
+      },
+      {
+        path: 'color-lab/inventory/:hairDyeId',
+        component: HairDyeInventoryFormComponent
+      },
+
+      /*
+       * FORMULE COLORE
+       *
+       * Le route specifiche vengono dichiarate
+       * prima di quella generica /color-lab.
+       */
+      {
+        path: 'color-lab/smart-formula',
+        component: ColorSmartDiagnosisComponent
+      },
+      {
+        path: 'color-lab/formulas/new',
+        component: ColorFormulaBuilderComponent
+      },
+      {
+        path: 'color-lab/formulas/:id/edit',
+        component: ColorFormulaBuilderComponent
+      },
+      {
+        path: 'color-lab/formulas/:id',
+        component: ColorFormulaDetailComponent
+      },
+      {
+        path: 'color-lab/formulas',
+        component: ColorFormulaListComponent
+      },
+      {
+        path: 'color-lab',
+        component: ColorLabComponent
       },
 
       /*

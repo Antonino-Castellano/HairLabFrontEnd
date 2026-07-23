@@ -232,8 +232,8 @@
         </h2>
 
         <p>
-          Definisci forma, texture, porosità,
-          densità e stato generale del capello.
+          Definisci forma, texture, lunghezza,
+          porosità, densità e stato generale del capello.
         </p>
 
       </div>
@@ -284,6 +284,32 @@
 
               <option [value]="texture">
                 {{ hairTextureLabels[texture] }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+        <!-- LUNGHEZZA -->
+        <div class="form-group">
+
+          <label for="hairLength">
+            Lunghezza *
+          </label>
+
+          <select
+            id="hairLength"
+            formControlName="hairLength">
+
+            @for (
+              length of hairLengths;
+              track length
+            ) {
+
+              <option [value]="length">
+                {{ hairLengthLabels[length] }}
               </option>
 
             }

@@ -1,0 +1,281 @@
+<section class="formula-list-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        COLOR LAB
+      </span>
+
+      <h1>
+        Formule colore
+      </h1>
+
+      <p>
+        Formule manuali e, nei prossimi blocchi,
+        suggerimenti generati dal motore HairLab.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab">
+        Color Lab
+      </a>
+
+      <a
+        class="primary-button"
+        routerLink="/color-lab/formulas/new">
+        + Nuova formula
+      </a>
+
+    </div>
+
+  </header>
+
+  @if (
+    errorMessage()
+  ) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <div class="filters">
+
+    <label class="search">
+
+      <span>
+        Cerca
+      </span>
+
+      <input
+        type="search"
+        placeholder="Formula, obiettivo o cliente..."
+        [value]="searchTerm()"
+        (input)="
+          onSearchChange(
+            $event
+          )
+        ">
+
+    </label>
+
+    <label>
+
+      <span>
+        Cliente
+      </span>
+
+      <select
+        [value]="customerFilter()"
+        (change)="
+          onCustomerFilterChange(
+            $event
+          )
+        ">
+
+        <option value="ALL">
+          Tutti i clienti
+        </option>
+
+        @for (
+          customer of customers();
+          track customer.id
+        ) {
+
+          <option
+            [value]="customer.id">
+
+            {{ customer.firstName }}
+            {{ customer.lastName }}
+
+          </option>
+
+        }
+
+      </select>
+
+    </label>
+
+    <label>
+
+      <span>
+        Stato
+      </span>
+
+      <select
+        [value]="statusFilter()"
+        (change)="
+          onStatusFilterChange(
+            $event
+          )
+        ">
+
+        <option value="ALL">
+          Tutti
+        </option>
+
+        @for (
+          status of statuses;
+          track status
+        ) {
+
+          <option [value]="status">
+
+            {{
+              statusLabels[
+                status
+              ]
+            }}
+
+          </option>
+
+        }
+
+      </select>
+
+    </label>
+
+  </div>
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-card">
+      Caricamento formule...
+    </div>
+
+  } @else if (
+    filteredFormulas().length ===
+    0
+  ) {
+
+    <div class="empty-state">
+
+      <strong>
+        Nessuna formula trovata
+      </strong>
+
+      <p>
+        Crea la prima formula manuale
+        con il Formula Builder.
+      </p>
+
+      <a
+        class="primary-button"
+        routerLink="/color-lab/formulas/new">
+        Nuova formula
+      </a>
+
+    </div>
+
+  } @else {
+
+    <div class="formula-grid">
+
+      @for (
+        formula of
+          filteredFormulas();
+        track formula.id
+      ) {
+
+        <article class="formula-card">
+
+          <div class="card-head">
+
+            <div>
+
+              <span class="customer-name">
+
+                {{
+                  getCustomerName(
+                    formula.customerId
+                  )
+                }}
+
+              </span>
+
+              <h2>
+                {{ formula.name }}
+              </h2>
+
+            </div>
+
+            <span
+              class="status-badge"
+              [attr.data-status]="
+                formula.status
+              ">
+
+              {{
+                statusLabels[
+                  formula.status
+                ]
+              }}
+
+            </span>
+
+          </div>
+
+          <p class="target">
+            {{ formula.targetResult }}
+          </p>
+
+          <div class="meta">
+
+            <span>
+
+              Creata:
+
+              {{
+                formula.createdAt
+                  ? (
+                      formula.createdAt
+                      |
+                      date:
+                        'dd/MM/yyyy HH:mm'
+                    )
+                  : '—'
+              }}
+
+            </span>
+
+          </div>
+
+          <div class="card-actions">
+
+            @if (
+              formula.id
+            ) {
+
+              <a
+                routerLink="/color-lab/formulas/{{ formula.id }}">
+                Dettaglio
+              </a>
+
+              <a
+                routerLink="/color-lab/formulas/{{ formula.id }}/edit">
+                Modifica
+              </a>
+
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>
