@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Employee } from '../../../models/employee';
 import { EmployeeService } from '../../../service/employee-service';
@@ -18,17 +18,27 @@ export class EmployeeListComponent implements OnInit {
   protected readonly loading = signal(false);
   protected readonly errorMessage = signal('');
 
-  /**
-   * Quando il componente viene inizializzato
-   * recupera automaticamente i dipendenti dal backend.
-   */
+  // Filtro selezionato ('ALL' | 'ACTIVE' | 'INACTIVE')
+  protected readonly selectedFilter = signal<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
+
+  // Lista filtrata computata in automatico
+  protected readonly filteredEmployees = computed(() => {
+    const list = this.employees();
+    const filter = this.selectedFilter();
+
+    if (filter === 'ACTIVE') {
+      return list.filter(e => e.active);
+    }
+    if (filter === 'INACTIVE') {
+      return list.filter(e => !e.active);
+    }
+    return list;
+  });
+
   ngOnInit(): void {
     this.loadEmployees();
   }
 
-  /**
-   * Recupera tutti i dipendenti tramite EmployeeService.
-   */
   protected loadEmployees(): void {
     this.loading.set(true);
     this.errorMessage.set('');
@@ -40,73 +50,58 @@ export class EmployeeListComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.loading.set(false);
-
         if (error.status === 401) {
-          this.errorMessage.set(
-            'Sessione scaduta o autenticazione non valida.'
-          );
+          this.errorMessage.set('Sessione scaduta o autenticazione non valida.');
         } else if (error.status === 403) {
-          this.errorMessage.set(
-            'Non hai i permessi per visualizzare i dipendenti.'
-          );
+          this.errorMessage.set('Non hai i permessi per visualizzare i dipendenti.');
         } else if (error.status === 404) {
-          this.errorMessage.set(
-            'Endpoint dipendenti non trovato.'
-          );
+          this.errorMessage.set('Endpoint dipendenti non trovato.');
         } else if (error.status === 0) {
-          this.errorMessage.set(
-            'Impossibile comunicare con il backend.'
-          );
+          this.errorMessage.set('Impossibile comunicare con il backend.');
         } else {
-          this.errorMessage.set(
-            'Impossibile caricare i dipendenti.'
-          );
+          this.errorMessage.set('Impossibile caricare i dipendenti.');
         }
       }
     });
   }
 
-  /**
-   * Crea le iniziali utilizzate nell'avatar del dipendente.
-   */
   protected getEmployeeInitials(employee: Employee): string {
-    const firstNameInitial = employee.firstName
-      ? employee.firstName.charAt(0).toUpperCase()
-      : '';
-
-    const lastNameInitial = employee.lastName
-      ? employee.lastName.charAt(0).toUpperCase()
-      : '';
-
+    const firstNameInitial = employee.firstName ? employee.firstName.charAt(0).toUpperCase() : '';
+    const lastNameInitial = employee.lastName ? employee.lastName.charAt(0).toUpperCase() : '';
     return `${firstNameInitial}${lastNameInitial}` || '?';
   }
 
-  /**
-   * Elimina il dipendente selezionato dopo una conferma.
-   * Dopo l'eliminazione ricarica la lista aggiornata.
-   */
+  protected onFilterChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value as 'ALL' | 'ACTIVE' | 'INACTIVE';
+    this.selectedFilter.set(value);
+  }
+
+  protected toggleStatus(employee: Employee): void {
+    if (!employee.id) return;
+
+    const action = employee.active ? 'disattivare' : 'attivare';
+    const confirmed = confirm(`Vuoi ${action} il dipendente ${employee.firstName} ${employee.lastName}?`);
+    if (!confirmed) return;
+
+    const request$ = employee.active 
+      ? this.employeeService.deactivate(employee.id) 
+      : this.employeeService.activate(employee.id);
+
+    request$.subscribe({
+      next: () => this.loadEmployees(),
+      error: () => this.errorMessage.set(`Impossibile ${action} il dipendente.`)
+    });
+  }
+
   protected deleteEmployee(employee: Employee): void {
-    if (!employee.id) {
-      return;
-    }
+    if (!employee.id) return;
 
-    const confirmed = confirm(
-      `Vuoi eliminare ${employee.firstName} ${employee.lastName}?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
+    const confirmed = confirm(`Vuoi eliminare ${employee.firstName} ${employee.lastName}?`);
+    if (!confirmed) return;
 
     this.employeeService.delete(employee.id).subscribe({
-      next: () => {
-        this.loadEmployees();
-      },
-      error: () => {
-        this.errorMessage.set(
-          'Impossibile eliminare il dipendente.'
-        );
-      }
+      next: () => this.loadEmployees(),
+      error: () => this.errorMessage.set('Impossibile eliminare il dipendente.')
     });
   }
 }

@@ -1,6 +1,3 @@
-/*
- * Contenitore.
- */
 :host {
   display: block;
 }
@@ -57,7 +54,7 @@
 
 /*
  * ==========================================================
- * CARD / TABELLA
+ * CARD / FILTRO / TABELLA
  * ==========================================================
  */
 .employee-card {
@@ -66,6 +63,39 @@
   border-radius: 13px;
   background: white;
   box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee9e6;
+  background: #faf8f7;
+}
+
+.filter-bar label {
+  color: #635750;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.filter-bar select {
+  padding: 6px 12px;
+  border: 1px solid #ddd5d0;
+  border-radius: 6px;
+  background: white;
+  color: #403733;
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.filter-bar select:focus {
+  border-color: #9a6e52;
 }
 
 .table-wrapper {
@@ -119,9 +149,6 @@ tbody tr:hover {
   gap: 11px;
 }
 
-/*
- * Avatar utilizzato nella lista.
- */
 .employee-avatar {
   width: 43px;
   height: 43px;
@@ -136,10 +163,6 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-/*
- * La foto riempie completamente
- * l'avatar circolare.
- */
 .employee-avatar img {
   width: 100%;
   height: 100%;
@@ -209,15 +232,42 @@ tbody tr:hover {
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .action-button:hover {
   background: #f7f2ef;
 }
 
+/* Pulsante Disattiva */
+.action-button.status-toggle.deactivate {
+  border-color: #ebd3c5;
+  background: #fdf8f5;
+  color: #a06b4c;
+}
+
+.action-button.status-toggle.deactivate:hover {
+  background: #f8eee7;
+}
+
+/* Pulsante Attiva */
+.action-button.status-toggle.activate {
+  border-color: #cde4d3;
+  background: #f4faf5;
+  color: #43734e;
+}
+
+.action-button.status-toggle.activate:hover {
+  background: #e6f3e9;
+}
+
 .action-button.delete {
   border-color: #edcccc;
   color: #a44242;
+}
+
+.action-button.delete:hover {
+  background: #fff3f3;
 }
 
 /*
@@ -281,5 +331,9 @@ tbody tr:hover {
 
   .primary-button {
     width: 100%;
+  }
+
+  .filter-bar {
+    justify-content: space-between;
   }
 }
