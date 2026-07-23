@@ -16,8 +16,8 @@
       </h1>
 
       <p>
-        Gestisci appuntamenti,
-        servizi e operatori del salone.
+        Vista giornaliera o settimanale
+        delle attività del salone.
       </p>
 
     </div>
@@ -31,28 +31,62 @@
   </div>
 
   <!-- =====================================================
-       NAVIGAZIONE DATA
+       TOOLBAR
        ===================================================== -->
-  <div class="date-toolbar">
+  <div class="agenda-toolbar">
+
+    <div class="view-switch">
+
+      <button
+        type="button"
+        [class.active]="
+          viewMode() === 'DAY'
+        "
+        (click)="
+          setViewMode(
+            'DAY'
+          )
+        ">
+        Giorno
+      </button>
+
+      <button
+        type="button"
+        [class.active]="
+          viewMode() === 'WEEK'
+        "
+        (click)="
+          setViewMode(
+            'WEEK'
+          )
+        ">
+        Settimana
+      </button>
+
+    </div>
 
     <div class="date-navigation">
 
       <button
         type="button"
         class="icon-button"
-        (click)="previousDay()">
+        (click)="previousPeriod()">
         ←
       </button>
 
       <input
         type="date"
         [value]="selectedDate()"
-        (change)="onDateChange($event)">
+        (change)="
+          onDateChange(
+            $event
+          )
+        ">
 
       <button
         type="button"
         class="icon-button"
-        (click)="nextDay()">
+        (click)="nextPeriod()">
         →
       </button>
 
@@ -65,12 +99,56 @@
 
     </div>
 
+    <select
+      class="status-filter"
+      [value]="statusFilter()"
+      (change)="
+        onStatusFilterChange(
+          $event
+        )
+      ">
+
+      <option value="ALL">
+        Tutti gli stati
+      </option>
+
+      @for (
+        status of [
+          AppointmentStatus.BOOKED,
+          AppointmentStatus.CONFIRMED,
+          AppointmentStatus.IN_PROGRESS,
+          AppointmentStatus.COMPLETED,
+          AppointmentStatus.CANCELLED,
+          AppointmentStatus.NO_SHOW
+        ];
+        track status
+      ) {
+
+        <option
+          [value]="status">
+
+          {{
+            statusLabels[
+              status
+            ]
+          }}
+
+        </option>
+
+      }
+
+    </select>
+
     <span class="appointment-count">
 
-      {{ appointments().length }}
+      {{
+        filteredAppointments()
+          .length
+      }}
 
       {{
-        appointments().length === 1
+        filteredAppointments()
+          .length === 1
           ? 'appuntamento'
           : 'appuntamenti'
       }}
@@ -79,7 +157,9 @@
 
   </div>
 
-  @if (successMessage()) {
+  @if (
+    successMessage()
+  ) {
 
     <div class="success-message">
       {{ successMessage() }}
@@ -87,7 +167,9 @@
 
   }
 
-  @if (errorMessage()) {
+  @if (
+    errorMessage()
+  ) {
 
     <div class="error-message">
       {{ errorMessage() }}
@@ -100,14 +182,17 @@
        ===================================================== -->
   <section class="agenda-panel">
 
-    @if (loading()) {
+    @if (
+      loading()
+    ) {
 
       <div class="state-message">
         Caricamento agenda...
       </div>
 
     } @else if (
-      appointments().length === 0
+      filteredAppointments()
+        .length === 0
     ) {
 
       <div class="empty-state">
@@ -121,8 +206,8 @@
         </h2>
 
         <p>
-          Non ci sono appuntamenti
-          programmati per questa giornata.
+          Nessun appuntamento corrisponde
+          alla data e ai filtri selezionati.
         </p>
 
         <a
@@ -133,12 +218,17 @@
 
       </div>
 
-    } @else {
+    } @else if (
+      viewMode() === 'DAY'
+    ) {
 
+      <!-- ===============================================
+           VISTA GIORNALIERA
+           =============================================== -->
       <div class="appointment-list">
 
         @for (
-          appointment of appointments();
+          appointment of filteredAppointments();
           track appointment.id
         ) {
 
@@ -152,17 +242,21 @@
             <div class="time-column">
 
               <strong>
+
                 {{
                   appointment.startDateTime
                     | date:'HH:mm'
                 }}
+
               </strong>
 
               <span>
+
                 {{
                   appointment.startDateTime
                     | date:'dd/MM'
                 }}
+
               </span>
 
             </div>
@@ -174,18 +268,22 @@
                 <div>
 
                   <h2>
+
                     {{
                       getCustomerName(
                         appointment.customerId
                       )
                     }}
+
                   </h2>
 
                   <p>
+
                     {{
                       appointment.notes ||
                       'Nessuna nota'
                     }}
+
                   </p>
 
                 </div>
@@ -262,6 +360,117 @@
             </div>
 
           </article>
+
+        }
+
+      </div>
+
+    } @else {
+
+      <!-- ===============================================
+           VISTA SETTIMANALE
+           =============================================== -->
+      <div class="week-grid">
+
+        @for (
+          day of weekDays();
+          track day
+        ) {
+
+          <section class="week-day">
+
+            <div class="week-day-header">
+
+              <span>
+
+                {{
+                  day
+                    | date:'EEE'
+                }}
+
+              </span>
+
+              <strong>
+
+                {{
+                  day
+                    | date:'dd/MM'
+                }}
+
+              </strong>
+
+            </div>
+
+            <div class="week-day-body">
+
+              @if (
+                getAppointmentsForDay(
+                  day
+                ).length === 0
+              ) {
+
+                <div class="week-empty">
+                  Nessun appuntamento
+                </div>
+
+              } @else {
+
+                @for (
+                  appointment of
+                    getAppointmentsForDay(
+                      day
+                    );
+                  track appointment.id
+                ) {
+
+                  <a
+                    class="week-appointment"
+                    [attr.data-status]="
+                      appointment.status
+                    "
+                    [routerLink]="[
+                      '/appointments',
+                      appointment.id
+                    ]">
+
+                    <strong>
+
+                      {{
+                        appointment.startDateTime
+                          | date:'HH:mm'
+                      }}
+
+                    </strong>
+
+                    <span>
+
+                      {{
+                        getCustomerName(
+                          appointment.customerId
+                        )
+                      }}
+
+                    </span>
+
+                    <small>
+
+                      {{
+                        statusLabels[
+                          appointment.status
+                        ]
+                      }}
+
+                    </small>
+
+                  </a>
+
+                }
+
+              }
+
+            </div>
+
+          </section>
 
         }
 

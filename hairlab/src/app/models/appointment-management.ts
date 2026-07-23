@@ -6,13 +6,8 @@ import {
   AppointmentItem
 } from './appointment-item';
 
-import {
-  AppointmentStatus
-} from './enums/appointment-status';
-
 /**
- * Singolo servizio inviato
- * nella request aggregata.
+ * Singolo servizio della request aggregata.
  */
 export interface AppointmentServiceRequest {
 
@@ -30,8 +25,16 @@ export interface AppointmentServiceRequest {
 }
 
 /**
- * Request per creare/modificare
- * appuntamento + servizi.
+ * Request per creare/modificare:
+ *
+ * Appointment
+ * +
+ * AppointmentItem[]
+ *
+ * Lo stato non è più presente.
+ *
+ * Viene gestito esclusivamente
+ * dal workflow dedicato.
  */
 export interface AppointmentManagementRequest {
 
@@ -39,15 +42,13 @@ export interface AppointmentManagementRequest {
 
   startDateTime: string;
 
-  status?: AppointmentStatus;
-
   notes?: string;
 
   items: AppointmentServiceRequest[];
 }
 
 /**
- * Dettaglio aggregato restituito dal backend.
+ * Dettaglio aggregato.
  */
 export interface AppointmentDetail {
 

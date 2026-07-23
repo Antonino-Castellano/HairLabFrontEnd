@@ -9,14 +9,15 @@ import { LoginComponent } from './features/login/login';
 import { ColorAnalysisFormComponent } from './features/customers/color-analysis/color-analysis-form/color-analysis-form';
 
 import { CustomerDetailComponent } from './features/customers/customer-detail/customer-detail';
-
 import { CustomerFormComponent } from './features/customers/customer-form/customer-form';
-
 import { CustomerListComponent } from './features/customers/customer-list/customer-list';
 
 import { FaceProfileFormComponent } from './features/customers/face-profile/face-profile-form/face-profile-form';
-
 import { HairProfileFormComponent } from './features/customers/hair-profile/hair-profile-form/hair-profile-form';
+
+import {AppointmentListComponent} from './features/appointments/appointment-list/appointment-list';
+import {AppointmentFormComponent} from './features/appointments/appointment-form/appointment-form';
+import {AppointmentDetailComponent} from './features/appointments/appointment-detail/appointment-detail';
 
 import { LayoutComponent } from './shared/layout/layout';
 import { EmployeeListComponent } from './features/employee/employee-list/employee-list';
@@ -203,6 +204,23 @@ export const routes: Routes = [
       {
         path: 'customers/:id',
         component: CustomerDetailComponent
+      },
+
+      {
+        path: 'appointments',
+        component: AppointmentListComponent
+      },
+      {
+        path: 'appointments/new',
+        component: AppointmentFormComponent
+      },
+      {
+        path: 'appointments/:id/edit',
+        component: AppointmentFormComponent
+      },
+      {
+        path: 'appointments/:id',
+        component: AppointmentDetailComponent
       },
 
       /*

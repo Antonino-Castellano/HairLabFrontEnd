@@ -25,10 +25,6 @@ import {
 } from '../../../models/appointment-management';
 
 import {
-  AppointmentStatus
-} from '../../../models/enums/appointment-status';
-
-import {
   Customer
 } from '../../../models/customer';
 
@@ -56,14 +52,6 @@ import {
   SalonProductService
 } from '../../../service/salon-product-service';
 
-import {
-  APPOINTMENT_EDITABLE_STATUSES,
-  APPOINTMENT_STATUS_LABELS
-} from '../appointment-display';
-
-/**
- * Riga di lavoro utilizzata dal form.
- */
 interface AppointmentDraftItem {
 
   salonProductId:
@@ -139,11 +127,6 @@ export class AppointmentFormComponent
   protected readonly appointmentTime =
     signal('09:00');
 
-  protected readonly status =
-    signal<AppointmentStatus>(
-      AppointmentStatus.BOOKED
-    );
-
   protected readonly notes =
     signal('');
 
@@ -162,12 +145,6 @@ export class AppointmentFormComponent
   protected readonly appointmentId =
     signal<number | null>(null);
 
-  protected readonly editableStatuses =
-    APPOINTMENT_EDITABLE_STATUSES;
-
-  protected readonly statusLabels =
-    APPOINTMENT_STATUS_LABELS;
-
   ngOnInit(): void {
 
     const idParam =
@@ -175,7 +152,9 @@ export class AppointmentFormComponent
         .paramMap
         .get('id');
 
-    if (idParam) {
+    if (
+      idParam
+    ) {
 
       const id =
         Number(idParam);
@@ -192,31 +171,37 @@ export class AppointmentFormComponent
         return;
       }
 
-      this.isEditMode.set(true);
-      this.appointmentId.set(id);
+      this.isEditMode.set(
+        true
+      );
+
+      this.appointmentId.set(
+        id
+      );
     }
 
     this.loadLookups();
   }
 
-  /**
-   * Carica i dati necessari
-   * ai select del form.
-   */
   private loadLookups(): void {
 
-    this.loading.set(true);
+    this.loading.set(
+      true
+    );
 
     forkJoin({
 
       customers:
-        this.customerService.getActive(),
+        this.customerService
+          .getActive(),
 
       employees:
-        this.employeeService.getActive(),
+        this.employeeService
+          .getActive(),
 
       products:
-        this.salonProductService.getActive()
+        this.salonProductService
+          .getActive()
 
     }).subscribe({
 
@@ -246,15 +231,21 @@ export class AppointmentFormComponent
         } else {
 
           this.addItem();
-          this.loading.set(false);
+
+          this.loading.set(
+            false
+          );
         }
       },
 
       error: (
-        error: HttpErrorResponse
+        error:
+          HttpErrorResponse
       ) => {
 
-        this.loading.set(false);
+        this.loading.set(
+          false
+        );
 
         this.errorMessage.set(
           this.getErrorMessage(
@@ -266,15 +257,14 @@ export class AppointmentFormComponent
     });
   }
 
-  /**
-   * Carica appuntamento + servizi.
-   */
   private loadAppointment(
     id: number
   ): void {
 
     this.managementService
-      .getById(id)
+      .getById(
+        id
+      )
       .subscribe({
 
         next: detail => {
@@ -302,46 +292,55 @@ export class AppointmentFormComponent
               )
           );
 
-          this.status.set(
-            appointment.status
-          );
-
           this.notes.set(
-            appointment.notes ?? ''
+            appointment.notes ??
+            ''
           );
 
           this.items.set(
             detail.items.map(
               item => ({
+
                 salonProductId:
                   item.salonProductId,
+
                 employeeId:
                   item.employeeId,
+
                 duration:
                   item.duration,
+
                 agreedPrice:
                   item.agreedPrice,
+
                 resultNotes:
-                  item.resultNotes ?? ''
+                  item.resultNotes ??
+                  ''
               })
             )
           );
 
           if (
-            this.items().length === 0
+            this.items().length ===
+            0
           ) {
 
             this.addItem();
           }
 
-          this.loading.set(false);
+          this.loading.set(
+            false
+          );
         },
 
         error: (
-          error: HttpErrorResponse
+          error:
+            HttpErrorResponse
         ) => {
 
-          this.loading.set(false);
+          this.loading.set(
+            false
+          );
 
           this.errorMessage.set(
             this.getErrorMessage(
@@ -358,11 +357,14 @@ export class AppointmentFormComponent
   ): void {
 
     const select =
-      event.target as HTMLSelectElement;
+      event.target as
+        HTMLSelectElement;
 
     this.customerId.set(
       select.value
-        ? Number(select.value)
+        ? Number(
+            select.value
+          )
         : null
     );
   }
@@ -372,7 +374,8 @@ export class AppointmentFormComponent
   ): void {
 
     const input =
-      event.target as HTMLInputElement;
+      event.target as
+        HTMLInputElement;
 
     this.appointmentDate.set(
       input.value
@@ -384,22 +387,11 @@ export class AppointmentFormComponent
   ): void {
 
     const input =
-      event.target as HTMLInputElement;
+      event.target as
+        HTMLInputElement;
 
     this.appointmentTime.set(
       input.value
-    );
-  }
-
-  protected onStatusChange(
-    event: Event
-  ): void {
-
-    const select =
-      event.target as HTMLSelectElement;
-
-    this.status.set(
-      select.value as AppointmentStatus
     );
   }
 
@@ -408,16 +400,14 @@ export class AppointmentFormComponent
   ): void {
 
     const textarea =
-      event.target as HTMLTextAreaElement;
+      event.target as
+        HTMLTextAreaElement;
 
     this.notes.set(
       textarea.value
     );
   }
 
-  /**
-   * Aggiunge una riga servizio.
-   */
   protected addItem(): void {
 
     const firstProduct =
@@ -430,16 +420,20 @@ export class AppointmentFormComponent
       AppointmentDraftItem = {
 
       salonProductId:
-        firstProduct?.id ?? null,
+        firstProduct?.id ??
+        null,
 
       employeeId:
-        firstEmployee?.id ?? null,
+        firstEmployee?.id ??
+        null,
 
       duration:
-        firstProduct?.duration ?? 30,
+        firstProduct?.duration ??
+        30,
 
       agreedPrice:
-        firstProduct?.basePrice ?? 0,
+        firstProduct?.basePrice ??
+        0,
 
       resultNotes:
         ''
@@ -458,7 +452,8 @@ export class AppointmentFormComponent
   ): void {
 
     if (
-      this.items().length <= 1
+      this.items().length <=
+      1
     ) {
 
       this.errorMessage.set(
@@ -475,47 +470,48 @@ export class AppointmentFormComponent
             _,
             currentIndex
           ) =>
-            currentIndex !== index
+            currentIndex !==
+            index
         )
     );
   }
 
-  /**
-   * Quando cambia il servizio:
-   *
-   * - aggiorniamo salonProductId;
-   * - proponiamo durata;
-   * - proponiamo prezzo base.
-   *
-   * Entrambi restano modificabili.
-   */
   protected onProductChange(
     index: number,
     event: Event
   ): void {
 
     const select =
-      event.target as HTMLSelectElement;
+      event.target as
+        HTMLSelectElement;
 
     const productId =
-      Number(select.value);
+      Number(
+        select.value
+      );
 
     const product =
       this.salonProducts()
         .find(
           item =>
-            item.id === productId
+            item.id ===
+            productId
         );
 
     this.updateItem(
       index,
       {
+
         salonProductId:
           productId,
+
         duration:
-          product?.duration ?? 30,
+          product?.duration ??
+          30,
+
         agreedPrice:
-          product?.basePrice ?? 0
+          product?.basePrice ??
+          0
       }
     );
   }
@@ -526,13 +522,17 @@ export class AppointmentFormComponent
   ): void {
 
     const select =
-      event.target as HTMLSelectElement;
+      event.target as
+        HTMLSelectElement;
 
     this.updateItem(
       index,
       {
+
         employeeId:
-          Number(select.value)
+          Number(
+            select.value
+          )
       }
     );
   }
@@ -543,13 +543,17 @@ export class AppointmentFormComponent
   ): void {
 
     const input =
-      event.target as HTMLInputElement;
+      event.target as
+        HTMLInputElement;
 
     this.updateItem(
       index,
       {
+
         duration:
-          Number(input.value)
+          Number(
+            input.value
+          )
       }
     );
   }
@@ -560,13 +564,17 @@ export class AppointmentFormComponent
   ): void {
 
     const input =
-      event.target as HTMLInputElement;
+      event.target as
+        HTMLInputElement;
 
     this.updateItem(
       index,
       {
+
         agreedPrice:
-          Number(input.value)
+          Number(
+            input.value
+          )
       }
     );
   }
@@ -577,11 +585,13 @@ export class AppointmentFormComponent
   ): void {
 
     const textarea =
-      event.target as HTMLTextAreaElement;
+      event.target as
+        HTMLTextAreaElement;
 
     this.updateItem(
       index,
       {
+
         resultNotes:
           textarea.value
       }
@@ -606,7 +616,8 @@ export class AppointmentFormComponent
       minutes +=
         this.items()[
           currentIndex
-        ].duration || 0;
+        ].duration ||
+        0;
     }
 
     return this.minutesToTime(
@@ -625,7 +636,8 @@ export class AppointmentFormComponent
         ) =>
           total +
           (
-            item.duration || 0
+            item.duration ||
+            0
           ),
         0
       );
@@ -642,7 +654,8 @@ export class AppointmentFormComponent
         ) =>
           total +
           (
-            item.agreedPrice || 0
+            item.agreedPrice ||
+            0
           ),
         0
       );
@@ -650,12 +663,16 @@ export class AppointmentFormComponent
 
   protected save(): void {
 
-    this.errorMessage.set('');
+    this.errorMessage.set(
+      ''
+    );
 
     const customerId =
       this.customerId();
 
-    if (!customerId) {
+    if (
+      !customerId
+    ) {
 
       this.errorMessage.set(
         'Seleziona un cliente.'
@@ -677,7 +694,8 @@ export class AppointmentFormComponent
     }
 
     if (
-      this.items().length === 0
+      this.items().length ===
+      0
     ) {
 
       this.errorMessage.set(
@@ -693,11 +711,15 @@ export class AppointmentFormComponent
           item =>
             !item.salonProductId ||
             !item.employeeId ||
-            item.duration <= 0 ||
-            item.agreedPrice < 0
+            item.duration <=
+              0 ||
+            item.agreedPrice <
+              0
         );
 
-    if (invalidItem) {
+    if (
+      invalidItem
+    ) {
 
       this.errorMessage.set(
         'Controlla servizio, operatore, durata e prezzo di ogni riga.'
@@ -715,11 +737,9 @@ export class AppointmentFormComponent
         `${this.appointmentDate()}T` +
         `${this.appointmentTime()}:00`,
 
-      status:
-        this.status(),
-
       notes:
-        this.notes().trim() || undefined,
+        this.notes().trim() ||
+        undefined,
 
       items:
         this.items().map(
@@ -741,7 +761,8 @@ export class AppointmentFormComponent
                 item.agreedPrice,
 
               resultNotes:
-                item.resultNotes.trim() ||
+                item.resultNotes
+                  .trim() ||
                 undefined
             };
 
@@ -750,7 +771,9 @@ export class AppointmentFormComponent
         )
     };
 
-    this.saving.set(true);
+    this.saving.set(
+      true
+    );
 
     const request$ =
       this.isEditMode() &&
@@ -771,7 +794,9 @@ export class AppointmentFormComponent
 
       next: detail => {
 
-        this.saving.set(false);
+        this.saving.set(
+          false
+        );
 
         this.router.navigate(
           [
@@ -782,10 +807,13 @@ export class AppointmentFormComponent
       },
 
       error: (
-        error: HttpErrorResponse
+        error:
+          HttpErrorResponse
       ) => {
 
-        this.saving.set(false);
+        this.saving.set(
+          false
+        );
 
         this.errorMessage.set(
           this.getErrorMessage(
@@ -810,7 +838,8 @@ export class AppointmentFormComponent
             item,
             currentIndex
           ) =>
-            currentIndex === index
+            currentIndex ===
+            index
               ? {
                   ...item,
                   ...patch
@@ -830,7 +859,9 @@ export class AppointmentFormComponent
     ] =
       time
         .split(':')
-        .map(Number);
+        .map(
+          Number
+        );
 
     return (
       hours * 60 +
@@ -850,24 +881,28 @@ export class AppointmentFormComponent
 
     const hours =
       Math.floor(
-        normalized / 60
+        normalized /
+        60
       );
 
     const minutes =
-      normalized % 60;
+      normalized %
+      60;
 
     return (
-      String(hours)
-        .padStart(
-          2,
-          '0'
-        ) +
+      String(
+        hours
+      ).padStart(
+        2,
+        '0'
+      ) +
       ':' +
-      String(minutes)
-        .padStart(
-          2,
-          '0'
-        )
+      String(
+        minutes
+      ).padStart(
+        2,
+        '0'
+      )
     );
   }
 
@@ -880,7 +915,8 @@ export class AppointmentFormComponent
 
     const month =
       String(
-        date.getMonth() + 1
+        date.getMonth() +
+        1
       ).padStart(
         2,
         '0'
@@ -894,7 +930,9 @@ export class AppointmentFormComponent
         '0'
       );
 
-    return `${year}-${month}-${day}`;
+    return (
+      `${year}-${month}-${day}`
+    );
   }
 
   private getErrorMessage(
@@ -906,14 +944,18 @@ export class AppointmentFormComponent
       error.error?.message;
 
     if (
-      typeof backendMessage === 'string' &&
+      typeof backendMessage ===
+        'string' &&
       backendMessage.trim()
     ) {
 
       return backendMessage;
     }
 
-    if (error.status === 0) {
+    if (
+      error.status ===
+      0
+    ) {
 
       return (
         'Impossibile comunicare con il backend.'

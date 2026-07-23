@@ -52,6 +52,10 @@ import {
 } from '../../../service/appointment-service';
 
 import {
+  AppointmentWorkflowService
+} from '../../../service/appointment-workflow-service';
+
+import {
   CustomerService
 } from '../../../service/customer-service';
 
@@ -66,6 +70,12 @@ import {
 import {
   APPOINTMENT_STATUS_LABELS
 } from '../appointment-display';
+
+type WorkflowAction =
+  | 'confirm'
+  | 'start'
+  | 'complete'
+  | 'no-show';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -92,7 +102,14 @@ export class AppointmentDetailComponent
     );
 
   private readonly appointmentService =
-    inject(AppointmentService);
+    inject(
+      AppointmentService
+    );
+
+  private readonly workflowService =
+    inject(
+      AppointmentWorkflowService
+    );
 
   private readonly customerService =
     inject(CustomerService);
@@ -101,10 +118,15 @@ export class AppointmentDetailComponent
     inject(EmployeeService);
 
   private readonly salonProductService =
-    inject(SalonProductService);
+    inject(
+      SalonProductService
+    );
 
   protected readonly detail =
-    signal<AppointmentDetail | null>(
+    signal<
+      AppointmentDetail |
+      null
+    >(
       null
     );
 
@@ -120,7 +142,13 @@ export class AppointmentDetailComponent
   protected readonly loading =
     signal(false);
 
+  protected readonly workflowLoading =
+    signal(false);
+
   protected readonly errorMessage =
+    signal('');
+
+  protected readonly successMessage =
     signal('');
 
   protected readonly statusLabels =
@@ -129,6 +157,10 @@ export class AppointmentDetailComponent
   protected readonly AppointmentStatus =
     AppointmentStatus;
 
+  private appointmentId:
+    number | null =
+      null;
+
   ngOnInit(): void {
 
     const idParam =
@@ -136,7 +168,9 @@ export class AppointmentDetailComponent
         .paramMap
         .get('id');
 
-    if (!idParam) {
+    if (
+      !idParam
+    ) {
 
       this.errorMessage.set(
         'ID appuntamento non presente.'
@@ -146,10 +180,14 @@ export class AppointmentDetailComponent
     }
 
     const id =
-      Number(idParam);
+      Number(
+        idParam
+      );
 
     if (
-      Number.isNaN(id) ||
+      Number.isNaN(
+        id
+      ) ||
       id <= 0
     ) {
 
@@ -160,21 +198,33 @@ export class AppointmentDetailComponent
       return;
     }
 
-    this.loadDetail(id);
+    this.appointmentId =
+      id;
+
+    this.loadDetail(
+      id
+    );
   }
 
   private loadDetail(
     id: number
   ): void {
 
-    this.loading.set(true);
-    this.errorMessage.set('');
+    this.loading.set(
+      true
+    );
+
+    this.errorMessage.set(
+      ''
+    );
 
     forkJoin({
 
       detail:
         this.managementService
-          .getById(id),
+          .getById(
+            id
+          ),
 
       customers:
         this.customerService
@@ -197,25 +247,33 @@ export class AppointmentDetailComponent
         );
 
         this.customers.set(
-          result.customers ?? []
+          result.customers ??
+          []
         );
 
         this.employees.set(
-          result.employees ?? []
+          result.employees ??
+          []
         );
 
         this.products.set(
-          result.products ?? []
+          result.products ??
+          []
         );
 
-        this.loading.set(false);
+        this.loading.set(
+          false
+        );
       },
 
       error: (
-        error: HttpErrorResponse
+        error:
+          HttpErrorResponse
       ) => {
 
-        this.loading.set(false);
+        this.loading.set(
+          false
+        );
 
         this.errorMessage.set(
           this.getErrorMessage(
@@ -235,7 +293,8 @@ export class AppointmentDetailComponent
       this.customers()
         .find(
           item =>
-            item.id === customerId
+            item.id ===
+            customerId
         );
 
     return customer
@@ -251,7 +310,8 @@ export class AppointmentDetailComponent
       this.employees()
         .find(
           item =>
-            item.id === employeeId
+            item.id ===
+            employeeId
         );
 
     return employee
@@ -267,7 +327,8 @@ export class AppointmentDetailComponent
       this.products()
         .find(
           item =>
-            item.id === productId
+            item.id ===
+            productId
         );
 
     return product
@@ -279,7 +340,8 @@ export class AppointmentDetailComponent
     number {
 
     return (
-      this.detail()?.items
+      this.detail()
+        ?.items
         .reduce(
           (
             total,
@@ -297,7 +359,8 @@ export class AppointmentDetailComponent
     number {
 
     return (
-      this.detail()?.items
+      this.detail()
+        ?.items
         .reduce(
           (
             total,
@@ -311,6 +374,10 @@ export class AppointmentDetailComponent
     );
   }
 
+  /**
+   * Modifica strutturale consentita
+   * solamente prima dell'avvio.
+   */
   protected canEdit():
     boolean {
 
@@ -320,20 +387,157 @@ export class AppointmentDetailComponent
         .status;
 
     return (
-      status !==
-        AppointmentStatus.COMPLETED &&
-      status !==
-        AppointmentStatus.CANCELLED
+      status ===
+        AppointmentStatus.BOOKED ||
+      status ===
+        AppointmentStatus.CONFIRMED
     );
   }
 
-  protected cancelAppointment(): void {
+  protected canCancel():
+    boolean {
+
+    return this.canEdit();
+  }
+
+  protected canConfirm():
+    boolean {
+
+    return (
+      this.detail()
+        ?.appointment
+        .status ===
+      AppointmentStatus.BOOKED
+    );
+  }
+
+  protected canStart():
+    boolean {
+
+    const status =
+      this.detail()
+        ?.appointment
+        .status;
+
+    return (
+      status ===
+        AppointmentStatus.BOOKED ||
+      status ===
+        AppointmentStatus.CONFIRMED
+    );
+  }
+
+  protected canComplete():
+    boolean {
+
+    return (
+      this.detail()
+        ?.appointment
+        .status ===
+      AppointmentStatus.IN_PROGRESS
+    );
+  }
+
+  protected canMarkNoShow():
+    boolean {
+
+    const status =
+      this.detail()
+        ?.appointment
+        .status;
+
+    return (
+      status ===
+        AppointmentStatus.BOOKED ||
+      status ===
+        AppointmentStatus.CONFIRMED
+    );
+  }
+
+  protected confirmAppointment():
+    void {
+
+    this.executeWorkflow(
+      'confirm',
+      'Appuntamento confermato.'
+    );
+  }
+
+  protected startAppointment():
+    void {
+
+    const confirmed =
+      confirm(
+        'Vuoi avviare questo appuntamento?'
+      );
+
+    if (
+      !confirmed
+    ) {
+
+      return;
+    }
+
+    this.executeWorkflow(
+      'start',
+      'Appuntamento avviato.'
+    );
+  }
+
+  protected completeAppointment():
+    void {
+
+    const confirmed =
+      confirm(
+        'Confermi che l’appuntamento è stato completato?\n\n' +
+        'I servizi ancora aperti verranno marcati come completati.'
+      );
+
+    if (
+      !confirmed
+    ) {
+
+      return;
+    }
+
+    this.executeWorkflow(
+      'complete',
+      'Appuntamento completato.'
+    );
+  }
+
+  protected markNoShow():
+    void {
+
+    const confirmed =
+      confirm(
+        'Segnare il cliente come non presentato?'
+      );
+
+    if (
+      !confirmed
+    ) {
+
+      return;
+    }
+
+    this.executeWorkflow(
+      'no-show',
+      'Appuntamento segnato come non presentato.'
+    );
+  }
+
+  protected cancelAppointment():
+    void {
 
     const appointment =
       this.detail()
         ?.appointment;
 
-    if (!appointment?.id) {
+    if (
+      !appointment?.id
+    ) {
+
       return;
     }
 
@@ -343,9 +547,24 @@ export class AppointmentDetailComponent
         'Lo storico rimarrà disponibile.'
       );
 
-    if (!confirmed) {
+    if (
+      !confirmed
+    ) {
+
       return;
     }
+
+    this.errorMessage.set(
+      ''
+    );
+
+    this.successMessage.set(
+      ''
+    );
+
+    this.workflowLoading.set(
+      true
+    );
 
     this.appointmentService
       .delete(
@@ -355,16 +574,27 @@ export class AppointmentDetailComponent
 
         next: () => {
 
-          this.router.navigate(
-            [
-              '/appointments'
-            ]
+          this.workflowLoading.set(
+            false
+          );
+
+          this.successMessage.set(
+            'Appuntamento cancellato.'
+          );
+
+          this.loadDetail(
+            appointment.id!
           );
         },
 
         error: (
-          error: HttpErrorResponse
+          error:
+            HttpErrorResponse
         ) => {
+
+          this.workflowLoading.set(
+            false
+          );
 
           this.errorMessage.set(
             this.getErrorMessage(
@@ -376,6 +606,116 @@ export class AppointmentDetailComponent
       });
   }
 
+  private executeWorkflow(
+    action: WorkflowAction,
+    successMessage: string
+  ): void {
+
+    const id =
+      this.appointmentId;
+
+    if (
+      !id
+    ) {
+
+      return;
+    }
+
+    this.workflowLoading.set(
+      true
+    );
+
+    this.errorMessage.set(
+      ''
+    );
+
+    this.successMessage.set(
+      ''
+    );
+
+    let request$;
+
+    switch (
+      action
+    ) {
+
+      case 'confirm':
+
+        request$ =
+          this.workflowService
+            .confirm(
+              id
+            );
+
+        break;
+
+      case 'start':
+
+        request$ =
+          this.workflowService
+            .start(
+              id
+            );
+
+        break;
+
+      case 'complete':
+
+        request$ =
+          this.workflowService
+            .complete(
+              id
+            );
+
+        break;
+
+      case 'no-show':
+
+        request$ =
+          this.workflowService
+            .markNoShow(
+              id
+            );
+
+        break;
+    }
+
+    request$.subscribe({
+
+      next: () => {
+
+        this.workflowLoading.set(
+          false
+        );
+
+        this.successMessage.set(
+          successMessage
+        );
+
+        this.loadDetail(
+          id
+        );
+      },
+
+      error: (
+        error:
+          HttpErrorResponse
+      ) => {
+
+        this.workflowLoading.set(
+          false
+        );
+
+        this.errorMessage.set(
+          this.getErrorMessage(
+            error,
+            'Impossibile modificare lo stato dell’appuntamento.'
+          )
+        );
+      }
+    });
+  }
+
   private getErrorMessage(
     error: HttpErrorResponse,
     fallback: string
@@ -385,7 +725,8 @@ export class AppointmentDetailComponent
       error.error?.message;
 
     if (
-      typeof backendMessage === 'string' &&
+      typeof backendMessage ===
+        'string' &&
       backendMessage.trim()
     ) {
 

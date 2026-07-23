@@ -3,13 +3,14 @@
 }
 
 .agenda-page {
-  max-width: 1350px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
 .page-header,
-.date-toolbar,
+.agenda-toolbar,
 .date-navigation,
+.view-switch,
 .appointment-title,
 .appointment-actions {
   display: flex;
@@ -42,10 +43,10 @@
 }
 
 .primary-button {
+  min-height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
   padding: 0 15px;
   border-radius: 8px;
   background: #3b312c;
@@ -55,51 +56,96 @@
   text-decoration: none;
 }
 
-.date-toolbar {
-  justify-content: space-between;
-  gap: 16px;
+/*
+ * ==========================================================
+ * TOOLBAR
+ * ==========================================================
+ */
+.agenda-toolbar {
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 16px;
-  padding: 13px 15px;
+  padding: 12px 14px;
   border: 1px solid #e6dfdb;
   border-radius: 11px;
   background: white;
 }
 
+.view-switch {
+  padding: 3px;
+  border-radius: 8px;
+  background: #f2ece8;
+}
+
+.view-switch button {
+  min-height: 32px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #84766e;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.view-switch button.active {
+  background: white;
+  color: #4f423b;
+  box-shadow:
+    0 2px 6px
+    rgba(50, 39, 33, 0.08);
+}
+
 .date-navigation {
-  gap: 8px;
+  gap: 7px;
+}
+
+.date-navigation input,
+.status-filter {
+  height: 36px;
+  box-sizing: border-box;
+  border: 1px solid #ded5cf;
+  border-radius: 7px;
+  background: white;
+  color: #564b45;
+  font-family: inherit;
+  font-size: 10px;
 }
 
 .date-navigation input {
-  height: 37px;
-  padding: 0 10px;
-  border: 1px solid #ded5cf;
-  border-radius: 7px;
-  background: #fff;
-  color: #564b45;
-  font-family: inherit;
+  padding: 0 9px;
+}
+
+.status-filter {
+  min-width: 150px;
+  padding: 0 9px;
 }
 
 .icon-button,
 .today-button {
-  height: 37px;
+  height: 36px;
   border: 1px solid #ded5cf;
   border-radius: 7px;
-  background: #fff;
+  background: white;
   color: #655850;
+  font-family: inherit;
   cursor: pointer;
 }
 
 .icon-button {
-  width: 37px;
+  width: 36px;
 }
 
 .today-button {
-  padding: 0 12px;
-  font-size: 10px;
+  padding: 0 11px;
+  font-size: 9px;
   font-weight: 700;
 }
 
 .appointment-count {
+  margin-left: auto;
   padding: 6px 9px;
   border-radius: 20px;
   background: #efe7e2;
@@ -108,6 +154,11 @@
   font-weight: 700;
 }
 
+/*
+ * ==========================================================
+ * PANEL
+ * ==========================================================
+ */
 .agenda-panel {
   overflow: hidden;
   border: 1px solid #ebe5e1;
@@ -118,6 +169,11 @@
     rgba(49, 39, 33, 0.035);
 }
 
+/*
+ * ==========================================================
+ * DAY
+ * ==========================================================
+ */
 .appointment-list {
   padding: 10px;
 }
@@ -236,6 +292,126 @@
   color: #a44242;
 }
 
+/*
+ * ==========================================================
+ * WEEK
+ * ==========================================================
+ */
+.week-grid {
+  min-width: 1000px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      7,
+      minmax(135px, 1fr)
+    );
+}
+
+.week-day {
+  min-height: 500px;
+  border-right: 1px solid #eee8e4;
+}
+
+.week-day:last-child {
+  border-right: 0;
+}
+
+.week-day-header {
+  padding: 12px;
+  border-bottom: 1px solid #eee8e4;
+  background: #faf8f7;
+  text-align: center;
+}
+
+.week-day-header span {
+  display: block;
+  color: #9a8e87;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.week-day-header strong {
+  display: block;
+  margin-top: 3px;
+  color: #4f433d;
+  font-size: 12px;
+}
+
+.week-day-body {
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+}
+
+.week-appointment {
+  display: flex;
+  flex-direction: column;
+  padding: 9px;
+  border-left: 3px solid #b28c75;
+  border-radius: 6px;
+  background: #f8f4f1;
+  color: #584a43;
+  text-decoration: none;
+}
+
+.week-appointment strong {
+  font-size: 11px;
+}
+
+.week-appointment span {
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-appointment small {
+  margin-top: 5px;
+  color: #998b83;
+  font-size: 7px;
+}
+
+.week-appointment[data-status='CONFIRMED'] {
+  border-left-color: #75947c;
+  background: #f0f6f1;
+}
+
+.week-appointment[data-status='IN_PROGRESS'] {
+  border-left-color: #c69b42;
+  background: #fff8e9;
+}
+
+.week-appointment[data-status='COMPLETED'] {
+  border-left-color: #708ba1;
+  background: #f1f5f8;
+}
+
+.week-appointment[data-status='CANCELLED'] {
+  border-left-color: #b97b7b;
+  background: #faf1f1;
+  opacity: 0.65;
+}
+
+.week-appointment[data-status='NO_SHOW'] {
+  border-left-color: #8e749d;
+  background: #f5f0f7;
+}
+
+.week-empty {
+  padding: 15px 5px;
+  color: #b0a59f;
+  font-size: 8px;
+  text-align: center;
+}
+
+/*
+ * ==========================================================
+ * STATES
+ * ==========================================================
+ */
 .state-message,
 .error-message,
 .success-message,
@@ -287,18 +463,31 @@
   font-size: 11px;
 }
 
-@media (max-width: 700px) {
+@media (
+  max-width: 850px
+) {
 
-  .page-header,
-  .date-toolbar,
-  .appointment-title {
+  .page-header {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .date-navigation {
-    width: 100%;
-    flex-wrap: wrap;
+  .appointment-count {
+    margin-left: 0;
+  }
+
+  .agenda-panel {
+    overflow-x: auto;
+  }
+}
+
+@media (
+  max-width: 700px
+) {
+
+  .appointment-title {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .appointment-card {

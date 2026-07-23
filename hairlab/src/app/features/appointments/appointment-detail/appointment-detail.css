@@ -11,7 +11,10 @@
 .header-actions,
 .summary-grid,
 .section-header,
-.service-heading {
+.service-heading,
+.workflow-header,
+.workflow-actions,
+.workflow-steps {
   display: flex;
   align-items: center;
 }
@@ -22,11 +25,12 @@
   margin-bottom: 18px;
 }
 
-.eyebrow {
+.eyebrow,
+.workflow-label {
   color: #a06f50;
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.5px;
 }
 
 .page-header h1 {
@@ -41,20 +45,23 @@
   font-size: 11px;
 }
 
-.header-actions {
+.header-actions,
+.workflow-actions {
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.primary-button,
 .secondary-button,
-.danger-button {
-  min-height: 39px;
+.workflow-button {
+  min-height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0 13px;
+  border: 1px solid #ddd4ce;
   border-radius: 8px;
+  background: white;
+  color: #675a53;
   font-family: inherit;
   font-size: 9px;
   font-weight: 700;
@@ -62,24 +69,114 @@
   cursor: pointer;
 }
 
-.primary-button {
-  border: 0;
-  background: #3b312c;
+.workflow-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.workflow-button.primary {
+  border-color: #4d4039;
+  background: #443832;
   color: white;
 }
 
-.secondary-button {
-  border: 1px solid #ddd4ce;
-  background: white;
-  color: #675a53;
+.workflow-button.success {
+  border-color: #bcd7c3;
+  background: #eef7f0;
+  color: #4f7658;
 }
 
-.danger-button {
-  border: 1px solid #ebcaca;
+.workflow-button.warning {
+  border-color: #ead8ad;
+  background: #fff9e9;
+  color: #886a28;
+}
+
+.workflow-button.danger {
+  border-color: #ebcaca;
   background: #fffafa;
   color: #a34444;
 }
 
+/*
+ * ==========================================================
+ * WORKFLOW
+ * ==========================================================
+ */
+.workflow-card {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  border: 1px solid #e7dfda;
+  border-radius: 12px;
+  background: white;
+}
+
+.workflow-header {
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.workflow-header > div:first-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow-status {
+  margin-top: 5px;
+  color: #463a34;
+  font-size: 16px;
+}
+
+.workflow-status[data-status='CONFIRMED'] {
+  color: #547057;
+}
+
+.workflow-status[data-status='IN_PROGRESS'] {
+  color: #8a6828;
+}
+
+.workflow-status[data-status='COMPLETED'] {
+  color: #50697f;
+}
+
+.workflow-status[data-status='CANCELLED'] {
+  color: #a45d5d;
+}
+
+.workflow-status[data-status='NO_SHOW'] {
+  color: #765f83;
+}
+
+.workflow-steps {
+  margin-top: 18px;
+  gap: 8px;
+}
+
+.workflow-steps span {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #f3efec;
+  color: #a29790;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.workflow-steps span.done {
+  background: #e9f2ea;
+  color: #55705b;
+}
+
+.workflow-steps i {
+  width: 24px;
+  height: 1px;
+  background: #dfd6d1;
+}
+
+/*
+ * ==========================================================
+ * SUMMARY
+ * ==========================================================
+ */
 .summary-grid {
   display: grid;
   grid-template-columns:
@@ -110,6 +207,15 @@
   font-size: 15px;
 }
 
+.summary-card strong.small-value {
+  font-size: 11px;
+}
+
+/*
+ * ==========================================================
+ * DETAIL CARDS
+ * ==========================================================
+ */
 .detail-card {
   margin-bottom: 16px;
   overflow: hidden;
@@ -204,7 +310,8 @@
   white-space: nowrap;
 }
 
-.operator {
+.operator,
+.completed-label {
   margin-top: 8px;
   color: #8f837c;
   font-size: 9px;
@@ -212,6 +319,11 @@
 
 .operator strong {
   color: #62554e;
+}
+
+.completed-label {
+  color: #58715d;
+  font-weight: 700;
 }
 
 .notes {
@@ -229,9 +341,11 @@
 }
 
 .state-message,
-.error-message {
-  padding: 25px;
-  border-radius: 10px;
+.error-message,
+.success-message {
+  margin-bottom: 14px;
+  padding: 16px;
+  border-radius: 9px;
   text-align: center;
 }
 
@@ -240,9 +354,17 @@
   color: #993f3f;
 }
 
-@media (max-width: 800px) {
+.success-message {
+  background: #eff7f1;
+  color: #4c7256;
+}
 
-  .page-header {
+@media (
+  max-width: 850px
+) {
+
+  .page-header,
+  .workflow-header {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -251,9 +373,15 @@
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
   }
+
+  .workflow-steps {
+    flex-wrap: wrap;
+  }
 }
 
-@media (max-width: 500px) {
+@media (
+  max-width: 500px
+) {
 
   .summary-grid {
     grid-template-columns: 1fr;

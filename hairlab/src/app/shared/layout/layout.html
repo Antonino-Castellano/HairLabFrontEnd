@@ -155,16 +155,22 @@
       </a>
 
       <!-- AGENDA -->
-      <div class="nav-item disabled">
+      <a
+        class="nav-item"
+        routerLink="/appointments"
+        routerLinkActive="active"
+        (click)="closeSidebarAfterNavigation()">
 
-        <span class="nav-icon">
+      <span class="nav-icon">
 
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2zm2-2v4m10-4v4M3 9h18">
-            </path>
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true">
+
+          <path 
+              d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18">
+          </path>
+
           </svg>
 
         </span>
@@ -173,11 +179,8 @@
           Agenda
         </span>
 
-        <span class="coming-soon">
-          Presto
-        </span>
+      </a>
 
-      </div>
 
       <!-- DIPENDENTI -->
       <a

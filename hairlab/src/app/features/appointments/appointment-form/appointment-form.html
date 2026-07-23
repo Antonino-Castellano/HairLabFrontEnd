@@ -9,11 +9,13 @@
       </span>
 
       <h1>
+
         {{
           isEditMode()
             ? 'Modifica appuntamento'
             : 'Nuovo appuntamento'
         }}
+
       </h1>
 
       <p>
@@ -31,7 +33,9 @@
 
   </div>
 
-  @if (errorMessage()) {
+  @if (
+    errorMessage()
+  ) {
 
     <div class="error-message">
       {{ errorMessage() }}
@@ -39,7 +43,9 @@
 
   }
 
-  @if (loading()) {
+  @if (
+    loading()
+  ) {
 
     <div class="state-card">
       Caricamento...
@@ -67,8 +73,7 @@
             </h2>
 
             <p>
-              Cliente, data,
-              ora e stato.
+              Cliente, data e ora.
             </p>
 
           </div>
@@ -86,8 +91,14 @@
           </span>
 
           <select
-            [value]="customerId() ?? ''"
-            (change)="onCustomerChange($event)">
+            [value]="
+              customerId() ?? ''
+            "
+            (change)="
+              onCustomerChange(
+                $event
+              )
+            ">
 
             <option value="">
               Seleziona cliente
@@ -99,7 +110,9 @@
             ) {
 
               <option
-                [value]="customer.id">
+                [value]="
+                  customer.id
+                ">
 
                 {{ customer.firstName }}
                 {{ customer.lastName }}
@@ -120,8 +133,14 @@
 
           <input
             type="date"
-            [value]="appointmentDate()"
-            (input)="onDateChange($event)">
+            [value]="
+              appointmentDate()
+            "
+            (input)="
+              onDateChange(
+                $event
+              )
+            ">
 
         </label>
 
@@ -133,46 +152,34 @@
 
           <input
             type="time"
-            [value]="appointmentTime()"
-            (input)="onTimeChange($event)">
+            [value]="
+              appointmentTime()
+            "
+            (input)="
+              onTimeChange(
+                $event
+              )
+            ">
 
         </label>
 
-        @if (isEditMode()) {
+        <div class="field status-info">
 
-          <label class="field">
+          <span>
+            Stato
+          </span>
 
-            <span>
-              Stato
-            </span>
+          <div class="read-only-state">
 
-            <select
-              [value]="status()"
-              (change)="onStatusChange($event)">
+            {{
+              isEditMode()
+                ? 'Gestito dal workflow'
+                : 'Prenotato alla creazione'
+            }}
 
-              @for (
-                itemStatus of editableStatuses;
-                track itemStatus
-              ) {
+          </div>
 
-                <option
-                  [value]="itemStatus">
-
-                  {{
-                    statusLabels[
-                      itemStatus
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-        }
+        </div>
 
         <label class="field full-width">
 
@@ -183,7 +190,11 @@
           <textarea
             rows="3"
             [value]="notes()"
-            (input)="onNotesInput($event)"
+            (input)="
+              onNotesInput(
+                $event
+              )
+            "
             placeholder="
               Informazioni generali,
               richieste del cliente,
@@ -253,12 +264,15 @@
                 </span>
 
                 <strong>
+
                   Inizio previsto:
+
                   {{
                     getItemStartTime(
                       index
                     )
                   }}
+
                 </strong>
 
               </div>
@@ -266,7 +280,11 @@
               <button
                 type="button"
                 class="remove-button"
-                (click)="removeItem(index)">
+                (click)="
+                  removeItem(
+                    index
+                  )
+                ">
                 Rimuovi
               </button>
 
@@ -301,7 +319,9 @@
                   ) {
 
                     <option
-                      [value]="product.id">
+                      [value]="
+                        product.id
+                      ">
 
                       {{ product.name }}
 
@@ -340,7 +360,9 @@
                   ) {
 
                     <option
-                      [value]="employee.id">
+                      [value]="
+                        employee.id
+                      ">
 
                       {{ employee.firstName }}
                       {{ employee.lastName }}
@@ -363,7 +385,9 @@
                   type="number"
                   min="1"
                   step="5"
-                  [value]="item.duration"
+                  [value]="
+                    item.duration
+                  "
                   (input)="
                     onDurationInput(
                       index,
@@ -427,7 +451,6 @@
 
       </div>
 
-      <!-- RIEPILOGO -->
       <div class="summary-bar">
 
         <div>
@@ -437,8 +460,10 @@
           </span>
 
           <strong>
+
             {{ getTotalDuration() }}
             min
+
           </strong>
 
         </div>
@@ -450,11 +475,13 @@
           </span>
 
           <strong>
+
             €
             {{
               getTotalPrice()
                 .toFixed(2)
             }}
+
           </strong>
 
         </div>
@@ -463,9 +490,6 @@
 
     </section>
 
-    <!-- ===================================================
-         AZIONI
-         =================================================== -->
     <div class="form-actions">
 
       <a

@@ -1,12 +1,26 @@
 <section class="detail-page">
 
-  @if (loading()) {
+  @if (
+    successMessage()
+  ) {
+
+    <div class="success-message">
+      {{ successMessage() }}
+    </div>
+
+  }
+
+  @if (
+    loading()
+  ) {
 
     <div class="state-message">
       Caricamento appuntamento...
     </div>
 
-  } @else if (errorMessage()) {
+  } @else if (
+    errorMessage()
+  ) {
 
     <div class="error-message">
       {{ errorMessage() }}
@@ -29,18 +43,22 @@
         </span>
 
         <h1>
+
           {{
             getCustomerName(
               data.appointment.customerId
             )
           }}
+
         </h1>
 
         <p>
+
           {{
             data.appointment.startDateTime
               | date:'EEEE d MMMM y, HH:mm'
           }}
+
         </p>
 
       </div>
@@ -53,10 +71,12 @@
           ← Agenda
         </a>
 
-        @if (canEdit()) {
+        @if (
+          canEdit()
+        ) {
 
           <a
-            class="primary-button"
+            class="secondary-button"
             [routerLink]="[
               '/appointments',
               data.appointment.id,
@@ -65,13 +85,6 @@
             Modifica
           </a>
 
-          <button
-            type="button"
-            class="danger-button"
-            (click)="cancelAppointment()">
-            Cancella
-          </button>
-
         }
 
       </div>
@@ -79,25 +92,176 @@
     </div>
 
     <!-- ===================================================
+         WORKFLOW
+         =================================================== -->
+    <section class="workflow-card">
+
+      <div class="workflow-header">
+
+        <div>
+
+          <span class="workflow-label">
+            STATO ATTUALE
+          </span>
+
+          <strong
+            class="workflow-status"
+            [attr.data-status]="
+              data.appointment.status
+            ">
+
+            {{
+              statusLabels[
+                data.appointment.status
+              ]
+            }}
+
+          </strong>
+
+        </div>
+
+        <div class="workflow-actions">
+
+          @if (
+            canConfirm()
+          ) {
+
+            <button
+              type="button"
+              class="workflow-button"
+              [disabled]="workflowLoading()"
+              (click)="confirmAppointment()">
+              Conferma
+            </button>
+
+          }
+
+          @if (
+            canStart()
+          ) {
+
+            <button
+              type="button"
+              class="
+                workflow-button
+                primary
+              "
+              [disabled]="workflowLoading()"
+              (click)="startAppointment()">
+              Avvia
+            </button>
+
+          }
+
+          @if (
+            canComplete()
+          ) {
+
+            <button
+              type="button"
+              class="
+                workflow-button
+                success
+              "
+              [disabled]="workflowLoading()"
+              (click)="completeAppointment()">
+              Completa
+            </button>
+
+          }
+
+          @if (
+            canMarkNoShow()
+          ) {
+
+            <button
+              type="button"
+              class="
+                workflow-button
+                warning
+              "
+              [disabled]="workflowLoading()"
+              (click)="markNoShow()">
+              Non presentato
+            </button>
+
+          }
+
+          @if (
+            canCancel()
+          ) {
+
+            <button
+              type="button"
+              class="
+                workflow-button
+                danger
+              "
+              [disabled]="workflowLoading()"
+              (click)="cancelAppointment()">
+              Cancella
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="workflow-steps">
+
+        <span
+          [class.done]="
+            data.appointment.status !==
+            AppointmentStatus.BOOKED
+          ">
+          Prenotato
+        </span>
+
+        <i></i>
+
+        <span
+          [class.done]="
+            data.appointment.status ===
+              AppointmentStatus.CONFIRMED ||
+            data.appointment.status ===
+              AppointmentStatus.IN_PROGRESS ||
+            data.appointment.status ===
+              AppointmentStatus.COMPLETED
+          ">
+          Confermato
+        </span>
+
+        <i></i>
+
+        <span
+          [class.done]="
+            data.appointment.status ===
+              AppointmentStatus.IN_PROGRESS ||
+            data.appointment.status ===
+              AppointmentStatus.COMPLETED
+          ">
+          In corso
+        </span>
+
+        <i></i>
+
+        <span
+          [class.done]="
+            data.appointment.status ===
+            AppointmentStatus.COMPLETED
+          ">
+          Completato
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
          SUMMARY
          =================================================== -->
     <div class="summary-grid">
-
-      <article class="summary-card">
-
-        <span>
-          Stato
-        </span>
-
-        <strong>
-          {{
-            statusLabels[
-              data.appointment.status
-            ]
-          }}
-        </strong>
-
-      </article>
 
       <article class="summary-card">
 
@@ -118,8 +282,10 @@
         </span>
 
         <strong>
+
           {{ getTotalDuration() }}
           min
+
         </strong>
 
       </article>
@@ -131,11 +297,31 @@
         </span>
 
         <strong>
+
           €
           {{
             getTotalPrice()
               .toFixed(2)
           }}
+
+        </strong>
+
+      </article>
+
+      <article class="summary-card">
+
+        <span>
+          Cliente
+        </span>
+
+        <strong class="small-value">
+
+          {{
+            getCustomerName(
+              data.appointment.customerId
+            )
+          }}
+
         </strong>
 
       </article>
@@ -192,11 +378,13 @@
                 <div>
 
                   <strong>
+
                     {{
                       getProductName(
                         item.salonProductId
                       )
                     }}
+
                   </strong>
 
                   <span>
@@ -216,11 +404,13 @@
                 </div>
 
                 <strong class="price">
+
                   €
                   {{
                     item.agreedPrice
                       .toFixed(2)
                   }}
+
                 </strong>
 
               </div>
@@ -230,16 +420,37 @@
                 Operatore:
 
                 <strong>
+
                   {{
                     getEmployeeName(
                       item.employeeId
                     )
                   }}
+
                 </strong>
 
               </div>
 
-              @if (item.resultNotes) {
+              @if (
+                item.completedAt
+              ) {
+
+                <div class="completed-label">
+
+                  Completato:
+
+                  {{
+                    item.completedAt
+                      | date:'dd/MM HH:mm'
+                  }}
+
+                </div>
+
+              }
+
+              @if (
+                item.resultNotes
+              ) {
 
                 <p class="notes">
                   {{ item.resultNotes }}
