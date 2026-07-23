@@ -25,4 +25,8 @@ export class UserService {
   changePassword(dto: ChangePassword): Observable<void> {
     return this.http.patch<void>(`${this.authUrl}/changepassword`, dto);
   }
+  
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.usersUrl}/all`);
+  }
 }

@@ -7,9 +7,14 @@
       <p>Visualizza i dettagli del tuo account e gestisci le credenziali di accesso.</p>
     </div>
 
-    <button class="primary-button add-user-btn" routerLink="/profile/new" type="button">
-        + Nuovo utente
-    </button>
+    <div class="header-actions">
+        <button class="secondary-button" routerLink="/profile/all" type="button">
+            Visualizza utenti
+        </button>
+        <button class="primary-button add-user-btn" routerLink="/profile/new" type="button">
+            + Nuovo utente
+        </button>
+    </div>
   </div>
 
   @if (successMessage()) {

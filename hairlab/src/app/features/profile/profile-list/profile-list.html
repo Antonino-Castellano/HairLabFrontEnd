@@ -1,0 +1,56 @@
+<section class="user-list-page">
+
+  <div class="page-header-row">
+    <div class="page-header">
+      <span class="eyebrow">Gestione Sistema</span>
+      <h1>Lista Utenti</h1>
+      <p>Elenco di tutti gli utenti registrati sulla piattaforma HairLab.</p>
+    </div>
+
+    <button class="primary-button" routerLink="/profile" type="button">
+      Profilo Utente
+    </button>
+
+    <button class="primary-button" routerLink="/profile/new" type="button">
+      + Nuovo utente
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <div class="panel">
+    @if (loading()) {
+      <div class="state-message">Caricamento utenti in corso...</div>
+    } @else if (users().length === 0) {
+      <div class="state-message">Nessun utente trovato nel sistema.</div>
+    } @else {
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nome e Cognome</th>
+              <th>Email</th>
+              <th>Indirizzo</th>
+              <th>Ruolo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u.email) {
+              <tr>
+                <td><strong>{{ u.firstName }} {{ u.lastName }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.address || 'Non specificato' }}</td>
+                <td>
+                  <span class="badge">{{ u.role }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+</section>
