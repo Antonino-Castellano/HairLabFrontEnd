@@ -20,4 +20,6 @@ export interface Employee {
   active: boolean;
 
   notes?: string;
+
+  profileImage?: string;
 }
