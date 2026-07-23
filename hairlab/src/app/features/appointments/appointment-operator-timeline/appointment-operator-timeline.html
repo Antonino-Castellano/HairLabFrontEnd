@@ -1,0 +1,576 @@
+<section class="operator-timeline">
+
+  <!-- =====================================================
+       TOOLBAR TIMELINE
+       ===================================================== -->
+  <div class="timeline-toolbar">
+
+    <div>
+
+      <span class="eyebrow">
+        TIMELINE OPERATORI
+      </span>
+
+      <h2>
+        Carico giornaliero
+      </h2>
+
+      <p>
+        Visualizza servizi, occupazione
+        e intervalli liberi per operatore.
+      </p>
+
+    </div>
+
+    <div class="window-controls">
+
+      <label>
+
+        <span>
+          Dalle
+        </span>
+
+        <input
+          type="time"
+          [value]="windowStart()"
+          (input)="
+            onWindowStartChange(
+              $event
+            )
+          ">
+
+      </label>
+
+      <label>
+
+        <span>
+          Alle
+        </span>
+
+        <input
+          type="time"
+          [value]="windowEnd()"
+          (input)="
+            onWindowEndChange(
+              $event
+            )
+          ">
+
+      </label>
+
+      <div class="refresh-group">
+
+        <span class="updated-label">
+
+          Aggiornato:
+          {{ getLastUpdatedLabel() }}
+
+        </span>
+
+        <button
+          type="button"
+          class="refresh-button"
+          (click)="loadTimeline()">
+          Aggiorna
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  @if (
+    !isWindowValid()
+  ) {
+
+    <div class="error-message">
+      L'orario finale deve essere successivo
+      all'orario iniziale.
+    </div>
+
+  } @else if (
+    errorMessage()
+  ) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  } @else if (
+    loading()
+  ) {
+
+    <div class="state-message">
+      Caricamento timeline operatori...
+    </div>
+
+  } @else {
+
+    <!-- ===================================================
+         KPI GIORNATA
+         =================================================== -->
+    <div class="timeline-stats">
+
+      <article>
+
+        <span>
+          Operatori attivi
+        </span>
+
+        <strong>
+          {{ employees().length }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Appuntamenti
+        </span>
+
+        <strong>
+          {{ blockingAppointments().length }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Servizi programmati
+        </span>
+
+        <strong>
+          {{ appointmentItems().length }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Carico complessivo
+        </span>
+
+        <strong>
+
+          {{
+            formatDuration(
+              totalScheduledMinutes()
+            )
+          }}
+
+        </strong>
+
+      </article>
+
+    </div>
+
+    @if (
+      employees().length === 0
+    ) {
+
+      <div class="state-message">
+        Nessun operatore attivo disponibile.
+      </div>
+
+    } @else {
+
+      <!-- =================================================
+           TIMELINE SCROLLABILE
+           ================================================= -->
+      <div class="timeline-scroll">
+
+        <div
+          class="timeline-grid"
+          [style.--employee-count]="
+            employees().length
+          ">
+
+          <!-- COLONNA ORARI -->
+          <div class="time-header">
+            Orario
+          </div>
+
+          <!-- HEADER OPERATORI -->
+          @for (
+            employee of employees();
+            track employee.id
+          ) {
+
+            <div class="employee-header">
+
+              <div class="employee-avatar">
+
+                {{
+                  employee.firstName
+                    .charAt(0)
+                }}
+
+                {{
+                  employee.lastName
+                    .charAt(0)
+                }}
+
+              </div>
+
+              <div>
+
+                <strong>
+
+                  {{ employee.firstName }}
+                  {{ employee.lastName }}
+
+                </strong>
+
+                <span>
+
+                  {{
+                    getWorkloadPercent(
+                      employee.id
+                    )
+                  }}
+
+                  % occupato
+
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+          <!-- RAIL ORARI -->
+          <div
+            class="time-rail"
+            [style.height.px]="
+              getTimelineHeight()
+            ">
+
+            @if (
+              isNowVisible()
+            ) {
+
+              <div
+                class="now-time-label"
+                [style.top.%]="
+                  getNowTop()
+                ">
+
+                <span>
+                  {{ getNowLabel() }}
+                </span>
+
+              </div>
+
+            }
+
+            @for (
+              tick of getTimeTicks();
+              track tick
+            ) {
+
+              <div
+                class="time-tick"
+                [style.top.%]="
+                  getTickTop(
+                    tick
+                  )
+                ">
+
+                <span>
+                  {{ tick }}
+                </span>
+
+              </div>
+
+            }
+
+          </div>
+
+          <!-- COLONNE OPERATORI -->
+          @for (
+            employee of employees();
+            track employee.id
+          ) {
+
+            <div
+              class="employee-lane"
+              [style.height.px]="
+                getTimelineHeight()
+              ">
+
+              <!-- LINEE ORARIE -->
+              @for (
+                tick of getTimeTicks();
+                track tick
+              ) {
+
+                <div
+                  class="lane-line"
+                  [style.top.%]="
+                    getTickTop(
+                      tick
+                    )
+                  ">
+                </div>
+
+              }
+
+              <!-- LINEA ORA ATTUALE -->
+              @if (
+                isNowVisible()
+              ) {
+
+                <div
+                  class="now-line"
+                  [style.top.%]="
+                    getNowTop()
+                  ">
+                </div>
+
+              }
+
+              <!-- APPUNTAMENTI / SERVIZI -->
+             @for (
+                  item of
+                    getItemsForEmployee(
+                      employee.id
+                    );
+                  track item.appointmentItemId
+                ) {
+
+                <a
+                  class="timeline-block"
+                  [attr.data-status]="
+                    getAppointmentStatus(
+                      item.appointmentId
+                    )
+                  "
+                  [style.top.%]="
+                    getBlockTop(
+                      item
+                    )
+                  "
+                  [style.height.%]="
+                    getBlockHeight(
+                      item
+                    )
+                  "
+                  [routerLink]="[
+                    '/appointments',
+                    item.appointmentId
+                  ]">
+
+                  <div class="block-time">
+
+                    {{
+                      getItemStartLabel(
+                        item
+                      )
+                    }}
+
+                    –
+
+                    {{
+                      getItemEndLabel(
+                        item
+                      )
+                    }}
+
+                  </div>
+
+                  <strong>
+
+                    {{
+                      getCustomerName(
+                        item.appointmentId
+                      )
+                    }}
+
+                  </strong>
+
+                  <span>
+
+                    {{
+                      getProductName(
+                        item.salonProductId
+                      )
+                    }}
+
+                  </span>
+
+                  <small>
+
+                    {{
+                      getAppointmentStatusLabel(
+                        item.appointmentId
+                      )
+                    }}
+
+                  </small>
+
+                </a>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- =================================================
+           CARICO + BUCHI LIBERI
+           ================================================= -->
+      <section class="availability-section">
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="eyebrow">
+              DISPONIBILITÀ
+            </span>
+
+            <h3>
+              Buchi liberi per operatore
+            </h3>
+
+            <p>
+              Gli intervalli sono calcolati
+              nella finestra oraria visualizzata.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="availability-grid">
+
+          @for (
+            employee of employees();
+            track employee.id
+          ) {
+
+            <article class="availability-card">
+
+              <div class="availability-header">
+
+                <div>
+
+                  <strong>
+
+                    {{ employee.firstName }}
+                    {{ employee.lastName }}
+
+                  </strong>
+
+                  <span>
+
+                    {{
+                      formatDuration(
+                        getWorkloadMinutes(
+                          employee.id
+                        )
+                      )
+                    }}
+
+                    occupati
+
+                  </span>
+
+                </div>
+
+                <div class="workload-badge">
+
+                  {{
+                    getWorkloadPercent(
+                      employee.id
+                    )
+                  }}
+
+                  %
+
+                </div>
+
+              </div>
+
+              <div class="workload-bar">
+
+                <span
+                  [style.width.%]="
+                    getWorkloadPercent(
+                      employee.id
+                    )
+                  ">
+                </span>
+
+              </div>
+
+              <div class="gap-list">
+
+                @if (
+                  getFreeGaps(
+                    employee.id
+                  ).length === 0
+                ) {
+
+                  <span class="no-gap">
+                    Nessun intervallo libero
+                  </span>
+
+                } @else {
+
+                  @for (
+                    gap of
+                      getFreeGaps(
+                        employee.id
+                      );
+                    track gap.start
+                  ) {
+
+                    <span class="gap-chip">
+
+                      {{ gap.start }}
+
+                      –
+
+                      {{ gap.end }}
+
+                      <small>
+
+                        {{
+                          formatDuration(
+                            gap.duration
+                          )
+                        }}
+
+                      </small>
+
+                    </span>
+
+                  }
+
+                }
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  }
+
+</section>

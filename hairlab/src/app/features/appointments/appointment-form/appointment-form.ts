@@ -5,6 +5,7 @@ import {
 import {
   Component,
   inject,
+  OnDestroy,
   OnInit,
   signal
 } from '@angular/core';
@@ -20,9 +21,18 @@ import {
 } from 'rxjs';
 
 import {
+  EmployeeAvailability
+} from '../../../models/appointment-availability';
+
+import {
   AppointmentServiceRequest,
   AppointmentManagementRequest
 } from '../../../models/appointment-management';
+
+
+import {
+  AppointmentSlotSuggestion
+} from '../../../models/appointment-slot-search';
 
 import {
   Customer
@@ -37,8 +47,17 @@ import {
 } from '../../../models/salon-product';
 
 import {
+  AppointmentAvailabilityService
+} from '../../../service/appointment-availability-service';
+
+import {
   AppointmentManagementService
 } from '../../../service/appointment-management-service';
+
+
+import {
+  AppointmentSlotSearchService
+} from '../../../service/appointment-slot-search-service';
 
 import {
   CustomerService
@@ -52,6 +71,9 @@ import {
   SalonProductService
 } from '../../../service/salon-product-service';
 
+/**
+ * Singola riga del form.
+ */
 interface AppointmentDraftItem {
 
   salonProductId:
@@ -70,6 +92,24 @@ interface AppointmentDraftItem {
     string;
 }
 
+/**
+ * Disponibilità memorizzata per indice riga.
+ */
+type AvailabilityMap =
+  Record<
+    number,
+    EmployeeAvailability[]
+  >;
+
+/**
+ * Stato loading per indice riga.
+ */
+type AvailabilityLoadingMap =
+  Record<
+    number,
+    boolean
+  >;
+
 @Component({
   selector: 'app-appointment-form',
   standalone: true,
@@ -80,27 +120,57 @@ interface AppointmentDraftItem {
   styleUrl: './appointment-form.css'
 })
 export class AppointmentFormComponent
-  implements OnInit {
+  implements OnInit, OnDestroy {
 
   private readonly route =
-    inject(ActivatedRoute);
+    inject(
+      ActivatedRoute
+    );
 
   private readonly router =
-    inject(Router);
+    inject(
+      Router
+    );
 
   private readonly managementService =
     inject(
       AppointmentManagementService
     );
 
+  private readonly availabilityService =
+    inject(
+      AppointmentAvailabilityService
+    );
+
+  private readonly slotSearchService =
+    inject(
+      AppointmentSlotSearchService
+    );
+
   private readonly customerService =
-    inject(CustomerService);
+    inject(
+      CustomerService
+    );
 
   private readonly employeeService =
-    inject(EmployeeService);
+    inject(
+      EmployeeService
+    );
 
   private readonly salonProductService =
-    inject(SalonProductService);
+    inject(
+      SalonProductService
+    );
+
+  /**
+   * Piccolo debounce per evitare
+   * troppe chiamate mentre si modifica
+   * rapidamente durata/data/orario.
+   */
+  private availabilityTimer:
+    ReturnType<typeof setTimeout> |
+    null =
+      null;
 
   protected readonly customers =
     signal<Customer[]>([]);
@@ -115,7 +185,9 @@ export class AppointmentFormComponent
     signal<AppointmentDraftItem[]>([]);
 
   protected readonly customerId =
-    signal<number | null>(null);
+    signal<number | null>(
+      null
+    );
 
   protected readonly appointmentDate =
     signal(
@@ -125,7 +197,9 @@ export class AppointmentFormComponent
     );
 
   protected readonly appointmentTime =
-    signal('09:00');
+    signal(
+      '09:00'
+    );
 
   protected readonly notes =
     signal('');
@@ -136,14 +210,54 @@ export class AppointmentFormComponent
   protected readonly saving =
     signal(false);
 
+  protected readonly checkingAllAvailability =
+    signal(false);
+
+  /**
+   * Finestra modificabile usata
+   * dal motore di ricerca slot.
+   *
+   * 08:00 - 20:00 è solo un default UI:
+   * l'utente può cambiarla liberamente.
+   */
+  protected readonly slotWindowStart =
+    signal(
+      '08:00'
+    );
+
+  protected readonly slotWindowEnd =
+    signal(
+      '20:00'
+    );
+
+  protected readonly slotSuggestions =
+    signal<AppointmentSlotSuggestion[]>(
+      []
+    );
+
+  protected readonly searchingSlots =
+    signal(false);
+
   protected readonly errorMessage =
     signal('');
+
+  protected readonly availabilityByIndex =
+    signal<AvailabilityMap>(
+      {}
+    );
+
+  protected readonly availabilityLoadingByIndex =
+    signal<AvailabilityLoadingMap>(
+      {}
+    );
 
   protected readonly isEditMode =
     signal(false);
 
   protected readonly appointmentId =
-    signal<number | null>(null);
+    signal<number | null>(
+      null
+    );
 
   ngOnInit(): void {
 
@@ -157,10 +271,14 @@ export class AppointmentFormComponent
     ) {
 
       const id =
-        Number(idParam);
+        Number(
+          idParam
+        );
 
       if (
-        Number.isNaN(id) ||
+        Number.isNaN(
+          id
+        ) ||
         id <= 0
       ) {
 
@@ -181,12 +299,9 @@ export class AppointmentFormComponent
     }
 
     /*
-     * Quando arriviamo dalla scheda cliente:
+     * Arrivo dalla scheda cliente:
      *
      * /appointments/new?customerId=7
-     *
-     * preselezioniamo automaticamente
-     * il cliente nel form.
      */
     if (
       !this.isEditMode()
@@ -195,7 +310,9 @@ export class AppointmentFormComponent
       const customerIdParam =
         this.route.snapshot
           .queryParamMap
-          .get('customerId');
+          .get(
+            'customerId'
+          );
 
       if (
         customerIdParam
@@ -223,6 +340,21 @@ export class AppointmentFormComponent
     this.loadLookups();
   }
 
+  ngOnDestroy(): void {
+
+    if (
+      this.availabilityTimer
+    ) {
+
+      clearTimeout(
+        this.availabilityTimer
+      );
+    }
+  }
+
+  /**
+   * Lookup necessari al form.
+   */
   private loadLookups(): void {
 
     this.loading.set(
@@ -248,14 +380,10 @@ export class AppointmentFormComponent
       next: result => {
 
         this.customers.set(
-          result.customers ?? []
+          result.customers ??
+          []
         );
 
-        /*
-         * Un customerId passato nella query string
-         * deve appartenere ai clienti attivi
-         * caricati dal backend.
-         */
         if (
           !this.isEditMode() &&
           this.customerId() &&
@@ -273,11 +401,13 @@ export class AppointmentFormComponent
         }
 
         this.employees.set(
-          result.employees ?? []
+          result.employees ??
+          []
         );
 
         this.salonProducts.set(
-          result.products ?? []
+          result.products ??
+          []
         );
 
         if (
@@ -296,6 +426,8 @@ export class AppointmentFormComponent
           this.loading.set(
             false
           );
+
+          this.scheduleAvailabilityRefresh();
         }
       },
 
@@ -318,6 +450,9 @@ export class AppointmentFormComponent
     });
   }
 
+  /**
+   * Carica appuntamento in modifica.
+   */
   private loadAppointment(
     id: number
   ): void {
@@ -382,8 +517,7 @@ export class AppointmentFormComponent
           );
 
           if (
-            this.items().length ===
-            0
+            this.items().length === 0
           ) {
 
             this.addItem();
@@ -392,6 +526,8 @@ export class AppointmentFormComponent
           this.loading.set(
             false
           );
+
+          this.scheduleAvailabilityRefresh();
         },
 
         error: (
@@ -430,6 +566,10 @@ export class AppointmentFormComponent
     );
   }
 
+  /**
+   * Data modificata:
+   * tutte le disponibilità cambiano.
+   */
   protected onDateChange(
     event: Event
   ): void {
@@ -441,8 +581,14 @@ export class AppointmentFormComponent
     this.appointmentDate.set(
       input.value
     );
+
+    this.scheduleAvailabilityRefresh();
   }
 
+  /**
+   * Ora iniziale modificata:
+   * cambiano gli slot di tutte le righe.
+   */
   protected onTimeChange(
     event: Event
   ): void {
@@ -454,6 +600,8 @@ export class AppointmentFormComponent
     this.appointmentTime.set(
       input.value
     );
+
+    this.scheduleAvailabilityRefresh();
   }
 
   protected onNotesInput(
@@ -469,13 +617,18 @@ export class AppointmentFormComponent
     );
   }
 
+  /**
+   * Aggiunge una riga.
+   *
+   * Non assegniamo automaticamente
+   * il primo operatore:
+   *
+   * prima mostriamo chi è libero.
+   */
   protected addItem(): void {
 
     const firstProduct =
       this.salonProducts()[0];
-
-    const firstEmployee =
-      this.employees()[0];
 
     const item:
       AppointmentDraftItem = {
@@ -485,7 +638,6 @@ export class AppointmentFormComponent
         null,
 
       employeeId:
-        firstEmployee?.id ??
         null,
 
       duration:
@@ -506,6 +658,8 @@ export class AppointmentFormComponent
         item
       ]
     );
+
+    this.scheduleAvailabilityRefresh();
   }
 
   protected removeItem(
@@ -513,8 +667,7 @@ export class AppointmentFormComponent
   ): void {
 
     if (
-      this.items().length <=
-      1
+      this.items().length <= 1
     ) {
 
       this.errorMessage.set(
@@ -535,8 +688,29 @@ export class AppointmentFormComponent
             index
         )
     );
+
+    /*
+     * Gli indici delle righe cambiano:
+     * ricostruiamo da zero le mappe.
+     */
+    this.availabilityByIndex.set(
+      {}
+    );
+
+    this.availabilityLoadingByIndex.set(
+      {}
+    );
+
+    this.scheduleAvailabilityRefresh();
   }
 
+  /**
+   * Cambio servizio:
+   *
+   * - durata proposta;
+   * - prezzo base;
+   * - nuova verifica disponibilità.
+   */
   protected onProductChange(
     index: number,
     event: Event
@@ -575,6 +749,8 @@ export class AppointmentFormComponent
           0
       }
     );
+
+    this.scheduleAvailabilityRefresh();
   }
 
   protected onEmployeeChange(
@@ -591,13 +767,23 @@ export class AppointmentFormComponent
       {
 
         employeeId:
-          Number(
-            select.value
-          )
+          select.value
+            ? Number(
+                select.value
+              )
+            : null
       }
     );
+
+    this.invalidateSlotSuggestions();
   }
 
+  /**
+   * Una durata diversa modifica:
+   *
+   * - fine dello slot corrente;
+   * - orario dei servizi successivi.
+   */
   protected onDurationInput(
     index: number,
     event: Event
@@ -617,6 +803,8 @@ export class AppointmentFormComponent
           )
       }
     );
+
+    this.scheduleAvailabilityRefresh();
   }
 
   protected onPriceInput(
@@ -659,6 +847,276 @@ export class AppointmentFormComponent
     );
   }
 
+  /**
+   * Verifica manualmente una singola riga.
+   */
+  protected refreshAvailability(
+    index: number
+  ): void {
+
+    const item =
+      this.items()[index];
+
+    if (
+      !item ||
+      !this.appointmentDate() ||
+      !this.appointmentTime() ||
+      item.duration <= 0
+    ) {
+
+      return;
+    }
+
+    this.setAvailabilityLoading(
+      index,
+      true
+    );
+
+    this.availabilityService
+      .getEmployeeAvailability({
+
+        startDateTime:
+          this.getItemStartDateTime(
+            index
+          ),
+
+        duration:
+          item.duration,
+
+        excludeAppointmentId:
+          this.appointmentId() ??
+          undefined
+
+      })
+      .subscribe({
+
+        next: availability => {
+
+          this.availabilityByIndex.update(
+            current => ({
+              ...current,
+              [index]:
+                availability ?? []
+            })
+          );
+
+          this.setAvailabilityLoading(
+            index,
+            false
+          );
+        },
+
+        error: (
+          error:
+            HttpErrorResponse
+        ) => {
+
+          this.setAvailabilityLoading(
+            index,
+            false
+          );
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile verificare la disponibilità operatori.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Seleziona automaticamente
+   * il primo operatore libero.
+   */
+  protected chooseFirstAvailableEmployee(
+    index: number
+  ): void {
+
+    const firstAvailable =
+      this.getAvailability(
+        index
+      )
+        .find(
+          result =>
+            result.available
+        );
+
+    if (
+      !firstAvailable
+    ) {
+
+      this.errorMessage.set(
+        'Nessun operatore disponibile per questo servizio nello slot richiesto.'
+      );
+
+      return;
+    }
+
+    this.updateItem(
+      index,
+      {
+
+        employeeId:
+          firstAvailable.employeeId
+      }
+    );
+
+    this.errorMessage.set(
+      ''
+    );
+  }
+
+  /**
+   * Disponibilità completa della riga.
+   */
+  protected getAvailability(
+    index: number
+  ): EmployeeAvailability[] {
+
+    return (
+      this.availabilityByIndex()[
+        index
+      ] ??
+      []
+    );
+  }
+
+  /**
+   * Numero operatori liberi.
+   */
+  protected getAvailableEmployeeCount(
+    index: number
+  ): number {
+
+    return this.getAvailability(
+      index
+    )
+      .filter(
+        result =>
+          result.available
+      )
+      .length;
+  }
+
+  protected isAvailabilityLoading(
+    index: number
+  ): boolean {
+
+    return (
+      this.availabilityLoadingByIndex()[
+        index
+      ] ??
+      false
+    );
+  }
+
+  /**
+   * Risultato del dipendente selezionato.
+   */
+  protected getSelectedEmployeeAvailability(
+    index: number
+  ):
+    EmployeeAvailability |
+    undefined {
+
+    const employeeId =
+      this.items()[
+        index
+      ]?.employeeId;
+
+    if (
+      !employeeId
+    ) {
+
+      return undefined;
+    }
+
+    return this.getAvailability(
+      index
+    )
+      .find(
+        result =>
+          result.employeeId ===
+          employeeId
+      );
+  }
+
+  /**
+   * Un option viene disabilitato
+   * solo dopo una verifica conclusa
+   * che lo dichiara occupato.
+   */
+  protected isEmployeeUnavailable(
+    index: number,
+    employeeId:
+      number | undefined
+  ): boolean {
+
+    if (
+      !employeeId
+    ) {
+
+      return false;
+    }
+
+    const availability =
+      this.getAvailability(
+        index
+      )
+        .find(
+          result =>
+            result.employeeId ===
+            employeeId
+        );
+
+    return (
+      availability != null &&
+      !availability.available
+    );
+  }
+
+  /**
+   * Etichetta del select.
+   */
+  protected getEmployeeOptionLabel(
+    index: number,
+    employee: Employee
+  ): string {
+
+    const name =
+      `${employee.firstName} ${employee.lastName}`;
+
+    if (
+      !employee.id
+    ) {
+
+      return name;
+    }
+
+    const availability =
+      this.getAvailability(
+        index
+      )
+        .find(
+          result =>
+            result.employeeId ===
+            employee.id
+        );
+
+    if (
+      !availability
+    ) {
+
+      return name;
+    }
+
+    return availability.available
+      ? `${name} · libero`
+      : `${name} · occupato`;
+  }
+
   protected getItemStartTime(
     index: number
   ): string {
@@ -684,6 +1142,257 @@ export class AppointmentFormComponent
     return this.minutesToTime(
       minutes
     );
+  }
+
+  protected getItemEndTime(
+    index: number
+  ): string {
+
+    const item =
+      this.items()[
+        index
+      ];
+
+    const startMinutes =
+      this.timeToMinutes(
+        this.getItemStartTime(
+          index
+        )
+      );
+
+    return this.minutesToTime(
+      startMinutes +
+      (
+        item?.duration ??
+        0
+      )
+    );
+  }
+
+
+  /**
+   * Modifica inizio finestra ricerca.
+   */
+  protected onSlotWindowStartChange(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as
+        HTMLInputElement;
+
+    this.slotWindowStart.set(
+      input.value
+    );
+
+    this.invalidateSlotSuggestions();
+  }
+
+  /**
+   * Modifica fine finestra ricerca.
+   */
+  protected onSlotWindowEndChange(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as
+        HTMLInputElement;
+
+    this.slotWindowEnd.set(
+      input.value
+    );
+
+    this.invalidateSlotSuggestions();
+  }
+
+  /**
+   * TRUE quando ogni servizio
+   * ha già un operatore assegnato.
+   */
+  protected canSearchSlots():
+    boolean {
+
+    return (
+      this.items().length > 0
+      &&
+      this.items()
+        .every(
+          item =>
+            item.employeeId != null
+            &&
+            item.duration > 0
+        )
+      &&
+      !!this.appointmentDate()
+      &&
+      !!this.slotWindowStart()
+      &&
+      !!this.slotWindowEnd()
+    );
+  }
+
+  /**
+   * Cerca i primi orari in cui
+   * l'intera sequenza dei servizi
+   * può essere eseguita.
+   */
+  protected searchAvailableSlots():
+    void {
+
+    this.errorMessage.set(
+      ''
+    );
+
+    this.slotSuggestions.set(
+      []
+    );
+
+    if (
+      !this.canSearchSlots()
+    ) {
+
+      this.errorMessage.set(
+        'Per cercare gli orari liberi assegna prima un operatore a ogni servizio.'
+      );
+
+      return;
+    }
+
+    if (
+      this.slotWindowStart() >=
+      this.slotWindowEnd()
+    ) {
+
+      this.errorMessage.set(
+        'La fine della finestra di ricerca deve essere successiva all’inizio.'
+      );
+
+      return;
+    }
+
+    this.searchingSlots.set(
+      true
+    );
+
+    this.slotSearchService
+      .search({
+
+        date:
+          this.appointmentDate(),
+
+        windowStart:
+          this.slotWindowStart(),
+
+        windowEnd:
+          this.slotWindowEnd(),
+
+        stepMinutes:
+          15,
+
+        maxResults:
+          8,
+
+        excludeAppointmentId:
+          this.appointmentId() ??
+          undefined,
+
+        items:
+          this.items().map(
+            item => ({
+              employeeId:
+                item.employeeId!,
+              duration:
+                item.duration
+            })
+          )
+
+      })
+      .subscribe({
+
+        next: suggestions => {
+
+          this.slotSuggestions.set(
+            suggestions ??
+            []
+          );
+
+          this.searchingSlots.set(
+            false
+          );
+        },
+
+        error: (
+          error:
+            HttpErrorResponse
+        ) => {
+
+          this.searchingSlots.set(
+            false
+          );
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile cercare gli orari disponibili.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Applica una proposta:
+   *
+   * cambia l'ora iniziale dell'appuntamento
+   * e ricalcola la disponibilità di ogni servizio.
+   */
+  protected applySlotSuggestion(
+    suggestion:
+      AppointmentSlotSuggestion
+  ): void {
+
+    this.appointmentTime.set(
+      suggestion.startDateTime
+        .substring(
+          11,
+          16
+        )
+    );
+
+    this.invalidateSlotSuggestions();
+
+    this.scheduleAvailabilityRefresh();
+  }
+
+  /**
+   * Ora leggibile HH:mm.
+   */
+  protected getSuggestionStart(
+    suggestion:
+      AppointmentSlotSuggestion
+  ): string {
+
+    return suggestion.startDateTime
+      .substring(
+        11,
+        16
+      );
+  }
+
+  /**
+   * Ora leggibile HH:mm.
+   */
+  protected getSuggestionEnd(
+    suggestion:
+      AppointmentSlotSuggestion
+  ): string {
+
+    return suggestion.endDateTime
+      .substring(
+        11,
+        16
+      );
   }
 
   protected getTotalDuration():
@@ -722,115 +1431,178 @@ export class AppointmentFormComponent
       );
   }
 
+  /**
+   * Salvataggio:
+   *
+   * 1. validazione form;
+   * 2. nuova verifica FRESCA di tutti gli slot;
+   * 3. blocco se almeno un operatore è occupato;
+   * 4. solo dopo inviamo AppointmentManagementRequest.
+   *
+   * Il backend ricontrollerà comunque.
+   */
   protected save(): void {
 
     this.errorMessage.set(
       ''
     );
 
-    const customerId =
-      this.customerId();
+    const request =
+      this.buildManagementRequest();
 
     if (
-      !customerId
+      !request
     ) {
-
-      this.errorMessage.set(
-        'Seleziona un cliente.'
-      );
 
       return;
     }
 
-    if (
-      !this.appointmentDate() ||
-      !this.appointmentTime()
-    ) {
+    this.verifyAvailabilityBeforeSave(
+      request
+    );
+  }
 
-      this.errorMessage.set(
-        'Inserisci data e ora.'
-      );
+  /**
+   * Verifica preventiva finale.
+   */
+  private verifyAvailabilityBeforeSave(
+    request:
+      AppointmentManagementRequest
+  ): void {
 
-      return;
-    }
+    this.checkingAllAvailability.set(
+      true
+    );
 
-    if (
-      this.items().length ===
-      0
-    ) {
+    const checks =
+      request.items.map(
+        (
+          item,
+          index
+        ) =>
+          this.availabilityService
+            .getEmployeeAvailability({
 
-      this.errorMessage.set(
-        'Inserisci almeno un servizio.'
-      );
-
-      return;
-    }
-
-    const invalidItem =
-      this.items()
-        .find(
-          item =>
-            !item.salonProductId ||
-            !item.employeeId ||
-            item.duration <=
-              0 ||
-            item.agreedPrice <
-              0
-        );
-
-    if (
-      invalidItem
-    ) {
-
-      this.errorMessage.set(
-        'Controlla servizio, operatore, durata e prezzo di ogni riga.'
-      );
-
-      return;
-    }
-
-    const request:
-      AppointmentManagementRequest = {
-
-      customerId,
-
-      startDateTime:
-        `${this.appointmentDate()}T` +
-        `${this.appointmentTime()}:00`,
-
-      notes:
-        this.notes().trim() ||
-        undefined,
-
-      items:
-        this.items().map(
-          item => {
-
-            const result:
-              AppointmentServiceRequest = {
-
-              salonProductId:
-                item.salonProductId!,
-
-              employeeId:
-                item.employeeId!,
+              startDateTime:
+                this.getItemStartDateTime(
+                  index
+                ),
 
               duration:
                 item.duration,
 
-              agreedPrice:
-                item.agreedPrice,
-
-              resultNotes:
-                item.resultNotes
-                  .trim() ||
+              excludeAppointmentId:
+                this.appointmentId() ??
                 undefined
-            };
+            })
+      );
 
-            return result;
+    forkJoin(
+      checks
+    ).subscribe({
+
+      next: results => {
+
+        this.checkingAllAvailability.set(
+          false
+        );
+
+        /*
+         * Aggiorniamo anche ciò che vede l'utente.
+         */
+        const newMap:
+          AvailabilityMap =
+            {};
+
+        results.forEach(
+          (
+            result,
+            index
+          ) => {
+
+            newMap[index] =
+              result;
           }
-        )
-    };
+        );
+
+        this.availabilityByIndex.set(
+          newMap
+        );
+
+        for (
+          let index = 0;
+          index < request.items.length;
+          index++
+        ) {
+
+          const selectedEmployeeId =
+            request.items[
+              index
+            ].employeeId;
+
+          const employeeResult =
+            results[
+              index
+            ].find(
+              result =>
+                result.employeeId ===
+                selectedEmployeeId
+            );
+
+          if (
+            !employeeResult
+          ) {
+
+            this.errorMessage.set(
+              `L'operatore del servizio ${index + 1} non è più disponibile o non è attivo.`
+            );
+
+            return;
+          }
+
+          if (
+            !employeeResult.available
+          ) {
+
+            this.errorMessage.set(
+              `Servizio ${index + 1}: ${employeeResult.message}`
+            );
+
+            return;
+          }
+        }
+
+        this.submitAppointment(
+          request
+        );
+      },
+
+      error: (
+        error:
+          HttpErrorResponse
+      ) => {
+
+        this.checkingAllAvailability.set(
+          false
+        );
+
+        this.errorMessage.set(
+          this.getErrorMessage(
+            error,
+            'Impossibile verificare la disponibilità prima del salvataggio.'
+          )
+        );
+      }
+    });
+  }
+
+  /**
+   * Invio reale dopo i controlli.
+   */
+  private submitAppointment(
+    request:
+      AppointmentManagementRequest
+  ): void {
 
     this.saving.set(
       true
@@ -886,6 +1658,207 @@ export class AppointmentFormComponent
     });
   }
 
+  /**
+   * Costruisce la request oppure
+   * restituisce null se il form non è valido.
+   */
+  private buildManagementRequest():
+    AppointmentManagementRequest |
+    null {
+
+    const customerId =
+      this.customerId();
+
+    if (
+      !customerId
+    ) {
+
+      this.errorMessage.set(
+        'Seleziona un cliente.'
+      );
+
+      return null;
+    }
+
+    if (
+      !this.appointmentDate() ||
+      !this.appointmentTime()
+    ) {
+
+      this.errorMessage.set(
+        'Inserisci data e ora.'
+      );
+
+      return null;
+    }
+
+    if (
+      this.items().length === 0
+    ) {
+
+      this.errorMessage.set(
+        'Inserisci almeno un servizio.'
+      );
+
+      return null;
+    }
+
+    const invalidItem =
+      this.items()
+        .find(
+          item =>
+            !item.salonProductId ||
+            !item.employeeId ||
+            item.duration <= 0 ||
+            item.agreedPrice < 0
+        );
+
+    if (
+      invalidItem
+    ) {
+
+      this.errorMessage.set(
+        'Controlla servizio, operatore, durata e prezzo di ogni riga.'
+      );
+
+      return null;
+    }
+
+    return {
+
+      customerId,
+
+      startDateTime:
+        `${this.appointmentDate()}T` +
+        `${this.appointmentTime()}:00`,
+
+      notes:
+        this.notes().trim() ||
+        undefined,
+
+      items:
+        this.items().map(
+          item => {
+
+            const result:
+              AppointmentServiceRequest = {
+
+              salonProductId:
+                item.salonProductId!,
+
+              employeeId:
+                item.employeeId!,
+
+              duration:
+                item.duration,
+
+              agreedPrice:
+                item.agreedPrice,
+
+              resultNotes:
+                item.resultNotes
+                  .trim() ||
+                undefined
+            };
+
+            return result;
+          }
+        )
+    };
+  }
+
+  /**
+   * Refresh automatico con debounce.
+   */
+  private scheduleAvailabilityRefresh():
+    void {
+
+    this.invalidateSlotSuggestions();
+
+    if (
+      this.availabilityTimer
+    ) {
+
+      clearTimeout(
+        this.availabilityTimer
+      );
+    }
+
+    this.availabilityTimer =
+      setTimeout(
+        () => {
+
+          this.refreshAllAvailability();
+        },
+        300
+      );
+  }
+
+  /**
+   * Verifica tutte le righe.
+   */
+  private refreshAllAvailability():
+    void {
+
+    this.items()
+      .forEach(
+        (
+          _,
+          index
+        ) => {
+
+          this.refreshAvailability(
+            index
+          );
+        }
+      );
+  }
+
+
+  /**
+   * Ogni variazione di:
+   *
+   * - data;
+   * - ora;
+   * - durata;
+   * - operatore;
+   * - sequenza servizi;
+   *
+   * rende obsolete le proposte precedenti.
+   */
+  private invalidateSlotSuggestions():
+    void {
+
+    this.slotSuggestions.set(
+      []
+    );
+  }
+
+  private setAvailabilityLoading(
+    index: number,
+    value: boolean
+  ): void {
+
+    this.availabilityLoadingByIndex
+      .update(
+        current => ({
+          ...current,
+          [index]:
+            value
+        })
+      );
+  }
+
+  private getItemStartDateTime(
+    index: number
+  ): string {
+
+    return (
+      `${this.appointmentDate()}T` +
+      `${this.getItemStartTime(index)}:00`
+    );
+  }
+
   private updateItem(
     index: number,
     patch:
@@ -935,7 +1908,15 @@ export class AppointmentFormComponent
   ): string {
 
     const normalized =
-      value %
+      (
+        value %
+        (
+          24 * 60
+        ) +
+        (
+          24 * 60
+        )
+      ) %
       (
         24 * 60
       );
@@ -1014,8 +1995,7 @@ export class AppointmentFormComponent
     }
 
     if (
-      error.status ===
-      0
+      error.status === 0
     ) {
 
       return (

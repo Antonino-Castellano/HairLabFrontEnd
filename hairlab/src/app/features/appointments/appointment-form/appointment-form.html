@@ -19,8 +19,9 @@
       </h1>
 
       <p>
-        Imposta cliente, orario,
-        servizi e operatori.
+        Imposta cliente, servizi
+        e operatori verificando subito
+        la disponibilità reale.
       </p>
 
     </div>
@@ -195,11 +196,7 @@
                 $event
               )
             "
-            placeholder="
-              Informazioni generali,
-              richieste del cliente,
-              promemoria...
-            ">
+            placeholder="Informazioni generali, richieste del cliente, promemoria...">
           </textarea>
 
         </label>
@@ -228,8 +225,8 @@
             </h2>
 
             <p>
-              Ogni servizio ha
-              operatore, durata e prezzo.
+              HairLab controlla automaticamente
+              gli operatori liberi per ogni slot.
             </p>
 
           </div>
@@ -265,10 +262,16 @@
 
                 <strong>
 
-                  Inizio previsto:
-
                   {{
                     getItemStartTime(
+                      index
+                    )
+                  }}
+
+                  →
+
+                  {{
+                    getItemEndTime(
                       index
                     )
                   }}
@@ -292,6 +295,7 @@
 
             <div class="form-grid">
 
+              <!-- SERVIZIO -->
               <label class="field">
 
                 <span>
@@ -333,7 +337,8 @@
 
               </label>
 
-              <label class="field">
+              <!-- OPERATORE + DISPONIBILITÀ -->
+              <div class="field">
 
                 <span>
                   Operatore
@@ -362,10 +367,20 @@
                     <option
                       [value]="
                         employee.id
+                      "
+                      [disabled]="
+                        isEmployeeUnavailable(
+                          index,
+                          employee.id
+                        )
                       ">
 
-                      {{ employee.firstName }}
-                      {{ employee.lastName }}
+                      {{
+                        getEmployeeOptionLabel(
+                          index,
+                          employee
+                        )
+                      }}
 
                     </option>
 
@@ -373,8 +388,70 @@
 
                 </select>
 
-              </label>
+                <!-- STATO DISPONIBILITÀ -->
+                <div class="availability-line">
 
+                  @if (
+                    isAvailabilityLoading(
+                      index
+                    )
+                  ) {
+
+                    <span class="
+                      availability-badge
+                      checking
+                    ">
+                      Verifica in corso...
+                    </span>
+
+                  } @else if (
+                    getSelectedEmployeeAvailability(
+                      index
+                    );
+                    as availability
+                  ) {
+
+                    <span
+                      class="availability-badge"
+                      [class.available]="
+                        availability.available
+                      "
+                      [class.unavailable]="
+                        !availability.available
+                      ">
+
+                      {{
+                        availability.available
+                          ? 'Disponibile'
+                          : availability.message
+                      }}
+
+                    </span>
+
+                  } @else {
+
+                    <span class="
+                      availability-badge
+                      neutral
+                    ">
+
+                      {{
+                        getAvailableEmployeeCount(
+                          index
+                        )
+                      }}
+
+                      operatori disponibili
+
+                    </span>
+
+                  }
+
+                </div>
+
+              </div>
+
+              <!-- DURATA -->
               <label class="field">
 
                 <span>
@@ -397,6 +474,7 @@
 
               </label>
 
+              <!-- PREZZO -->
               <label class="field">
 
                 <span>
@@ -419,7 +497,87 @@
 
               </label>
 
-              <label class="field full-width">
+              <!-- AZIONI DISPONIBILITÀ -->
+              <div class="
+                availability-tools
+                full-width
+              ">
+
+                <div>
+
+                  <strong>
+                    Disponibilità slot
+                  </strong>
+
+                  <span>
+
+                    {{
+                      getItemStartTime(
+                        index
+                      )
+                    }}
+
+                    –
+
+                    {{
+                      getItemEndTime(
+                        index
+                      )
+                    }}
+
+                  </span>
+
+                </div>
+
+                <div class="availability-actions">
+
+                  <button
+                    type="button"
+                    class="availability-button"
+                    [disabled]="
+                      isAvailabilityLoading(
+                        index
+                      )
+                    "
+                    (click)="
+                      refreshAvailability(
+                        index
+                      )
+                    ">
+                    Verifica
+                  </button>
+
+                  <button
+                    type="button"
+                    class="
+                      availability-button
+                      suggested
+                    "
+                    [disabled]="
+                      isAvailabilityLoading(
+                        index
+                      ) ||
+                      getAvailableEmployeeCount(
+                        index
+                      ) === 0
+                    "
+                    (click)="
+                      chooseFirstAvailableEmployee(
+                        index
+                      )
+                    ">
+                    Usa primo libero
+                  </button>
+
+                </div>
+
+              </div>
+
+              <!-- NOTE -->
+              <label class="
+                field
+                full-width
+              ">
 
                 <span>
                   Note servizio
@@ -436,9 +594,7 @@
                       $event
                     )
                   "
-                  placeholder="
-                    Note tecniche opzionali...
-                  ">
+                  placeholder="Note tecniche opzionali...">
                 </textarea>
 
               </label>
@@ -451,6 +607,7 @@
 
       </div>
 
+      <!-- RIEPILOGO -->
       <div class="summary-bar">
 
         <div>
@@ -490,6 +647,220 @@
 
     </section>
 
+
+    <!-- ===================================================
+         RICERCA AUTOMATICA SLOT
+         =================================================== -->
+    <section class="form-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-number">
+            03
+          </span>
+
+          <div>
+
+            <h2>
+              Trova il primo orario libero
+            </h2>
+
+            <p>
+              HairLab verifica l'intera sequenza
+              dei servizi e tutti gli operatori selezionati.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="slot-search-body">
+
+        <div class="slot-search-config">
+
+          <label class="field">
+
+            <span>
+              Cerca dalle
+            </span>
+
+            <input
+              type="time"
+              [value]="slotWindowStart()"
+              (input)="
+                onSlotWindowStartChange(
+                  $event
+                )
+              ">
+
+          </label>
+
+          <label class="field">
+
+            <span>
+              Fino alle
+            </span>
+
+            <input
+              type="time"
+              [value]="slotWindowEnd()"
+              (input)="
+                onSlotWindowEndChange(
+                  $event
+                )
+              ">
+
+          </label>
+
+          <div class="slot-search-summary">
+
+            <span>
+              Durata totale
+            </span>
+
+            <strong>
+              {{ getTotalDuration() }} min
+            </strong>
+
+          </div>
+
+          <button
+            type="button"
+            class="slot-search-button"
+            [disabled]="
+              searchingSlots() ||
+              !canSearchSlots()
+            "
+            (click)="searchAvailableSlots()">
+
+            {{
+              searchingSlots()
+                ? 'Ricerca in corso...'
+                : 'Cerca orari liberi'
+            }}
+
+          </button>
+
+        </div>
+
+        @if (
+          !canSearchSlots()
+        ) {
+
+          <div class="slot-help">
+
+            Assegna un operatore a ogni servizio
+            per cercare un orario disponibile
+            per l'intera sequenza.
+
+          </div>
+
+        } @else if (
+          slotSuggestions().length > 0
+        ) {
+
+          <div class="slot-results-header">
+
+            <div>
+
+              <strong>
+                Orari disponibili
+              </strong>
+
+              <span>
+                Seleziona una proposta
+                per impostare automaticamente
+                l'ora dell'appuntamento.
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="slot-results">
+
+            @for (
+              suggestion of slotSuggestions();
+              track suggestion.startDateTime
+            ) {
+
+              <button
+                type="button"
+                class="slot-suggestion"
+                (click)="
+                  applySlotSuggestion(
+                    suggestion
+                  )
+                ">
+
+                <span class="slot-time">
+
+                  {{
+                    getSuggestionStart(
+                      suggestion
+                    )
+                  }}
+
+                </span>
+
+                <span class="slot-arrow">
+                  →
+                </span>
+
+                <span class="slot-time">
+
+                  {{
+                    getSuggestionEnd(
+                      suggestion
+                    )
+                  }}
+
+                </span>
+
+                <small>
+
+                  {{
+                    suggestion.totalDuration
+                  }}
+
+                  min
+
+                </small>
+
+              </button>
+
+            }
+
+          </div>
+
+        } @else if (
+          !searchingSlots()
+        ) {
+
+          <div class="slot-empty">
+
+            Premi
+            <strong>
+              Cerca orari liberi
+            </strong>
+            per ottenere fino a 8 proposte
+            nella finestra selezionata.
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================
+         AZIONI FINALI
+         =================================================== -->
     <div class="form-actions">
 
       <a
@@ -501,18 +872,33 @@
       <button
         type="button"
         class="primary-button"
-        [disabled]="saving()"
+        [disabled]="
+          saving() ||
+          checkingAllAvailability()
+        "
         (click)="save()">
 
-        {{
+        @if (
+          checkingAllAvailability()
+        ) {
+
+          Verifica disponibilità...
+
+        } @else if (
           saving()
-            ? 'Salvataggio...'
-            : (
-                isEditMode()
-                  ? 'Salva modifiche'
-                  : 'Crea appuntamento'
-              )
-        }}
+        ) {
+
+          Salvataggio...
+
+        } @else {
+
+          {{
+            isEditMode()
+              ? 'Salva modifiche'
+              : 'Crea appuntamento'
+          }}
+
+        }
 
       </button>
 
