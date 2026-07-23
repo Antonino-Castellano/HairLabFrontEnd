@@ -7,13 +7,16 @@
       <p>Elenco di tutti gli utenti registrati sulla piattaforma HairLab.</p>
     </div>
 
-    <button class="primary-button" routerLink="/profile" type="button">
-      Profilo Utente
-    </button>
+    <!-- 👇 I BOTTONI DEVONO ESSERE DENTRO QUESTO DIV -->
+    <div class="header-actions">
+      <button class="secondary-button" routerLink="/profile" type="button">
+        Profilo Utente
+      </button>
 
-    <button class="primary-button" routerLink="/profile/new" type="button">
-      + Nuovo utente
-    </button>
+      <button class="primary-button" routerLink="/profile/new" type="button">
+        + Nuovo utente
+      </button>
+    </div>
   </div>
 
   @if (errorMessage()) {

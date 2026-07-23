@@ -4,7 +4,9 @@
   margin: 0 auto;
 }
 
-/* Intestazione pagina e layout flessibile */
+/* ==========================================
+   INTESTAZIONE E BOTTONI A DESTRA
+   ========================================== */
 .page-header-row {
   display: flex;
   justify-content: space-between;
@@ -117,7 +119,9 @@
   text-align: center;
 }
 
-/* Bottoni unificati */
+/* ==========================================
+   BOTTONI UNIFICATI
+   ========================================== */
 .primary-button {
   background-color: #1f1f1f;
   color: #ffffff;
