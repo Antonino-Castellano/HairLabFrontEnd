@@ -7,7 +7,6 @@
       <p>Elenco di tutti gli utenti registrati sulla piattaforma HairLab.</p>
     </div>
 
-    <!-- 👇 I BOTTONI DEVONO ESSERE DENTRO QUESTO DIV -->
     <div class="header-actions">
       <button class="secondary-button" routerLink="/profile" type="button">
         Profilo Utente
@@ -37,6 +36,7 @@
               <th>Email</th>
               <th>Indirizzo</th>
               <th>Ruolo</th>
+              <th class="actions-th">Azioni</th> 
             </tr>
           </thead>
           <tbody>
@@ -47,6 +47,16 @@
                 <td>{{ u.address || 'Non specificato' }}</td>
                 <td>
                   <span class="badge">{{ u.role }}</span>
+                </td>
+                <td class="table-actions">
+                  <!-- Bottone Modifica (es. reindirizza al form passando l'id o apre la modifica) -->
+                  <button class="secondary-button icon-btn" (click)="onEdit(u)" type="button" title="Modifica">
+                    Modifica
+                  </button>
+                  <!-- Bottone Elimina -->
+                  <button class="danger-button icon-btn" (click)="onDelete(u.id!)" type="button" title="Elimina">
+                    Elimina
+                  </button>
                 </td>
               </tr>
             }

@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { User } from '../../../models/user';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../service/user-service';
+import { User } from '../../../models/user';
+
 
 @Component({
   selector: 'app-profile-list',
@@ -13,6 +14,7 @@ import { UserService } from '../../../service/user-service';
 })
 export class ProfileListComponent implements OnInit {
   private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
   users = signal<User[]>([]);
   loading = signal<boolean>(true);
@@ -24,16 +26,34 @@ export class ProfileListComponent implements OnInit {
 
   loadUsers(): void {
     this.loading.set(true);
-    // Assicurati che nel UserService esista un metodo per ottenere tutti gli utenti (es. getAllUsers o simile)
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users.set(data);
         this.loading.set(false);
       },
-      error: () => {
-        this.errorMessage.set('Impossibile caricare la lista degli utenti.');
+      error: (err) => {
+        this.errorMessage.set('Errore durante il caricamento degli utenti.');
         this.loading.set(false);
       }
     });
+  }
+
+  onEdit(user: User): void {
+    // Reindirizza al form di modifica passando l'id (es. /profile/edit/5 o gestendolo via rotta)
+    this.router.navigate(['/profile/edit', user.id]);
+  }
+
+  onDelete(id: number): void {
+    if (confirm('Sei sicuro di voler eliminare questo utente?')) {
+      this.userService.deleteUser(id).subscribe({
+        next: () => {
+          // Rimuove l'utente dalla lista locale senza dover ricaricare tutto
+          this.users.update(list => list.filter(u => u.id !== id));
+        },
+        error: (err) => {
+          this.errorMessage.set('Errore durante l eliminazione dell utente.');
+        }
+      });
+    }
   }
 }

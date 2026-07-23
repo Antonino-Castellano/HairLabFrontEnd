@@ -2,8 +2,8 @@
   <div class="page-header-row">
     <div class="page-header">
       <span class="eyebrow">Gestione Utenti</span>
-      <h1>Nuovo Utente</h1>
-      <p>Inserisci i dati anagrafici e le credenziali per registrare un nuovo account nel sistema.</p>
+      <h1>{{ isEditMode() ? 'Modifica Utente' : 'Nuovo Utente' }}</h1>
+      <p>{{ isEditMode() ? 'Modifica i dati anagrafici o le credenziali dell account.' : 'Inserisci i dati anagrafici e le credenziali per registrare un nuovo account nel sistema.' }}</p>
     </div>
 
     <div class="header-actions">
@@ -22,8 +22,6 @@
       {{ errorMessage() }}
     </div>
   }
-
-  <!-- RESTO DEL FORM... -->
 
   <div class="form-card">
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
@@ -72,12 +70,12 @@
 
         <!-- PASSWORD -->
         <div class="form-group">
-          <label for="password">Password Iniziale <span class="required">*</span></label>
+          <label for="password">Password {{ isEditMode() ? 'Nuova (opzionale)' : 'Iniziale' }} <span class="required" *ngIf="!isEditMode()">*</span></label>
           <input 
             type="password" 
             id="password" 
             formControlName="password" 
-            placeholder="Minimo 6 caratteri">
+            [placeholder]="isEditMode() ? 'Lascia vuoto per non modificare' : 'Minimo 6 caratteri'">
           @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
             <small class="error-text">La password deve avere almeno 6 caratteri.</small>
           }
@@ -111,7 +109,11 @@
           Annulla
         </button>
         <button type="submit" class="primary-button" [disabled]="submitting()">
-          {{ submitting() ? 'Salvataggio in corso...' : 'Crea Utente' }}
+          @if (submitting()) {
+            Salvataggio in corso...
+          } @else {
+            {{ isEditMode() ? 'Salva Modifiche' : 'Crea Utente' }}
+          }
         </button>
       </div>
 

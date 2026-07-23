@@ -227,6 +227,10 @@ export const routes: Routes = [
         component: ProfileListComponent
       },
 
+      { path: 'profile/edit/:id', 
+        component: ProfileFormComponent 
+      },
+
       /*
        * ========================================================
        * COLOR LAB

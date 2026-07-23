@@ -171,3 +171,30 @@
   background-color: #f5f5f5;
   border-color: #bcbcbc;
 }
+.table-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Stile specifico per il bottone elimina (rosso/pericolo) */
+.danger-button {
+  background-color: transparent;
+  color: #c5221f;
+  border: 1px solid #fad2cf;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.danger-button:hover {
+  background-color: #fce8e6;
+}
