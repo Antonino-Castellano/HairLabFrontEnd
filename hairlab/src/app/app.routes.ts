@@ -28,6 +28,7 @@ import { ConsultationListComponent } from './features/consultation/consultation-
 import { ConsultationFormComponent } from './features/consultation/consultation-form/consultation-form';
 import { ProfileViewComponent } from './features/profile/profile-view/profile-view';
 import { ProfileFormComponent } from './features/profile/profile-form/profile-form';
+import { ProfileListComponent } from './features/profile/profile-list/profile-list';
 
 /**
  * Configurazione principale delle route Angular.
@@ -211,6 +212,11 @@ export const routes: Routes = [
       {
         path: 'profile/new',
         component: ProfileFormComponent
+      },
+
+      {
+        path: 'profile/all',
+        component: ProfileListComponent
       },
 
       /*
