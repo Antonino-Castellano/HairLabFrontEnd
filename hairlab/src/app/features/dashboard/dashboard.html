@@ -79,15 +79,28 @@
       </p>
     </article>
 
-    <!-- CONSULENZE -->
+    <!-- SERVIZI ATTIVI -->
     <article class="stat-card">
       <div class="stat-header">
-        <span>Consulenze</span>
-        <div class="stat-icon">◫</div>
+        <span>Servizi a listino</span>
+        <div class="stat-icon">✄</div>
       </div>
 
-      <strong>0</strong>
-      <p>Consulenze registrate</p>
+      <strong>
+        @if (loadingServices()) {
+          ...
+        } @else {
+          {{ activeServiceCount() }}
+        }
+      </strong>
+
+      <p>
+        @if (serviceError()) {
+          {{ serviceError() }}
+        } @else {
+          {{ totalServiceCount() }} servizi a listino
+        }
+      </p>
     </article>
 
   </div>
@@ -132,17 +145,17 @@
           <span>+</span> Nuovo cliente
         </a>
 
-        <!-- AZIONE RAPIDA PER DIPENDENTE -->
         <a class="quick-action" routerLink="/employees/new">
           <span>+</span> Nuovo dipendente
         </a>
 
-        <button type="button" disabled>
-          <span>+</span> Nuovo appuntamento
-        </button>
+        <!-- AZIONE RAPIDA PER NUOVO SERVIZIO -->
+        <a class="quick-action" routerLink="/services/new">
+          <span>+</span> Nuovo servizio
+        </a>
 
         <button type="button" disabled>
-          <span>+</span> Nuova consulenza
+          <span>+</span> Nuovo appuntamento
         </button>
 
       </div>

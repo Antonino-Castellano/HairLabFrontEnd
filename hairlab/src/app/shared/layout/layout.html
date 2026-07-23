@@ -2,14 +2,9 @@
 
   <!--
     Zona invisibile sul bordo sinistro.
-
-    Quando il mouse entra in questa fascia,
-    la sidebar viene aperta automaticamente.
+    Quando il mouse entra in questa fascia, la sidebar viene aperta automaticamente.
   -->
-  <div
-    class="sidebar-trigger"
-    (mouseenter)="openSidebar()">
-  </div>
+  <div class="sidebar-trigger" (mouseenter)="openSidebar()"></div>
 
   <!-- =====================================================
        SIDEBAR
@@ -23,73 +18,36 @@
 
     <!-- LOGO -->
     <div class="sidebar-header">
-
       <a
         class="brand"
         routerLink="/dashboard"
         (click)="closeSidebarAfterNavigation()">
-
-        <div class="brand-mark">
-          HL
-        </div>
-
+        <div class="brand-mark">HL</div>
         <div class="brand-text">
-          <strong>
-            HairLab
-          </strong>
-
-          <span>
-            Salon Manager
-          </span>
+          <strong>HairLab</strong>
+          <span>Salon Manager</span>
         </div>
-
       </a>
 
-      <!--
-        Permette di lasciare la sidebar
-        permanentemente aperta.
-      -->
+      <!-- Permette di lasciare la sidebar permanentemente aperta -->
       <button
         class="pin-button"
         type="button"
         (click)="toggleSidebarPin()"
-        [attr.aria-label]="
-          sidebarPinned()
-            ? 'Sblocca menu'
-            : 'Blocca menu aperto'
-        "
-        [title]="
-          sidebarPinned()
-            ? 'Sblocca menu'
-            : 'Mantieni menu aperto'
-        ">
-
+        [attr.aria-label]="sidebarPinned() ? 'Sblocca menu' : 'Blocca menu aperto'"
+        [title]="sidebarPinned() ? 'Sblocca menu' : 'Mantieni menu aperto'">
         @if (sidebarPinned()) {
-
           <!-- Icona pin attivo -->
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z"></path>
           </svg>
-
         } @else {
-
           <!-- Icona pin -->
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z"></path>
           </svg>
-
         }
-
       </button>
-
     </div>
 
     <!-- ===================================================
@@ -102,27 +60,14 @@
         class="nav-item"
         routerLink="/dashboard"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{
-          exact: true
-        }"
+        [routerLinkActiveOptions]="{ exact: true }"
         (click)="closeSidebarAfterNavigation()">
-
         <span class="nav-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"></path>
           </svg>
-
         </span>
-
-        <span>
-          Dashboard
-        </span>
-
+        <span>Dashboard</span>
       </a>
 
       <!-- CLIENTI -->
@@ -131,27 +76,12 @@
         routerLink="/customers"
         routerLinkActive="active"
         (click)="closeSidebarAfterNavigation()">
-
         <span class="nav-icon">
-
-          <!--
-            Icona persona al posto
-            della vecchia pedina ♙.
-          -->
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6"></path>
           </svg>
-
         </span>
-
-        <span>
-          Clienti
-        </span>
-
+        <span>Clienti</span>
       </a>
 
       <!-- AGENDA -->
@@ -160,126 +90,62 @@
         routerLink="/appointments"
         routerLinkActive="active"
         (click)="closeSidebarAfterNavigation()">
-
-      <span class="nav-icon">
-
-        <svg
-          viewBox="0 0 24 24"
-          aria-hidden="true">
-
-          <path 
-              d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18">
-          </path>
-
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"></path>
           </svg>
-
         </span>
-
-        <span>
-          Agenda
-        </span>
-
+        <span>Agenda</span>
       </a>
-
 
       <!-- DIPENDENTI -->
       <a
         class="nav-item"
-        routerLink="/employee"
+        routerLink="/employees"
         routerLinkActive="active"
         (click)="closeSidebarAfterNavigation()">
-
         <span class="nav-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"></path>
           </svg>
-
         </span>
-
-        <span>
-          Dipendenti
-        </span>
-
+        <span>Dipendenti</span>
       </a>
 
-      <!-- SERVIZI -->
-      <div class="nav-item disabled">
-
+      <!-- SERVIZI (ATTIVATO) -->
+      <a
+        class="nav-item"
+        routerLink="/services"
+        routerLinkActive="active"
+        (click)="closeSidebarAfterNavigation()">
         <span class="nav-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
           </svg>
-
         </span>
-
-        <span>
-          Servizi
-        </span>
-
-        <span class="coming-soon">
-          Presto
-        </span>
-
-      </div>
+        <span>Servizi</span>
+      </a>
 
       <!-- CONSULENZE -->
       <div class="nav-item disabled">
-
         <span class="nav-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
           </svg>
-
         </span>
-
-        <span>
-          Consulenze
-        </span>
-
-        <span class="coming-soon">
-          Presto
-        </span>
-
+        <span>Consulenze</span>
+        <span class="coming-soon">Presto</span>
       </div>
 
       <!-- COLOR LAB -->
       <div class="nav-item disabled">
-
         <span class="nav-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true">
-            <path
-              d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8">
-            </path>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
           </svg>
-
         </span>
-
-        <span>
-          Color Lab
-        </span>
-
-        <span class="coming-soon">
-          Presto
-        </span>
-
+        <span>Color Lab</span>
+        <span class="coming-soon">Presto</span>
       </div>
 
     </nav>
@@ -288,94 +154,51 @@
          UTENTE
          =================================================== -->
     <div class="sidebar-footer">
-
       <div class="sidebar-user-avatar">
-        {{
-          user?.username
-            ? user?.username?.charAt(0)?.toUpperCase()
-            : 'U'
-        }}
+        {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
       </div>
 
       <div class="sidebar-user-info">
-
-        <strong>
-          {{ user?.username || 'Utente' }}
-        </strong>
-
-        <span>
-          {{ user?.role || 'USER' }}
-        </span>
-
+        <strong>{{ user?.username || 'Utente' }}</strong>
+        <span>{{ user?.role || 'USER' }}</span>
       </div>
-
     </div>
 
   </aside>
 
-  <!--
-    Overlay visibile soprattutto su smartphone/tablet.
-  -->
+  <!-- Overlay visibile soprattutto su smartphone/tablet -->
   @if (sidebarOpen() && !sidebarPinned()) {
-
-    <div
-      class="sidebar-overlay"
-      (click)="closeSidebar()">
-    </div>
-
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
   }
 
   <!-- =====================================================
        CONTENUTO PRINCIPALE
        ===================================================== -->
-  <div
-    class="main-area"
-    [class.sidebar-pinned]="sidebarPinned()">
+  <div class="main-area" [class.sidebar-pinned]="sidebarPinned()">
 
     <!-- TOPBAR -->
     <header class="topbar">
-
       <button
         class="menu-button"
         type="button"
         (click)="toggleSidebar()"
         aria-label="Apri menu">
-
-        <svg
-          viewBox="0 0 24 24"
-          aria-hidden="true">
-          <path
-            d="M4 6h16M4 12h16M4 18h16">
-          </path>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
-
       </button>
 
-      <div class="topbar-spacer">
-      </div>
+      <div class="topbar-spacer"></div>
 
       <div class="topbar-user">
-
         <div class="topbar-avatar">
-          {{
-            user?.username
-              ? user?.username?.charAt(0)?.toUpperCase()
-              : 'U'
-          }}
+          {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
         </div>
 
         <div class="topbar-user-info">
-
-          <strong>
-            {{ user?.username || 'Utente' }}
-          </strong>
-
-          <span>
-            {{ user?.role || 'USER' }}
-          </span>
-
+          <strong>{{ user?.username || 'Utente' }}</strong>
+          <span>{{ user?.role || 'USER' }}</span>
         </div>
-
       </div>
 
       <button
@@ -384,18 +207,13 @@
         (click)="logout()">
         Esci
       </button>
-
     </header>
 
     <!--
-      Qui Angular mostra Dashboard,
-      Clienti, Dettaglio cliente, ecc.
+      Qui Angular mostra Dashboard, Clienti, Servizi, ecc.
     -->
     <main class="page-content">
-
-      <router-outlet>
-      </router-outlet>
-
+      <router-outlet></router-outlet>
     </main>
 
   </div>

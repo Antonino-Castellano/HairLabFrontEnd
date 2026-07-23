@@ -1,0 +1,142 @@
+<section class="services-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">SERVIZI</span>
+      <h1>Listino servizi</h1>
+      <p>Consulta, inserisci e modifica i servizi offerti dal salone.</p>
+    </div>
+
+    <a class="primary-button" routerLink="/services/new">+ Nuovo servizio</a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="service-card">
+
+    @if (loading()) {
+      <div class="state-message">
+        Caricamento listino servizi...
+      </div>
+    } @else if (products().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">✄</div>
+        <h2>Nessun servizio presente</h2>
+        <p>Inserisci il primo servizio nel listino per iniziare ad utilizzare HairLab.</p>
+        <a class="primary-button" routerLink="/services/new">+ Nuovo servizio</a>
+      </div>
+    } @else {
+
+      <!-- BARRA DI FILTRAGGIO -->
+      <div class="filter-bar">
+
+        <div class="filter-group">
+          <label for="categoryFilter">Categoria:</label>
+          <select id="categoryFilter" (change)="onCategoryFilterChange($event)">
+            <option value="ALL">Tutte le categorie</option>
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="statusFilter">Stato:</label>
+          <select id="statusFilter" (change)="onStatusFilterChange($event)">
+            <option value="ALL">Tutti</option>
+            <option value="ACTIVE">Solo attivi</option>
+            <option value="INACTIVE">Solo non attivi</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Servizio</th>
+              <th>Categoria</th>
+              <th>Durata</th>
+              <th>Prezzo Base</th>
+              <th>Stato</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of filteredProducts(); track product.id) {
+              <tr>
+
+                <td>
+                  <div class="service-name">
+                    <strong>{{ product.name }}</strong>
+                    @if (product.description) {
+                      <span>{{ product.description }}</span>
+                    }
+                  </div>
+                </td>
+
+                <td>
+                  <span class="category-badge">
+                    {{ getCategoryName(product.productCategoryId) }}
+                  </span>
+                </td>
+
+                <td>⏱ {{ product.duration }} min</td>
+
+                <td class="price">
+                  {{ product.basePrice | currency:'EUR':'symbol':'1.2-2' }}
+                </td>
+
+                <!-- STATO -->
+                <td>
+                  <span
+                    class="status"
+                    [class.active]="product.active"
+                    [class.inactive]="!product.active">
+                    {{ product.active ? 'Attivo' : 'Non attivo' }}
+                  </span>
+                </td>
+
+                <!-- AZIONI -->
+                <td>
+                  <div class="actions">
+                    <a class="action-button" [routerLink]="['/services', product.id, 'edit']">
+                      Modifica
+                    </a>
+
+                    <!-- PULSANTE SWITCH STATO -->
+                    <button
+                      class="action-button status-toggle"
+                      [class.deactivate]="product.active"
+                      [class.activate]="!product.active"
+                      type="button"
+                      (click)="toggleStatus(product)">
+                      {{ product.active ? 'Disattiva' : 'Attiva' }}
+                    </button>
+
+                    <!-- PULSANTE ELIMINA PERMANENTE -->
+                    <button
+                      class="action-button delete-button"
+                      type="button"
+                      (click)="deleteProduct(product)">
+                      Elimina
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  </div>
+
+</section>
