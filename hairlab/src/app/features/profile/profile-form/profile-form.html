@@ -1,0 +1,108 @@
+<section class="form-page">
+
+  <div class="page-header">
+    <span class="eyebrow">Gestione Utenti</span>
+    <h1>Nuovo Utente</h1>
+    <p>Inserisci i dati anagrafici e le credenziali per registrare un nuovo account nel sistema.</p>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="form-card">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-row">
+        <!-- NOME -->
+        <div class="form-group">
+          <label for="firstName">Nome <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName" 
+            placeholder="Inserisci il nome">
+          @if (userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched) {
+            <small class="error-text">Il nome è obbligatorio.</small>
+          }
+        </div>
+
+        <!-- COGNOME -->
+        <div class="form-group">
+          <label for="lastName">Cognome <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName" 
+            placeholder="Inserisci il cognome">
+          @if (userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched) {
+            <small class="error-text">Il cognome è obbligatorio.</small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email">Indirizzo Email <span class="required">*</span></label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="nome@esempio.it">
+          @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+            <small class="error-text">Inserisci un'email valida.</small>
+          }
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label for="password">Password Iniziale <span class="required">*</span></label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Minimo 6 caratteri">
+          @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+            <small class="error-text">La password deve avere almeno 6 caratteri.</small>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- INDIRIZZO -->
+        <div class="form-group">
+          <label for="address">Indirizzo</label>
+          <input 
+            type="text" 
+            id="address" 
+            formControlName="address" 
+            placeholder="Via Roma 1, Città">
+        </div>
+
+        <!-- RUOLO -->
+        <div class="form-group">
+          <label for="role">Ruolo di Sistema <span class="required">*</span></label>
+          <select id="role" formControlName="role">
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- BOTTONI AZIONE -->
+      <div class="form-actions">
+        <button type="button" class="secondary-button" (click)="onCancel()">
+          Annulla
+        </button>
+        <button type="submit" class="primary-button" [disabled]="submitting()">
+          {{ submitting() ? 'Salvataggio in corso...' : 'Crea Utente' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</section>

@@ -1,0 +1,94 @@
+<section class="profile-page">
+
+  <div class="page-header-row">
+    <div class="page-header">
+      <span class="eyebrow">Account</span>
+      <h1>Profilo Utente</h1>
+      <p>Visualizza i dettagli del tuo account e gestisci le credenziali di accesso.</p>
+    </div>
+
+    <button class="primary-button add-user-btn" routerLink="/profile/new" type="button">
+        + Nuovo utente
+    </button>
+  </div>
+
+  @if (successMessage()) {
+    <div class="success-message">{{ successMessage() }}</div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <div class="profile-grid">
+
+    <!-- SCHEDA INFORMAZIONI GENERALI -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Informazioni Account</h2>
+        <p>Dettagli anagrafici e permessi correnti</p>
+      </div>
+
+      @if (loading()) {
+        <div class="state-message">Caricamento informazioni in corso...</div>
+      } @else if (currentUser(); as user) {
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">Nome e Cognome</span>
+            <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Indirizzo Email</span>
+            <strong>{{ user.email }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Indirizzo</span>
+            <strong>{{ user.address || 'Non specificato' }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Ruolo di Sistema</span>
+            <div class="roles-badges">
+              <span class="badge">{{ user.role }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- SCHEDA CAMBIO PASSWORD -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Sicurezza</h2>
+        <p>Modifica la password del tuo account</p>
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+        
+        <div class="form-group">
+          <label for="password">Nuova Password <span class="required">*</span></label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Inserisci almeno 6 caratteri">
+          
+          @if (passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched) {
+            <small class="error-text">La password è obbligatoria e deve avere almeno 6 caratteri.</small>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-button" [disabled]="submitting()">
+            {{ submitting() ? 'Salvataggio...' : 'Aggiorna Password' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</section>

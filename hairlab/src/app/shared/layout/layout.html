@@ -112,7 +112,7 @@
         <span>Dipendenti</span>
       </a>
 
-      <!-- SERVIZI (ATTIVATO) -->
+      <!-- SERVIZI -->
       <a
         class="nav-item"
         routerLink="/services"
@@ -154,7 +154,7 @@
     </nav>
 
     <!-- ===================================================
-         UTENTE
+         UTENTE (FOOTER SIDEBAR)
          =================================================== -->
     <div class="sidebar-footer">
       <div class="sidebar-user-avatar">
@@ -193,7 +193,8 @@
 
       <div class="topbar-spacer"></div>
 
-      <div class="topbar-user">
+      <!-- UTENTE IN ALTO A DESTRA (Cliccabile per andare al profilo) -->
+      <div class="topbar-user" routerLink="/profile" style="cursor: pointer;" title="Vai al profilo">
         <div class="topbar-avatar">
           {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
         </div>
@@ -212,9 +213,7 @@
       </button>
     </header>
 
-    <!--
-      Qui Angular mostra Dashboard, Clienti, Servizi, ecc.
-    -->
+    <!-- Area in cui Angular mostra Dashboard, Clienti, Profilo, ecc. -->
     <main class="page-content">
       <router-outlet></router-outlet>
     </main>
