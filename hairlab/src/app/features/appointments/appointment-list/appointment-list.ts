@@ -19,7 +19,8 @@ import {
 } from '@angular/router';
 
 import {
-  forkJoin
+  forkJoin,
+  Observable
 } from 'rxjs';
 
 import {
@@ -31,8 +32,16 @@ import {
 } from '../../../models/customer';
 
 import {
+  Employee
+} from '../../../models/employee';
+
+import {
   AppointmentStatus
 } from '../../../models/enums/appointment-status';
+
+import {
+  AppointmentQueryService
+} from '../../../service/appointment-query-service';
 
 import {
   AppointmentService
@@ -41,6 +50,10 @@ import {
 import {
   CustomerService
 } from '../../../service/customer-service';
+
+import {
+  EmployeeService
+} from '../../../service/employee-service';
 
 import {
   APPOINTMENT_STATUS_LABELS
@@ -72,9 +85,19 @@ export class AppointmentListComponent
       AppointmentService
     );
 
+  private readonly appointmentQueryService =
+    inject(
+      AppointmentQueryService
+    );
+
   private readonly customerService =
     inject(
       CustomerService
+    );
+
+  private readonly employeeService =
+    inject(
+      EmployeeService
     );
 
   protected readonly appointments =
@@ -82,6 +105,17 @@ export class AppointmentListComponent
 
   protected readonly customers =
     signal<Customer[]>([]);
+
+  /**
+   * Usiamo tutti i dipendenti,
+   * non solo gli attivi.
+   *
+   * In questo modo è possibile
+   * filtrare anche lo storico
+   * di un ex operatore.
+   */
+  protected readonly employees =
+    signal<Employee[]>([]);
 
   protected readonly selectedDate =
     signal(
@@ -100,6 +134,14 @@ export class AppointmentListComponent
       'ALL'
     );
 
+  /**
+   * null = tutti gli operatori.
+   */
+  protected readonly employeeFilterId =
+    signal<number | null>(
+      null
+    );
+
   protected readonly loading =
     signal(false);
 
@@ -116,7 +158,10 @@ export class AppointmentListComponent
     AppointmentStatus;
 
   /**
-   * Lista filtrata per stato.
+   * Il filtro stato viene applicato
+   * lato frontend sulla lista già
+   * filtrata temporalmente e,
+   * quando richiesto, per operatore.
    */
   protected readonly filteredAppointments =
     computed(
@@ -141,10 +186,6 @@ export class AppointmentListComponent
       }
     );
 
-  /**
-   * I sette giorni della settimana
-   * contenente selectedDate.
-   */
   protected readonly weekDays =
     computed(
       () => {
@@ -208,6 +249,29 @@ export class AppointmentListComponent
     );
   }
 
+  /**
+   * Quando cambia l'operatore
+   * ricarichiamo l'agenda dal backend.
+   */
+  protected onEmployeeFilterChange(
+    event: Event
+  ): void {
+
+    const select =
+      event.target as
+        HTMLSelectElement;
+
+    this.employeeFilterId.set(
+      select.value
+        ? Number(
+            select.value
+          )
+        : null
+    );
+
+    this.loadAgenda();
+  }
+
   protected loadAgenda(): void {
 
     this.loading.set(
@@ -221,18 +285,24 @@ export class AppointmentListComponent
     const range =
       this.getCurrentRange();
 
+    const appointmentRequest =
+      this.buildAppointmentRequest(
+        range.start,
+        range.end
+      );
+
     forkJoin({
 
       customers:
         this.customerService
           .getAll(),
 
+      employees:
+        this.employeeService
+          .getAll(),
+
       appointments:
-        this.appointmentService
-          .getBetween(
-            range.start,
-            range.end
-          )
+        appointmentRequest
 
     }).subscribe({
 
@@ -240,6 +310,11 @@ export class AppointmentListComponent
 
         this.customers.set(
           result.customers ??
+          []
+        );
+
+        this.employees.set(
+          result.employees ??
           []
         );
 
@@ -270,6 +345,42 @@ export class AppointmentListComponent
         );
       }
     });
+  }
+
+  /**
+   * Decide quale endpoint usare:
+   *
+   * nessun operatore
+   * -> AppointmentService.getBetween()
+   *
+   * operatore selezionato
+   * -> AppointmentQueryService.getByEmployeeBetween()
+   */
+  private buildAppointmentRequest(
+    start: string,
+    end: string
+  ): Observable<Appointment[]> {
+
+    const employeeId =
+      this.employeeFilterId();
+
+    if (
+      employeeId
+    ) {
+
+      return this.appointmentQueryService
+        .getByEmployeeBetween(
+          employeeId,
+          start,
+          end
+        );
+    }
+
+    return this.appointmentService
+      .getBetween(
+        start,
+        end
+      );
   }
 
   protected previousPeriod():
@@ -354,10 +465,6 @@ export class AppointmentListComponent
       : `Cliente #${customerId}`;
   }
 
-  /**
-   * Appuntamenti del singolo giorno
-   * usati nella vista settimanale.
-   */
   protected getAppointmentsForDay(
     date: string
   ): Appointment[] {

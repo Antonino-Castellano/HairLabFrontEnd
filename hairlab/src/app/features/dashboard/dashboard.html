@@ -10,9 +10,11 @@
       <p>Ecco una panoramica delle attività del tuo salone.</p>
     </div>
 
-    <button class="primary-button" type="button" disabled>
+    <a
+      class="primary-button"
+      routerLink="/appointments/new">
       + Nuovo appuntamento
-    </button>
+    </a>
   </div>
 
   <!-- =====================================================
@@ -24,11 +26,29 @@
     <article class="stat-card">
       <div class="stat-header">
         <span>Appuntamenti oggi</span>
-        <div class="stat-icon">▣</div>
+
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect
+              x="4"
+              y="5"
+              width="16"
+              height="15"
+              rx="2">
+            </rect>
+
+            <path
+              d="
+                M8 3v4
+                M16 3v4
+                M4 10h16
+              ">
+            </path>
+          </svg>
+        </div>
       </div>
 
-      <strong>0</strong>
-      <p>Nessun appuntamento programmato</p>
+      <app-dashboard-appointment-stat />
     </article>
 
     <!-- CLIENTI ATTIVI -->
@@ -110,25 +130,8 @@
        ===================================================== -->
   <div class="dashboard-grid">
 
-    <!-- AGENDA -->
-    <section class="panel agenda-panel">
-      <div class="panel-header">
-        <div>
-          <h2>Agenda di oggi</h2>
-          <p>Gli appuntamenti programmati per la giornata.</p>
-        </div>
-
-        <button class="text-button" type="button" disabled>
-          Vedi agenda
-        </button>
-      </div>
-
-      <div class="empty-state">
-        <div class="empty-icon">▣</div>
-        <h3>Nessun appuntamento</h3>
-        <p>Quando saranno presenti appuntamenti compariranno qui.</p>
-      </div>
-    </section>
+    <!-- AGENDA REALE -->
+    <app-dashboard-agenda-preview />
 
     <!-- AZIONI RAPIDE -->
     <aside class="panel quick-panel">
@@ -141,8 +144,11 @@
 
       <div class="quick-actions">
 
-        <a class="quick-action" routerLink="/customers/new">
-          <span>+</span> Nuovo cliente
+        <a
+          class="quick-action"
+          routerLink="/customers/new">
+          <span>+</span>
+          Nuovo cliente
         </a>
 
         <a class="quick-action" routerLink="/employees/new">

@@ -831,3 +831,58 @@
     padding: 22px;
   }
 }
+
+/*
+ * ==========================================================
+ * ICONE SVG TAB E STORICO
+ * ==========================================================
+ */
+.tab-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.placeholder-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+/*
+ * Box Appuntamenti cliccabile nella Panoramica.
+ */
+.history-link-box {
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.history-link-box:hover {
+  transform: translateY(-2px);
+  border-color: #c9ada0;
+  background: #faf6f3;
+  box-shadow:
+    0 5px 14px
+    rgba(55, 42, 35, 0.04);
+}

@@ -7,11 +7,13 @@ import { SalonProduct } from '../../models/salon-product';
 import { CustomerService } from '../../service/customer-service';
 import { EmployeeService } from '../../service/employee-service';
 import { SalonProductService } from '../../service/salon-product-service';
+import { DashboardAppointmentStatComponent } from './dashboard-appointment-stat/dashboard-appointment-stat';
+import { DashboardAgendaPreviewComponent } from './dashboard-agenda-preview/dashboard-agenda-preview';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DashboardAppointmentStatComponent,DashboardAgendaPreviewComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

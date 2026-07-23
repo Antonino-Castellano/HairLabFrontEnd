@@ -180,6 +180,46 @@ export class AppointmentFormComponent
       );
     }
 
+    /*
+     * Quando arriviamo dalla scheda cliente:
+     *
+     * /appointments/new?customerId=7
+     *
+     * preselezioniamo automaticamente
+     * il cliente nel form.
+     */
+    if (
+      !this.isEditMode()
+    ) {
+
+      const customerIdParam =
+        this.route.snapshot
+          .queryParamMap
+          .get('customerId');
+
+      if (
+        customerIdParam
+      ) {
+
+        const preselectedCustomerId =
+          Number(
+            customerIdParam
+          );
+
+        if (
+          !Number.isNaN(
+            preselectedCustomerId
+          ) &&
+          preselectedCustomerId > 0
+        ) {
+
+          this.customerId.set(
+            preselectedCustomerId
+          );
+        }
+      }
+    }
+
     this.loadLookups();
   }
 
@@ -210,6 +250,27 @@ export class AppointmentFormComponent
         this.customers.set(
           result.customers ?? []
         );
+
+        /*
+         * Un customerId passato nella query string
+         * deve appartenere ai clienti attivi
+         * caricati dal backend.
+         */
+        if (
+          !this.isEditMode() &&
+          this.customerId() &&
+          !this.customers()
+            .some(
+              customer =>
+                customer.id ===
+                this.customerId()
+            )
+        ) {
+
+          this.customerId.set(
+            null
+          );
+        }
 
         this.employees.set(
           result.employees ?? []

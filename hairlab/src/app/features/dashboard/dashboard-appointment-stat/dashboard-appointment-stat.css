@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+strong {
+  display: block;
+  margin-top: 18px;
+  color: #302925;
+  font-size: 29px;
+}
+
+p {
+  margin: 5px 0 0;
+  color: #a0958f;
+  font-size: 11px;
+}

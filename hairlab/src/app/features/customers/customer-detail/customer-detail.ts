@@ -38,6 +38,10 @@ import {
   StyleRecommendationDetailComponent
 } from '../style-recommendation/style-recommendation-detail/style-recommendation-detail';
 
+import {
+  CustomerAppointmentHistoryComponent
+} from '../customer-appointment-history/customer-appointment-history';
+
 /**
  * Identifica le sezioni disponibili
  * all'interno della scheda cliente.
@@ -48,6 +52,7 @@ import {
  */
 type CustomerDetailSection =
   | 'overview'
+  | 'appointments'
   | 'hair'
   | 'face'
   | 'color'
@@ -75,7 +80,8 @@ type CustomerDetailSection =
     HairProfileDetailComponent,
     FaceProfileDetailComponent,
     ColorAnalysisDetailComponent,
-    StyleRecommendationDetailComponent
+    StyleRecommendationDetailComponent,
+    CustomerAppointmentHistoryComponent
   ],
 
   templateUrl: './customer-detail.html',

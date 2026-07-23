@@ -1,0 +1,28 @@
+<strong>
+
+  @if (loading()) {
+
+    ...
+
+  } @else {
+
+    {{ count() }}
+
+  }
+
+</strong>
+
+<p>
+
+  @if (error()) {
+
+    {{ error() }}
+
+  } @else {
+
+    Appuntamenti non cancellati
+    programmati oggi
+
+  }
+
+</p>

@@ -235,6 +235,40 @@
 
       </button>
 
+      <!-- APPUNTAMENTI -->
+      <button
+        type="button"
+        [class.active]="
+          isSectionActive('appointments')
+        "
+        (click)="
+          selectSection('appointments')
+        ">
+
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect
+              x="4"
+              y="5"
+              width="16"
+              height="15"
+              rx="2">
+            </rect>
+
+            <path
+              d="
+                M8 3v4
+                M16 3v4
+                M4 10h16
+              ">
+            </path>
+          </svg>
+        </span>
+
+        Appuntamenti
+
+      </button>
+
       <!-- CAPELLI -->
       <button
         type="button"
@@ -617,10 +651,36 @@
               <div class="hairlab-sections">
 
                 <!-- APPUNTAMENTI -->
-                <div class="placeholder-box">
+                <button
+                  type="button"
+                  class="
+                    placeholder-box
+                    history-link-box
+                  "
+                  (click)="
+                    selectSection('appointments')
+                  ">
 
                   <span class="placeholder-icon">
-                    ◷
+
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <rect
+                        x="4"
+                        y="5"
+                        width="16"
+                        height="15"
+                        rx="2">
+                      </rect>
+
+                      <path
+                        d="
+                          M8 3v4
+                          M16 3v4
+                          M4 10h16
+                        ">
+                      </path>
+                    </svg>
+
                   </span>
 
                   <div>
@@ -630,14 +690,14 @@
                     </strong>
 
                     <p>
-                      Qui verrà visualizzato
-                      lo storico degli appuntamenti
-                      della cliente.
+                      Consulta lo storico completo,
+                      i prossimi appuntamenti
+                      e crea una nuova prenotazione.
                     </p>
 
                   </div>
 
-                </div>
+                </button>
 
                 <!-- CONSULENZE -->
                 <div class="placeholder-box">
@@ -688,6 +748,23 @@
               </div>
 
             </section>
+
+          </section>
+
+        }
+
+        <!-- =================================================
+             APPUNTAMENTI
+             ================================================= -->
+        @case ('appointments') {
+
+          <section class="module-panel">
+
+            <app-customer-appointment-history
+              [customerId]="
+                selectedCustomer.id!
+              ">
+            </app-customer-appointment-history>
 
           </section>
 
