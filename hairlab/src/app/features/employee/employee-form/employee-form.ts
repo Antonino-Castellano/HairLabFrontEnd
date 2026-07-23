@@ -75,6 +75,12 @@ export class EmployeeFormComponent implements OnInit {
           notes: employee.notes ?? '',
           active: employee.active
         });
+
+        // Se il dipendente ha una foto profilata, la impostiamo nel Signal
+        if (employee.profileImage) {
+          this.profileImage.set(employee.profileImage);
+        }
+
         this.loading.set(false);
       },
       error: () => {
@@ -192,7 +198,8 @@ export class EmployeeFormComponent implements OnInit {
       specializations: formValue.specializations,
       hireDate: formValue.hireDate,
       notes: formValue.notes ? formValue.notes.trim() : undefined,
-      active: formValue.active
+      active: formValue.active,
+      profileImage: this.profileImage() || undefined
     };
 
     if (this.isEditMode() && this.employeeId !== undefined) {

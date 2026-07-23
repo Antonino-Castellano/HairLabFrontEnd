@@ -27,7 +27,11 @@
     <!-- SCHEDA PROFILO -->
     <div class="profile-card">
       <div class="profile-avatar">
+            @if (emp.profileImage) {
+        <img [src]="emp.profileImage" [alt]="emp.firstName + ' ' + emp.lastName" />
+            } @else {
         <span>{{ getEmployeeInitials(emp) }}</span>
+      }
       </div>
 
       <div class="profile-info">

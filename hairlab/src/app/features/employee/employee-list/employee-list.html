@@ -62,7 +62,11 @@
                 <td>
                   <div class="employee-name">
                     <div class="employee-avatar">
-                      <span>{{ getEmployeeInitials(employee) }}</span>
+                      @if (employee.profileImage) {
+                        <img [src]="employee.profileImage" [alt]="employee.firstName + ' ' + employee.lastName" />
+                      } @else {
+                        <span>{{ getEmployeeInitials(employee) }}</span>
+                      }
                     </div>
 
                     <div class="employee-identity">
