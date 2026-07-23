@@ -1,0 +1,190 @@
+<section class="consultations-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">CONSULENZE</span>
+      <h1>{{ isEditMode() ? 'Modifica consulenza' : 'Nuova consulenza' }}</h1>
+      <p>Compila i campi sottostanti per registrare i dettagli tecnici della consulenza.</p>
+    </div>
+
+    <a class="secondary-button" routerLink="/consultations">Torna alla lista</a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="form-card">
+    @if (loading()) {
+      <div class="state-message">Caricamento dati in corso...</div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- SEZIONE INFO GENERALI -->
+        <fieldset class="form-section">
+          <legend>Informazioni Generali</legend>
+
+          <div class="form-grid">
+            
+            <!-- Cliente -->
+            <div class="form-group">
+              <label for="customerId">Cliente <span class="required">*</span></label>
+              <select id="customerId" formControlName="customerId">
+                <option value="" disabled>Seleziona cliente...</option>
+                @for (customer of customers(); track customer.id) {
+                  <option [value]="customer.id">{{ customer.firstName }} {{ customer.lastName }}</option>
+                }
+              </select>
+              @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                <small class="error-text">Il cliente è obbligatorio.</small>
+              }
+            </div>
+
+            <!-- Dipendente / Operatore -->
+            <div class="form-group">
+              <label for="employeeId">Operatore <span class="required">*</span></label>
+              <select id="employeeId" formControlName="employeeId">
+                <option value="" disabled>Seleziona operatore...</option>
+                @for (employee of employees(); track employee.id) {
+                  <option [value]="employee.id">{{ employee.firstName }} {{ employee.lastName }}</option>
+                }
+              </select>
+              @if (form.get('employeeId')?.invalid && form.get('employeeId')?.touched) {
+                <small class="error-text">L'operatore è obbligatorio.</small>
+              }
+            </div>
+
+            <!-- Appuntamento collegato (Opzionale) -->
+            <!-- Appuntamento collegato (Opzionale) -->
+            <div class="form-group">
+              <label for="appointmentId">Appuntamento collegato (Opzionale)</label>
+              <select id="appointmentId" formControlName="appointmentId">
+                <option [ngValue]="null">Nessun appuntamento</option>
+                @for (app of appointments(); track app.id) {
+                  <option [value]="app.id">ID: {{ app.id }} - {{ app.startDateTime | date:'dd/MM/yyyy HH:mm' }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Data e Ora -->
+            <div class="form-group">
+              <label for="consultationDate">Data e Ora Consulenza <span class="required">*</span></label>
+              <input type="datetime-local" id="consultationDate" formControlName="consultationDate">
+              @if (form.get('consultationDate')?.invalid && form.get('consultationDate')?.touched) {
+                <small class="error-text">La data e l'ora sono obbligatorie.</small>
+              }
+            </div>
+
+            <!-- Tipologia -->
+            <div class="form-group">
+              <label for="type">Tipologia Consulenza <span class="required">*</span></label>
+              <select id="type" formControlName="type">
+                <option value="" disabled>Seleziona tipologia...</option>
+                <option value="HAIR_CUT">Taglio (HAIR_CUT)</option>
+                <option value="HAIR_COLOR">Colore (HAIR_COLOR)</option>
+                <option value="HAIR_STYLING">Styling (HAIR_STYLING)</option>
+                <option value="HAIR_ANALYSIS">Analisi Capello (HAIR_ANALYSIS)</option>
+              </select>
+              @if (form.get('type')?.invalid && form.get('type')?.touched) {
+                <small class="error-text">La tipologia è obbligatoria.</small>
+              }
+            </div>
+
+          </div>
+        </fieldset>
+
+        <!-- SEZIONE DIAGNOSI E OBIETTIVO -->
+        <fieldset class="form-section">
+          <legend>Diagnosi e Obiettivo</legend>
+
+          <div class="form-grid">
+
+            <!-- Obiettivo -->
+            <div class="form-group full-width">
+              <label for="objective">Obiettivo espresso dal cliente <span class="required">*</span></label>
+              <textarea id="objective" rows="2" formControlName="objective" placeholder="Es. Vorrei passare da castano scuro a rame chiaro..."></textarea>
+              @if (form.get('objective')?.invalid && form.get('objective')?.touched) {
+                <small class="error-text">L'obiettivo è obbligatorio.</small>
+              }
+            </div>
+
+            <!-- Diagnosi Iniziale -->
+            <div class="form-group full-width">
+              <label for="initialDiagnosis">Diagnosi tecnica iniziale <span class="required">*</span></label>
+              <textarea id="initialDiagnosis" rows="2" formControlName="initialDiagnosis" placeholder="Stato del capello, colore presente, danni, precedenti trattamenti..."></textarea>
+              @if (form.get('initialDiagnosis')?.invalid && form.get('initialDiagnosis')?.touched) {
+                <small class="error-text">La diagnosi iniziale è obbligatoria.</small>
+              }
+            </div>
+
+            <!-- Condizione Attuale -->
+            <div class="form-group full-width">
+              <label for="currentCondition">Condizione attuale del capello <span class="required">*</span></label>
+              <textarea id="currentCondition" rows="2" formControlName="currentCondition" placeholder="Descrizione sintetica dello stato rilevato..."></textarea>
+              @if (form.get('currentCondition')?.invalid && form.get('currentCondition')?.touched) {
+                <small class="error-text">La condizione attuale è obbligatoria.</small>
+              }
+            </div>
+
+          </div>
+        </fieldset>
+
+        <!-- SEZIONE VALUTAZIONE E PROCEDURA -->
+        <fieldset class="form-section">
+          <legend>Valutazione e Procedura Tecnica</legend>
+
+          <div class="form-grid">
+
+            <!-- Fattibilità -->
+            <div class="form-group">
+              <label for="feasibility">Fattibilità</label>
+              <select id="feasibility" formControlName="feasibility">
+                <option value="">Seleziona fattibilità...</option>
+                <option value="FEASIBLE">Fattibile (FEASIBLE)</option>
+                <option value="FEASIBLE_WITH_LIMITATIONS">Fattibile con limitazioni</option>
+                <option value="NOT_FEASIBLE">Non fattibile</option>
+              </select>
+            </div>
+
+            <!-- Rischi -->
+            <div class="form-group full-width">
+              <label for="risks">Rischi individuati</label>
+              <textarea id="risks" rows="2" formControlName="risks" placeholder="Es. Possibile sensibilizzazione della fibra, rischio rottura..."></textarea>
+            </div>
+
+            <!-- Procedura Proposta -->
+            <div class="form-group full-width">
+              <label for="proposedProcedure">Procedura proposta <span class="required">*</span></label>
+              <textarea id="proposedProcedure" rows="2" formControlName="proposedProcedure" placeholder="Es. Decapaggio leggero, tonalizzazione e trattamento ricostruttivo..."></textarea>
+              @if (form.get('proposedProcedure')?.invalid && form.get('proposedProcedure')?.touched) {
+                <small class="error-text">La procedura proposta è obbligatoria.</small>
+              }
+            </div>
+
+            <!-- Note Tecniche -->
+            <div class="form-group full-width">
+              <label for="technicalNotes">Note tecniche aggiuntive <span class="required">*</span></label>
+              <textarea id="technicalNotes" rows="2" formControlName="technicalNotes" placeholder="Note di servizio o indicazioni specifiche..."></textarea>
+              @if (form.get('technicalNotes')?.invalid && form.get('technicalNotes')?.touched) {
+                <small class="error-text">Le note tecniche sono obbligatorie.</small>
+              }
+            </div>
+
+          </div>
+        </fieldset>
+
+        <!-- AZIONI -->
+        <div class="form-actions">
+          <a class="secondary-button" routerLink="/consultations">Annulla</a>
+          <button type="submit" class="primary-button" [disabled]="submitting()">
+            {{ submitting() ? 'Salvataggio in corso...' : (isEditMode() ? 'Salva modifiche' : 'Crea consulenza') }}
+          </button>
+        </div>
+
+      </form>
+    }
+  </div>
+
+</section>

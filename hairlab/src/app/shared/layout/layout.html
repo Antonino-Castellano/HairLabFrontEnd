@@ -127,15 +127,18 @@
       </a>
 
       <!-- CONSULENZE -->
-      <div class="nav-item disabled">
+      <a
+        class="nav-item"
+        routerLink="/consultations"
+        routerLinkActive="active"
+        (click)="closeSidebarAfterNavigation()">
         <span class="nav-icon">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
           </svg>
         </span>
         <span>Consulenze</span>
-        <span class="coming-soon">Presto</span>
-      </div>
+      </a>
 
       <!-- COLOR LAB -->
       <div class="nav-item disabled">

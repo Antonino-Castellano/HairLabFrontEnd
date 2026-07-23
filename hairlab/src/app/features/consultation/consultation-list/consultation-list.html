@@ -1,0 +1,134 @@
+<section class="consultations-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">CONSULENZE</span>
+      <h1>Storico consulenze</h1>
+      <p>Consulta, inserisci e gestisci le consulenze tecniche effettuate sui clienti.</p>
+    </div>
+
+    <a class="primary-button" routerLink="/consultations/new">+ Nuova consulenza</a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="consultation-card">
+
+    @if (loading()) {
+      <div class="state-message">
+        Caricamento storico consulenze...
+      </div>
+    } @else if (consultations().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h2>Nessuna consulenza presente</h2>
+        <p>Inserisci la prima consulenza tecnica per iniziare ad tracciare i trattamenti.</p>
+        <a class="primary-button" routerLink="/consultations/new">+ Nuova consulenza</a>
+      </div>
+    } @else {
+
+      <!-- BARRA DI FILTRAGGIO -->
+      <div class="filter-bar">
+
+        <div class="filter-group">
+          <label for="customerFilter">Cliente:</label>
+          <select id="customerFilter" (change)="onCustomerFilterChange($event)">
+            <option value="ALL">Tutti i clienti</option>
+            @for (customer of customers(); track customer.id) {
+              <option [value]="customer.id">{{ customer.firstName }} {{ customer.lastName }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="typeFilter">Tipologia:</label>
+          <select id="typeFilter" (change)="onTypeFilterChange($event)">
+            <option value="ALL">Tutte le tipologie</option>
+            <option value="HAIR_CUT">Taglio</option>
+            <option value="HAIR_COLOR">Colore</option>
+            <option value="HAIR_STYLING">Styling</option>
+            <option value="HAIR_ANALYSIS">Analisi Capello</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Cliente</th>
+              <th>Operatore</th>
+              <th>Tipo</th>
+              <th>Obiettivo</th>
+              <th>Fattibilità</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (consultation of filteredConsultations(); track consultation.id) {
+              <tr>
+
+                <td>
+                  <span class="date">{{ consultation.consultationDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                </td>
+
+                <td>
+                  <strong>{{ getCustomerName(consultation.customerId) }}</strong>
+                </td>
+
+                <td>
+                  <span>{{ getEmployeeName(consultation.employeeId) }}</span>
+                </td>
+
+                <td>
+                  <span class="category-badge">{{ consultation.type }}</span>
+                </td>
+
+                <td>
+                  <div class="objective-text" [title]="consultation.objective">
+                    {{ consultation.objective }}
+                  </div>
+                </td>
+
+                <td>
+                  @if (consultation.feasibility) {
+                    <span class="status" [class.active]="consultation.feasibility === 'FEASIBLE'">
+                      {{ consultation.feasibility }}
+                    </span>
+                  } @else {
+                    <span>-</span>
+                  }
+                </td>
+
+                <td>
+                  <div class="actions">
+                    <a class="action-button" [routerLink]="['/consultations', consultation.id, 'edit']">
+                      Modifica
+                    </a>
+
+                    <button
+                      class="action-button delete-button"
+                      type="button"
+                      (click)="deleteConsultation(consultation)">
+                      Elimina
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  </div>
+
+</section>

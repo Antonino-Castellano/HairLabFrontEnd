@@ -24,6 +24,8 @@ import { SalonProductFormComponent } from './features/servicesalon/salon-product
 import { SalonProductListComponent } from './features/servicesalon/salon-product-list/salon-product-list';
 
 import { LayoutComponent } from './shared/layout/layout';
+import { ConsultationListComponent } from './features/consultation/consultation-list/consultation-list';
+import { ConsultationFormComponent } from './features/consultation/consultation-form/consultation-form';
 
 /**
  * Configurazione principale delle route Angular.
@@ -185,6 +187,19 @@ export const routes: Routes = [
       {
         path: 'services/:id/edit',
         component: SalonProductFormComponent
+      },
+
+      {
+        path: 'consultations',
+        component: ConsultationListComponent
+      },
+      {
+        path: 'consultations/new',
+        component: ConsultationFormComponent
+      },
+      {
+        path: 'consultations/:id/edit',
+        component: ConsultationFormComponent
       },
 
       /*
