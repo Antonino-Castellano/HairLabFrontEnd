@@ -9,8 +9,10 @@ interface JwtPayload {
   sub?: string;
   email?: string;
   username?: string;
-  role?: string;
-  ROLE?: string;
+  role?: string | string[];
+  ROLE?: string | string[];
+  roles?: string | string[];
+  authorities?: string | string[];
   exp?: number;
 }
 
@@ -18,21 +20,11 @@ interface JwtPayload {
   providedIn: 'root'
 })
 export class AuthService {
-  // Servizi Angular recuperati tramite Dependency Injection.
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-
-  // Endpoint del backend dedicato all'autenticazione.
   private readonly apiUrl = 'http://localhost:8080/hairlab/api/auth';
-
-  // Chiave utilizzata per salvare il JWT nel localStorage.
   private readonly TOKEN_KEY = 'jwt_token';
 
-  /**
-   * Invia email e password al backend.
-   * Se Spring restituisce un JWT valido, il token viene salvato
-   * nel localStorage del browser.
-   */
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
@@ -43,37 +35,22 @@ export class AuthService {
     );
   }
 
-  /**
-   * Rimuove il JWT e riporta l'utente alla pagina di login.
-   */
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.router.navigate(['/login']);
   }
 
-  /**
-   * Recupera il JWT salvato nel browser.
-   */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  /**
-   * Controllo frontend dell'autenticazione.
-   * Verifica che il token esista, sia decodificabile e non sia scaduto.
-   *
-   * La validazione di sicurezza effettiva rimane responsabilità
-   * di Spring Security sul backend.
-   */
   isAuthenticated(): boolean {
     const token = this.getToken();
-
     if (!token) {
       return false;
     }
 
     const payload = this.decodeToken();
-
     if (!payload) {
       localStorage.removeItem(this.TOKEN_KEY);
       return false;
@@ -87,47 +64,58 @@ export class AuthService {
     return true;
   }
 
-  /**
-   * Verifica se il ruolo contenuto nel JWT è ADMIN.
-   */
+  isSuperAdmin(): boolean {
+    const role = this.getRoleFromToken();
+    return role === 'SUPERADMIN' || role === 'ROLE_SUPERADMIN';
+  }
+
   isAdmin(): boolean {
     const role = this.getRoleFromToken();
-    return role === 'ADMIN' || role === 'ROLE_ADMIN';
+    return this.isSuperAdmin() || role === 'ADMIN' || role === 'ROLE_ADMIN';
   }
 
-  /**
-   * Verifica se il ruolo contenuto nel JWT è USER.
-   */
-  isUser(): boolean {
+  isReceptionist(): boolean {
     const role = this.getRoleFromToken();
-    return role === 'USER' || role === 'ROLE_USER';
+    return this.isAdmin() || role === 'RECEPTIONIST' || role === 'ROLE_RECEPTIONIST';
+  }
+
+  isCustomer(): boolean {
+    const role = this.getRoleFromToken();
+    return this.isReceptionist() || role === 'CUSTOMER' || role === 'ROLE_CUSTOMER' || role === 'USER' || role === 'ROLE_USER';
   }
 
   /**
-   * Recupera il ruolo dal payload del JWT.
+   * Recupera il ruolo normalizzato dal payload del JWT.
    */
   getRoleFromToken(): string | null {
     const payload = this.decodeToken();
-    return payload?.ROLE || payload?.role || null;
+    if (!payload) return null;
+
+    // Cerca in tutte le possibili chiavi in cui Spring potrebbe aver inserito i ruoli
+    const rawRole = payload.ROLE || payload.role || payload.roles || payload.authorities;
+
+    if (!rawRole) return null;
+
+    // Se è un array (es. ["ROLE_RECEPTIONIST"]), prendiamo il primo o cerchiamo quello rilevante
+    let roleStr = '';
+    if (Array.isArray(rawRole)) {
+      roleStr = rawRole.length > 0 ? String(rawRole[0]) : '';
+    } else {
+      roleStr = String(rawRole);
+    }
+
+    // Pulisce il prefisso ROLE_ se presente per facilitare i confronti
+    return roleStr.replace('ROLE_', '').toUpperCase();
   }
 
-  /**
-   * Richiede al backend la modifica della password
-   * dell'utente attualmente autenticato.
-   */
   changePassword(newPassword: string): Observable<unknown> {
     return this.http.patch(`${this.apiUrl}/changepassword`, {
       password: newPassword
     });
   }
 
-  /**
-   * Estrae dal JWT i dati utili per mostrare
-   * l'utente nella dashboard.
-   */
   getUserFromToken(): { username: string; email: string; role: string } | null {
     const payload = this.decodeToken();
-
     if (!payload) {
       return null;
     }
@@ -138,41 +126,31 @@ export class AuthService {
     return {
       username,
       email,
-      role: payload.ROLE || payload.role || 'N/D'
+      role: this.getRoleFromToken() || 'N/D'
     };
   }
 
-  /**
-   * Decodifica solamente il payload del JWT.
-   * Non verifica la firma crittografica: quella verifica viene fatta dal backend.
-   */
   private decodeToken(): JwtPayload | null {
     const token = this.getToken();
-
     if (!token) {
       return null;
     }
 
     try {
-      // Un JWT è formato da HEADER.PAYLOAD.SIGNATURE.
       const payloadBase64Url = token.split('.')[1];
-
       if (!payloadBase64Url) {
         return null;
       }
 
-      // Converte Base64URL nel formato Base64 standard.
       const base64 = payloadBase64Url
         .replace(/-/g, '+')
         .replace(/_/g, '/');
 
-      // Aggiunge l'eventuale padding richiesto da Base64.
       const paddedBase64 = base64.padEnd(
         base64.length + (4 - base64.length % 4) % 4,
         '='
       );
 
-      // Decodifica il payload JSON.
       const decoded = atob(paddedBase64);
       const bytes = Uint8Array.from(decoded, char => char.charCodeAt(0));
       const json = new TextDecoder().decode(bytes);

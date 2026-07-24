@@ -57,9 +57,17 @@ export class LoginComponent {
     // Invia le credenziali all'AuthService.
     this.authService.login(credentials).subscribe({
       next: () => {
-        // Login riuscito: termina il caricamento e apre la dashboard.
+        // Login riuscito: termina il caricamento.
         this.loading = false;
-        this.router.navigate(['/dashboard']);
+
+        // Legge il ruolo dell'utente dal token per decidere dove reindirizzarlo.
+        const role = this.authService.getRoleFromToken();
+
+        if (role === 'CUSTOMER') {
+          this.router.navigate(['/appointments']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (error: HttpErrorResponse) => {
         // Login fallito: termina il caricamento e mostra

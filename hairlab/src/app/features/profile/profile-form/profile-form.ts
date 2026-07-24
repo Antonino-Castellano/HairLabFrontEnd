@@ -24,7 +24,7 @@ export class ProfileFormComponent implements OnInit {
     password: [''], 
     address: [''],
     dob: ['', Validators.required],
-    role: ['USER', Validators.required]
+    role: ['CUSTOMER', Validators.required]
   });
 
   submitting = signal<boolean>(false);
@@ -51,7 +51,6 @@ export class ProfileFormComponent implements OnInit {
         if (found) {
           let formattedDob = '';
           if (found.dob) {
-            // Estrae YYYY-MM-DD dalla data esistente
             formattedDob = new Date(found.dob).toISOString().split('T')[0];
           }
 
@@ -80,10 +79,8 @@ export class ProfileFormComponent implements OnInit {
     this.submitting.set(true);
     this.errorMessage.set(null);
 
-    // Prepariamo i dati del form
     const formValue = { ...this.userForm.value };
 
-    // Se la password è vuota in modifica, rimuoviamola per evitare di sovrascriverla con una stringa vuota sul backend
     if (this.isEditMode() && !formValue.password) {
       delete formValue.password;
     }

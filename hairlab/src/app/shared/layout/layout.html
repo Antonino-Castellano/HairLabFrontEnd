@@ -1,14 +1,11 @@
 <div class="app-shell">
 
-  <!--
-    Zona invisibile sul bordo sinistro.
-    Quando il mouse entra in questa fascia, la sidebar viene aperta automaticamente.
-  -->
+  <!-- Zona invisibile sul bordo sinistro -->
   <div class="sidebar-trigger" (mouseenter)="openSidebar()"></div>
 
   <!-- =====================================================
         SIDEBAR
-        ===================================================== -->
+        ================================================     -->
   <aside
     class="sidebar"
     [class.open]="sidebarOpen()"
@@ -29,7 +26,7 @@
         </div>
       </a>
 
-      <!-- Permette di lasciare la sidebar permanentemente aperta -->
+      <!-- Pulsante Pin -->
       <button
         class="pin-button"
         type="button"
@@ -37,12 +34,10 @@
         [attr.aria-label]="sidebarPinned() ? 'Sblocca menu' : 'Blocca menu aperto'"
         [title]="sidebarPinned() ? 'Sblocca menu' : 'Mantieni menu aperto'">
         @if (sidebarPinned()) {
-          <!-- Icona pin attivo -->
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z"></path>
           </svg>
         } @else {
-          <!-- Icona pin -->
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z"></path>
           </svg>
@@ -51,178 +46,192 @@
     </div>
 
     <!-- ===================================================
-         NAVIGAZIONE
+         NAVIGAZIONE (Protetta in base ai ruoli)
          =================================================== -->
     <nav class="sidebar-nav">
 
-      <!-- DASHBOARD -->
-      <a
-        class="nav-item"
-        routerLink="/dashboard"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"></path>
-          </svg>
-        </span>
-        <span>Dashboard</span>
-      </a>
-
-      <!-- CLIENTI -->
-      <a
-        class="nav-item"
-        routerLink="/customers"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6"></path>
-          </svg>
-        </span>
-        <span>Clienti</span>
-      </a>
-
-      <!-- AGENDA -->
-      <a
-        class="nav-item"
-        routerLink="/appointments"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"></path>
-          </svg>
-        </span>
-        <span>Agenda</span>
-      </a>
-
-      <!-- DIPENDENTI -->
-      <a
-        class="nav-item"
-        routerLink="/employees"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"></path>
-          </svg>
-        </span>
-        <span>Dipendenti</span>
-      </a>
-
-      <!-- SERVIZI -->
-      <a
-        class="nav-item"
-        routerLink="/services"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
-          </svg>
-        </span>
-        <span>Servizi</span>
-      </a>
-
-      <!-- CONSULENZE -->
-      <a
-        class="nav-item"
-        routerLink="/consultations"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
-          </svg>
-        </span>
-        <span>Consulenze</span>
-      </a>
-
-      <!-- COLOR LAB -->
-      <div
-        class="nav-group"
-        [class.expanded]="colorLabMenuOpen()">
-
-        <button
-          class="nav-item nav-group-toggle"
-          type="button"
-          (click)="toggleColorLabMenu()">
-
+      <!-- DASHBOARD (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeSidebarAfterNavigation()">
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
+              <path d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"></path>
             </svg>
           </span>
+          <span>Dashboard</span>
+        </a>
+      }
 
-          <span>Color Lab</span>
-          <span class="nav-chevron">›</span>
-        </button>
+      <!-- CLIENTI (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/customers"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6"></path>
+            </svg>
+          </span>
+          <span>Clienti</span>
+        </a>
+      }
 
-        @if (colorLabMenuOpen()) {
-          <div class="nav-submenu">
-            <a
-              routerLink="/color-lab"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="closeSidebarAfterNavigation()">
-              Panoramica
-            </a>
+      <!-- AGENDA (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST, CUSTOMER) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/appointments"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"></path>
+            </svg>
+          </span>
+          <span>Agenda</span>
+        </a>
+      }
 
-            <a
-              routerLink="/color-lab/smart-formula"
-              routerLinkActive="active"
-              (click)="closeSidebarAfterNavigation()">
-              Smart Formula
-            </a>
+      <!-- DIPENDENTI (Visibile SOLO a ADMIN, SUPERADMIN) -->
+      @if (['ADMIN', 'SUPERADMIN'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/employees"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"></path>
+            </svg>
+          </span>
+          <span>Dipendenti</span>
+        </a>
+      }
 
-            <a
-              routerLink="/color-lab/formulas"
-              routerLinkActive="active"
-              (click)="closeSidebarAfterNavigation()">
-              Formule colore
-            </a>
+      <!-- SERVIZI (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST, CUSTOMER) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/services"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
+            </svg>
+          </span>
+          <span>Servizi</span>
+        </a>
+      }
 
-            <a
-              routerLink="/color-lab"
-              [queryParams]="{ tab: 'library' }"
-              (click)="closeSidebarAfterNavigation()">
-              Libreria prodotti
-            </a>
+      <!-- CONSULENZE (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST, CUSTOMER) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'].includes(authService.getRoleFromToken() || '')) {
+        <a
+          class="nav-item"
+          routerLink="/consultations"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
+            </svg>
+          </span>
+          <span>Consulenze</span>
+        </a>
+      }
 
-            <a
-              routerLink="/color-lab"
-              [queryParams]="{ tab: 'inventory' }"
-              (click)="closeSidebarAfterNavigation()">
-              Magazzino
-            </a>
+      <!-- COLOR LAB (Visibile a ADMIN, SUPERADMIN, RECEPTIONIST) -->
+      @if (['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'].includes(authService.getRoleFromToken() || '')) {
+        <div
+          class="nav-group"
+          [class.expanded]="colorLabMenuOpen()">
 
-            <a
-              routerLink="/color-lab/movements"
-              routerLinkActive="active"
-              (click)="closeSidebarAfterNavigation()">
-              Movimenti magazzino
-            </a>
+          <button
+            class="nav-item nav-group-toggle"
+            type="button"
+            (click)="toggleColorLabMenu()">
 
-            <a
-              routerLink="/color-lab/lines"
-              routerLinkActive="active"
-              (click)="closeSidebarAfterNavigation()">
-              Linee tecniche
-            </a>
-          </div>
-        }
-      </div>
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
+              </svg>
+            </span>
+
+            <span>Color Lab</span>
+            <span class="nav-chevron">›</span>
+          </button>
+
+          @if (colorLabMenuOpen()) {
+            <div class="nav-submenu">
+              <a
+                routerLink="/color-lab"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeSidebarAfterNavigation()">
+                Panoramica
+              </a>
+
+              <a
+                routerLink="/color-lab/smart-formula"
+                routerLinkActive="active"
+                (click)="closeSidebarAfterNavigation()">
+                Smart Formula
+              </a>
+
+              <a
+                routerLink="/color-lab/formulas"
+                routerLinkActive="active"
+                (click)="closeSidebarAfterNavigation()">
+                Formule colore
+              </a>
+
+              <a
+                routerLink="/color-lab"
+                [queryParams]="{ tab: 'library' }"
+                (click)="closeSidebarAfterNavigation()">
+                Libreria prodotti
+              </a>
+
+              <a
+                routerLink="/color-lab"
+                [queryParams]="{ tab: 'inventory' }"
+                (click)="closeSidebarAfterNavigation()">
+                Magazzino
+              </a>
+
+              @if (['ADMIN', 'SUPERADMIN'].includes(authService.getRoleFromToken() || '')) {
+                <a
+                  routerLink="/color-lab/movements"
+                  routerLinkActive="active"
+                  (click)="closeSidebarAfterNavigation()">
+                  Movimenti magazzino
+                </a>
+              }
+
+              @if (['ADMIN', 'SUPERADMIN'].includes(authService.getRoleFromToken() || '')) {
+                <a
+                  routerLink="/color-lab/lines"
+                  routerLinkActive="active"
+                  (click)="closeSidebarAfterNavigation()">
+                  Linee tecniche
+                </a>
+              }
+            </div>
+          }
+        </div>
+      }
 
     </nav>
 
-    <!-- ===================================================
-         UTENTE + PULSANTE ESCI (FOOTER SIDEBAR)
-         =================================================== -->
+    <!-- FOOTER SIDEBAR -->
     <div class="sidebar-footer" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-
-      <!-- Informazioni utente (Cliccabile opzionalmente o lasciate come visualizzazione) -->
       <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
         <div class="sidebar-user-avatar">
           {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
@@ -234,7 +243,6 @@
         </div>
       </div>
 
-      <!-- Pulsante Esci integrato affianco al nome -->
       <button
         type="button"
         (click)="logout()"
@@ -247,22 +255,18 @@
           <line x1="21" y1="12" x2="9" y2="12"></line>
         </svg>
       </button>
-
     </div>
 
   </aside>
 
-  <!-- Overlay visibile soprattutto su smartphone/tablet -->
+  <!-- Overlay -->
   @if (sidebarOpen() && !sidebarPinned()) {
     <div class="sidebar-overlay" (click)="closeSidebar()"></div>
   }
 
-  <!-- =====================================================
-        CONTENUTO PRINCIPALE
-        ===================================================== -->
+  <!-- CONTENUTO PRINCIPALE -->
   <div class="main-area" [class.sidebar-pinned]="sidebarPinned()">
 
-    <!-- TOPBAR (Senza più il tasto esci a destra) -->
     <header class="topbar">
       <button
         class="menu-button"
@@ -276,7 +280,6 @@
 
       <div class="topbar-spacer"></div>
 
-      <!-- UTENTE IN ALTO A DESTRA (Cliccabile per andare al profilo) -->
       <div class="topbar-user" routerLink="/profile" style="cursor: pointer;" title="Vai al profilo">
         <div class="topbar-avatar">
           {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
@@ -289,7 +292,6 @@
       </div>
     </header>
 
-    <!-- Area in cui Angular mostra Dashboard, Clienti, Profilo, ecc. -->
     <main class="page-content">
       <router-outlet></router-outlet>
     </main>

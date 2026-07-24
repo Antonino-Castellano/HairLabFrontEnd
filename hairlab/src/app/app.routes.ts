@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from './core/auth/auth-guard';
 import { LayoutComponent } from './shared/layout/layout';
 
 import { LoginComponent } from './features/login/login';
@@ -42,6 +41,7 @@ import { ColorFormulaDetailComponent } from './features/color-lab/color-formula-
 import { ColorSmartDiagnosisComponent } from './features/color-lab/color-smart-diagnosis/color-smart-diagnosis';
 import { ColorProductLineProfileListComponent } from './features/color-lab/color-product-line-profile-list/color-product-line-profile-list';
 import { ColorProductLineProfileFormComponent } from './features/color-lab/color-product-line-profile-form/color-product-line-profile-form';
+import { roleGuard } from './core/auth/auth-guard';
 
 export const routes: Routes = [
   {
@@ -51,58 +51,70 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [authGuard],
+    // Nota: NESSUN canActivate qui sul padre per evitare blocchi a catena
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: 'dashboard', 
+        component: DashboardComponent, 
+        canActivate: [roleGuard], 
+        data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } 
+      },
 
-      { path: 'customers', component: CustomerListComponent },
-      { path: 'customers/new', component: CustomerFormComponent },
-      { path: 'customers/:customerId/hair-profile/new', component: HairProfileFormComponent },
-      { path: 'customers/:customerId/hair-profile/:profileId/edit', component: HairProfileFormComponent },
-      { path: 'customers/:customerId/face-profile/new', component: FaceProfileFormComponent },
-      { path: 'customers/:customerId/face-profile/:profileId/edit', component: FaceProfileFormComponent },
-      { path: 'customers/:customerId/color-analysis/new', component: ColorAnalysisFormComponent },
-      { path: 'customers/:customerId/color-analysis/:analysisId/edit', component: ColorAnalysisFormComponent },
-      { path: 'customers/:id/color-formulas', component: CustomerColorFormulaHistoryPageComponent },
-      { path: 'customers/:id/edit', component: CustomerFormComponent },
-      { path: 'customers/:id', component: CustomerDetailComponent },
+      // Customers
+      { path: 'customers', component: CustomerListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'customers/new', component: CustomerFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'customers/:customerId/hair-profile/new', component: HairProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:customerId/hair-profile/:profileId/edit', component: HairProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:customerId/face-profile/new', component: FaceProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:customerId/face-profile/:profileId/edit', component: FaceProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:customerId/color-analysis/new', component: ColorAnalysisFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:customerId/color-analysis/:analysisId/edit', component: ColorAnalysisFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:id/color-formulas', component: CustomerColorFormulaHistoryPageComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'customers/:id/edit', component: CustomerFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'customers/:id', component: CustomerDetailComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
 
-      { path: 'appointments', component: AppointmentListComponent },
-      { path: 'appointments/new', component: AppointmentFormComponent },
-      { path: 'appointments/:id/edit', component: AppointmentFormComponent },
-      { path: 'appointments/:id', component: AppointmentDetailComponent },
+      // Appointments
+      { path: 'appointments', component: AppointmentListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'] } },
+      { path: 'appointments/new', component: AppointmentFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'appointments/:id/edit', component: AppointmentFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'appointments/:id', component: AppointmentDetailComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
 
-      { path: 'employees', component: EmployeeListComponent },
-      { path: 'employees/new', component: EmployeeFormComponent },
-      { path: 'employees/:id/edit', component: EmployeeFormComponent },
-      { path: 'employees/:id', component: EmployeeDetailComponent },
+      // Employees (Aggiungi canActivate se vuoi proteggerli, qui lascio aperto o protetto a seconda delle tue esigenze, es. solo ADMIN)
+      { path: 'employees', component: EmployeeListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'employees/new', component: EmployeeFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'employees/:id/edit', component: EmployeeFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'employees/:id', component: EmployeeDetailComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
 
-      { path: 'services', component: SalonProductListComponent },
-      { path: 'services/new', component: SalonProductFormComponent },
-      { path: 'services/:id/edit', component: SalonProductFormComponent },
+      // Services
+      { path: 'services', component: SalonProductListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'] } },
+      { path: 'services/new', component: SalonProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'services/:id/edit', component: SalonProductFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
 
-      { path: 'consultations', component: ConsultationListComponent },
-      { path: 'consultations/new', component: ConsultationFormComponent },
-      { path: 'consultations/:id/edit', component: ConsultationFormComponent },
+      // Consultations
+      { path: 'consultations', component: ConsultationListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'] } },
+      { path: 'consultations/new', component: ConsultationFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'consultations/:id/edit', component: ConsultationFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
 
-      { path: 'profile', component: ProfileViewComponent },
-      { path: 'profile/new', component: ProfileFormComponent },
-      { path: 'profile/all', component: ProfileListComponent },
-      { path: 'profile/edit/:id', component: ProfileFormComponent },
+      // Profile
+      { path: 'profile', component: ProfileViewComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'] } },
+      { path: 'profile/new', component: ProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'profile/all', component: ProfileListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'profile/edit/:id', component: ProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
 
-      { path: 'color-lab', component: ColorLabComponent },
-      { path: 'color-lab/smart-formula', component: ColorSmartDiagnosisComponent },
-      { path: 'color-lab/products/new', component: HairDyeFormComponent },
-      { path: 'color-lab/products/:id/edit', component: HairDyeFormComponent },
-      { path: 'color-lab/movements', component: HairDyeInventoryMovementListComponent },
-      { path: 'color-lab/inventory/:hairDyeId', component: HairDyeInventoryFormComponent },
-      { path: 'color-lab/formulas', component: ColorFormulaListComponent },
-      { path: 'color-lab/formulas/new', component: ColorFormulaBuilderComponent },
-      { path: 'color-lab/formulas/:id/edit', component: ColorFormulaBuilderComponent },
-      { path: 'color-lab/formulas/:id', component: ColorFormulaDetailComponent },
-      { path: 'color-lab/lines', component: ColorProductLineProfileListComponent },
-      { path: 'color-lab/lines/new', component: ColorProductLineProfileFormComponent },
-      { path: 'color-lab/lines/:id/edit', component: ColorProductLineProfileFormComponent },
+      // Color Lab
+      { path: 'color-lab', component: ColorLabComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'color-lab/smart-formula', component: ColorSmartDiagnosisComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'color-lab/products/new', component: HairDyeFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/products/:id/edit', component: HairDyeFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/movements', component: HairDyeInventoryMovementListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/inventory/:hairDyeId', component: HairDyeInventoryFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/formulas', component: ColorFormulaListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'color-lab/formulas/new', component: ColorFormulaBuilderComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/formulas/:id/edit', component: ColorFormulaBuilderComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/formulas/:id', component: ColorFormulaDetailComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'] } },
+      { path: 'color-lab/lines', component: ColorProductLineProfileListComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/lines/new', component: ColorProductLineProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
+      { path: 'color-lab/lines/:id/edit', component: ColorProductLineProfileFormComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'SUPERADMIN'] } },
 
       {
         path: '',
@@ -113,6 +125,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: 'login'
   }
 ];

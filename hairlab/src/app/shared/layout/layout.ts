@@ -13,8 +13,8 @@ import { AuthService } from '../../core/auth/auth-service';
   styleUrl: './layout.css'
 })
 export class LayoutComponent {
-  private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
+  public readonly router = inject(Router);
+  public readonly authService = inject(AuthService);
 
   // Ricava dinamicamente l'utente decodificando il token JWT
   user = this.authService.getUserFromToken() || {
