@@ -88,6 +88,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileViewComponent },
       { path: 'profile/new', component: ProfileFormComponent },
       { path: 'profile/all', component: ProfileListComponent },
+      { path: 'profile/edit/:id', component: ProfileFormComponent },
 
       { path: 'color-lab', component: ColorLabComponent },
       { path: 'color-lab/smart-formula', component: ColorSmartDiagnosisComponent },
