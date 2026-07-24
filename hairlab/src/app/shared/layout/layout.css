@@ -467,3 +467,78 @@ a.nav-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
+
+/*
+ * ==========================================================
+ * COLOR LAB SUBMENU - BLOCCO 13
+ * ==========================================================
+ */
+.nav-group {
+  margin-bottom: 4px;
+}
+
+.nav-group-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-group-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.nav-chevron {
+  margin-left: auto;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform .18s ease;
+}
+
+.nav-group.expanded .nav-chevron {
+  transform: rotate(90deg);
+}
+
+.nav-submenu {
+  display: grid;
+  gap: 2px;
+  margin: 3px 0 7px;
+  padding-left: 44px;
+}
+
+.nav-submenu a {
+  position: relative;
+  min-height: 31px;
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 7px;
+  color: #9f948e;
+  font-size: 9px;
+  font-weight: 550;
+  text-decoration: none;
+}
+
+.nav-submenu a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.nav-submenu a.active {
+  background: rgba(240, 230, 223, 0.12);
+  color: #f0e6df;
+  font-weight: 750;
+}
+
+.nav-submenu a.active::before {
+  position: absolute;
+  left: -8px;
+  width: 3px;
+  height: 14px;
+  border-radius: 4px;
+  background: #b57f60;
+  content: '';
+}

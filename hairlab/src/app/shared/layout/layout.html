@@ -141,18 +141,72 @@
       </a>
 
       <!-- COLOR LAB -->
-      <a
-        class="nav-item"
-        routerLink="/color-lab"
-        routerLinkActive="active"
-        (click)="closeSidebarAfterNavigation()">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
-          </svg>
-        </span>
-        <span>Color Lab</span>
-      </a>
+      <div
+        class="nav-group"
+        [class.expanded]="colorLabMenuOpen()">
+
+        <button
+          class="nav-item nav-group-toggle"
+          type="button"
+          (click)="toggleColorLabMenu()">
+
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
+            </svg>
+          </span>
+
+          <span>Color Lab</span>
+          <span class="nav-chevron">›</span>
+        </button>
+
+        @if (colorLabMenuOpen()) {
+          <div class="nav-submenu">
+            <a
+              routerLink="/color-lab"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="closeSidebarAfterNavigation()">
+              Panoramica
+            </a>
+
+            <a
+              routerLink="/color-lab/smart-formula"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Smart Formula
+            </a>
+
+            <a
+              routerLink="/color-lab/formulas"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Formule colore
+            </a>
+
+            <a
+              routerLink="/color-lab"
+              [queryParams]="{ tab: 'library' }"
+              (click)="closeSidebarAfterNavigation()">
+              Libreria prodotti
+            </a>
+
+            <a
+              routerLink="/color-lab"
+              [queryParams]="{ tab: 'inventory' }"
+              (click)="closeSidebarAfterNavigation()">
+              Magazzino
+            </a>
+
+            <a
+              routerLink="/color-lab/lines"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Linee tecniche
+            </a>
+          </div>
+        }
+      </div>
 
     </nav>
 
@@ -160,7 +214,7 @@
          UTENTE + PULSANTE ESCI (FOOTER SIDEBAR)
          =================================================== -->
     <div class="sidebar-footer" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-      
+
       <!-- Informazioni utente (Cliccabile opzionalmente o lasciate come visualizzazione) -->
       <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
         <div class="sidebar-user-avatar">

@@ -225,3 +225,15 @@ tr:hover td {
   background-color: #f8d7da;
   color: #842029;
 }
+
+.color-lab-button {
+  border-color: #cbb6a9;
+  background: #f5ebe5;
+  color: #6f5040;
+}
+
+.color-lab-button:hover {
+  border-color: #b99a89;
+  background: #eadbd2;
+  color: #573d31;
+}

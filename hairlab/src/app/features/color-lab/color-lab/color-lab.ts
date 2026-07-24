@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { HairDye } from '../../../models/hair-dye';
 import { HairDyeInventory } from '../../../models/hair-dye-inventory';
 import { ProductType } from '../../../models/enums/product-type';
+import { MixingRatio } from '../../../models/enums/mixing-ratio';
 import { Reflection } from '../../../models/enums/reflection';
 import { ToneLevel } from '../../../models/enums/tone-level';
 import { HairDyeInventoryService } from '../../../service/hair-dye-inventory-service';
@@ -18,6 +19,10 @@ import {
   TONE_LEVEL_COLORS,
   TONE_LEVEL_LABELS
 } from '../color-lab-display';
+import {
+  MIXING_RATIO_LABELS,
+  OXYGEN_LABELS
+} from '../color-formula-display';
 
 type ColorLabTab = 'OVERVIEW' | 'LIBRARY' | 'INVENTORY';
 type ActiveFilter = 'ACTIVE' | 'INACTIVE' | 'ALL';
@@ -51,6 +56,7 @@ export class ColorLabComponent implements OnInit {
   protected readonly searchTerm = signal('');
   protected readonly productTypeFilter = signal<ProductType | 'ALL'>('ALL');
   protected readonly brandFilter = signal('ALL');
+  protected readonly lineFilter = signal('ALL');
   protected readonly toneFilter = signal<ToneLevel | 'ALL'>('ALL');
   protected readonly reflectionFilter = signal<Reflection | 'ALL'>('ALL');
   protected readonly activeFilter = signal<ActiveFilter>('ACTIVE');
@@ -68,6 +74,8 @@ export class ColorLabComponent implements OnInit {
   protected readonly reflectionLabels = REFLECTION_LABELS;
   protected readonly reflectionColors = REFLECTION_COLORS;
   protected readonly inventoryUnitLabels = INVENTORY_UNIT_LABELS;
+  protected readonly oxygenLabels = OXYGEN_LABELS;
+  protected readonly mixingRatioLabels = MIXING_RATIO_LABELS;
 
   protected readonly activeProductsCount = computed(
     () => this.products().filter(product => product.active).length
@@ -81,6 +89,33 @@ export class ColorLabComponent implements OnInit {
           .filter(brand => !!brand)
       )
     ).sort((a, b) => a.localeCompare(b, 'it'))
+  );
+
+
+  protected readonly lines = computed(
+    () => Array.from(
+      new Set(
+        this.products()
+          .map(
+            product =>
+              product.lineName?.trim() ??
+              ''
+          )
+          .filter(
+            line =>
+              !!line
+          )
+      )
+    ).sort(
+      (
+        a,
+        b
+      ) =>
+        a.localeCompare(
+          b,
+          'it'
+        )
+    )
   );
 
   protected readonly lowStockCount = computed(
@@ -108,7 +143,7 @@ export class ColorLabComponent implements OnInit {
       .filter(product => {
         if (search) {
           const haystack = this.normalize(
-            [product.brand, product.name, product.code].join(' ')
+            [product.brand, product.lineName ?? '', product.name, product.code].join(' ')
           );
           if (!haystack.includes(search)) return false;
         }
@@ -121,6 +156,11 @@ export class ColorLabComponent implements OnInit {
         if (
           this.brandFilter() !== 'ALL' &&
           product.brand !== this.brandFilter()
+        ) return false;
+
+        if (
+          this.lineFilter() !== 'ALL' &&
+          product.lineName !== this.lineFilter()
         ) return false;
 
         if (
@@ -151,7 +191,7 @@ export class ColorLabComponent implements OnInit {
       .filter(product => {
         if (search) {
           const haystack = this.normalize(
-            [product.brand, product.name, product.code].join(' ')
+            [product.brand, product.lineName ?? '', product.name, product.code].join(' ')
           );
           if (!haystack.includes(search)) return false;
         }
@@ -168,10 +208,29 @@ export class ColorLabComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const requestedTab = this.activatedRoute.snapshot.queryParamMap.get('tab');
+    /*
+     * Il componente viene riutilizzato quando cambia soltanto
+     * ?tab=library / ?tab=inventory.
+     * Per questo ascoltiamo queryParamMap invece di leggere
+     * soltanto lo snapshot iniziale.
+     */
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      const requestedTab = params.get('tab');
 
-    if (requestedTab === 'library') this.selectedTab.set('LIBRARY');
-    if (requestedTab === 'inventory') this.selectedTab.set('INVENTORY');
+      if (requestedTab === 'library') {
+        this.selectedTab.set('LIBRARY');
+        return;
+      }
+
+      if (requestedTab === 'inventory') {
+        this.selectedTab.set('INVENTORY');
+        return;
+      }
+
+      if (!requestedTab) {
+        this.selectedTab.set('OVERVIEW');
+      }
+    });
 
     this.loadData();
   }
@@ -217,6 +276,10 @@ export class ColorLabComponent implements OnInit {
     this.brandFilter.set((event.target as HTMLSelectElement).value);
   }
 
+  protected onLineFilterChange(event: Event): void {
+    this.lineFilter.set((event.target as HTMLSelectElement).value);
+  }
+
   protected onToneFilterChange(event: Event): void {
     this.toneFilter.set(
       (event.target as HTMLSelectElement).value as ToneLevel | 'ALL'
@@ -249,6 +312,7 @@ export class ColorLabComponent implements OnInit {
     this.searchTerm.set('');
     this.productTypeFilter.set('ALL');
     this.brandFilter.set('ALL');
+    this.lineFilter.set('ALL');
     this.toneFilter.set('ALL');
     this.reflectionFilter.set('ALL');
     this.activeFilter.set('ACTIVE');
@@ -353,7 +417,20 @@ export class ColorLabComponent implements OnInit {
     }
   }
 
+  protected getToneFieldLabel(product: HairDye): string {
+    return product.productType === ProductType.DEVELOPER
+      ? 'VOLUME'
+      : 'TONO';
+  }
+
   protected getToneLabel(product: HairDye): string {
+    if (
+      product.productType === ProductType.DEVELOPER
+      && product.developerVolume
+    ) {
+      return this.oxygenLabels[product.developerVolume];
+    }
+
     return product.toneLevel
       ? this.toneLevelLabels[product.toneLevel]
       : 'Non applicabile';
@@ -363,6 +440,141 @@ export class ColorLabComponent implements OnInit {
     return product.primaryReflection
       ? this.reflectionLabels[product.primaryReflection]
       : 'Non applicabile';
+  }
+
+  protected supportsTechnicalRulesForProduct(
+    product:
+      HairDye
+  ): boolean {
+
+    return (
+      product.productType ===
+        ProductType.COLOR
+      ||
+      product.productType ===
+        ProductType.TONER
+      ||
+      product.productType ===
+        ProductType.BLEACH
+    );
+  }
+
+  /**
+   * Indica se il prodotto possiede regole tecniche
+   * specifiche configurate sul prodotto o sulla linea.
+   *
+   * La verifica viene eseguita in TypeScript invece
+   * che direttamente nel template Angular.
+   *
+   * In questo modo il template non deve indicizzare
+   * proprietà opzionali estese introdotte nei Blocchi
+   * 12/13 e rimane pienamente tipizzato.
+   */
+  protected hasConfiguredTechnicalRulesForProduct(
+    product:
+      HairDye
+  ): boolean {
+
+    return (
+      product.defaultMixingRatio !=
+        null
+      ||
+      (
+        product.allowedDeveloperVolumes
+          ?.length ??
+        0
+      ) > 0
+      ||
+      product.maxLiftLevels !=
+        null
+      ||
+      Boolean(
+        product.depositOnly
+      )
+      ||
+      Boolean(
+        product.useLineProfileRules
+      )
+    );
+  }
+
+  protected getMixingRuleLabel(
+    product:
+      HairDye
+  ): string {
+
+    if (
+      !product.defaultMixingRatio
+    ) {
+
+      return 'Fallback HairLab';
+    }
+
+    if (
+      product.defaultMixingRatio ===
+        MixingRatio.CUSTOM
+      &&
+      product.customMixingRatioMultiplier
+    ) {
+
+      return `1 : ${product.customMixingRatioMultiplier}`;
+    }
+
+    return this.mixingRatioLabels[
+      product.defaultMixingRatio
+    ];
+  }
+
+  protected getAllowedDeveloperLabel(
+    product:
+      HairDye
+  ): string {
+
+    const values =
+      product.allowedDeveloperVolumes ??
+      [];
+
+    if (
+      values.length ===
+      0
+    ) {
+
+      return 'Fallback HairLab';
+    }
+
+    return values
+      .map(
+        oxygen =>
+          this.oxygenLabels[
+            oxygen
+          ]
+      )
+      .join(
+        ' · '
+      );
+  }
+
+  protected getLiftRuleLabel(
+    product:
+      HairDye
+  ): string {
+
+    if (
+      product.depositOnly
+    ) {
+
+      return 'Solo deposito';
+    }
+
+    if (
+      product.maxLiftLevels !=
+      null
+    ) {
+
+      return `Max +${product.maxLiftLevels}`;
+    }
+
+    return 'Non configurato';
   }
 
   private getStockRank(state: StockState): number {

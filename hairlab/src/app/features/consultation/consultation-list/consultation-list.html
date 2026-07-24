@@ -109,7 +109,24 @@
 
                 <td>
                   <div class="actions">
-                    <a class="action-button" [routerLink]="['/consultations', consultation.id, 'edit']">
+
+                    @if (
+                      consultation.type === 'HAIR_COLOR'
+                      &&
+                      consultation.id
+                    ) {
+                      <a
+                        class="action-button color-lab-button"
+                        routerLink="/color-lab/smart-formula"
+                        [queryParams]="{
+                          customerId: consultation.customerId,
+                          consultationId: consultation.id
+                        }">
+                        Smart Formula
+                      </a>
+                    }
+
+<a class="action-button" [routerLink]="['/consultations', consultation.id, 'edit']">
                       Modifica
                     </a>
 

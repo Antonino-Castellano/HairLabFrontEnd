@@ -458,7 +458,36 @@
 
               }
 
-            </div>
+
+              @if (item.id) {
+
+                <div class="color-lab-actions">
+
+                  <a
+                    class="color-lab-action smart"
+                    routerLink="/color-lab/smart-formula"
+                    [queryParams]="{
+                      customerId: data.appointment.customerId,
+                      appointmentItemId: item.id
+                    }">
+                    ✦ Smart Formula
+                  </a>
+
+                  <a
+                    class="color-lab-action"
+                    routerLink="/color-lab/formulas/new"
+                    [queryParams]="{
+                      customerId: data.appointment.customerId,
+                      appointmentItemId: item.id
+                    }">
+                    Formula manuale
+                  </a>
+
+                </div>
+
+              }
+
+</div>
 
           </article>
 

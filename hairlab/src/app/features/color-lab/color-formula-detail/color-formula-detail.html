@@ -1,112 +1,332 @@
 <section class="detail-page">
 
-  @if (
-    errorMessage()
-  ) {
-
-    <div class="message error">
-      {{ errorMessage() }}
-    </div>
-
+  @if (errorMessage()) {
+    <div class="message error">{{ errorMessage() }}</div>
   }
 
-  @if (
-    loading()
-  ) {
+  @if (successMessage()) {
+    <div class="message success">{{ successMessage() }}</div>
+  }
 
-    <div class="state-card">
-      Caricamento formula...
-    </div>
-
-  } @else if (
-    detail();
-    as current
-  ) {
+  @if (loading()) {
+    <div class="state-card">Caricamento formula...</div>
+  } @else if (detail(); as current) {
 
     <header class="page-header">
-
       <div>
-
-        <span class="eyebrow">
-          COLOR LAB · FORMULA
-        </span>
-
-        <h1>
-          {{ current.formula.name }}
-        </h1>
-
-        <p>
-
-          {{
-            getCustomerName(
-              current.formula.customerId
-            )
-          }}
-
-        </p>
-
+        <span class="eyebrow">COLOR LAB · FORMULA</span>
+        <h1>{{ current.formula.name }}</h1>
+        <p>{{ getCustomerName(current.formula.customerId) }}</p>
       </div>
 
       <div class="header-actions">
+        <a class="secondary-button" routerLink="/color-lab/formulas">Formule</a>
 
-        <a
-          class="secondary-button"
-          routerLink="/color-lab/formulas">
-          Formule
-        </a>
-
-        @if (
-          current.formula.id
-        ) {
-
+        @if (current.formula.id && canEditFormula()) {
           <a
             class="primary-button"
             routerLink="/color-lab/formulas/{{ current.formula.id }}/edit">
             Modifica formula
           </a>
-
         }
-
       </div>
-
     </header>
 
     <div class="status-line">
-
       <span
         class="status-badge"
-        [attr.data-status]="
-          current.formula.status
-        ">
-
-        {{
-          statusLabels[
-            current.formula.status
-          ]
-        }}
-
+        [attr.data-status]="current.formula.status">
+        {{ statusLabels[current.formula.status] }}
       </span>
-
-      <strong>
-        {{ current.formula.targetResult }}
-      </strong>
-
+      <strong>{{ current.formula.targetResult }}</strong>
     </div>
 
     <div class="detail-grid">
+      <section class="panel">
+        <span class="panel-eyebrow">OBIETTIVO TECNICO</span>
+        <div class="technical-grid">
+          <div>
+            <span>TONO</span>
+            <strong>
+              {{
+                current.formula.targetToneLevel
+                  ? toneLabels[current.formula.targetToneLevel]
+                  : 'Non definito'
+              }}
+            </strong>
+          </div>
+          <div>
+            <span>RIFLESSO</span>
+            <strong>
+              {{
+                current.formula.targetPrimaryReflection
+                  ? reflectionLabels[current.formula.targetPrimaryReflection]
+                  : 'Non definito'
+              }}
+            </strong>
+          </div>
+          <div>
+            <span>APPLICAZIONE</span>
+            <strong>
+              {{
+                current.formula.applicationType
+                  ? applicationLabels[current.formula.applicationType]
+                  : 'Non definita'
+              }}
+            </strong>
+          </div>
+          <div>
+            <span>DEVELOPER RICHIESTO</span>
+            <strong>{{ oxygenLabels[current.formula.volumeDeveloper] }}</strong>
+          </div>
+        </div>
+      </section>
 
       <section class="panel">
+        <span class="panel-eyebrow">CALCOLO MISCELA</span>
+        <div class="total-grid">
+          <div>
+            <span>COLORE</span>
+            <strong>{{ current.totalColorQuantity }} g</strong>
+          </div>
+          <div>
+            <span>RAPPORTO</span>
+            <strong>{{ getRatioLabel() }}</strong>
+          </div>
+          <div>
+            <span>DEVELOPER</span>
+            <strong>{{ current.developerQuantity }} ml</strong>
+          </div>
+          <div class="grand-total">
+            <span>TOTALE TECNICO</span>
+            <strong>{{ current.totalMixtureQuantity }}</strong>
+            <small>g colore + ml developer</small>
+          </div>
+        </div>
+      </section>
+    </div>
 
-        <span class="panel-eyebrow">
-          OBIETTIVO TECNICO
-        </span>
+    <section class="panel ingredients-panel">
+      <span class="panel-eyebrow">INGREDIENTI</span>
 
-        <div class="technical-grid">
+      <div class="ingredient-table">
+        @for (item of current.ingredients; track item.id) {
+          <div class="ingredient-row">
+            <div>
+              <strong>{{ getProductName(item.hairDyeId) }}</strong>
+              @if (getInventory(item.hairDyeId); as inventory) {
+                <small>
+                  Stock: {{ inventory.quantityAvailable }}
+                  {{ getUnitLabel(inventory.unit) }}
+                </small>
+              } @else {
+                <small class="warning-text">Stock non configurato</small>
+              }
+            </div>
+
+            <span>{{ item.quantity }} g</span>
+
+            <strong
+              class="stock-state"
+              [class.ok]="isIngredientStockSufficient(item.hairDyeId, item.quantity)"
+              [class.warning]="!isIngredientStockSufficient(item.hairDyeId, item.quantity)">
+              {{
+                isIngredientStockSufficient(item.hairDyeId, item.quantity)
+                  ? 'Sufficiente'
+                  : 'Insufficiente'
+              }}
+            </strong>
+          </div>
+        }
+      </div>
+    </section>
+
+    @if (usage(); as used) {
+      <section class="panel usage-completed">
+        <div class="usage-title">
+          <div>
+            <span class="panel-eyebrow">FORMULA UTILIZZATA</span>
+            <h2>Scarico magazzino registrato</h2>
+          </div>
+          <span class="used-badge">UTILIZZATA</span>
+        </div>
+
+        <div class="usage-summary">
+          <div>
+            <span>DATA UTILIZZO</span>
+            <strong>{{ used.usedAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+          <div>
+            <span>DEVELOPER</span>
+            <strong>
+              {{ used.developerBrand }} · {{ used.developerCode }}
+            </strong>
+            <small>{{ oxygenLabels[used.developerVolume] }}</small>
+          </div>
+          <div>
+            <span>COLORE SCARICATO</span>
+            <strong>{{ used.totalColorQuantity }} g</strong>
+          </div>
+          <div>
+            <span>DEVELOPER SCARICATO</span>
+            <strong>
+              {{ used.developerQuantity }}
+              {{ getUnitLabel(used.developerUnit) }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="movement-list">
+          <span class="panel-eyebrow">MOVIMENTI MAGAZZINO</span>
+
+          @for (movement of used.movements; track movement.id) {
+            <div class="movement-row">
+              <div>
+                <strong>
+                  {{ movement.brand }} · {{ movement.code }} · {{ movement.name }}
+                </strong>
+                <small>{{ movement.movementType }}</small>
+              </div>
+              <span class="movement-out">
+                − {{ movement.quantity }} {{ getUnitLabel(movement.unit) }}
+              </span>
+              <small>
+                {{ movement.quantityBefore }} → {{ movement.quantityAfter }}
+                {{ getUnitLabel(movement.unit) }}
+              </small>
+            </div>
+          }
+        </div>
+      </section>
+
+    } @else if (canEditFormula()) {
+      <section class="panel usage-panel">
+        <div class="usage-title">
+          <div>
+            <span class="panel-eyebrow">UTILIZZO REALE</span>
+            <h2>Utilizza formula e scarica magazzino</h2>
+            <p>
+              L'operazione è atomica: HairLab verifica tutte le giacenze,
+              scarica ingredienti e developer e imposta la formula come utilizzata.
+            </p>
+          </div>
+        </div>
+
+        <div class="developer-selection">
+          <label>
+            <span>Developer {{ oxygenLabels[current.formula.volumeDeveloper] }} *</span>
+            <select
+              [value]="selectedDeveloperId() ?? ''"
+              (change)="onDeveloperChange($event)">
+              <option value="">Seleziona developer</option>
+              @for (developer of developerCandidates(); track developer.id) {
+                <option [value]="developer.id">
+                  {{ developer.brand }} · {{ developer.code }} · {{ developer.name }}
+                </option>
+              }
+            </select>
+          </label>
+
+          @if (selectedDeveloperId(); as developerId) {
+            @if (getInventory(developerId); as inventory) {
+              <div class="developer-check">
+                <span>RICHIESTI</span>
+                <strong>{{ current.developerQuantity }} ml</strong>
+                <span>DISPONIBILI</span>
+                <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
+              </div>
+            }
+          }
+        </div>
+
+        @if (developerCandidates().length === 0) {
+          <div class="usage-warning">
+            Nessun developer attivo con volume
+            {{ oxygenLabels[current.formula.volumeDeveloper] }} configurato.
+            Crea o modifica un prodotto DEVELOPER nella Libreria Color Lab.
+          </div>
+        }
+
+        @if (!areIngredientStocksSufficient()) {
+          <div class="usage-warning">
+            Uno o più ingredienti colore non hanno stock sufficiente.
+            L'utilizzo è bloccato fino al reintegro del magazzino.
+          </div>
+        }
+
+        <div class="usage-actions">
+          <button
+            type="button"
+            class="use-button"
+            [disabled]="!canUseFormula()"
+            (click)="useFormula()">
+            {{ usingFormula() ? 'Scarico in corso...' : 'Utilizza formula' }}
+          </button>
+        </div>
+      </section>
+    }
+
+
+    @if (
+      usage();
+      as usedFormula
+    ) {
+
+      <section class="panel result-panel">
+
+        <div class="result-title">
+
+          <div>
+
+            <span class="panel-eyebrow">
+              RISULTATO POST-SERVIZIO
+            </span>
+
+            <h2>
+              Esito tecnico reale
+            </h2>
+
+            <p>
+              Registra ciò che è stato realmente ottenuto
+              per confrontarlo con l'obiettivo della formula.
+            </p>
+
+          </div>
+
+          @if (
+            formulaResult();
+            as savedResult
+          ) {
+
+            <div class="result-saved-meta">
+
+              <span>
+                AGGIORNATO
+              </span>
+
+              <strong>
+
+                {{
+                  savedResult.updatedAt
+                    |
+                    date:
+                      'dd/MM/yyyy HH:mm'
+                }}
+
+              </strong>
+
+            </div>
+
+          }
+
+        </div>
+
+        <div class="target-result-compare">
 
           <div>
 
             <span>
-              TONO
+              OBIETTIVO
             </span>
 
             <strong>
@@ -116,206 +336,318 @@
                   ? toneLabels[
                       current.formula.targetToneLevel
                     ]
-                  : 'Non definito'
+                  : 'Tono non definito'
               }}
 
             </strong>
 
-          </div>
-
-          <div>
-
-            <span>
-              RIFLESSO
-            </span>
-
-            <strong>
+            <small>
 
               {{
                 current.formula.targetPrimaryReflection
                   ? reflectionLabels[
                       current.formula.targetPrimaryReflection
                     ]
-                  : 'Non definito'
+                  : 'Riflesso non definito'
               }}
 
-            </strong>
-
-          </div>
-
-          <div>
-
-            <span>
-              APPLICAZIONE
-            </span>
-
-            <strong>
-
-              {{
-                current.formula.applicationType
-                  ? applicationLabels[
-                      current.formula.applicationType
-                    ]
-                  : 'Non definita'
-              }}
-
-            </strong>
-
-          </div>
-
-          <div>
-
-            <span>
-              DEVELOPER
-            </span>
-
-            <strong>
-
-              {{
-                oxygenLabels[
-                  current.formula.volumeDeveloper
-                ]
-              }}
-
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="panel">
-
-        <span class="panel-eyebrow">
-          CALCOLO MISCELA
-        </span>
-
-        <div class="total-grid">
-
-          <div>
-
-            <span>
-              COLORE
-            </span>
-
-            <strong>
-              {{ current.totalColorQuantity }}
-              g
-            </strong>
-
-          </div>
-
-          <div>
-
-            <span>
-              RAPPORTO
-            </span>
-
-            <strong>
-              {{ getRatioLabel() }}
-            </strong>
-
-          </div>
-
-          <div>
-
-            <span>
-              DEVELOPER
-            </span>
-
-            <strong>
-              {{ current.developerQuantity }}
-              g
-            </strong>
-
-          </div>
-
-          <div class="grand-total">
-
-            <span>
-              TOTALE
-            </span>
-
-            <strong>
-              {{ current.totalMixtureQuantity }}
-              g
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
-
-    <section class="panel ingredients-panel">
-
-      <span class="panel-eyebrow">
-        INGREDIENTI
-      </span>
-
-      <div class="ingredient-table">
-
-        @for (
-          item of current.ingredients;
-          track item.id
-        ) {
-
-          <div class="ingredient-row">
-
-            <strong>
-              {{
-                getProductName(
-                  item.hairDyeId
-                )
-              }}
-            </strong>
-
-            <span>
-
-              {{
-                item.quantity
-              }}
-
-              g
-
-            </span>
-
-            <small>
-              {{
-                item.notes ||
-                '—'
-              }}
             </small>
 
           </div>
 
-        }
+          <div>
 
-      </div>
+            <span>
+              RISULTATO OTTENUTO
+            </span>
 
-    </section>
+            <strong>
 
-    @if (
-      current.formula.notes
-    ) {
+              {{
+                achievedToneLevel()
+                  ? toneLabels[
+                      achievedToneLevel()!
+                    ]
+                  : 'Da registrare'
+              }}
 
-      <section class="panel notes-panel">
+            </strong>
 
-        <span class="panel-eyebrow">
-          NOTE TECNICHE
-        </span>
+            <small>
 
-        <p>
-          {{ current.formula.notes }}
-        </p>
+              {{
+                achievedPrimaryReflection()
+                  ? reflectionLabels[
+                      achievedPrimaryReflection()!
+                    ]
+                  : 'Riflesso da registrare'
+              }}
+
+            </small>
+
+          </div>
+
+        </div>
+
+        <div class="result-form-grid">
+
+          <label>
+
+            <span>
+              Tono ottenuto
+            </span>
+
+            <select
+              [value]="
+                achievedToneLevel() ??
+                ''
+              "
+              (change)="
+                onAchievedToneChange(
+                  $event
+                )
+              ">
+
+              <option value="">
+                Non registrato
+              </option>
+
+              @for (
+                tone of toneLevels;
+                track tone
+              ) {
+
+                <option [value]="tone">
+
+                  {{
+                    toneLabels[
+                      tone
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Riflesso principale
+            </span>
+
+            <select
+              [value]="
+                achievedPrimaryReflection() ??
+                ''
+              "
+              (change)="
+                onPrimaryReflectionChange(
+                  $event
+                )
+              ">
+
+              <option value="">
+                Non registrato
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [value]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Secondo riflesso
+            </span>
+
+            <select
+              [value]="
+                achievedSecondaryReflection() ??
+                ''
+              "
+              (change)="
+                onSecondaryReflectionChange(
+                  $event
+                )
+              ">
+
+              <option value="">
+                Nessuno
+              </option>
+
+              @for (
+                reflection of reflections;
+                track reflection
+              ) {
+
+                <option [value]="reflection">
+
+                  {{
+                    reflectionLabels[
+                      reflection
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+          <label>
+
+            <span>
+              Valutazione *
+            </span>
+
+            <select
+              [value]="resultAssessment()"
+              (change)="
+                onAssessmentChange(
+                  $event
+                )
+              ">
+
+              @for (
+                assessment of resultAssessments;
+                track assessment
+              ) {
+
+                <option [value]="assessment">
+
+                  {{
+                    resultAssessmentLabels[
+                      assessment
+                    ]
+                  }}
+
+                </option>
+
+              }
+
+            </select>
+
+          </label>
+
+        </div>
+
+        <div class="result-notes-grid">
+
+          <label>
+
+            <span>
+              Note tecniche post-servizio
+            </span>
+
+            <textarea
+              rows="4"
+              [value]="technicalResultNotes()"
+              (input)="
+                onTechnicalNotesChange(
+                  $event
+                )
+              "
+              placeholder="Uniformità, copertura, luminosità, risposta delle lunghezze...">
+            </textarea>
+
+          </label>
+
+          <label>
+
+            <span>
+              Correzioni / indicazioni future
+            </span>
+
+            <textarea
+              rows="4"
+              [value]="correctionResultNotes()"
+              (input)="
+                onCorrectionNotesChange(
+                  $event
+                )
+              "
+              placeholder="Correzioni eseguite o indicazioni per il prossimo servizio...">
+            </textarea>
+
+          </label>
+
+          <label class="full-width">
+
+            <span>
+              Feedback cliente
+            </span>
+
+            <textarea
+              rows="3"
+              [value]="clientFeedback()"
+              (input)="
+                onClientFeedbackChange(
+                  $event
+                )
+              "
+              placeholder="Feedback sintetico della cliente sul risultato...">
+            </textarea>
+
+          </label>
+
+        </div>
+
+        <div class="result-actions">
+
+          <button
+            type="button"
+            class="save-result-button"
+            [disabled]="savingResult()"
+            (click)="saveFormulaResult()">
+
+            {{
+              savingResult()
+                ? 'Salvataggio...'
+                : (
+                    formulaResult()
+                      ? 'Aggiorna risultato'
+                      : 'Salva risultato'
+                  )
+            }}
+
+          </button>
+
+        </div>
 
       </section>
 
     }
 
-  }
 
+    @if (current.formula.notes) {
+      <section class="panel notes-panel">
+        <span class="panel-eyebrow">NOTE TECNICHE</span>
+        <p>{{ current.formula.notes }}</p>
+      </section>
+    }
+
+  }
 </section>

@@ -278,6 +278,181 @@
 
         }
 
+
+        @if (
+          loadingHistoryInsight()
+        ) {
+
+          <div class="history-insight loading">
+            Analisi dello storico tecnico...
+          </div>
+
+        } @else if (
+          historyInsight();
+          as history
+        ) {
+
+          <section
+            class="history-insight"
+            [attr.data-level]="history.level">
+
+            <div class="history-insight-head">
+
+              <div>
+
+                <span>
+                  MEMORIA TECNICA CLIENTE
+                </span>
+
+                <h3>
+                  Storico risultati reali
+                </h3>
+
+              </div>
+
+              <strong>
+                {{ history.evaluatedResults }}
+                risultati analizzati
+              </strong>
+
+            </div>
+
+            <p class="history-summary">
+              {{ history.summary }}
+            </p>
+
+            @if (
+              history.hasHistory
+            ) {
+
+              <div class="history-metrics">
+
+                <div>
+
+                  <span>
+                    DEVIAZIONI TONO
+                  </span>
+
+                  <strong>
+                    {{ history.toneDeviationCount }}
+                  </strong>
+
+                </div>
+
+                <div>
+
+                  <span>
+                    DEVIAZIONI RIFLESSO
+                  </span>
+
+                  <strong>
+                    {{ history.reflectionDeviationCount }}
+                  </strong>
+
+                </div>
+
+                <div>
+
+                  <span>
+                    RISULTATI DA ATTENZIONARE
+                  </span>
+
+                  <strong>
+                    {{ history.problematicAssessmentCount }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+              @if (
+                history.observations.length >
+                0
+              ) {
+
+                <div class="history-observations">
+
+                  <span>
+                    OSSERVAZIONI
+                  </span>
+
+                  @for (
+                    observation of
+                      history.observations;
+                    track observation
+                  ) {
+
+                    <p>
+                      {{ observation }}
+                    </p>
+
+                  }
+
+                </div>
+
+              }
+
+              @if (
+                history.previousCorrectionHints.length >
+                0
+              ) {
+
+                <div class="history-corrections">
+
+                  <span>
+                    NOTE CORRETTIVE PRECEDENTI
+                  </span>
+
+                  @for (
+                    correction of
+                      history.previousCorrectionHints;
+                    track correction
+                  ) {
+
+                    <p>
+                      {{ correction }}
+                    </p>
+
+                  }
+
+                </div>
+
+              }
+
+              @if (
+                history.latestFormulaId
+              ) {
+
+                <a
+                  class="history-detail-link"
+                  [routerLink]="[
+                    '/color-lab/formulas',
+                    history.latestFormulaId
+                  ]">
+                  Apri ultima formula con risultato
+                </a>
+
+              }
+
+            } @else {
+
+              <p class="history-empty">
+                I prossimi risultati post-servizio
+                alimenteranno questo riepilogo tecnico.
+              </p>
+
+            }
+
+            <small class="history-disclaimer">
+              Lo storico segnala pattern osservati:
+              non modifica automaticamente formula,
+              developer o grammature.
+            </small>
+
+          </section>
+
+        }
+
         <div class="form-grid">
 
           <label>
@@ -671,25 +846,19 @@
             Apri cliente
           </a>
 
-          <a
+          <button
+            type="button"
             class="primary-button"
-            routerLink="/color-lab/formulas/new"
-            [queryParams]="{
-              customerId:
-                result.customerId,
-              targetToneLevel:
-                result.targetToneLevel,
-              targetPrimaryReflection:
-                result.targetPrimaryReflection,
-              targetSecondaryReflection:
-                result.targetSecondaryReflection,
-              applicationType:
-                result.applicationType,
-              targetResult:
-                result.targetResult
-            }">
-            Continua nel Formula Builder
-          </a>
+            [disabled]="proposing()"
+            (click)="generateProductProposal()">
+
+            {{
+              proposing()
+                ? 'Ricerca prodotti...'
+                : 'Genera proposta prodotti'
+            }}
+
+          </button>
 
         </div>
 
@@ -708,6 +877,733 @@
           </p>
 
         </div>
+
+      }
+
+
+      @if (
+        formulaResponse();
+        as formulaResult
+      ) {
+
+        <section class="proposal-section">
+
+          <div class="proposal-heading">
+
+            <span class="proposal-index">
+              03
+            </span>
+
+            <div>
+
+              <h2>
+                Proposte prodotti
+              </h2>
+
+              <p>
+                Il motore seleziona i componenti tecnici.
+                Le grammature automatiche arriveranno
+                nel blocco successivo.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="proposal-grid">
+
+            <!-- FORMULA IDEALE -->
+            <article class="proposal-card">
+
+              <div class="proposal-card-head">
+
+                <div>
+
+                  <span>
+                    CATALOGO COMPLETO
+                  </span>
+
+                  <h3>
+                    {{
+                      formulaResult
+                        .idealProposal
+                        .title
+                    }}
+                  </h3>
+
+                </div>
+
+                <span
+                  class="proposal-status"
+                  [class.complete]="
+                    formulaResult
+                      .idealProposal
+                      .complete
+                  ">
+
+                  {{
+                    formulaResult
+                      .idealProposal
+                      .complete
+                      ? 'Completa'
+                      : 'Parziale'
+                  }}
+
+                </span>
+
+              </div>
+
+              <p class="proposal-description">
+
+                {{
+                  formulaResult
+                    .idealProposal
+                    .description
+                }}
+
+              </p>
+
+              <div class="component-list">
+
+                @for (
+                  component of
+                    formulaResult
+                      .idealProposal
+                      .components;
+                  track component.hairDyeId
+                ) {
+
+                  <div class="component-row">
+
+                    <div>
+
+                      <span class="component-role">
+
+                        {{
+                          componentRoleLabels[
+                            component.role
+                          ]
+                        }}
+
+                      </span>
+
+                      <strong>
+
+                        {{ component.brand }}
+                        ·
+                        {{ component.code }}
+
+                        @if (
+                          component.lineName
+                        ) {
+
+                          ·
+                          {{ component.lineName }}
+
+                        }
+
+                      </strong>
+
+                      <small>
+                        {{ component.name }}
+                      </small>
+
+                    </div>
+
+                    <div class="component-stock">
+
+                      @if (
+                        component.dosageCalculated
+                      ) {
+
+                        <span class="required-quantity">
+
+                          {{
+                            component.recommendedQuantity
+                          }}
+
+                          g richiesti
+
+                        </span>
+
+                      } @else {
+
+                        <span class="manual-dose">
+                          Dose manuale
+                        </span>
+
+                      }
+
+                      @if (
+                        component.stockConfigured
+                      ) {
+
+                        <small>
+
+                          Stock:
+
+                          {{
+                            component.quantityAvailable
+                          }}
+
+                          {{
+                            component.inventoryUnit ===
+                              'MILLILITER'
+                              ? 'ml'
+                              : 'g'
+                          }}
+
+                        </small>
+
+                        <strong
+                          [class.ok]="
+                            component.stockSufficient
+                          "
+                          [class.warning]="
+                            !component.stockSufficient
+                          ">
+
+                          {{
+                            component.manualDosageRequired
+                              ? 'Da dosare'
+                              : (
+                                  component.stockSufficient
+                                    ? 'Sufficiente'
+                                    : (
+                                        'Mancano '
+                                        + getShortageLabel(
+                                            component.shortageQuantity
+                                          )
+                                      )
+                                )
+                          }}
+
+                        </strong>
+
+                      } @else {
+
+                        <strong class="warning">
+                          Stock non configurato
+                        </strong>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+              @if (
+                formulaResult
+                  .idealProposal
+                  .missingRequirements
+                  .length >
+                0
+              ) {
+
+                <div class="missing-box">
+
+                  <strong>
+                    Requisiti mancanti
+                  </strong>
+
+                  @for (
+                    missing of
+                      formulaResult
+                        .idealProposal
+                        .missingRequirements;
+                    track missing
+                  ) {
+
+                    <p>
+                      {{ missing }}
+                    </p>
+
+                  }
+
+                </div>
+
+              }
+
+            </article>
+
+            <!-- FORMULA MAGAZZINO -->
+            <article class="proposal-card inventory-proposal">
+
+              <div class="proposal-card-head">
+
+                <div>
+
+                  <span>
+                    GIACENZE ATTUALI
+                  </span>
+
+                  <h3>
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .title
+                    }}
+
+                  </h3>
+
+                </div>
+
+                <span
+                  class="proposal-status"
+                  [class.complete]="
+                    formulaResult
+                      .inventoryProposal
+                      .complete
+                  ">
+
+                  {{
+                    formulaResult
+                      .inventoryProposal
+                      .complete
+                      ? 'Prodotti presenti'
+                      : 'Da completare'
+                  }}
+
+                </span>
+
+              </div>
+
+              <p class="proposal-description">
+
+                {{
+                  formulaResult
+                    .inventoryProposal
+                    .description
+                }}
+
+              </p>
+
+              <div class="component-list">
+
+                @for (
+                  component of
+                    formulaResult
+                      .inventoryProposal
+                      .components;
+                  track component.hairDyeId
+                ) {
+
+                  <div class="component-row">
+
+                    <div>
+
+                      <span class="component-role">
+
+                        {{
+                          componentRoleLabels[
+                            component.role
+                          ]
+                        }}
+
+                      </span>
+
+                      <strong>
+
+                        {{ component.brand }}
+                        ·
+                        {{ component.code }}
+
+                        @if (
+                          component.lineName
+                        ) {
+
+                          ·
+                          {{ component.lineName }}
+
+                        }
+
+                      </strong>
+
+                      <small>
+                        {{ component.name }}
+                      </small>
+
+                    </div>
+
+                    <div class="component-stock">
+
+                      @if (
+                        component.dosageCalculated
+                      ) {
+
+                        <span class="required-quantity">
+
+                          {{
+                            component.recommendedQuantity
+                          }}
+
+                          g richiesti
+
+                        </span>
+
+                      } @else {
+
+                        <span class="manual-dose">
+                          Dose manuale
+                        </span>
+
+                      }
+
+                      <small>
+
+                        Stock:
+
+                        {{
+                          component.quantityAvailable
+                        }}
+
+                        {{
+                          component.inventoryUnit ===
+                            'MILLILITER'
+                            ? 'ml'
+                            : 'g'
+                        }}
+
+                      </small>
+
+                      <strong
+                        [class.ok]="
+                          component.stockSufficient
+                        "
+                        [class.warning]="
+                          !component.stockSufficient
+                        ">
+
+                        {{
+                          component.manualDosageRequired
+                            ? 'Da dosare'
+                            : (
+                                component.stockSufficient
+                                  ? 'Sufficiente'
+                                  : (
+                                      'Mancano '
+                                      + getShortageLabel(
+                                          component.shortageQuantity
+                                        )
+                                    )
+                              )
+                        }}
+
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+              @if (
+                formulaResult
+                  .inventoryProposal
+                  .missingRequirements
+                  .length >
+                0
+              ) {
+
+                <div class="missing-box">
+
+                  <strong>
+                    Cosa manca
+                  </strong>
+
+                  @for (
+                    missing of
+                      formulaResult
+                        .inventoryProposal
+                        .missingRequirements;
+                    track missing
+                  ) {
+
+                    <p>
+                      {{ missing }}
+                    </p>
+
+                  }
+
+                </div>
+
+              }
+
+              <div class="rule-set-strip">
+
+                <span>
+                  RULE SET
+                </span>
+
+                <strong>
+
+                  {{
+                    formulaResult
+                      .inventoryProposal
+                      .dosageRuleSet ??
+                    'Non definito'
+                  }}
+
+                </strong>
+
+              </div>
+
+              <div class="dosage-summary">
+
+                <div>
+
+                  <span>
+                    COLORE STIMATO
+                  </span>
+
+                  <strong>
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .totalColorQuantity ??
+                      '—'
+                    }}
+
+                    g
+
+                  </strong>
+
+                </div>
+
+                <div>
+
+                  <span>
+                    DEVELOPER
+                  </span>
+
+                  <strong>
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .developerQuantity ??
+                      '—'
+                    }}
+
+                    g
+
+                  </strong>
+
+                  <small>
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .recommendedDeveloperVolume ??
+                      '—'
+                    }}
+
+                    ·
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .recommendedMixingRatio ??
+                      '—'
+                    }}
+
+                  </small>
+
+                </div>
+
+                <div class="mixture-total">
+
+                  <span>
+                    TOTALE MISCELA
+                  </span>
+
+                  <strong>
+
+                    {{
+                      formulaResult
+                        .inventoryProposal
+                        .totalMixtureQuantity ??
+                      '—'
+                    }}
+
+                    g
+
+                  </strong>
+
+                </div>
+
+              </div>
+
+              <div
+                class="stock-readiness"
+                [class.ready]="
+                  formulaResult
+                    .inventoryProposal
+                    .colorStockSufficient
+                ">
+
+                <span>
+                  VERIFICA QUANTITATIVA
+                </span>
+
+                <strong>
+
+                  {{
+                    formulaResult
+                      .inventoryProposal
+                      .colorStockSufficient
+                      ? 'Componenti colore quantitativamente sufficienti'
+                      : 'Formula non completamente coperta dal magazzino'
+                  }}
+
+                </strong>
+
+                <small>
+
+                  {{
+                    formulaResult
+                      .inventoryProposal
+                      .dosageComplete
+                      ? 'Grammatura automatica completata.'
+                      : 'Uno o più componenti richiedono ancora dosaggio manuale.'
+                  }}
+
+                </small>
+
+              </div>
+
+              @if (
+                formulaResult
+                  .inventoryProposal
+                  .dosageWarnings
+                  .length >
+                0
+              ) {
+
+                <div class="dosage-warning-box">
+
+                  <strong>
+                    Note di calcolo
+                  </strong>
+
+                  @for (
+                    warning of
+                      formulaResult
+                        .inventoryProposal
+                        .dosageWarnings;
+                    track warning
+                  ) {
+
+                    <p>
+                      {{ warning }}
+                    </p>
+
+                  }
+
+                </div>
+
+              }
+
+              @if (
+                formulaResult
+                  .inventoryProposal
+                  .components
+                  .length >
+                0
+              ) {
+
+                <a
+                  class="primary-button builder-link"
+                  routerLink="/color-lab/formulas/new"
+                  [queryParams]="{
+                    customerId:
+                      formulaResult
+                        .diagnosis
+                        .customerId,
+                    targetToneLevel:
+                      formulaResult
+                        .diagnosis
+                        .targetToneLevel,
+                    targetPrimaryReflection:
+                      formulaResult
+                        .diagnosis
+                        .targetPrimaryReflection,
+                    targetSecondaryReflection:
+                      formulaResult
+                        .diagnosis
+                        .targetSecondaryReflection,
+                    applicationType:
+                      formulaResult
+                        .diagnosis
+                        .applicationType,
+                    targetResult:
+                      formulaResult
+                        .diagnosis
+                        .targetResult,
+                    consultationId:
+                      getConsultationIdFromContext(),
+                    appointmentItemId:
+                      getAppointmentItemIdFromContext(),
+                    ingredientPlan:
+                      getIngredientPlan(
+                        formulaResult
+                          .inventoryProposal
+                      ),
+                    volumeDeveloper:
+                      formulaResult
+                        .inventoryProposal
+                        .recommendedDeveloperVolume,
+                    mixingRatio:
+                      formulaResult
+                        .inventoryProposal
+                        .recommendedMixingRatio,
+                    customDeveloperRatio:
+                      formulaResult
+                        .inventoryProposal
+                        .recommendedMixingRatio ===
+                          'CUSTOM'
+                          ? formulaResult
+                              .inventoryProposal
+                              .developerMultiplier
+                          : null
+                  }">
+
+                  Apri proposta nel Formula Builder
+
+                </a>
+
+              }
+
+            </article>
+
+          </div>
+
+          <div class="phase-note">
+
+            <strong>
+              Blocco 6 · Dosage Engine
+            </strong>
+
+            <p>
+              HairLab ha ora stimato il fabbisogno colore usando
+              applicazione, lunghezza, densità e spessore,
+              distribuendo i grammi tra i componenti e confrontandoli
+              con la giacenza reale. I correttori restano volutamente
+              a dosaggio manuale finché non esiste una regola
+              prodotto-specifica affidabile.
+            </p>
+
+          </div>
+
+        </section>
 
       }
 

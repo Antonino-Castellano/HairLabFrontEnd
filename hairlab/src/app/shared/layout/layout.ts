@@ -27,6 +27,15 @@ export class LayoutComponent {
   sidebarOpen = signal<boolean>(false);
   sidebarPinned = signal<boolean>(false);
 
+  // Stato del sottomenu Color Lab.
+  colorLabMenuOpen = signal<boolean>(
+    this.router.url.startsWith('/color-lab')
+  );
+
+  toggleColorLabMenu(): void {
+    this.colorLabMenuOpen.update(open => !open);
+  }
+
   openSidebar(): void {
     this.sidebarOpen.set(true);
   }

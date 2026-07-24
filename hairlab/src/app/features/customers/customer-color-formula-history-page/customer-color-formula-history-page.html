@@ -1,0 +1,41 @@
+<section class="history-page">
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">CLIENTE · COLOR LAB</span>
+      <h1>Storico formule colore</h1>
+
+      @if (customer(); as currentCustomer) {
+        <p>{{ currentCustomer.firstName }} {{ currentCustomer.lastName }}</p>
+      }
+    </div>
+
+    <div class="header-actions">
+      @if (customerId(); as id) {
+        <a
+          class="secondary-button"
+          [routerLink]="['/customers', id]">
+          ← Torna alla cliente
+        </a>
+
+        <a
+          class="primary-button"
+          routerLink="/color-lab/formulas/new"
+          [queryParams]="{ customerId: id }">
+          + Nuova formula
+        </a>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="state-box">Caricamento cliente...</div>
+  } @else if (errorMessage()) {
+    <div class="error-box">{{ errorMessage() }}</div>
+  } @else if (customerId(); as id) {
+    <app-customer-color-formula-history
+      [customerId]="id">
+    </app-customer-color-formula-history>
+  }
+
+</section>

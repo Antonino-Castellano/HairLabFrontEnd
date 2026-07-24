@@ -13,8 +13,8 @@
       </h1>
 
       <p>
-        Formule manuali e, nei prossimi blocchi,
-        suggerimenti generati dal motore HairLab.
+        Formule manuali, Smart Formula,
+        utilizzi reali e storico tecnico HairLab.
       </p>
 
     </div>
@@ -261,10 +261,15 @@
                 Dettaglio
               </a>
 
-              <a
-                routerLink="/color-lab/formulas/{{ formula.id }}/edit">
-                Modifica
-              </a>
+              @if (
+                formula.status === 'DRAFT'
+                || formula.status === 'PROPOSED'
+              ) {
+                <a
+                  routerLink="/color-lab/formulas/{{ formula.id }}/edit">
+                  Modifica
+                </a>
+              }
 
             }
 

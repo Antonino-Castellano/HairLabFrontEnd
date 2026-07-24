@@ -1,0 +1,521 @@
+<section class="formula-history-panel">
+
+  <header class="history-header">
+
+    <div>
+
+      <span class="eyebrow">
+        COLOR LAB
+      </span>
+
+      <h2>
+        Storico formule colore
+      </h2>
+
+      <p>
+        Bozze, proposte e formule realmente utilizzate
+        sulla cliente, con composizione e storico tecnico.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab/formulas"
+        [queryParams]="{
+          customerId: customerId
+        }">
+        Tutte le formule
+      </a>
+
+      <a
+        class="primary-button"
+        routerLink="/color-lab/formulas/new"
+        [queryParams]="{
+          customerId: customerId
+        }">
+        + Nuova formula
+      </a>
+
+    </div>
+
+  </header>
+
+  @if (
+    history();
+    as currentHistory
+  ) {
+
+    <div class="summary-grid">
+
+      <article>
+
+        <span>
+          Totale formule
+        </span>
+
+        <strong>
+          {{ currentHistory.totalCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Utilizzate
+        </span>
+
+        <strong>
+          {{ currentHistory.usedCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Bozze / proposte
+        </span>
+
+        <strong>
+          {{
+            currentHistory.draftCount
+            +
+            currentHistory.proposedCount
+          }}
+        </strong>
+
+      </article>
+
+      <article class="latest-summary">
+
+        <span>
+          Ultimo utilizzo
+        </span>
+
+        <strong>
+
+          {{
+            currentHistory.latestUsedAt
+              ? (
+                  currentHistory.latestUsedAt
+                  |
+                  date:
+                    'dd/MM/yyyy'
+                )
+              : '—'
+          }}
+
+        </strong>
+
+      </article>
+
+    </div>
+
+  }
+
+  <div class="toolbar">
+
+    <label>
+
+      <span>
+        Stato
+      </span>
+
+      <select
+        [value]="statusFilter()"
+        (change)="
+          onStatusChange(
+            $event
+          )
+        ">
+
+        <option value="ALL">
+          Tutti
+        </option>
+
+        @for (
+          status of statuses;
+          track status
+        ) {
+
+          <option [value]="status">
+
+            {{
+              statusLabels[
+                status
+              ]
+            }}
+
+          </option>
+
+        }
+
+      </select>
+
+    </label>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadHistory()"
+      [disabled]="loading()">
+      ↻ Aggiorna
+    </button>
+
+  </div>
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-message">
+      Caricamento storico formule...
+    </div>
+
+  } @else if (
+    errorMessage()
+  ) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  } @else if (
+    filteredItems().length ===
+    0
+  ) {
+
+    <div class="empty-state">
+
+      <span class="empty-icon">
+        ✦
+      </span>
+
+      <h3>
+        Nessuna formula trovata
+      </h3>
+
+      <p>
+        Crea una formula manuale oppure utilizza
+        Smart Formula per costruire una proposta
+        collegata direttamente a questa cliente.
+      </p>
+
+      <a
+        class="primary-button"
+        routerLink="/color-lab/formulas/new"
+        [queryParams]="{
+          customerId: customerId
+        }">
+        Crea la prima formula
+      </a>
+
+    </div>
+
+  } @else {
+
+    <div class="formula-list">
+
+      @for (
+        item of filteredItems();
+        track item.formula.id
+      ) {
+
+        <article
+          class="formula-card"
+          [class.latest-used]="
+            isLatestUsed(
+              item
+            )
+          ">
+
+          <div class="formula-card-head">
+
+            <div>
+
+              <div class="formula-badges">
+
+                <span
+                  class="status-badge"
+                  [attr.data-status]="
+                    item.formula.status
+                  ">
+
+                  {{
+                    statusLabels[
+                      item.formula.status
+                    ]
+                  }}
+
+                </span>
+
+                @if (
+                  isLatestUsed(
+                    item
+                  )
+                ) {
+
+                  <span class="latest-badge">
+                    Ultima utilizzata
+                  </span>
+
+                }
+
+              </div>
+
+              <h3>
+                {{ item.formula.name }}
+              </h3>
+
+              <p class="target">
+                {{ item.formula.targetResult }}
+              </p>
+
+            </div>
+
+            <div class="formula-date">
+
+              <span>
+                CREATA
+              </span>
+
+              <strong>
+
+                {{
+                  item.formula.createdAt
+                    ? (
+                        item.formula.createdAt
+                        |
+                        date:
+                          'dd/MM/yyyy'
+                      )
+                    : '—'
+                }}
+
+              </strong>
+
+              @if (
+                item.usage
+              ) {
+
+                <small>
+
+                  Utilizzata:
+
+                  {{
+                    item.usage.usedAt
+                    |
+                    date:
+                      'dd/MM/yyyy HH:mm'
+                  }}
+
+                </small>
+
+              }
+
+            </div>
+
+          </div>
+
+          <div class="formula-numbers">
+
+            <div>
+
+              <span>
+                COLORE
+              </span>
+
+              <strong>
+                {{ item.totalColorQuantity }}
+                g
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                DEVELOPER
+              </span>
+
+              <strong>
+                {{ item.developerQuantity }}
+                ml
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                COMPONENTI
+              </span>
+
+              <strong>
+                {{ item.ingredients.length }}
+              </strong>
+
+            </div>
+
+          </div>
+
+          <div class="ingredient-list">
+
+            @for (
+              ingredient of item.ingredients;
+              track ingredient.hairDyeId
+            ) {
+
+              <div class="ingredient-chip">
+
+                <div>
+
+                  <strong>
+
+                    {{ ingredient.brand }}
+                    ·
+                    {{ ingredient.code }}
+
+                  </strong>
+
+                  <span>
+                    {{ ingredient.name }}
+                  </span>
+
+                </div>
+
+                <b>
+
+                  {{ ingredient.quantity }}
+
+                  {{
+                    ingredient.unit ===
+                      'MILLILITER'
+                      ? 'ml'
+                      : 'g'
+                  }}
+
+                </b>
+
+              </div>
+
+            }
+
+          </div>
+
+          @if (
+            item.usage
+          ) {
+
+            <div class="usage-strip">
+
+              <div>
+
+                <span>
+                  UTILIZZO REALE
+                </span>
+
+                <strong>
+
+                  {{ item.usage.developerBrand }}
+                  ·
+                  {{ item.usage.developerCode }}
+
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  MOVIMENTI MAGAZZINO
+                </span>
+
+                <strong>
+                  {{ item.usage.movements.length }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          }
+
+          <div class="formula-actions">
+
+            @if (
+              item.formula.id;
+              as formulaId
+            ) {
+
+              <a
+                class="secondary-button compact"
+                [routerLink]="[
+                  '/color-lab/formulas',
+                  formulaId
+                ]">
+                Dettaglio
+              </a>
+
+              @if (
+                canEdit(
+                  item
+                )
+              ) {
+
+                <a
+                  class="secondary-button compact"
+                  [routerLink]="[
+                    '/color-lab/formulas',
+                    formulaId,
+                    'edit'
+                  ]">
+                  Modifica
+                </a>
+
+              }
+
+              <button
+                type="button"
+                class="reuse-button"
+                [disabled]="
+                  duplicatingFormulaId() !=
+                  null
+                "
+                (click)="
+                  duplicateAsDraft(
+                    item
+                  )
+                ">
+
+                {{
+                  duplicatingFormulaId() ===
+                    formulaId
+                    ? 'Duplicazione...'
+                    : (
+                        item.formula.status ===
+                          'USED'
+                          ? 'Riutilizza come nuova bozza'
+                          : 'Duplica come nuova bozza'
+                      )
+                }}
+
+              </button>
+
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

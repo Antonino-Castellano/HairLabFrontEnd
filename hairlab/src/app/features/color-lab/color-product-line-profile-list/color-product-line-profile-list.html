@@ -1,0 +1,116 @@
+<section class="line-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">COLOR LAB · LINEE TECNICHE</span>
+      <h1>Profili tecnici di linea</h1>
+      <p>
+        Centralizza rapporto, developer ammessi e compatibilità
+        senza ripetere le stesse regole su ogni tonalità.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a class="secondary-button" routerLink="/color-lab">Color Lab</a>
+      <a class="primary-button" routerLink="/color-lab/lines/new">+ Nuovo profilo linea</a>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="message error">{{ errorMessage() }}</div>
+  }
+
+  <div class="toolbar">
+    <label>
+      <span>Cerca</span>
+      <input
+        type="search"
+        placeholder="Marca, linea o note..."
+        [value]="search()"
+        (input)="onSearch($event)">
+    </label>
+  </div>
+
+  @if (loading()) {
+    <div class="state-card">Caricamento profili tecnici...</div>
+  } @else if (filteredProfiles().length === 0) {
+    <div class="state-card">Nessun profilo tecnico di linea configurato.</div>
+  } @else {
+    <div class="profile-grid">
+      @for (profile of filteredProfiles(); track profile.id) {
+        <article class="line-card" [class.inactive]="!profile.active">
+          <div class="line-card-head">
+            <div>
+              <span class="brand">{{ profile.brand }}</span>
+              <h2>{{ profile.lineName }}</h2>
+            </div>
+            <span class="status" [class.off]="!profile.active">
+              {{ profile.active ? 'ATTIVO' : 'INATTIVO' }}
+            </span>
+          </div>
+
+          <div class="technical-grid">
+            <div>
+              <span>MISCELAZIONE</span>
+              <strong>
+                {{
+                  profile.defaultMixingRatio
+                    ? mixingRatioLabels[profile.defaultMixingRatio]
+                    : 'Non configurata'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>DEVELOPER AMMESSI</span>
+              <strong>{{ getDeveloperLabel(profile) }}</strong>
+            </div>
+
+            <div>
+              <span>LIFT / DEPOSITO</span>
+              <strong>
+                {{
+                  profile.depositOnly
+                    ? 'Solo deposito'
+                    : (
+                        profile.maxLiftLevels != null
+                          ? 'Max +' + profile.maxLiftLevels
+                          : 'Non configurato'
+                      )
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>CROSS-LINE</span>
+              <strong>{{ profile.allowCrossLineMixing ? 'Consentito' : 'Bloccato' }}</strong>
+            </div>
+
+            <div>
+              <span>DEVELOPER STESSA LINEA</span>
+              <strong>{{ profile.requireSameLineDeveloper ? 'Richiesto' : 'Non richiesto' }}</strong>
+            </div>
+          </div>
+
+          @if (profile.technicalNotes) {
+            <p class="notes">{{ profile.technicalNotes }}</p>
+          }
+
+          <div class="actions">
+            @if (profile.id; as id) {
+              <a class="secondary-button compact" [routerLink]="['/color-lab/lines', id, 'edit']">
+                Modifica
+              </a>
+
+              <button
+                type="button"
+                class="secondary-button compact"
+                (click)="toggleActive(profile)">
+                {{ profile.active ? 'Disattiva' : 'Riattiva' }}
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

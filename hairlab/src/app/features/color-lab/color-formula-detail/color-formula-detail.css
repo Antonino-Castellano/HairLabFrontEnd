@@ -244,3 +244,451 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ==========================================================
+ * BLOCCO 7 - UTILIZZO FORMULA E MOVIMENTI
+ * ========================================================== */
+.message.success {
+  border: 1px solid #cfe2d1;
+  background: #f3faf4;
+  color: #56705b;
+  font-size: 9px;
+}
+
+.total-grid small {
+  margin-top: 3px;
+  color: #9a8c84;
+  font-size: 6px;
+}
+
+.ingredient-row > div small {
+  display: block;
+  margin-top: 3px;
+  color: #978a82;
+  font-size: 7px;
+}
+
+.warning-text,
+.stock-state.warning {
+  color: #986f25 !important;
+}
+
+.stock-state {
+  text-align: right;
+  font-size: 7px;
+}
+
+.stock-state.ok {
+  color: #5e7963;
+}
+
+.usage-panel,
+.usage-completed {
+  margin-top: 11px;
+}
+
+.usage-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.usage-title h2 {
+  margin: 5px 0 0;
+  color: #4c4039;
+  font-size: 15px;
+}
+
+.usage-title p {
+  max-width: 720px;
+  margin: 5px 0 0;
+  color: #8f827a;
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+.used-badge {
+  padding: 6px 9px;
+  border-radius: 14px;
+  background: #e7f2e9;
+  color: #5b755f;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.developer-selection {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(220px, 0.55fr);
+  gap: 11px;
+  margin-top: 14px;
+}
+
+.developer-selection label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.developer-selection label > span {
+  color: #796b63;
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.developer-selection select {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid #ddd4ce;
+  border-radius: 8px;
+  background: white;
+  color: #564942;
+  font-family: inherit;
+  font-size: 9px;
+}
+
+.developer-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 5px 10px;
+  padding: 10px;
+  border: 1px solid #e7dfda;
+  border-radius: 8px;
+  background: #faf8f7;
+}
+
+.developer-check span {
+  color: #9a8c84;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.developer-check strong {
+  color: #594b43;
+  font-size: 9px;
+}
+
+.usage-warning {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ead9ae;
+  border-radius: 8px;
+  background: #fffbf1;
+  color: #8c6d2b;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.usage-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 13px;
+}
+
+.use-button {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid #6f5546;
+  border-radius: 8px;
+  background: #6f5546;
+  color: white;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.use-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.usage-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 13px;
+  border: 1px solid #e7dfda;
+  border-radius: 8px;
+  background: #e7dfda;
+}
+
+.usage-summary > div {
+  padding: 11px;
+  background: #faf9f8;
+}
+
+.usage-summary span,
+.usage-summary strong,
+.usage-summary small {
+  display: block;
+}
+
+.usage-summary span {
+  color: #9a8c84;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.usage-summary strong {
+  margin-top: 4px;
+  color: #54463f;
+  font-size: 9px;
+}
+
+.usage-summary small {
+  margin-top: 3px;
+  color: #968980;
+  font-size: 7px;
+}
+
+.movement-list {
+  margin-top: 14px;
+}
+
+.movement-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px 150px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee7e3;
+}
+
+.movement-row strong,
+.movement-row small {
+  display: block;
+}
+
+.movement-row strong {
+  color: #55473f;
+  font-size: 8px;
+}
+
+.movement-row small {
+  margin-top: 3px;
+  color: #978a82;
+  font-size: 7px;
+}
+
+.movement-out {
+  color: #9a4f49;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+@media (max-width: 800px) {
+  .developer-selection,
+  .usage-summary,
+  .movement-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*
+ * ==========================================================
+ * BLOCCO 10 - RISULTATO TECNICO POST-SERVIZIO
+ * ==========================================================
+ */
+.result-panel {
+  margin-top: 14px;
+}
+
+.result-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.result-title h2 {
+  margin: 5px 0 0;
+  color: #493d37;
+  font-size: 18px;
+}
+
+.result-title p {
+  max-width: 690px;
+  margin: 5px 0 0;
+  color: #8e8179;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.result-saved-meta {
+  min-width: 150px;
+  text-align: right;
+}
+
+.result-saved-meta span,
+.result-saved-meta strong {
+  display: block;
+}
+
+.result-saved-meta span {
+  color: #9b8d85;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.result-saved-meta strong {
+  margin-top: 4px;
+  color: #65564e;
+  font-size: 9px;
+}
+
+.target-result-compare {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 14px;
+  border: 1px solid #e4dad4;
+  border-radius: 9px;
+  background: #e6ddd8;
+}
+
+.target-result-compare > div {
+  padding: 13px;
+  background: #faf8f7;
+}
+
+.target-result-compare > div:last-child {
+  background: #f2e8e2;
+}
+
+.target-result-compare span,
+.target-result-compare strong,
+.target-result-compare small {
+  display: block;
+}
+
+.target-result-compare span {
+  color: #9b8d85;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.target-result-compare strong {
+  margin-top: 5px;
+  color: #52443d;
+  font-size: 13px;
+}
+
+.target-result-compare small {
+  margin-top: 3px;
+  color: #8c786d;
+  font-size: 8px;
+}
+
+.result-form-grid,
+.result-notes-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.result-form-grid label,
+.result-notes-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.result-form-grid label > span,
+.result-notes-grid label > span {
+  color: #796c64;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.result-form-grid select,
+.result-notes-grid textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ddd3cd;
+  border-radius: 8px;
+  background: white;
+  color: #554841;
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.result-form-grid select {
+  height: 39px;
+  padding: 0 9px;
+}
+
+.result-notes-grid textarea {
+  padding: 10px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.result-notes-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.save-result-button {
+  min-height: 39px;
+  padding: 0 15px;
+  border: 1px solid #705342;
+  border-radius: 8px;
+  background: #705342;
+  color: white;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.save-result-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+@media (max-width: 700px) {
+
+  .result-title {
+    flex-direction: column;
+  }
+
+  .result-saved-meta {
+    text-align: left;
+  }
+
+  .target-result-compare,
+  .result-form-grid,
+  .result-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-notes-grid .full-width {
+    grid-column: auto;
+  }
+
+  .save-result-button {
+    width: 100%;
+  }
+}

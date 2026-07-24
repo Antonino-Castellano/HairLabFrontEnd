@@ -493,3 +493,573 @@ textarea {
     flex-direction: column;
   }
 }
+
+
+/*
+ * ==========================================================
+ * BLOCCO 5 - PROPOSTE PRODOTTI
+ * ==========================================================
+ */
+.proposal-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e8e0db;
+}
+
+.proposal-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 11px;
+}
+
+.proposal-index {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f0e6e0;
+  color: #856451;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.proposal-heading h2 {
+  margin: 0;
+  color: #4d403a;
+  font-size: 15px;
+}
+
+.proposal-heading p {
+  margin: 4px 0 0;
+  color: #978a82;
+  font-size: 9px;
+}
+
+.proposal-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.proposal-card {
+  padding: 14px;
+  border: 1px solid #e5ddd8;
+  border-radius: 9px;
+  background: #fbfaf9;
+}
+
+.inventory-proposal {
+  border-color: #d8c6ba;
+  background: #f9f5f2;
+}
+
+.proposal-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.proposal-card-head span:first-child {
+  color: #9a8b82;
+  font-size: 6px;
+  font-weight: 850;
+  letter-spacing: 0.6px;
+}
+
+.proposal-card-head h3 {
+  margin: 4px 0 0;
+  color: #4e4038;
+  font-size: 13px;
+}
+
+.proposal-status {
+  padding: 5px 7px;
+  border-radius: 13px;
+  background: #f4e9d2;
+  color: #876728;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.proposal-status.complete {
+  background: #e8f3ea;
+  color: #58745d;
+}
+
+.proposal-description {
+  margin: 10px 0;
+  color: #877a72;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.component-list {
+  display: grid;
+  gap: 7px;
+}
+
+.component-row {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+  gap: 10px;
+  padding: 9px;
+  border: 1px solid #e9e2de;
+  border-radius: 8px;
+  background: white;
+}
+
+.component-role,
+.component-row strong,
+.component-row small {
+  display: block;
+}
+
+.component-role {
+  color: #a07861;
+  font-size: 6px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.component-row strong {
+  margin-top: 3px;
+  color: #564841;
+  font-size: 9px;
+}
+
+.component-row small {
+  margin-top: 2px;
+  color: #978a82;
+  font-size: 7px;
+}
+
+.component-stock {
+  min-width: 82px;
+  text-align: right;
+}
+
+.component-stock span {
+  display: block;
+  color: #66584f;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.component-stock strong {
+  font-size: 7px;
+}
+
+.component-stock strong.ok {
+  color: #5f7a63;
+}
+
+.component-stock strong.warning {
+  color: #9c7326;
+}
+
+.missing-box {
+  margin-top: 9px;
+  padding: 10px;
+  border: 1px solid #ecd9ac;
+  border-radius: 8px;
+  background: #fffbf1;
+}
+
+.missing-box strong {
+  color: #876724;
+  font-size: 8px;
+}
+
+.missing-box p {
+  margin: 5px 0 0;
+  color: #917535;
+  font-size: 7px;
+  line-height: 1.5;
+}
+
+.stock-readiness {
+  margin-top: 9px;
+  padding: 10px;
+  border-left: 3px solid #9a7762;
+  background: #fff;
+}
+
+.stock-readiness span,
+.stock-readiness strong,
+.stock-readiness small {
+  display: block;
+}
+
+.stock-readiness span {
+  color: #9b8c84;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.stock-readiness strong {
+  margin-top: 4px;
+  color: #55473f;
+  font-size: 8px;
+}
+
+.stock-readiness small {
+  margin-top: 4px;
+  color: #958880;
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+.builder-link {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+.phase-note {
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px dashed #d8ccc5;
+  border-radius: 8px;
+  background: #faf8f7;
+}
+
+.phase-note strong {
+  color: #725849;
+  font-size: 8px;
+}
+
+.phase-note p {
+  margin: 4px 0 0;
+  color: #8f8179;
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+
+  .proposal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*
+ * ==========================================================
+ * BLOCCO 6 - DOSAGE ENGINE
+ * ==========================================================
+ */
+.component-stock .required-quantity {
+  color: #5d473b;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.component-stock .manual-dose {
+  color: #9b7128;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.component-stock small {
+  display: block;
+  margin-top: 3px;
+  color: #9a8c84;
+  font-size: 6px;
+}
+
+.dosage-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 10px;
+  border: 1px solid #e4dbd5;
+  border-radius: 8px;
+  background: #e8e0db;
+}
+
+.dosage-summary > div {
+  padding: 11px;
+  background: white;
+}
+
+.dosage-summary .mixture-total {
+  background: #f1e6df;
+}
+
+.dosage-summary span,
+.dosage-summary strong,
+.dosage-summary small {
+  display: block;
+}
+
+.dosage-summary span {
+  color: #9b8d85;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.dosage-summary strong {
+  margin-top: 4px;
+  color: #54463e;
+  font-size: 15px;
+}
+
+.dosage-summary small {
+  margin-top: 3px;
+  color: #94867e;
+  font-size: 6px;
+}
+
+.stock-readiness.ready {
+  border-left-color: #6d8b71;
+  background: #f4faf5;
+}
+
+.dosage-warning-box {
+  margin-top: 9px;
+  padding: 10px;
+  border: 1px solid #e5d6ba;
+  border-radius: 8px;
+  background: #fffbf3;
+}
+
+.dosage-warning-box strong {
+  color: #826529;
+  font-size: 8px;
+}
+
+.dosage-warning-box p {
+  margin: 5px 0 0;
+  color: #90773d;
+  font-size: 7px;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+
+  .dosage-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*
+ * ==========================================================
+ * BLOCCO 11 - MEMORIA TECNICA CLIENTE
+ * ==========================================================
+ */
+.history-insight {
+  margin: 12px 0;
+  padding: 13px;
+  border: 1px solid #ded5cf;
+  border-left: 4px solid #93837a;
+  border-radius: 9px;
+  background: #faf8f7;
+}
+
+.history-insight[data-level='INFO'] {
+  border-left-color: #738b78;
+  background: #f5faf6;
+}
+
+.history-insight[data-level='CAUTION'] {
+  border-left-color: #a27a2d;
+  background: #fffaf0;
+}
+
+.history-insight[data-level='WARNING'] {
+  border-left-color: #9b554d;
+  background: #fff5f4;
+}
+
+.history-insight.loading {
+  color: #8d8078;
+  font-size: 9px;
+}
+
+.history-insight-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-insight-head span,
+.history-insight-head h3,
+.history-insight-head strong {
+  display: block;
+}
+
+.history-insight-head span {
+  color: #92796b;
+  font-size: 6px;
+  font-weight: 850;
+  letter-spacing: 0.7px;
+}
+
+.history-insight-head h3 {
+  margin: 4px 0 0;
+  color: #51443d;
+  font-size: 12px;
+}
+
+.history-insight-head strong {
+  color: #776961;
+  font-size: 7px;
+}
+
+.history-summary {
+  margin: 9px 0 0;
+  color: #796c64;
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.history-metrics {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 10px;
+  border: 1px solid #e5ddd8;
+  border-radius: 8px;
+  background: #e6dfda;
+}
+
+.history-metrics > div {
+  padding: 9px;
+  background: white;
+}
+
+.history-metrics span,
+.history-metrics strong {
+  display: block;
+}
+
+.history-metrics span {
+  color: #9a8c84;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.history-metrics strong {
+  margin-top: 3px;
+  color: #51443d;
+  font-size: 14px;
+}
+
+.history-observations,
+.history-corrections {
+  margin-top: 9px;
+  padding: 9px;
+  border-radius: 7px;
+}
+
+.history-observations {
+  border: 1px solid #e3dad4;
+  background: white;
+}
+
+.history-corrections {
+  border: 1px solid #ead7b2;
+  background: #fffaf0;
+}
+
+.history-observations > span,
+.history-corrections > span {
+  color: #8a766a;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.history-observations p,
+.history-corrections p {
+  margin: 5px 0 0;
+  color: #756860;
+  font-size: 7px;
+  line-height: 1.5;
+}
+
+.history-detail-link {
+  display: inline-flex;
+  margin-top: 9px;
+  color: #725244;
+  font-size: 7px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.history-empty {
+  margin: 9px 0 0;
+  color: #8c7f77;
+  font-size: 8px;
+}
+
+.history-disclaimer {
+  display: block;
+  margin-top: 9px;
+  color: #a0938b;
+  font-size: 6px;
+  line-height: 1.45;
+}
+
+@media (max-width: 650px) {
+
+  .history-insight-head {
+    flex-direction: column;
+  }
+
+  .history-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*
+ * ==========================================================
+ * BLOCCO 12 - RULE SET TECNICO
+ * ==========================================================
+ */
+.rule-set-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border: 1px solid #dfd5cf;
+  border-radius: 8px;
+  background: #faf7f5;
+}
+
+.rule-set-strip span {
+  color: #9a8c84;
+  font-size: 6px;
+  font-weight: 850;
+}
+
+.rule-set-strip strong {
+  color: #67554b;
+  font-size: 7px;
+  text-align: right;
+}

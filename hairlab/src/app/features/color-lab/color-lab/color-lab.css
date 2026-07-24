@@ -109,3 +109,15 @@
 @media(max-width:1180px){.filters-card{grid-template-columns:repeat(3,minmax(0,1fr));}.inventory-row{grid-template-columns:minmax(220px,1fr) 120px minmax(140px,.7fr) 90px;}.inventory-row .small-button{grid-column:1/-1;justify-self:end;}}
 @media(max-width:900px){.color-lab-page{padding:18px}.page-header,.section-heading{align-items:flex-start;flex-direction:column}.kpi-grid,.lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-grid{grid-template-columns:1fr}.inventory-row,.inventory-row.untracked{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:620px){.color-lab-page{padding:13px}.header-actions,.kpi-grid,.lab-tabs,.filters-card,.inventory-tools,.inventory-row,.inventory-row.untracked{grid-template-columns:1fr}.header-actions{width:100%;display:grid}.product-grid{grid-template-columns:1fr}}
+
+
+.lab-tabs .ready-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lab-tabs .ready-link:hover {
+  border-color: #cdb6a8;
+  background: #f5ebe5;
+  color: #654b3e;
+}

@@ -11,12 +11,18 @@
     </div>
 
     <div class="header-actions">
-      <a class="secondary-button" routerLink="/color-lab/products/new">
+      <a class="secondary-button" routerLink="/color-lab/smart-formula">
+        ✦ Smart Formula
+      </a>
+      <a class="secondary-button" routerLink="/color-lab/formulas">
+        Formule
+      </a>
+      <a class="secondary-button" routerLink="/color-lab/lines">
+        Linee tecniche
+      </a>
+      <a class="primary-button" routerLink="/color-lab/products/new">
         + Nuovo prodotto
       </a>
-      <button type="button" class="primary-button" (click)="setTab('INVENTORY')">
-        Gestisci magazzino
-      </button>
     </div>
   </header>
 
@@ -38,11 +44,21 @@
     <button type="button" [class.active]="selectedTab() === 'INVENTORY'" (click)="setTab('INVENTORY')">
       <span class="tab-index">03</span> Magazzino
     </button>
-    <div class="future-tab">
+    <a class="future-tab ready-link" routerLink="/color-lab/formulas">
       <span class="tab-index">04</span>
-      Formula Builder
-      <small>prossimo blocco</small>
-    </div>
+      Formule
+      <small>operative</small>
+    </a>
+    <a class="future-tab ready-link" routerLink="/color-lab/smart-formula">
+      <span class="tab-index">05</span>
+      Smart Formula
+      <small>motore tecnico</small>
+    </a>
+    <a class="future-tab ready-link" routerLink="/color-lab/lines">
+      <span class="tab-index">06</span>
+      Linee
+      <small>profili tecnici</small>
+    </a>
   </nav>
 
   @if (loading()) {
@@ -114,7 +130,7 @@
                   <strong>Formula Builder</strong>
                   <p>Composizione manuale, grammi e rapporto developer.</p>
                 </div>
-                <span class="flow-status">BLOCCO 3</span>
+                <span class="flow-status">PRONTO</span>
               </div>
               <div class="flow-step future">
                 <span class="flow-number">05</span>
@@ -122,7 +138,7 @@
                   <strong>Smart Formula Engine</strong>
                   <p>Base + obiettivo + stock + grammatura automatica.</p>
                 </div>
-                <span class="flow-status">IN ARRIVO</span>
+                <span class="flow-status">PRONTO</span>
               </div>
             </div>
           </article>
@@ -158,6 +174,30 @@
                 <small>{{ lowStockCount() + outOfStockCount() }} prodotti richiedono attenzione</small>
               </div>
             </button>
+
+            <a class="quick-action" routerLink="/color-lab/smart-formula">
+              <span class="quick-icon">✦</span>
+              <div>
+                <strong>Crea Smart Formula</strong>
+                <small>Diagnosi, prodotti, dosaggio e storico cliente</small>
+              </div>
+            </a>
+
+            <a class="quick-action" routerLink="/color-lab/formulas">
+              <span class="quick-icon">ƒ</span>
+              <div>
+                <strong>Archivio formule</strong>
+                <small>Bozze, proposte e formule utilizzate</small>
+              </div>
+            </a>
+
+            <a class="quick-action" routerLink="/color-lab/lines">
+              <span class="quick-icon">L</span>
+              <div>
+                <strong>Profili di linea</strong>
+                <small>Regole tecniche centralizzate</small>
+              </div>
+            </a>
 
             @if (untrackedProductsCount() > 0) {
               <div class="attention-note">
@@ -214,6 +254,18 @@
           </label>
 
           <label>
+            <span>Linea</span>
+            <select
+              [value]="lineFilter()"
+              (change)="onLineFilterChange($event)">
+              <option value="ALL">Tutte</option>
+              @for (line of lines(); track line) {
+                <option [value]="line">{{ line }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
             <span>Tono</span>
             <select [value]="toneFilter()" (change)="onToneFilterChange($event)">
               <option value="ALL">Tutti</option>
@@ -256,7 +308,12 @@
                 <div class="product-top">
                   <span class="product-swatch" [style.background]="getProductSwatch(product)"></span>
                   <div class="product-main">
-                    <span class="product-brand">{{ product.brand }}</span>
+                    <span class="product-brand">
+                      {{ product.brand }}
+                      @if (product.lineName) {
+                        · {{ product.lineName }}
+                      }
+                    </span>
                     <h3>{{ product.code }} <small>{{ product.name }}</small></h3>
                   </div>
                   <span class="status-dot" [class.off]="!product.active">
@@ -266,12 +323,53 @@
 
                 <div class="technical-grid">
                   <div><span>TIPO</span><strong>{{ productTypeLabels[product.productType] }}</strong></div>
-                  <div><span>TONO</span><strong>{{ getToneLabel(product) }}</strong></div>
+                  <div><span>{{ getToneFieldLabel(product) }}</span><strong>{{ getToneLabel(product) }}</strong></div>
                   <div><span>RIFLESSO</span><strong>{{ getReflectionLabel(product) }}</strong></div>
                   <div>
                     <span>MAGAZZINO</span>
                     <strong [attr.data-stock]="getStockState(product)">{{ getStockStateLabel(product) }}</strong>
                   </div>
+                  @if (
+                    supportsTechnicalRulesForProduct(
+                      product
+                    )
+                  ) {
+
+                    <div>
+                      <span>MISCELAZIONE</span>
+                      <strong>
+                        {{ getMixingRuleLabel(product) }}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>DEVELOPER AMMESSI</span>
+                      <strong>
+                        {{ getAllowedDeveloperLabel(product) }}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>COMPORTAMENTO</span>
+                      <strong>
+                        {{ getLiftRuleLabel(product) }}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>REGOLE</span>
+                      <strong>
+                        {{
+                          hasConfiguredTechnicalRulesForProduct(
+                            product
+                          )
+                            ? 'Prodotto-specifiche'
+                            : 'Generiche'
+                        }}
+                      </strong>
+                    </div>
+
+                  }
                 </div>
 
                 <div class="product-actions">

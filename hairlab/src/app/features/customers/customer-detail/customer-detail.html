@@ -322,7 +322,6 @@
         Armocromia
 
       </button>
-
       <!-- SUGGERIMENTI -->
       <button
         type="button"
@@ -723,7 +722,16 @@
                 </div>
 
                 <!-- FORMULE -->
-                <div class="placeholder-box">
+                <a
+                  class="
+                    placeholder-box
+                    history-link-box
+                  "
+                  [routerLink]="[
+                    '/customers',
+                    selectedCustomer.id,
+                    'color-formulas'
+                  ]">
 
                   <span class="placeholder-icon">
                     ✦
@@ -736,14 +744,14 @@
                     </strong>
 
                     <p>
-                      Storico delle formule
-                      tecniche utilizzate
-                      e relativi risultati.
+                      Storico completo delle formule,
+                      utilizzi reali, composizioni
+                      e riutilizzo come nuova bozza.
                     </p>
 
                   </div>
 
-                </div>
+                </a>
 
               </div>
 
@@ -820,7 +828,6 @@
           </section>
 
         }
-
         <!-- =================================================
              SUGGERIMENTI
              ================================================= -->

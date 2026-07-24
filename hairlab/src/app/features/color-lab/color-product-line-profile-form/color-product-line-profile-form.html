@@ -1,0 +1,134 @@
+<section class="line-form-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">COLOR LAB · LINEA TECNICA</span>
+      <h1>{{ isEditMode() ? 'Modifica profilo linea' : 'Nuovo profilo linea' }}</h1>
+      <p>Una sola configurazione riutilizzabile da tutte le tonalità della stessa linea.</p>
+    </div>
+
+    <a class="secondary-button" routerLink="/color-lab/lines">
+      ← Linee tecniche
+    </a>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="message error">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <section class="card">
+      <h2>Identità linea</h2>
+
+      <div class="grid">
+        <label>
+          <span>Marca *</span>
+          <input type="text" formControlName="brand" placeholder="Es. Wella">
+        </label>
+
+        <label>
+          <span>Linea *</span>
+          <input type="text" formControlName="lineName" placeholder="Es. Koleston Perfect">
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Regole tecniche condivise</h2>
+
+      <div class="grid">
+        <label>
+          <span>Rapporto miscelazione</span>
+          <select formControlName="defaultMixingRatio">
+            <option [ngValue]="null">Non configurato</option>
+
+            @for (ratio of ratios; track ratio) {
+              <option [ngValue]="ratio">{{ ratioLabels[ratio] }}</option>
+            }
+          </select>
+        </label>
+
+        @if (isCustom()) {
+          <label>
+            <span>Moltiplicatore CUSTOM</span>
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              formControlName="customMixingRatioMultiplier"
+              placeholder="Es. 1.90">
+          </label>
+        }
+
+        <label>
+          <span>Lift massimo</span>
+          <input
+            type="number"
+            min="0"
+            max="5"
+            step="1"
+            formControlName="maxLiftLevels">
+        </label>
+      </div>
+
+      <div class="developer-box">
+        <span class="box-label">Developer ammessi</span>
+
+        <div class="developer-grid">
+          @for (oxygen of oxygens; track oxygen) {
+            <label>
+              <input
+                type="checkbox"
+                [checked]="isDeveloperSelected(oxygen)"
+                (change)="toggleDeveloper(oxygen, $event)">
+              <span>{{ oxygenLabels[oxygen] }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <div class="switches">
+        <label>
+          <input type="checkbox" formControlName="depositOnly">
+          <span>Solo deposito / tonalizzazione</span>
+        </label>
+
+        <label>
+          <input type="checkbox" formControlName="allowCrossLineMixing">
+          <span>Consenti miscelazione cross-line</span>
+        </label>
+
+        <label>
+          <input type="checkbox" formControlName="requireSameLineDeveloper">
+          <span>Richiedi developer della stessa linea</span>
+        </label>
+      </div>
+
+      <label class="notes">
+        <span>Note tecniche</span>
+        <textarea
+          rows="5"
+          formControlName="technicalNotes"
+          placeholder="Indicazioni del produttore, limitazioni, note operative...">
+        </textarea>
+      </label>
+    </section>
+
+    <section class="card">
+      <label class="active-row">
+        <input type="checkbox" formControlName="active">
+        <span>Profilo attivo</span>
+      </label>
+    </section>
+
+    <div class="form-actions">
+      <a class="secondary-button" routerLink="/color-lab/lines">Annulla</a>
+
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="loading()">
+        {{ loading() ? 'Salvataggio...' : 'Salva profilo' }}
+      </button>
+    </div>
+  </form>
+</section>

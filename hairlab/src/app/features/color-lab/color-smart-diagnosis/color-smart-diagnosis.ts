@@ -16,6 +16,7 @@ import {
 } from '@angular/forms';
 
 import {
+  ActivatedRoute,
   RouterLink
 } from '@angular/router';
 
@@ -28,8 +29,18 @@ import {
 } from '../../../models/hair-profile';
 
 import {
-  ColorSmartDiagnosis
+  ColorSmartDiagnosis,
+  ColorSmartDiagnosisRequest
 } from '../../../models/color-smart-diagnosis';
+
+import {
+  ColorSmartFormulaProposal,
+  ColorSmartFormulaResponse
+} from '../../../models/color-smart-formula';
+
+import {
+  ColorSmartHistoryInsight
+} from '../../../models/color-smart-history-insight';
 
 import {
   ColorApplicationType
@@ -48,6 +59,14 @@ import {
 } from '../../../service/color-smart-diagnosis-service';
 
 import {
+  ColorSmartFormulaService
+} from '../../../service/color-smart-formula-service';
+
+import {
+  ColorSmartHistoryInsightService
+} from '../../../service/color-smart-history-insight-service';
+
+import {
   CustomerService
 } from '../../../service/customer-service';
 
@@ -63,6 +82,10 @@ import {
   REFLECTION_LABELS,
   TONE_LEVEL_LABELS
 } from '../color-lab-display';
+
+import {
+  COLOR_FORMULA_COMPONENT_ROLE_LABELS
+} from './color-smart-formula-display';
 
 import {
   COLOR_DIAGNOSIS_FEASIBILITY_LABELS,
@@ -103,6 +126,11 @@ export class ColorSmartDiagnosisComponent
       FormBuilder
     );
 
+  private readonly activatedRoute =
+    inject(
+      ActivatedRoute
+    );
+
   private readonly customerService =
     inject(
       CustomerService
@@ -118,6 +146,18 @@ export class ColorSmartDiagnosisComponent
       ColorSmartDiagnosisService
     );
 
+
+  private readonly smartFormulaService =
+    inject(
+      ColorSmartFormulaService
+    );
+
+
+  private readonly historyInsightService =
+    inject(
+      ColorSmartHistoryInsightService
+    );
+
   protected readonly customers =
     signal<Customer[]>([]);
 
@@ -130,6 +170,30 @@ export class ColorSmartDiagnosisComponent
     signal<ColorSmartDiagnosis | null>(
       null
     );
+
+
+  protected readonly formulaResponse =
+    signal<ColorSmartFormulaResponse | null>(
+      null
+    );
+
+
+  /**
+   * Contesto tecnico storico.
+   *
+   * Non modifica automaticamente
+   * la formula proposta.
+   */
+  protected readonly historyInsight =
+    signal<ColorSmartHistoryInsight | null>(
+      null
+    );
+
+  protected readonly loadingHistoryInsight =
+    signal(false);
+
+  protected readonly proposing =
+    signal(false);
 
   protected readonly loadingCustomers =
     signal(false);
@@ -184,6 +248,10 @@ export class ColorSmartDiagnosisComponent
 
   protected readonly physicalValueLabels =
     PHYSICAL_VALUE_LABELS_SMART;
+
+
+  protected readonly componentRoleLabels =
+    COLOR_FORMULA_COMPONENT_ROLE_LABELS;
 
   protected readonly form =
     this.formBuilder.group({
@@ -248,6 +316,8 @@ export class ColorSmartDiagnosisComponent
             []
           );
 
+          this.applyContextFromQuery();
+
           this.loadingCustomers.set(
             false
           );
@@ -272,6 +342,54 @@ export class ColorSmartDiagnosisComponent
       });
   }
 
+  private applyContextFromQuery():
+    void {
+
+    const customerId =
+      Number(
+        this.activatedRoute.snapshot.queryParamMap.get('customerId')
+      );
+
+    if (
+      !Number.isInteger(customerId)
+      ||
+      customerId <= 0
+      ||
+      !this.customers().some(customer => customer.id === customerId)
+    ) {
+      return;
+    }
+
+    this.form.controls.customerId.setValue(customerId);
+    this.onCustomerChange();
+  }
+
+  protected getConsultationIdFromContext():
+    number | null {
+
+    const value =
+      Number(
+        this.activatedRoute.snapshot.queryParamMap.get('consultationId')
+      );
+
+    return Number.isInteger(value) && value > 0
+      ? value
+      : null;
+  }
+
+  protected getAppointmentItemIdFromContext():
+    number | null {
+
+    const value =
+      Number(
+        this.activatedRoute.snapshot.queryParamMap.get('appointmentItemId')
+      );
+
+    return Number.isInteger(value) && value > 0
+      ? value
+      : null;
+  }
+
   protected onCustomerChange():
     void {
 
@@ -279,7 +397,15 @@ export class ColorSmartDiagnosisComponent
       null
     );
 
+    this.formulaResponse.set(
+      null
+    );
+
     this.selectedProfile.set(
+      null
+    );
+
+    this.historyInsight.set(
       null
     );
 
@@ -298,6 +424,10 @@ export class ColorSmartDiagnosisComponent
 
       return;
     }
+
+    this.loadHistoryInsight(
+      customerId
+    );
 
     this.loadingProfile.set(
       true
@@ -352,6 +482,56 @@ export class ColorSmartDiagnosisComponent
       });
   }
 
+  /**
+   * Carica i pattern ricavati dai risultati reali
+   * delle precedenti formule USED.
+   *
+   * Un eventuale errore in questo endpoint
+   * NON blocca la Smart Formula.
+   */
+  private loadHistoryInsight(
+    customerId:
+      number
+  ): void {
+
+    this.loadingHistoryInsight.set(
+      true
+    );
+
+    this.historyInsightService
+      .getByCustomerId(
+        customerId
+      )
+      .subscribe({
+
+        next: insight => {
+
+          this.historyInsight.set(
+            insight
+          );
+
+          this.loadingHistoryInsight.set(
+            false
+          );
+        },
+
+        error: () => {
+
+          /*
+           * Lo storico è un supporto aggiuntivo:
+           * non deve impedire diagnosi e formula.
+           */
+          this.historyInsight.set(
+            null
+          );
+
+          this.loadingHistoryInsight.set(
+            false
+          );
+        }
+      });
+  }
+
   protected analyze():
     void {
 
@@ -360,6 +540,10 @@ export class ColorSmartDiagnosisComponent
     );
 
     this.diagnosis.set(
+      null
+    );
+
+    this.formulaResponse.set(
       null
     );
 
@@ -387,39 +571,14 @@ export class ColorSmartDiagnosisComponent
       return;
     }
 
-    const value =
-      this.form.getRawValue();
-
     this.analyzing.set(
       true
     );
 
     this.diagnosisService
-      .analyze({
-
-        customerId:
-          Number(
-            value.customerId
-          ),
-
-        targetToneLevel:
-          value.targetToneLevel!,
-
-        targetPrimaryReflection:
-          value.targetPrimaryReflection!,
-
-        targetSecondaryReflection:
-          value.targetSecondaryReflection ??
-          null,
-
-        applicationType:
-          value.applicationType!,
-
-        targetResult:
-          value.targetResult?.trim() ??
-          ''
-
-      })
+      .analyze(
+        this.buildRequest()
+      )
       .subscribe({
 
         next: result => {
@@ -450,6 +609,161 @@ export class ColorSmartDiagnosisComponent
           );
         }
       });
+  }
+
+  /**
+   * Genera la proposta di prodotti
+   * partendo dagli stessi input
+   * usati dalla diagnosi.
+   */
+  protected generateProductProposal():
+    void {
+
+    if (
+      !this.diagnosis()
+      ||
+      this.form.invalid
+    ) {
+
+      return;
+    }
+
+    this.proposing.set(
+      true
+    );
+
+    this.errorMessage.set(
+      ''
+    );
+
+    this.smartFormulaService
+      .propose(
+        this.buildRequest()
+      )
+      .subscribe({
+
+        next: response => {
+
+          this.formulaResponse.set(
+            response
+          );
+
+          /*
+           * La response contiene di nuovo la diagnosi:
+           * la manteniamo sincronizzata
+           * con la versione usata dal motore formula.
+           */
+          this.diagnosis.set(
+            response.diagnosis
+          );
+
+          this.proposing.set(
+            false
+          );
+        },
+
+        error: (
+          error:
+            HttpErrorResponse
+        ) => {
+
+          this.proposing.set(
+            false
+          );
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile generare la proposta prodotti.'
+            )
+          );
+        }
+      });
+  }
+
+  /**
+   * Costruisce l'input comune
+   * per diagnosi e proposta formula.
+   */
+  private buildRequest():
+    ColorSmartDiagnosisRequest {
+
+    const value =
+      this.form.getRawValue();
+
+    return {
+
+      customerId:
+        Number(
+          value.customerId
+        ),
+
+      targetToneLevel:
+        value.targetToneLevel!,
+
+      targetPrimaryReflection:
+        value.targetPrimaryReflection!,
+
+      targetSecondaryReflection:
+        value.targetSecondaryReflection ??
+        null,
+
+      applicationType:
+        value.applicationType!,
+
+      targetResult:
+        value.targetResult?.trim() ??
+        ''
+    };
+  }
+
+  /**
+   * Serializza il piano ingredienti
+   * per precompilare il Formula Builder.
+   *
+   * Formato:
+   *
+   * id:grammi|id:grammi
+   *
+   * Esempio:
+   *
+   * 4:35|8:15|12:0
+   *
+   * Un correttore con dosaggio manuale
+   * entra con quantità 0,
+   * così il Builder obbliga il professionista
+   * a completare il valore prima del salvataggio.
+   */
+  protected getIngredientPlan(
+    proposal:
+      ColorSmartFormulaProposal
+  ): string {
+
+    return proposal.components
+      .map(
+        component =>
+          `${component.hairDyeId}:${component.recommendedQuantity ?? 0}`
+      )
+      .join(
+        '|'
+      );
+  }
+
+  protected getShortageLabel(
+    shortage:
+      number |
+      null |
+      undefined
+  ): string {
+
+    if (
+      shortage == null
+    ) {
+
+      return 'non verificabile';
+    }
+
+    return `${shortage} g`;
   }
 
   protected getCustomerName():

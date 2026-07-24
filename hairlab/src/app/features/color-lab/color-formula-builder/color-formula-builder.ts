@@ -227,10 +227,14 @@ export class ColorFormulaBuilderComponent
       MixingRatio
     );
 
-  protected readonly statuses =
-    Object.values(
-      ColorFormulaStatus
-    );
+  /**
+   * USED viene impostato esclusivamente dal workflow
+   * "Utilizza formula" e non è più selezionabile manualmente.
+   */
+  protected readonly statuses = [
+    ColorFormulaStatus.DRAFT,
+    ColorFormulaStatus.PROPOSED
+  ];
 
   protected readonly toneLabels =
     TONE_LEVEL_LABELS;
@@ -303,6 +307,26 @@ export class ColorFormulaBuilderComponent
           number |
           null,
         Validators.required
+      ],
+
+      /**
+       * Contesto opzionale della consulenza
+       * da cui nasce la formula.
+       */
+      consultationId: [
+        null as
+          number |
+          null
+      ],
+
+      /**
+       * Servizio specifico dell'appuntamento
+       * al quale la formula è collegata.
+       */
+      appointmentItemId: [
+        null as
+          number |
+          null
       ],
 
       name: [
@@ -482,7 +506,35 @@ export class ColorFormulaBuilderComponent
 
           this.applySmartDiagnosisPreset();
 
-          this.addIngredient();
+          const suggestedIngredients =
+            this.getSuggestedIngredientsFromQuery();
+
+          if (
+            suggestedIngredients.length >
+            0
+          ) {
+
+            for (
+              const suggested of
+                suggestedIngredients
+            ) {
+
+              this.ingredients.push(
+                this.createIngredientGroup(
+                  suggested.hairDyeId,
+                  suggested.quantity,
+                  suggested.quantity >
+                    0
+                    ? 'Grammatura suggerita da Smart Formula'
+                    : 'Dosaggio da completare manualmente'
+                )
+              );
+            }
+
+          } else {
+
+            this.addIngredient();
+          }
 
           this.loading.set(
             false
@@ -559,6 +611,32 @@ export class ColorFormulaBuilderComponent
           .setValue(
             customerId
           );
+      }
+    }
+
+    const consultationIdParam =
+      params.get(
+        'consultationId'
+      );
+
+    if (consultationIdParam) {
+      const consultationId = Number(consultationIdParam);
+
+      if (Number.isInteger(consultationId) && consultationId > 0) {
+        this.form.controls.consultationId.setValue(consultationId);
+      }
+    }
+
+    const appointmentItemIdParam =
+      params.get(
+        'appointmentItemId'
+      );
+
+    if (appointmentItemIdParam) {
+      const appointmentItemId = Number(appointmentItemIdParam);
+
+      if (Number.isInteger(appointmentItemId) && appointmentItemId > 0) {
+        this.form.controls.appointmentItemId.setValue(appointmentItemId);
       }
     }
 
@@ -673,7 +751,217 @@ export class ColorFormulaBuilderComponent
           targetResult
         );
     }
+
+    const volumeDeveloper =
+      params.get(
+        'volumeDeveloper'
+      ) as
+        Oxygen |
+        null;
+
+    if (
+      volumeDeveloper
+      &&
+      Object.values(
+        Oxygen
+      ).includes(
+        volumeDeveloper
+      )
+    ) {
+
+      this.form.controls
+        .volumeDeveloper
+        .setValue(
+          volumeDeveloper
+        );
+    }
+
+    const mixingRatio =
+      params.get(
+        'mixingRatio'
+      ) as
+        MixingRatio |
+        null;
+
+    if (
+      mixingRatio
+      &&
+      Object.values(
+        MixingRatio
+      ).includes(
+        mixingRatio
+      )
+    ) {
+
+      this.form.controls
+        .mixingRatio
+        .setValue(
+          mixingRatio
+        );
+    }
+
+    const customDeveloperRatioParam =
+      params.get(
+        'customDeveloperRatio'
+      );
+
+    if (
+      mixingRatio ===
+        MixingRatio.CUSTOM
+      &&
+      customDeveloperRatioParam
+    ) {
+
+      const customDeveloperRatio =
+        Number(
+          customDeveloperRatioParam
+        );
+
+      if (
+        Number.isFinite(
+          customDeveloperRatio
+        )
+        &&
+        customDeveloperRatio >
+        0
+      ) {
+
+        this.form.controls
+          .customDeveloperRatio
+          .setValue(
+            customDeveloperRatio
+          );
+      }
+    }
   }
+
+  /**
+   * Legge il piano ingredienti
+   * generato dal Dosage Engine.
+   *
+   * Formato:
+   *
+   * ingredientPlan=4:35|8:15|12:0
+   *
+   * Una quantità 0 indica:
+   * componente selezionato,
+   * ma dosaggio da completare manualmente.
+   */
+  private getSuggestedIngredientsFromQuery():
+    Array<{
+      hairDyeId: number;
+      quantity: number;
+    }> {
+
+    const raw =
+      this.activatedRoute
+        .snapshot
+        .queryParamMap
+        .get(
+          'ingredientPlan'
+        );
+
+    if (
+      !raw
+    ) {
+
+      return [];
+    }
+
+    const validProductIds =
+      new Set(
+        this.formulaProducts()
+          .map(
+            product =>
+              product.id
+          )
+          .filter(
+            (
+              id
+            ): id is number =>
+              id != null
+          )
+      );
+
+    const result:
+      Array<{
+        hairDyeId: number;
+        quantity: number;
+      }> = [];
+
+    const alreadyAdded =
+      new Set<number>();
+
+    for (
+      const token of
+        raw.split(
+          '|'
+        )
+    ) {
+
+      const [
+        idText,
+        quantityText
+      ] =
+        token.split(
+          ':'
+        );
+
+      const hairDyeId =
+        Number(
+          idText
+        );
+
+      const quantity =
+        Number(
+          quantityText
+        );
+
+      if (
+        !Number.isInteger(
+          hairDyeId
+        )
+        ||
+        hairDyeId <=
+        0
+        ||
+        !validProductIds.has(
+          hairDyeId
+        )
+        ||
+        alreadyAdded.has(
+          hairDyeId
+        )
+      ) {
+
+        continue;
+      }
+
+      alreadyAdded.add(
+        hairDyeId
+      );
+
+      result.push({
+
+        hairDyeId,
+
+        quantity:
+          Number.isFinite(
+            quantity
+          )
+          &&
+          quantity >
+          0
+
+            ? quantity
+
+            : 0
+      });
+    }
+
+    return result;
+  }
+
 
   private loadFormula(
     id:
@@ -695,6 +983,14 @@ export class ColorFormulaBuilderComponent
 
             customerId:
               formula.customerId ??
+              null,
+
+            consultationId:
+              formula.consultationId ??
+              null,
+
+            appointmentItemId:
+              formula.appointmentItemId ??
               null,
 
             name:
@@ -1204,6 +1500,26 @@ export class ColorFormulaBuilderComponent
         Number(
           value.customerId
         ),
+
+      consultationId:
+        value.consultationId !=
+          null
+
+          ? Number(
+              value.consultationId
+            )
+
+          : undefined,
+
+      appointmentItemId:
+        value.appointmentItemId !=
+          null
+
+          ? Number(
+              value.appointmentItemId
+            )
+
+          : undefined,
 
       name:
         value.name?.trim() ??
