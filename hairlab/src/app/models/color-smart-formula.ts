@@ -11,6 +11,7 @@ export type ColorFormulaComponentRole =
   | 'TARGET_BASE'
   | 'PRIMARY_REFLECTION_SUPPORT'
   | 'SECONDARY_REFLECTION_SUPPORT'
+  | 'WHITE_HAIR_COVERAGE_BASE'
   | 'CORRECTIVE_SUPPORT';
 
 export type TechnicalRuleSource =
@@ -74,6 +75,14 @@ export interface ColorSmartFormulaProposal {
 
   dosageComplete: boolean;
   colorStockSufficient: boolean;
+
+  lineRuleProfileApplied: boolean;
+  lineRuleBrand?: string | null;
+  lineRuleName?: string | null;
+  whiteHairCoverageRuleApplied: boolean;
+  whiteHairNaturalBaseSharePercentage?: number | null;
+  preferredLineDeveloperVolume?: Oxygen | null;
+  recommendedProcessingTimeMinutes?: number | null;
 
   components: ColorSmartFormulaComponent[];
   missingRequirements: string[];

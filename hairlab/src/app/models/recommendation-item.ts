@@ -1,8 +1,16 @@
+import { ColorRecommendationTarget } from './color-recommendation-target';
+
 /**
  * Singolo suggerimento generato
  * dal motore HairLab.
  */
 export interface RecommendationItem {
+
+  /** Codice stabile, utile per collegare il suggerimento ad altri moduli. */
+  code?: string | null;
+
+  /** Target tecnico opzionale utilizzabile da Smart Formula. */
+  technicalColorTarget?: ColorRecommendationTarget | null;
 
   /**
    * Titolo.

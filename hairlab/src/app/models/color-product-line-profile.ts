@@ -18,6 +18,14 @@ export interface ColorProductLineProfile {
   allowCrossLineMixing: boolean;
   requireSameLineDeveloper: boolean;
 
+  whiteHairCoverageEnabled: boolean;
+  whiteHairCoverageFromPercentage?: number | null;
+  whiteHairNaturalBaseSharePercentage?: number | null;
+  whiteHairCoverageDeveloperVolume?: Oxygen | null;
+  toningDeveloperVolume?: Oxygen | null;
+  defaultProcessingTimeMinutes?: number | null;
+  whiteHairCoverageNotes?: string | null;
+
   technicalNotes?: string | null;
 
   active: boolean;

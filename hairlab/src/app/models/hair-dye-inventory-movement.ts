@@ -49,6 +49,8 @@ export interface HairDyeInventoryMovement {
   formulaUsageId?: number | null;
 
   formulaId?: number | null;
+  supplierOrderId?: number | null;
+  supplierOrderNumber?: string | null;
 
   movementType: HairDyeInventoryMovementType;
 

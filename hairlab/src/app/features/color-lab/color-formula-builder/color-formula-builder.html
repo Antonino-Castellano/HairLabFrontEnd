@@ -34,6 +34,77 @@
 
   </header>
 
+  <div class="formula-provenance">
+
+    <div>
+      <span>ORIGINE FORMULA</span>
+      <strong>
+        {{
+          formulaOriginLabels[
+            formulaOrigin()
+          ]
+        }}
+      </strong>
+    </div>
+
+    @if (
+      parentFormulaId();
+      as parentId
+    ) {
+      <div>
+        <span>DERIVA DA</span>
+        <a
+          [routerLink]="[
+            '/color-lab/formulas',
+            parentId
+          ]">
+          Formula #{{ parentId }}
+        </a>
+      </div>
+    }
+
+
+    @if (
+      sourceRecommendationTitle();
+      as recommendationTitle
+    ) {
+      <div>
+        <span>OBIETTIVO HAIRLAB</span>
+        <strong>{{ recommendationTitle }}</strong>
+      </div>
+    }
+
+    @if (technicalLineName()) {
+      <div>
+        <span>PROFILO TECNICO LINEA</span>
+        <strong>
+          {{ technicalLineBrand() }} · {{ technicalLineName() }}
+        </strong>
+        <small>
+          @if (whiteHairCoverageApplied()) {
+            Copertura bianchi: base naturale {{ whiteHairNaturalBaseSharePercentage() }}%
+          }
+          @if (recommendedProcessingTimeMinutes()) {
+            · posa {{ recommendedProcessingTimeMinutes() }} min
+          }
+        </small>
+      </div>
+    }
+
+    <p>
+      {{
+        formulaOrigin() === 'SMART_FORMULA'
+          ? 'La base tecnica proviene da Smart Formula e resta modificabile dal professionista prima dell’utilizzo.'
+          : (
+              formulaOrigin() === 'REVISION'
+                ? 'Questa formula è una nuova revisione: la formula precedente rimane immutata nello storico.'
+                : 'Formula costruita manualmente dal professionista.'
+            )
+      }}
+    </p>
+
+  </div>
+
   @if (
     errorMessage()
   ) {

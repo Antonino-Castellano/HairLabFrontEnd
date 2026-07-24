@@ -16,6 +16,8 @@ export interface HairDyeInventory {
   unit: InventoryUnit;
 
   lowStockThreshold: number;
-
+  reorderTargetQuantity?: number | null;
+  preferredSupplierId?: number | null;
+  preferredSupplierName?: string | null;
   updatedAt?: string;
 }

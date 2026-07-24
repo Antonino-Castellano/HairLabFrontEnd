@@ -25,9 +25,8 @@ import {
   RouterLink
 } from '@angular/router';
 
-import {
-  HairDye
-} from '../../../models/hair-dye';
+import { HairDye } from '../../../models/hair-dye';
+import { ColorSupplier } from '../../../models/color-supplier';
 
 import {
   HairDyeInventory
@@ -47,9 +46,8 @@ import {
   ProductType
 } from '../../../models/enums/product-type';
 
-import {
-  HairDyeInventoryMovementService
-} from '../../../service/hair-dye-inventory-movement-service';
+import { HairDyeInventoryMovementService } from '../../../service/hair-dye-inventory-movement-service';
+import { ColorSupplierService } from '../../../service/color-supplier-service';
 
 import {
   HairDyeInventoryService
@@ -106,10 +104,8 @@ export class HairDyeInventoryFormComponent
       HairDyeInventoryService
     );
 
-  private readonly movementService =
-    inject(
-      HairDyeInventoryMovementService
-    );
+  private readonly movementService = inject(HairDyeInventoryMovementService);
+  private readonly supplierService = inject(ColorSupplierService);
 
   private readonly activatedRoute =
     inject(
@@ -131,10 +127,8 @@ export class HairDyeInventoryFormComponent
       null
     );
 
-  protected readonly movements =
-    signal<HairDyeInventoryMovement[]>(
-      []
-    );
+  protected readonly movements = signal<HairDyeInventoryMovement[]>([]);
+  protected readonly suppliers = signal<ColorSupplier[]>([]);
 
   protected readonly loading =
     signal(false);
@@ -222,15 +216,9 @@ export class HairDyeInventoryFormComponent
         Validators.required
       ],
 
-      lowStockThreshold: [
-        20,
-        [
-          Validators.required,
-          Validators.min(
-            0
-          )
-        ]
-      ]
+      lowStockThreshold: [20,[Validators.required,Validators.min(0)]],
+      reorderTargetQuantity: [100,[Validators.required,Validators.min(0)]],
+      preferredSupplierId: [0]
     });
 
   /** Impostazioni che non modificano silenziosamente lo stock. */
@@ -242,15 +230,9 @@ export class HairDyeInventoryFormComponent
         Validators.required
       ],
 
-      lowStockThreshold: [
-        20,
-        [
-          Validators.required,
-          Validators.min(
-            0
-          )
-        ]
-      ]
+      lowStockThreshold: [20,[Validators.required,Validators.min(0)]],
+      reorderTargetQuantity: [100,[Validators.required,Validators.min(0)]],
+      preferredSupplierId: [0]
     });
 
   protected readonly movementForm =
@@ -283,6 +265,8 @@ export class HairDyeInventoryFormComponent
     });
 
   ngOnInit(): void {
+
+    this.supplierService.getActive().subscribe({next:x=>this.suppliers.set(x??[]),error:()=>this.suppliers.set([])});
 
     const idParam =
       this.activatedRoute.snapshot
@@ -395,8 +379,9 @@ export class HairDyeInventoryFormComponent
             unit:
               inventory.unit,
 
-            lowStockThreshold:
-              inventory.lowStockThreshold
+            lowStockThreshold: inventory.lowStockThreshold,
+            reorderTargetQuantity: inventory.reorderTargetQuantity ?? inventory.lowStockThreshold * 2,
+            preferredSupplierId: inventory.preferredSupplierId ?? 0
           });
 
           this.loadMovements();
@@ -526,10 +511,9 @@ export class HairDyeInventoryFormComponent
       unit:
         value.unit,
 
-      lowStockThreshold:
-        Number(
-          value.lowStockThreshold
-        )
+      lowStockThreshold: Number(value.lowStockThreshold),
+      reorderTargetQuantity: Number(value.reorderTargetQuantity),
+      preferredSupplierId: value.preferredSupplierId > 0 ? value.preferredSupplierId : null
     };
 
     this.loading.set(
@@ -603,10 +587,9 @@ export class HairDyeInventoryFormComponent
       unit:
         value.unit,
 
-      lowStockThreshold:
-        Number(
-          value.lowStockThreshold
-        )
+      lowStockThreshold: Number(value.lowStockThreshold),
+      reorderTargetQuantity: Number(value.reorderTargetQuantity),
+      preferredSupplierId: value.preferredSupplierId > 0 ? value.preferredSupplierId : null
     };
 
     this.loading.set(

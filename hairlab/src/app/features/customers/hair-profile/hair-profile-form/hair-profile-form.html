@@ -396,6 +396,37 @@
 
         </div>
 
+        <!-- CAPELLI BIANCHI -->
+        <div class="form-group">
+
+          <label for="whiteHairPercentage">
+            Capelli bianchi (%) *
+          </label>
+
+          <input
+            id="whiteHairPercentage"
+            type="number"
+            min="0"
+            max="100"
+            step="1"
+            formControlName="whiteHairPercentage">
+
+          <small>
+            Stima percentuale utile per valutare copertura e scelta della linea colore.
+          </small>
+
+          @if (
+            hairProfileForm.controls.whiteHairPercentage.touched
+            &&
+            hairProfileForm.controls.whiteHairPercentage.invalid
+          ) {
+            <span class="field-error">
+              Inserisci un valore compreso tra 0 e 100.
+            </span>
+          }
+
+        </div>
+
       </div>
 
     </section>

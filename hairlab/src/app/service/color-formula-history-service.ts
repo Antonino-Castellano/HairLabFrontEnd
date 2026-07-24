@@ -20,6 +20,14 @@ import {
 } from '../models/color-formula-history';
 
 import {
+  ColorFormulaEvolution
+} from '../models/color-formula-evolution';
+
+import {
+  ColorFormula
+} from '../models/color-formula';
+
+import {
   ColorFormulaDetail
 } from '../models/color-formula-management';
 
@@ -50,6 +58,51 @@ export class ColorFormulaHistoryService {
       ColorFormulaCustomerHistory
     >(
       `${this.apiUrl}/customer/${customerId}`
+    );
+  }
+
+
+  getEvolution(
+    formulaId:
+      number
+  ): Observable<ColorFormulaEvolution> {
+
+    return this.http.get<
+      ColorFormulaEvolution
+    >(
+      `${this.apiUrl}/${formulaId}/evolution`
+    );
+  }
+
+  setReferenceFormula(
+    formulaId:
+      number
+  ): Observable<ColorFormula> {
+
+    return this.http.put<ColorFormula>(
+      `${this.apiUrl}/${formulaId}/reference`,
+      {}
+    );
+  }
+
+  clearReferenceFormula(
+    formulaId:
+      number
+  ): Observable<ColorFormula> {
+
+    return this.http.delete<ColorFormula>(
+      `${this.apiUrl}/${formulaId}/reference`
+    );
+  }
+
+  repeatReferenceAsDraft(
+    customerId:
+      number
+  ): Observable<ColorFormulaDetail> {
+
+    return this.http.post<ColorFormulaDetail>(
+      `${this.apiUrl}/customer/${customerId}/reference/repeat`,
+      {}
     );
   }
 

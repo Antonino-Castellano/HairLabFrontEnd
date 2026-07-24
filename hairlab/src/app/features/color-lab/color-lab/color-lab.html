@@ -5,8 +5,8 @@
       <span class="eyebrow">LABORATORIO TECNICO</span>
       <h1>Color Lab</h1>
       <p>
-        Libreria tecnica, giacenze colore e fondamenta
-        per le formule intelligenti HairLab.
+        Libreria tecnica, Formula Center e Smart Formula:
+        il ciclo colore completo dalla progettazione al risultato reale.
       </p>
     </div>
 
@@ -14,13 +14,13 @@
       <a class="secondary-button" routerLink="/color-lab/smart-formula">
         ✦ Smart Formula
       </a>
-      <a class="secondary-button" routerLink="/color-lab/formulas">
-        Formule
+      <a class="primary-button" routerLink="/color-lab/formulas">
+        Formula Center
       </a>
       <a class="secondary-button" routerLink="/color-lab/lines">
         Linee tecniche
       </a>
-      <a class="primary-button" routerLink="/color-lab/products/new">
+      <a class="secondary-button" routerLink="/color-lab/products/new">
         + Nuovo prodotto
       </a>
     </div>
@@ -34,32 +34,7 @@
     <div class="message success">{{ successMessage() }}</div>
   }
 
-  <nav class="lab-tabs">
-    <button type="button" [class.active]="selectedTab() === 'OVERVIEW'" (click)="setTab('OVERVIEW')">
-      <span class="tab-index">01</span> Panoramica
-    </button>
-    <button type="button" [class.active]="selectedTab() === 'LIBRARY'" (click)="setTab('LIBRARY')">
-      <span class="tab-index">02</span> Libreria tecnica
-    </button>
-    <button type="button" [class.active]="selectedTab() === 'INVENTORY'" (click)="setTab('INVENTORY')">
-      <span class="tab-index">03</span> Magazzino
-    </button>
-    <a class="future-tab ready-link" routerLink="/color-lab/formulas">
-      <span class="tab-index">04</span>
-      Formule
-      <small>operative</small>
-    </a>
-    <a class="future-tab ready-link" routerLink="/color-lab/smart-formula">
-      <span class="tab-index">05</span>
-      Smart Formula
-      <small>motore tecnico</small>
-    </a>
-    <a class="future-tab ready-link" routerLink="/color-lab/lines">
-      <span class="tab-index">06</span>
-      Linee
-      <small>profili tecnici</small>
-    </a>
-  </nav>
+  <app-color-lab-section-nav [activeSection]="selectedTab()" />
 
   @if (loading()) {
     <div class="state-card">Caricamento Color Lab...</div>
@@ -89,6 +64,71 @@
             <small>quantità pari a zero</small>
           </article>
         </div>
+
+        @if (analytics(); as stats) {
+          <section class="analytics-panel">
+            <div class="section-heading compact-heading">
+              <div>
+                <span class="panel-eyebrow">BLOCCO 26 · ANALYTICS COLOR LAB</span>
+                <h2>Qualità e performance dello storico formule</h2>
+                <p>Le percentuali descrivono soltanto i risultati realmente registrati.</p>
+              </div>
+            </div>
+
+            <div class="analytics-kpis">
+              <article>
+                <span>FORMULE UTILIZZATE</span>
+                <strong>{{ stats.usedFormulas }}</strong>
+                <small>{{ stats.totalFormulas }} formule totali</small>
+              </article>
+              <article>
+                <span>RISULTATI REGISTRATI</span>
+                <strong>{{ stats.resultCoveragePercent }}%</strong>
+                <small>{{ stats.missingResults }} risultati mancanti</small>
+              </article>
+              <article>
+                <span>ESITI POSITIVI</span>
+                <strong>{{ stats.successRatePercent }}%</strong>
+                <small>GOOD + EXCELLENT</small>
+              </article>
+              <article>
+                <span>SMART FORMULA</span>
+                <strong>{{ stats.smartFormulaCount }}</strong>
+                <small>{{ stats.smartSuccessRatePercent }}% esiti positivi registrati</small>
+              </article>
+              <article>
+                <span>FORMULE MANUALI</span>
+                <strong>{{ stats.manualFormulaCount }}</strong>
+                <small>{{ stats.manualSuccessRatePercent }}% esiti positivi registrati</small>
+              </article>
+              <article>
+                <span>FORMULE RIFERIMENTO</span>
+                <strong>{{ stats.referenceFormulaCount }}</strong>
+                <small>{{ stats.customersWithFormulas }} clienti con storico</small>
+              </article>
+            </div>
+
+            @if (stats.topLines.length > 0) {
+              <div class="analytics-lines">
+                <strong>Linee più utilizzate</strong>
+                @for (line of stats.topLines; track line.brand + line.lineName) {
+                  <div>
+                    <span>{{ line.brand }} · {{ line.lineName }}</span>
+                    <small>{{ line.usedFormulas }} utilizzi · {{ line.successRatePercent }}% esiti positivi registrati</small>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (stats.dataQualityWarnings.length > 0) {
+              <div class="analytics-warnings">
+                @for (warning of stats.dataQualityWarnings; track warning) {
+                  <p>⚠ {{ warning }}</p>
+                }
+              </div>
+            }
+          </section>
+        }
 
         <div class="overview-grid">
           <article class="panel">
@@ -127,8 +167,8 @@
               <div class="flow-step next">
                 <span class="flow-number">04</span>
                 <div>
-                  <strong>Formula Builder</strong>
-                  <p>Composizione manuale, grammi e rapporto developer.</p>
+                  <strong>Formula Center</strong>
+                  <p>Builder, formule Smart, revisioni, utilizzi e risultati post-servizio.</p>
                 </div>
                 <span class="flow-status">PRONTO</span>
               </div>
@@ -186,8 +226,8 @@
             <a class="quick-action" routerLink="/color-lab/formulas">
               <span class="quick-icon">ƒ</span>
               <div>
-                <strong>Archivio formule</strong>
-                <small>Bozze, proposte e formule utilizzate</small>
+                <strong>Formula Center</strong>
+                <small>Bozze, Smart Formula, revisioni, utilizzi e risultati</small>
               </div>
             </a>
 
@@ -204,7 +244,7 @@
                 <strong>{{ untrackedProductsCount() }} prodotti senza giacenza</strong>
                 <p>
                   Configurali nel Magazzino per renderli utilizzabili
-                  dal futuro motore automatico.
+                  da Smart Formula e dal workflow di utilizzo reale.
                 </p>
               </div>
             }

@@ -7,6 +7,10 @@ import {
 } from './color-formula-usage';
 
 import {
+  ColorFormulaResult
+} from './color-formula-result';
+
+import {
   InventoryUnit
 } from './enums/inventory-unit';
 
@@ -46,6 +50,8 @@ export interface ColorFormulaHistoryItem {
   totalMixtureQuantity: number;
 
   usage?: ColorFormulaUsage | null;
+
+  result?: ColorFormulaResult | null;
 }
 
 export interface ColorFormulaCustomerHistory {
@@ -62,9 +68,21 @@ export interface ColorFormulaCustomerHistory {
 
   archivedCount: number;
 
+  resultRecordedCount: number;
+
+  resultPendingCount: number;
+
+  positiveResultCount: number;
+
+  attentionResultCount: number;
+
   latestUsedFormulaId?: number | null;
 
   latestUsedAt?: string | null;
+
+  referenceFormulaId?: number | null;
+
+  referenceFormulaSetAt?: string | null;
 
   items: ColorFormulaHistoryItem[];
 }

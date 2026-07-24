@@ -17,6 +17,9 @@ export const COLOR_FORMULA_COMPONENT_ROLE_LABELS:
   SECONDARY_REFLECTION_SUPPORT:
     'Supporto secondo riflesso',
 
+  WHITE_HAIR_COVERAGE_BASE:
+    'Base naturale copertura bianchi',
+
   CORRECTIVE_SUPPORT:
     'Correttore'
 };

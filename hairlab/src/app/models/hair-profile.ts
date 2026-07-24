@@ -90,6 +90,9 @@ export interface HairProfile {
    */
   hairCondition: HairCondition;
 
+  /** Percentuale stimata di capelli bianchi/canuti (0-100). */
+  whiteHairPercentage?: number | null;
+
   /**
    * Condizioni osservate sulla cute.
    */

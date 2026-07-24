@@ -1,0 +1,3 @@
+import { InventoryUnit } from './enums/inventory-unit'; import { ProductType } from './enums/product-type';
+export type ColorReorderUrgency='OUT_OF_STOCK'|'LOW_STOCK';
+export interface ColorReorderSuggestion { inventoryId:number;hairDyeId:number;brand:string;lineName?:string|null;code:string;name:string;productType:ProductType;unit:InventoryUnit;quantityAvailable:number;lowStockThreshold:number;reorderTargetQuantity:number;suggestedOrderQuantity:number;consumptionLast30Days:number;urgency:ColorReorderUrgency;preferredSupplierId?:number|null;preferredSupplierName?:string|null;supplierConfigured:boolean;targetFallback:boolean; }

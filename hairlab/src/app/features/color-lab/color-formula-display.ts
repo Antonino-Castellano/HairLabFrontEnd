@@ -7,6 +7,10 @@ import {
 } from '../../models/enums/color-formula-status';
 
 import {
+  ColorFormulaOrigin
+} from '../../models/enums/color-formula-origin';
+
+import {
   MixingRatio
 } from '../../models/enums/mixing-ratio';
 
@@ -97,4 +101,21 @@ export const COLOR_FORMULA_STATUS_LABELS:
 
   [ColorFormulaStatus.ARCHIVED]:
     'Archiviata'
+};
+
+
+export const COLOR_FORMULA_ORIGIN_LABELS:
+  Record<ColorFormulaOrigin, string> = {
+
+  [ColorFormulaOrigin.MANUAL]:
+    'Manuale',
+
+  [ColorFormulaOrigin.SMART_FORMULA]:
+    'Smart Formula',
+
+  [ColorFormulaOrigin.REVISION]:
+    'Revisione',
+
+  [ColorFormulaOrigin.RECURRING]:
+    'Ricorrente'
 };

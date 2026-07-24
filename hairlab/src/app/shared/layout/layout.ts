@@ -27,13 +27,53 @@ export class LayoutComponent {
   sidebarOpen = signal<boolean>(false);
   sidebarPinned = signal<boolean>(false);
 
-  // Stato del sottomenu Color Lab.
+  /**
+   * Le funzioni di scorte/acquisti mantengono per ora
+   * le route /color-lab/... per non rompere link esistenti,
+   * ma nella navigazione sono una sezione autonoma.
+   */
+  private readonly stockManagementRoutes = [
+    '/color-lab/movements',
+    '/color-lab/reorder',
+    '/color-lab/orders',
+    '/color-lab/suppliers'
+  ];
+
+  // Stato del sottomenu tecnico Color Lab.
   colorLabMenuOpen = signal<boolean>(
     this.router.url.startsWith('/color-lab')
+    &&
+    !this.isStockManagementRoute(
+      this.router.url
+    )
+  );
+
+  // Stato della sezione separata Magazzino & Acquisti.
+  stockMenuOpen = signal<boolean>(
+    this.isStockManagementRoute(
+      this.router.url
+    )
   );
 
   toggleColorLabMenu(): void {
     this.colorLabMenuOpen.update(open => !open);
+  }
+
+  toggleStockMenu(): void {
+    this.stockMenuOpen.update(open => !open);
+  }
+
+  private isStockManagementRoute(
+    url: string
+  ): boolean {
+
+    return this.stockManagementRoutes
+      .some(
+        route =>
+          url.startsWith(
+            route
+          )
+      );
   }
 
   openSidebar(): void {

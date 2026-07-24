@@ -42,6 +42,11 @@ import {
   CustomerAppointmentHistoryComponent
 } from '../customer-appointment-history/customer-appointment-history';
 
+import {
+  CustomerColorTechnicalRecordComponent
+} from '../customer-color-technical-record/customer-color-technical-record';
+
+
 /**
  * Identifica le sezioni disponibili
  * all'interno della scheda cliente.
@@ -56,7 +61,8 @@ type CustomerDetailSection =
   | 'hair'
   | 'face'
   | 'color'
-  | 'recommendations';
+  | 'recommendations'
+  | 'color-record';
 
 /**
  * Pagina dettaglio della cliente.
@@ -81,7 +87,8 @@ type CustomerDetailSection =
     FaceProfileDetailComponent,
     ColorAnalysisDetailComponent,
     StyleRecommendationDetailComponent,
-    CustomerAppointmentHistoryComponent
+    CustomerAppointmentHistoryComponent,
+    CustomerColorTechnicalRecordComponent
   ],
 
   templateUrl: './customer-detail.html',

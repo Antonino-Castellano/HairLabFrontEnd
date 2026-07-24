@@ -1,0 +1,48 @@
+<nav class="color-lab-nav" aria-label="Sezioni Color Lab">
+  <a
+    routerLink="/color-lab"
+    [class.active]="activeSection === 'OVERVIEW'">
+    <span class="index">01</span>
+    <span class="label">Panoramica</span>
+  </a>
+
+  <a
+    routerLink="/color-lab"
+    [queryParams]="{ tab: 'library' }"
+    [class.active]="activeSection === 'LIBRARY'">
+    <span class="index">02</span>
+    <span class="label">Libreria tecnica</span>
+  </a>
+
+  <a
+    routerLink="/color-lab"
+    [queryParams]="{ tab: 'inventory' }"
+    [class.active]="activeSection === 'INVENTORY'">
+    <span class="index">03</span>
+    <span class="label">Magazzino</span>
+  </a>
+
+  <a
+    routerLink="/color-lab/formulas"
+    [class.active]="activeSection === 'FORMULAS'">
+    <span class="index">04</span>
+    <span class="label">Formula Center</span>
+    <small>storico e revisioni</small>
+  </a>
+
+  <a
+    routerLink="/color-lab/smart-formula"
+    [class.active]="activeSection === 'SMART_FORMULA'">
+    <span class="index">05</span>
+    <span class="label">Smart Formula</span>
+    <small>motore tecnico</small>
+  </a>
+
+  <a
+    routerLink="/color-lab/lines"
+    [class.active]="activeSection === 'LINES'">
+    <span class="index">06</span>
+    <span class="label">Linee</span>
+    <small>profili tecnici</small>
+  </a>
+</nav>

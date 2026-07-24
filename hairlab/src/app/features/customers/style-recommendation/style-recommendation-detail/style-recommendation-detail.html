@@ -766,6 +766,31 @@
 
               }
 
+              @if (
+                item.technicalColorTarget?.smartFormulaEligible
+              ) {
+
+                <div class="smart-formula-bridge">
+
+                  <div>
+                    <span>DAL CONSIGLIO ALLA FORMULA</span>
+                    <p>
+                      HairLab userà questo colore come obiettivo e lo adatterà
+                      alla base reale, al profilo tecnico e allo storico del cliente.
+                    </p>
+                  </div>
+
+                  <a
+                    class="smart-formula-button"
+                    routerLink="/color-lab/smart-formula"
+                    [queryParams]="smartFormulaQueryParams(item)">
+                    Crea Smart Formula personalizzata
+                  </a>
+
+                </div>
+
+              }
+
             </article>
 
           }

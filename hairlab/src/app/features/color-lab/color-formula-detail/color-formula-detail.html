@@ -22,12 +22,57 @@
       <div class="header-actions">
         <a class="secondary-button" routerLink="/color-lab/formulas">Formule</a>
 
+        @if (current.formula.id) {
+          <a
+            class="secondary-button"
+            [routerLink]="['/color-lab/formulas', current.formula.id, 'evolution']">
+            Evoluzione
+          </a>
+          <a
+            class="secondary-button"
+            [routerLink]="['/color-lab/formulas', current.formula.id, 'protocol']">
+            Protocollo tecnico
+          </a>
+        }
+
         @if (current.formula.id && canEditFormula()) {
           <a
             class="primary-button"
             routerLink="/color-lab/formulas/{{ current.formula.id }}/edit">
             Modifica formula
           </a>
+        }
+
+        @if (current.formula.id && canCreateRevision()) {
+          <button
+            type="button"
+            class="revision-button"
+            [disabled]="creatingRevision()"
+            (click)="createRevision()">
+            {{
+              creatingRevision()
+                ? 'Creazione revisione...'
+                : 'Crea nuova revisione'
+            }}
+          </button>
+        }
+
+        @if (isReferenceFormula()) {
+          <button
+            type="button"
+            class="secondary-button"
+            [disabled]="referenceAction()"
+            (click)="clearReferenceFormula()">
+            {{ referenceAction() ? 'Aggiornamento...' : 'Rimuovi riferimento' }}
+          </button>
+        } @else if (canSetReferenceFormula()) {
+          <button
+            type="button"
+            class="reference-button"
+            [disabled]="referenceAction()"
+            (click)="setAsReferenceFormula()">
+            {{ referenceAction() ? 'Impostazione...' : 'Imposta come riferimento' }}
+          </button>
         }
       </div>
     </header>
@@ -38,6 +83,56 @@
         [attr.data-status]="current.formula.status">
         {{ statusLabels[current.formula.status] }}
       </span>
+
+      <span class="origin-badge">
+        {{ getOriginLabel(current.formula.origin) }}
+      </span>
+
+      <span class="revision-badge">
+        Rev. {{ current.formula.revisionNumber ?? 1 }}
+      </span>
+
+      @if (current.formula.referenceFormula) {
+        <span class="reference-formula-badge">★ Formula di riferimento</span>
+      }
+
+      @if (current.formula.referenceSourceFormulaId; as sourceId) {
+        <a
+          class="parent-formula-link"
+          [routerLink]="['/color-lab/formulas', sourceId]">
+          ↻ Nuovo servizio da riferimento #{{ sourceId }}
+        </a>
+      }
+
+      @if (current.formula.sourceRecommendationTitle) {
+        <span class="recommendation-source-badge">
+          Obiettivo HairLab · {{ current.formula.sourceRecommendationTitle }}
+        </span>
+      }
+
+      @if (current.formula.technicalLineName) {
+        <span class="line-rule-source-badge">
+          Linea · {{ current.formula.technicalLineBrand }} · {{ current.formula.technicalLineName }}
+          @if (current.formula.whiteHairCoverageApplied) {
+            · copertura {{ current.formula.whiteHairNaturalBaseSharePercentage }}% naturale
+          }
+          @if (current.formula.recommendedProcessingTimeMinutes) {
+            · {{ current.formula.recommendedProcessingTimeMinutes }} min
+          }
+        </span>
+      }
+
+      @if (current.formula.parentFormulaId; as parentId) {
+        <a
+          class="parent-formula-link"
+          [routerLink]="[
+            '/color-lab/formulas',
+            parentId
+          ]">
+          ← Formula precedente #{{ parentId }}
+        </a>
+      }
+
       <strong>{{ current.formula.targetResult }}</strong>
     </div>
 
@@ -156,13 +251,23 @@
             <span>DATA UTILIZZO</span>
             <strong>{{ used.usedAt | date:'dd/MM/yyyy HH:mm' }}</strong>
           </div>
-          <div>
-            <span>DEVELOPER</span>
-            <strong>
-              {{ used.developerBrand }} · {{ used.developerCode }}
-            </strong>
-            <small>{{ oxygenLabels[used.developerVolume] }}</small>
-          </div>
+          @if (used.multiZone && (used.developerUsages?.length ?? 0) > 0) {
+            <div>
+              <span>DEVELOPER</span>
+              <strong>Protocollo multi-zona</strong>
+              <small>{{ used.developerUsages?.length }} miscele/developer registrati</small>
+            </div>
+          } @else {
+            <div>
+              <span>DEVELOPER</span>
+              <strong>
+                {{ used.developerBrand }} · {{ used.developerCode }}
+              </strong>
+              @if (used.developerVolume) {
+                <small>{{ oxygenLabels[used.developerVolume] }}</small>
+              }
+            </div>
+          }
           <div>
             <span>COLORE SCARICATO</span>
             <strong>{{ used.totalColorQuantity }} g</strong>
@@ -197,6 +302,24 @@
             </div>
           }
         </div>
+
+        @if (used.multiZone && (used.developerUsages?.length ?? 0) > 0) {
+          <div class="usage-zone-summary">
+            @for (zoneUse of used.developerUsages ?? []; track $index) {
+              <div>
+                <strong>{{ zoneUse.zoneName }}</strong>
+                <span>
+                  {{ zoneUse.colorQuantity }} g colore +
+                  {{ zoneUse.developerQuantity }} ml
+                  {{ oxygenLabels[zoneUse.developerVolume] }}
+                </span>
+                <small>
+                  {{ zoneUse.developerBrand }} · {{ zoneUse.developerLineName ?? 'Linea n/d' }} · {{ zoneUse.developerCode }}
+                </small>
+              </div>
+            }
+          </div>
+        }
       </section>
 
     } @else if (canEditFormula()) {
@@ -212,39 +335,92 @@
           </div>
         </div>
 
-        <div class="developer-selection">
-          <label>
-            <span>Developer {{ oxygenLabels[current.formula.volumeDeveloper] }} *</span>
-            <select
-              [value]="selectedDeveloperId() ?? ''"
-              (change)="onDeveloperChange($event)">
-              <option value="">Seleziona developer</option>
-              @for (developer of developerCandidates(); track developer.id) {
-                <option [value]="developer.id">
-                  {{ developer.brand }} · {{ developer.code }} · {{ developer.name }}
-                </option>
-              }
-            </select>
-          </label>
-
-          @if (selectedDeveloperId(); as developerId) {
-            @if (getInventory(developerId); as inventory) {
-              <div class="developer-check">
-                <span>RICHIESTI</span>
-                <strong>{{ current.developerQuantity }} ml</strong>
-                <span>DISPONIBILI</span>
-                <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
-              </div>
-            }
-          }
-        </div>
-
-        @if (developerCandidates().length === 0) {
-          <div class="usage-warning">
-            Nessun developer attivo con volume
-            {{ oxygenLabels[current.formula.volumeDeveloper] }} configurato.
-            Crea o modifica un prodotto DEVELOPER nella Libreria Color Lab.
+        @if (hasMultiZoneProtocol()) {
+          <div class="usage-warning protocol-ready">
+            Questa formula usa un protocollo multi-zona. Ogni zona viene scaricata
+            con il proprio developer e rapporto; l'operazione resta atomica.
           </div>
+
+          <div class="zone-developer-grid">
+            @for (zone of protocol()?.zones ?? []; track zone.id) {
+              <article class="zone-developer-card">
+                <div>
+                  <span class="panel-eyebrow">ZONA {{ zone.orderIndex }}</span>
+                  <h3>{{ zone.name }}</h3>
+                  <small>
+                    {{ getZoneColorQuantity(zone) }} g colore ·
+                    {{ oxygenLabels[zone.developerVolume] }} ·
+                    {{ getZoneDeveloperQuantity(zone) }} ml developer
+                  </small>
+                </div>
+
+                <label>
+                  <span>Developer fisico *</span>
+                  <select
+                    [value]="getZoneDeveloperSelection(zone.id) ?? ''"
+                    (change)="onZoneDeveloperChange(zone.id, $event)">
+                    <option value="">Seleziona developer</option>
+                    @for (developer of getZoneDeveloperCandidates(zone); track developer.id) {
+                      <option [value]="developer.id">
+                        {{ developer.brand }} · {{ developer.lineName ?? 'Linea n/d' }} · {{ developer.code }}
+                      </option>
+                    }
+                  </select>
+                </label>
+
+                @if (getZoneDeveloperSelection(zone.id); as developerId) {
+                  @if (getInventory(developerId); as inventory) {
+                    <div class="developer-check">
+                      <span>DISPONIBILI</span>
+                      <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
+                    </div>
+                  }
+                }
+              </article>
+            }
+          </div>
+
+          @if (!protocol()?.compatibility?.valid) {
+            <div class="usage-warning">
+              Il report di compatibilità contiene errori bloccanti.
+              Apri “Protocollo tecnico” e correggili prima dell'utilizzo.
+            </div>
+          }
+        } @else {
+          <div class="developer-selection">
+            <label>
+              <span>Developer {{ oxygenLabels[current.formula.volumeDeveloper] }} *</span>
+              <select
+                [value]="selectedDeveloperId() ?? ''"
+                (change)="onDeveloperChange($event)">
+                <option value="">Seleziona developer</option>
+                @for (developer of developerCandidates(); track developer.id) {
+                  <option [value]="developer.id">
+                    {{ developer.brand }} · {{ developer.code }} · {{ developer.name }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            @if (selectedDeveloperId(); as developerId) {
+              @if (getInventory(developerId); as inventory) {
+                <div class="developer-check">
+                  <span>RICHIESTI</span>
+                  <strong>{{ current.developerQuantity }} ml</strong>
+                  <span>DISPONIBILI</span>
+                  <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
+                </div>
+              }
+            }
+          </div>
+
+          @if (developerCandidates().length === 0) {
+            <div class="usage-warning">
+              Nessun developer attivo con volume
+              {{ oxygenLabels[current.formula.volumeDeveloper] }} configurato.
+              Crea o modifica un prodotto DEVELOPER nella Libreria Color Lab.
+            </div>
+          }
         }
 
         @if (!areIngredientStocksSufficient()) {
@@ -641,6 +817,78 @@
 
     }
 
+
+    @if (simulation(); as sim) {
+      <section class="panel simulation-panel">
+        <div class="simulation-header">
+          <div>
+            <span class="panel-eyebrow">SIMULATORE TECNICO · BLOCCO 23</span>
+            <h2>Previsione spiegabile</h2>
+            <p>Valuta coerenza dei dati, distanza dal target e fattori di rischio. Non è una promessa fotografica del risultato.</p>
+          </div>
+
+          <div class="confidence-card" [class]="getConfidenceClass(sim.confidencePercent)">
+            <span>Confidenza dati</span>
+            <strong>{{ sim.confidencePercent }}%</strong>
+            <small>{{ getFeasibilityLabel(sim.feasibility) }}</small>
+          </div>
+        </div>
+
+        <div class="simulation-metrics">
+          <div>
+            <span>Base attuale</span>
+            <strong>{{ sim.currentToneLevel ? toneLabels[sim.currentToneLevel] : 'Non disponibile' }}</strong>
+          </div>
+          <div>
+            <span>Target</span>
+            <strong>{{ sim.targetToneLevel ? toneLabels[sim.targetToneLevel] : 'Non strutturato' }}</strong>
+          </div>
+          <div>
+            <span>Scarto livelli</span>
+            <strong>{{ sim.toneLevelDelta ?? '—' }}</strong>
+          </div>
+          <div>
+            <span>Protocollo</span>
+            <strong>{{ sim.protocolValid ? 'Compatibile' : 'Da correggere' }}</strong>
+          </div>
+        </div>
+
+        <div class="simulation-columns">
+          <article class="simulation-box positive">
+            <h3>Punti favorevoli</h3>
+            @for (item of sim.strengths; track item) {
+              <p>✓ {{ item }}</p>
+            }
+          </article>
+
+          <article class="simulation-box risk">
+            <h3>Rischi / attenzioni</h3>
+            @if (sim.risks.length === 0) {
+              <p>Nessun rischio aggiuntivo rilevato dai dati disponibili.</p>
+            } @else {
+              @for (item of sim.risks; track item) {
+                <p>! {{ item }}</p>
+              }
+            }
+          </article>
+        </div>
+
+        @if (sim.nextActions.length > 0) {
+          <div class="simulation-actions-list">
+            <h3>Azioni consigliate prima dell'esecuzione</h3>
+            @for (item of sim.nextActions; track item) {
+              <p>→ {{ item }}</p>
+            }
+          </div>
+        }
+
+        <div class="simulation-disclaimer">
+          @for (item of sim.explanations; track item) {
+            <p>{{ item }}</p>
+          }
+        </div>
+      </section>
+    }
 
     @if (current.formula.notes) {
       <section class="panel notes-panel">

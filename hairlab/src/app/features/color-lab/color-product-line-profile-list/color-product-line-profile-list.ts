@@ -3,13 +3,15 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { ColorProductLineProfile } from '../../../models/color-product-line-profile';
+import { Oxygen } from '../../../models/enums/oxygen';
 import { ColorProductLineProfileService } from '../../../service/color-product-line-profile-service';
 import { MIXING_RATIO_LABELS, OXYGEN_LABELS } from '../color-formula-display';
+import { ColorLabSectionNavComponent } from '../color-lab-section-nav/color-lab-section-nav';
 
 @Component({
   selector: 'app-color-product-line-profile-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ColorLabSectionNavComponent],
   templateUrl: './color-product-line-profile-list.html',
   styleUrl: './color-product-line-profile-list.css'
 })
@@ -100,4 +102,9 @@ export class ColorProductLineProfileListComponent implements OnInit {
       .map(oxygen => this.oxygenLabels[oxygen])
       .join(' · ');
   }
+  protected getOxygenLabel(oxygen: Oxygen | null | undefined): string {
+    return oxygen ? this.oxygenLabels[oxygen] : 'Developer non configurato';
+  }
+
 }
+

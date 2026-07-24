@@ -1,16 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { ColorLabSectionNavComponent } from '../color-lab-section-nav/color-lab-section-nav';
+import { catchError, forkJoin, of } from 'rxjs';
 
 import { HairDye } from '../../../models/hair-dye';
 import { HairDyeInventory } from '../../../models/hair-dye-inventory';
+import { ColorLabAnalytics } from '../../../models/color-lab-analytics';
 import { ProductType } from '../../../models/enums/product-type';
 import { MixingRatio } from '../../../models/enums/mixing-ratio';
 import { Reflection } from '../../../models/enums/reflection';
 import { ToneLevel } from '../../../models/enums/tone-level';
 import { HairDyeInventoryService } from '../../../service/hair-dye-inventory-service';
 import { HairDyeService } from '../../../service/hair-dye-service';
+import { ColorLabAnalyticsService } from '../../../service/color-lab-analytics-service';
 import {
   INVENTORY_UNIT_LABELS,
   PRODUCT_TYPE_LABELS,
@@ -36,7 +39,7 @@ type StockState = 'OK' | 'LOW' | 'OUT' | 'UNTRACKED';
 @Component({
   selector: 'app-color-lab',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ColorLabSectionNavComponent],
   templateUrl: './color-lab.html',
   styleUrl: './color-lab.css'
 })
@@ -45,9 +48,11 @@ export class ColorLabComponent implements OnInit {
   private readonly hairDyeService = inject(HairDyeService);
   private readonly inventoryService = inject(HairDyeInventoryService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly analyticsService = inject(ColorLabAnalyticsService);
 
   protected readonly products = signal<HairDye[]>([]);
   protected readonly inventories = signal<HairDyeInventory[]>([]);
+  protected readonly analytics = signal<ColorLabAnalytics | null>(null);
   protected readonly loading = signal(false);
   protected readonly errorMessage = signal('');
   protected readonly successMessage = signal('');
@@ -241,11 +246,15 @@ export class ColorLabComponent implements OnInit {
 
     forkJoin({
       products: this.hairDyeService.getAll(),
-      inventories: this.inventoryService.getAll()
+      inventories: this.inventoryService.getAll(),
+      analytics: this.analyticsService.getSummary().pipe(
+        catchError(() => of(null))
+      )
     }).subscribe({
       next: result => {
         this.products.set(result.products ?? []);
         this.inventories.set(result.inventories ?? []);
+        this.analytics.set(result.analytics);
         this.loading.set(false);
       },
       error: (error: HttpErrorResponse) => {

@@ -1,4 +1,6 @@
 <section class="line-page">
+
+  <app-color-lab-section-nav activeSection="LINES" />
   <header class="page-header">
     <div>
       <span class="eyebrow">COLOR LAB · LINEE TECNICHE</span>
@@ -88,6 +90,27 @@
             <div>
               <span>DEVELOPER STESSA LINEA</span>
               <strong>{{ profile.requireSameLineDeveloper ? 'Richiesto' : 'Non richiesto' }}</strong>
+            </div>
+
+            <div>
+              <span>COPERTURA BIANCHI</span>
+              <strong>
+                @if (profile.whiteHairCoverageEnabled) {
+                  Da {{ profile.whiteHairCoverageFromPercentage ?? 0 }}% · base naturale {{ profile.whiteHairNaturalBaseSharePercentage ?? 0 }}%
+                } @else {
+                  Non configurata
+                }
+              </strong>
+            </div>
+
+            <div>
+              <span>TONALIZZAZIONE / POSA</span>
+              <strong>
+                {{ getOxygenLabel(profile.toningDeveloperVolume) }}
+                @if (profile.defaultProcessingTimeMinutes) {
+                  · {{ profile.defaultProcessingTimeMinutes }} min
+                }
+              </strong>
             </div>
           </div>
 

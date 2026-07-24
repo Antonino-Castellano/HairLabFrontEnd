@@ -503,3 +503,53 @@ textarea:focus {
     grid-column: auto;
   }
 }
+
+/* BLOCCO 15 - Provenienza e revisioni formula */
+.formula-provenance {
+  display: grid;
+  grid-template-columns: auto auto minmax(220px, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #e4d9d2;
+  border-radius: 10px;
+  background: #faf7f5;
+}
+
+.formula-provenance > div {
+  min-width: 130px;
+}
+
+.formula-provenance span,
+.formula-provenance strong {
+  display: block;
+}
+
+.formula-provenance span {
+  color: #9b8d84;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .6px;
+}
+
+.formula-provenance strong,
+.formula-provenance a {
+  margin-top: 3px;
+  color: #5d493f;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.formula-provenance p {
+  margin: 0;
+  color: #81736b;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .formula-provenance {
+    grid-template-columns: 1fr;
+  }
+}

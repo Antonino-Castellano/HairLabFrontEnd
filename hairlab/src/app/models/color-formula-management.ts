@@ -7,6 +7,10 @@ import {
 } from './enums/color-formula-status';
 
 import {
+  ColorFormulaOrigin
+} from './enums/color-formula-origin';
+
+import {
   InventoryUnit
 } from './enums/inventory-unit';
 
@@ -58,6 +62,26 @@ export interface ColorFormulaManagementRequest {
   consultationId?: number;
 
   appointmentItemId?: number;
+
+  origin?: ColorFormulaOrigin;
+
+  parentFormulaId?: number;
+
+  referenceSourceFormulaId?: number;
+
+  sourceRecommendationCode?: string;
+
+  sourceRecommendationTitle?: string;
+
+  technicalLineBrand?: string;
+
+  technicalLineName?: string;
+
+  whiteHairCoverageApplied?: boolean;
+
+  whiteHairNaturalBaseSharePercentage?: number;
+
+  recommendedProcessingTimeMinutes?: number;
 
   name: string;
 

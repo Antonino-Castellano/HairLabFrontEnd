@@ -1,5 +1,7 @@
 <section class="formula-list-page">
 
+  <app-color-lab-section-nav activeSection="FORMULAS" />
+
   <header class="page-header">
 
     <div>
@@ -9,12 +11,12 @@
       </span>
 
       <h1>
-        Formule colore
+        Formula Center
       </h1>
 
       <p>
-        Formule manuali, Smart Formula,
-        utilizzi reali e storico tecnico HairLab.
+        Il centro operativo delle formule HairLab:
+        creazione, Smart Formula, revisioni, utilizzi reali e storico tecnico.
       </p>
 
     </div>
@@ -28,6 +30,12 @@
       </a>
 
       <a
+        class="secondary-button"
+        routerLink="/color-lab/smart-formula">
+        Smart Formula
+      </a>
+
+      <a
         class="primary-button"
         routerLink="/color-lab/formulas/new">
         + Nuova formula
@@ -36,6 +44,30 @@
     </div>
 
   </header>
+
+  <div class="formula-summary">
+
+    <article>
+      <span>FORMULE TOTALI</span>
+      <strong>{{ totalCount() }}</strong>
+    </article>
+
+    <article>
+      <span>UTILIZZATE</span>
+      <strong>{{ usedCount() }}</strong>
+    </article>
+
+    <article>
+      <span>DA SMART FORMULA</span>
+      <strong>{{ smartCount() }}</strong>
+    </article>
+
+    <article>
+      <span>REVISIONI</span>
+      <strong>{{ revisionCount() }}</strong>
+    </article>
+
+  </div>
 
   @if (
     errorMessage()
@@ -143,6 +175,39 @@
 
     </label>
 
+    <label>
+
+      <span>
+        Origine
+      </span>
+
+      <select
+        [value]="originFilter()"
+        (change)="
+          onOriginFilterChange(
+            $event
+          )
+        ">
+
+        <option value="ALL">
+          Tutte
+        </option>
+
+        @for (
+          origin of origins;
+          track origin
+        ) {
+
+          <option [value]="origin">
+            {{ originLabels[origin] }}
+          </option>
+
+        }
+
+      </select>
+
+    </label>
+
   </div>
 
   @if (
@@ -225,9 +290,95 @@
 
           </div>
 
+          <div class="formula-identity">
+            <span class="origin-badge">
+              {{ getOriginLabel(formula.origin) }}
+            </span>
+
+            <span class="revision-badge">
+              Rev. {{ formula.revisionNumber ?? 1 }}
+            </span>
+
+            @if (formula.referenceFormula) {
+              <span class="reference-formula-badge">★ Formula di riferimento</span>
+            }
+
+            @if (formula.referenceSourceFormulaId) {
+              <span class="recurring-source-badge">
+                ↻ Da riferimento #{{ formula.referenceSourceFormulaId }}
+              </span>
+            }
+
+            @if (formula.sourceRecommendationTitle) {
+              <span class="recommendation-source-badge">
+                HairLab · {{ formula.sourceRecommendationTitle }}
+              </span>
+            }
+
+            @if (formula.technicalLineName) {
+              <span class="line-rule-source-badge">
+                {{ formula.technicalLineBrand }} · {{ formula.technicalLineName }}
+              </span>
+            }
+
+            @if (formula.parentFormulaId; as parentId) {
+              <a
+                class="parent-link"
+                [routerLink]="[
+                  '/color-lab/formulas',
+                  parentId
+                ]">
+                Deriva da #{{ parentId }}
+              </a>
+            }
+          </div>
+
           <p class="target">
             {{ formula.targetResult }}
           </p>
+
+          <div class="technical-meta">
+
+            <div>
+              <span>TONO TARGET</span>
+              <strong>
+                {{
+                  formula.targetToneLevel
+                    ? toneLabels[
+                        formula.targetToneLevel
+                      ]
+                    : '—'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>RIFLESSO</span>
+              <strong>
+                {{
+                  formula.targetPrimaryReflection
+                    ? reflectionLabels[
+                        formula.targetPrimaryReflection
+                      ]
+                    : '—'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>APPLICAZIONE</span>
+              <strong>
+                {{
+                  formula.applicationType
+                    ? applicationLabels[
+                        formula.applicationType
+                      ]
+                    : '—'
+                }}
+              </strong>
+            </div>
+
+          </div>
 
           <div class="meta">
 
@@ -259,6 +410,15 @@
               <a
                 routerLink="/color-lab/formulas/{{ formula.id }}">
                 Dettaglio
+              </a>
+
+              <a
+                [routerLink]="['/color-lab/formulas', formula.id, 'evolution']">
+                Evoluzione
+              </a>
+              <a
+                [routerLink]="['/color-lab/formulas', formula.id, 'protocol']">
+                Protocollo
               </a>
 
               @if (

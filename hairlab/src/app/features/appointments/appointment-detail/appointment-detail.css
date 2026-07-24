@@ -418,3 +418,15 @@
   background: #f4e9e3;
   color: #684b3d;
 }
+
+/* ==========================================================
+   BLOCCO 24 — APPUNTAMENTO ↔ COLOR LAB
+   ========================================================== */
+.appointment-formula-links { margin-top:16px; display:grid; gap:8px; }
+.formula-links-title { font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#667085; }
+.appointment-formula-card { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 14px; border:1px solid #e4e7ec; border-radius:12px; text-decoration:none; color:inherit; background:#fff; }
+.appointment-formula-card:hover { border-color:#b692f6; background:#f9f5ff; }
+.appointment-formula-card div { display:grid; gap:3px; }
+.appointment-formula-card small { color:#667085; }
+.color-lab-action.reference { border:1px solid #b692f6; background:#f9f5ff; color:#6941c6; cursor:pointer; }
+.color-lab-action.reference:disabled { opacity:.55; cursor:not-allowed; }

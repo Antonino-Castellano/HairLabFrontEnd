@@ -55,6 +55,10 @@ import {
 } from '../../../models/enums/color-formula-status';
 
 import {
+  ColorFormulaOrigin
+} from '../../../models/enums/color-formula-origin';
+
+import {
   InventoryUnit
 } from '../../../models/enums/inventory-unit';
 
@@ -231,6 +235,59 @@ export class ColorFormulaBuilderComponent
    * USED viene impostato esclusivamente dal workflow
    * "Utilizza formula" e non è più selezionabile manualmente.
    */
+  protected readonly formulaOrigin =
+    signal<ColorFormulaOrigin>(
+      ColorFormulaOrigin.MANUAL
+    );
+
+  protected readonly parentFormulaId =
+    signal<number | null>(
+      null
+    );
+
+  protected readonly referenceSourceFormulaId =
+    signal<number | null>(
+      null
+    );
+
+
+  protected readonly sourceRecommendationCode =
+    signal<string | null>(null);
+
+  protected readonly sourceRecommendationTitle =
+    signal<string | null>(null);
+
+  protected readonly technicalLineBrand =
+    signal<string | null>(null);
+
+  protected readonly technicalLineName =
+    signal<string | null>(null);
+
+  protected readonly whiteHairCoverageApplied =
+    signal(false);
+
+  protected readonly whiteHairNaturalBaseSharePercentage =
+    signal<number | null>(null);
+
+  protected readonly recommendedProcessingTimeMinutes =
+    signal<number | null>(null);
+
+  protected readonly formulaOriginLabels:
+    Record<ColorFormulaOrigin, string> = {
+
+      [ColorFormulaOrigin.MANUAL]:
+        'Manuale',
+
+      [ColorFormulaOrigin.SMART_FORMULA]:
+        'Smart Formula',
+
+      [ColorFormulaOrigin.REVISION]:
+        'Revisione',
+
+      [ColorFormulaOrigin.RECURRING]:
+        'Ricorrente'
+    };
+
   protected readonly statuses = [
     ColorFormulaStatus.DRAFT,
     ColorFormulaStatus.PROPOSED
@@ -579,6 +636,67 @@ export class ColorFormulaBuilderComponent
       this.activatedRoute
         .snapshot
         .queryParamMap;
+
+    const originParam =
+      params.get(
+        'origin'
+      ) as
+        ColorFormulaOrigin |
+        null;
+
+    if (
+      originParam
+      &&
+      Object.values(
+        ColorFormulaOrigin
+      ).includes(
+        originParam
+      )
+    ) {
+
+      this.formulaOrigin.set(
+        originParam
+      );
+    }
+
+
+    this.sourceRecommendationCode.set(
+      params.get('sourceRecommendationCode')
+    );
+
+    this.sourceRecommendationTitle.set(
+      params.get('sourceRecommendationTitle')
+    );
+
+    this.technicalLineBrand.set(
+      params.get('technicalLineBrand')
+    );
+
+    this.technicalLineName.set(
+      params.get('technicalLineName')
+    );
+
+    this.whiteHairCoverageApplied.set(
+      params.get('whiteHairCoverageApplied') === 'true'
+    );
+
+    const whiteHairShareParam =
+      params.get('whiteHairNaturalBaseSharePercentage');
+
+    this.whiteHairNaturalBaseSharePercentage.set(
+      whiteHairShareParam != null && whiteHairShareParam !== ''
+        ? Number(whiteHairShareParam)
+        : null
+    );
+
+    const processingTimeParam =
+      params.get('recommendedProcessingTimeMinutes');
+
+    this.recommendedProcessingTimeMinutes.set(
+      processingTimeParam != null && processingTimeParam !== ''
+        ? Number(processingTimeParam)
+        : null
+    );
 
     const customerIdParam =
       params.get(
@@ -978,6 +1096,50 @@ export class ColorFormulaBuilderComponent
 
           const formula =
             detail.formula;
+
+          this.formulaOrigin.set(
+            formula.origin ??
+            ColorFormulaOrigin.MANUAL
+          );
+
+          this.parentFormulaId.set(
+            formula.parentFormulaId ??
+            null
+          );
+
+          this.referenceSourceFormulaId.set(
+            formula.referenceSourceFormulaId ??
+            null
+          );
+
+
+          this.sourceRecommendationCode.set(
+            formula.sourceRecommendationCode ?? null
+          );
+
+          this.sourceRecommendationTitle.set(
+            formula.sourceRecommendationTitle ?? null
+          );
+
+          this.technicalLineBrand.set(
+            formula.technicalLineBrand ?? null
+          );
+
+          this.technicalLineName.set(
+            formula.technicalLineName ?? null
+          );
+
+          this.whiteHairCoverageApplied.set(
+            formula.whiteHairCoverageApplied ?? false
+          );
+
+          this.whiteHairNaturalBaseSharePercentage.set(
+            formula.whiteHairNaturalBaseSharePercentage ?? null
+          );
+
+          this.recommendedProcessingTimeMinutes.set(
+            formula.recommendedProcessingTimeMinutes ?? null
+          );
 
           this.form.patchValue({
 
@@ -1520,6 +1682,44 @@ export class ColorFormulaBuilderComponent
             )
 
           : undefined,
+
+      origin:
+        this.formulaOrigin(),
+
+      parentFormulaId:
+        this.parentFormulaId() ??
+        undefined,
+
+      referenceSourceFormulaId:
+        this.referenceSourceFormulaId() ??
+        undefined,
+
+      sourceRecommendationCode:
+        this.sourceRecommendationCode() ??
+        undefined,
+
+      sourceRecommendationTitle:
+        this.sourceRecommendationTitle() ??
+        undefined,
+
+      technicalLineBrand:
+        this.technicalLineBrand() ??
+        undefined,
+
+      technicalLineName:
+        this.technicalLineName() ??
+        undefined,
+
+      whiteHairCoverageApplied:
+        this.whiteHairCoverageApplied(),
+
+      whiteHairNaturalBaseSharePercentage:
+        this.whiteHairNaturalBaseSharePercentage() ??
+        undefined,
+
+      recommendedProcessingTimeMinutes:
+        this.recommendedProcessingTimeMinutes() ??
+        undefined,
 
       name:
         value.name?.trim() ??
