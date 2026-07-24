@@ -35,6 +35,7 @@ import { ProfileListComponent } from './features/profile/profile-list/profile-li
 import { ColorLabComponent } from './features/color-lab/color-lab/color-lab';
 import { HairDyeFormComponent } from './features/color-lab/hair-dye-form/hair-dye-form';
 import { HairDyeInventoryFormComponent } from './features/color-lab/hair-dye-inventory-form/hair-dye-inventory-form';
+import { HairDyeInventoryMovementListComponent } from './features/color-lab/hair-dye-inventory-movement-list/hair-dye-inventory-movement-list';
 import { ColorFormulaListComponent } from './features/color-lab/color-formula-list/color-formula-list';
 import { ColorFormulaBuilderComponent } from './features/color-lab/color-formula-builder/color-formula-builder';
 import { ColorFormulaDetailComponent } from './features/color-lab/color-formula-detail/color-formula-detail';
@@ -92,6 +93,7 @@ export const routes: Routes = [
       { path: 'color-lab/smart-formula', component: ColorSmartDiagnosisComponent },
       { path: 'color-lab/products/new', component: HairDyeFormComponent },
       { path: 'color-lab/products/:id/edit', component: HairDyeFormComponent },
+      { path: 'color-lab/movements', component: HairDyeInventoryMovementListComponent },
       { path: 'color-lab/inventory/:hairDyeId', component: HairDyeInventoryFormComponent },
       { path: 'color-lab/formulas', component: ColorFormulaListComponent },
       { path: 'color-lab/formulas/new', component: ColorFormulaBuilderComponent },

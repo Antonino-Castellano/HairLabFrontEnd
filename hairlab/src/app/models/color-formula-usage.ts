@@ -1,12 +1,8 @@
 import { InventoryUnit } from './enums/inventory-unit';
 import { Oxygen } from './enums/oxygen';
 import { ProductType } from './enums/product-type';
+import { HairDyeInventoryMovementType } from './hair-dye-inventory-movement';
 
-export type HairDyeInventoryMovementType =
-  | 'STOCK_IN'
-  | 'STOCK_OUT'
-  | 'FORMULA_USAGE'
-  | 'ADJUSTMENT';
 
 export interface ColorFormulaUseRequest {
   developerHairDyeId: number;

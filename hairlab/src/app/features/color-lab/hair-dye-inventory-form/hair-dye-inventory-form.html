@@ -1,63 +1,481 @@
-<section class="inventory-form-page">
+<section class="inventory-page">
+
   <header class="page-header">
+
     <div>
-      <span class="eyebrow">COLOR LAB · MAGAZZINO</span>
-      <h1>Gestione giacenza</h1>
-      <p>Registra la quantità realmente disponibile e la soglia di scorta minima.</p>
+
+      <span class="eyebrow">
+        COLOR LAB · MAGAZZINO
+      </span>
+
+      <h1>
+        Scheda giacenza
+      </h1>
+
+      <p>
+        Ogni variazione quantitativa viene registrata
+        nello storico movimenti con quantità prima/dopo,
+        causale, utente e data.
+      </p>
+
     </div>
-    <a class="back-button" routerLink="/color-lab" [queryParams]="{tab:'inventory'}">← Torna al magazzino</a>
+
+    <div class="header-actions">
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab/movements">
+        Tutti i movimenti
+      </a>
+
+      <a
+        class="secondary-button"
+        routerLink="/color-lab"
+        [queryParams]="{
+          tab: 'inventory'
+        }">
+        ← Magazzino
+      </a>
+
+    </div>
+
   </header>
 
-  @if (errorMessage()) { <div class="error-message">{{ errorMessage() }}</div> }
+  @if (
+    errorMessage()
+  ) {
 
-  @if (product(); as currentProduct) {
-    <article class="product-summary">
-      <div class="product-code"><span>{{ currentProduct.brand }}</span><strong>{{ currentProduct.code }}</strong></div>
-      <div><span>PRODOTTO</span><strong>{{ currentProduct.name }}</strong></div>
-      <div><span>TIPO</span><strong>{{ productTypeLabels[currentProduct.productType] }}</strong></div>
-      <div><span>POSIZIONE</span><strong>{{ inventory() ? 'Configurata' : 'Nuova' }}</strong></div>
-    </article>
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
   }
 
-  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
-    <div class="section-heading">
-      <span>01</span>
-      <div><h2>Quantità corrente</h2><p>Questi dati saranno usati per verificare se una formula è realmente eseguibile.</p></div>
+  @if (
+    successMessage()
+  ) {
+
+    <div class="message success">
+      {{ successMessage() }}
     </div>
 
-    <div class="form-grid">
-      <label><span>Quantità disponibile *</span><input type="number" min="0" step="0.01" formControlName="quantityAvailable"></label>
-      <label>
-        <span>Unità *</span>
-        <select formControlName="unit">
-          @for (unit of units; track unit) { <option [value]="unit">{{ unitLabels[unit] }}</option> }
-        </select>
-      </label>
-      <label><span>Soglia scorta minima *</span><input type="number" min="0" step="0.01" formControlName="lowStockThreshold"></label>
+  }
+
+  @if (
+    product();
+    as currentProduct
+  ) {
+
+    <article class="product-summary">
+
+      <div>
+        <span>PRODOTTO</span>
+        <strong>
+          {{ currentProduct.brand }}
+          @if (currentProduct.lineName) {
+            · {{ currentProduct.lineName }}
+          }
+        </strong>
+        <small>
+          {{ currentProduct.code }} · {{ currentProduct.name }}
+        </small>
+      </div>
+
+      <div>
+        <span>TIPO</span>
+        <strong>
+          {{ productTypeLabels[currentProduct.productType] }}
+        </strong>
+      </div>
+
+      @if (
+        inventory();
+        as currentInventory
+      ) {
+
+        <div>
+          <span>DISPONIBILE</span>
+          <strong class="stock-value">
+            {{ currentInventory.quantityAvailable }}
+            {{ unitLabels[currentInventory.unit] }}
+          </strong>
+        </div>
+
+        <div>
+          <span>STATO</span>
+          <strong
+            class="stock-state"
+            [attr.data-stock]="getStockState()">
+            {{ getStockStateLabel() }}
+          </strong>
+        </div>
+
+      }
+
+    </article>
+
+  }
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-card">
+      Caricamento magazzino...
     </div>
 
-    <div class="stock-preview" [attr.data-stock]="getStockPreview()">
-      <div><span>STATO PREVISTO</span><strong>{{ getStockPreviewLabel() }}</strong></div>
-      <p>
-        Quantità: <strong>{{ form.controls.quantityAvailable.value }} {{ unitLabels[form.controls.unit.value] }}</strong>
-        · soglia: <strong>{{ form.controls.lowStockThreshold.value }} {{ unitLabels[form.controls.unit.value] }}</strong>
-      </p>
+  } @else if (
+    !inventory()
+  ) {
+
+    <form
+      class="card"
+      [formGroup]="initialForm"
+      (ngSubmit)="createInventory()">
+
+      <div class="section-heading">
+
+        <span>01</span>
+
+        <div>
+          <h2>Apri posizione di magazzino</h2>
+          <p>
+            La quantità iniziale genera automaticamente
+            il primo movimento auditabile.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label>
+          <span>Quantità iniziale *</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="quantityAvailable">
+        </label>
+
+        <label>
+          <span>Unità *</span>
+          <select formControlName="unit">
+            @for (unit of units; track unit) {
+              <option [value]="unit">
+                {{ unitLabels[unit] }}
+              </option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Soglia scorta minima *</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="lowStockThreshold">
+        </label>
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="submit"
+          class="primary-button">
+          Crea posizione
+        </button>
+
+      </div>
+
+    </form>
+
+  } @else if (
+    inventory();
+    as currentInventory
+  ) {
+
+    <div class="dashboard-grid">
+
+      <form
+        class="card"
+        [formGroup]="movementForm"
+        (ngSubmit)="createMovement()">
+
+        <div class="section-heading">
+
+          <span>01</span>
+
+          <div>
+            <h2>Registra movimento</h2>
+            <p>
+              Carico, scarico, reso, rettifica
+              o conteggio fisico.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="form-grid single">
+
+          <label>
+            <span>Tipo movimento *</span>
+            <select formControlName="movementType">
+              @for (
+                type of manualMovementTypes;
+                track type
+              ) {
+                <option [value]="type">
+                  {{ movementTypeLabels[type] }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>
+              {{
+                isInventoryCount()
+                  ? 'Quantità fisica rilevata *'
+                  : 'Quantità movimento *'
+              }}
+            </span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="quantity">
+            <small>
+              Unità: {{ unitLabels[currentInventory.unit] }}
+            </small>
+          </label>
+
+          <label>
+            <span>Riferimento</span>
+            <input
+              type="text"
+              formControlName="referenceCode"
+              placeholder="DDT, fattura, ordine, ticket...">
+          </label>
+
+          <label>
+            <span>Causale / note *</span>
+            <textarea
+              rows="4"
+              formControlName="reason"
+              placeholder="Spiega il motivo del movimento..."></textarea>
+          </label>
+
+        </div>
+
+        @if (
+          isInventoryCount()
+        ) {
+
+          <div class="technical-note">
+            <strong>Inventario fisico</strong>
+            <p>
+              La quantità inserita diventa la nuova giacenza reale.
+              HairLab registra automaticamente la differenza
+              rispetto alla quantità precedente.
+            </p>
+          </div>
+
+        }
+
+        <div class="form-actions">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="savingMovement()">
+            {{
+              savingMovement()
+                ? 'Registrazione...'
+                : 'Registra movimento'
+            }}
+          </button>
+
+        </div>
+
+      </form>
+
+      <form
+        class="card"
+        [formGroup]="settingsForm"
+        (ngSubmit)="saveSettings()">
+
+        <div class="section-heading">
+
+          <span>02</span>
+
+          <div>
+            <h2>Impostazioni posizione</h2>
+            <p>
+              La quantità corrente non è modificabile direttamente:
+              usa sempre un movimento.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="current-stock-box">
+
+          <span>GIACENZA CORRENTE</span>
+
+          <strong>
+            {{ currentInventory.quantityAvailable }}
+            {{ unitLabels[currentInventory.unit] }}
+          </strong>
+
+        </div>
+
+        <div class="form-grid single">
+
+          <label>
+            <span>Unità *</span>
+            <select formControlName="unit">
+              @for (unit of units; track unit) {
+                <option [value]="unit">
+                  {{ unitLabels[unit] }}
+                </option>
+              }
+            </select>
+            <small>
+              Con stock maggiore di zero il backend impedisce
+              il cambio di unità.
+            </small>
+          </label>
+
+          <label>
+            <span>Soglia scorta minima *</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="lowStockThreshold">
+          </label>
+
+        </div>
+
+        <div class="form-actions">
+
+          <button
+            type="submit"
+            class="secondary-button">
+            Salva impostazioni
+          </button>
+
+        </div>
+
+      </form>
+
     </div>
 
-    <div class="technical-note">
-      <strong>Nota</strong>
-      <p>
-        In questo blocco modifichiamo la giacenza corrente direttamente.
-        Carichi, scarichi automatici e storico movimenti arriveranno
-        quando collegheremo l'utilizzo reale delle formule al magazzino.
-      </p>
-    </div>
+    <section class="card history-card">
 
-    <div class="form-actions">
-      <a class="secondary-button" routerLink="/color-lab" [queryParams]="{tab:'inventory'}">Annulla</a>
-      <button type="submit" class="primary-button" [disabled]="loading()">
-        {{ loading() ? 'Salvataggio...' : (inventory() ? 'Aggiorna giacenza' : 'Crea giacenza') }}
-      </button>
-    </div>
-  </form>
+      <div class="section-heading">
+
+        <span>03</span>
+
+        <div>
+          <h2>Ultimi movimenti</h2>
+          <p>
+            Storico completo della posizione con quantità prima/dopo.
+          </p>
+        </div>
+
+      </div>
+
+      @if (
+        movements().length ===
+        0
+      ) {
+
+        <div class="state-card">
+          Nessun movimento registrato.
+        </div>
+
+      } @else {
+
+        <div class="movement-list">
+
+          @for (
+            movement of movements();
+            track movement.id
+          ) {
+
+            <article class="movement-row">
+
+              <div class="movement-main">
+
+                <span
+                  class="movement-type"
+                  [attr.data-type]="movement.movementType">
+                  {{ movementTypeLabels[movement.movementType] }}
+                </span>
+
+                <strong>
+                  {{ getMovementSign(movement) }}{{ movement.signedDelta }}
+                  {{ unitLabels[movement.unit] }}
+                </strong>
+
+                <small>
+                  {{ movement.quantityBefore }}
+                  →
+                  {{ movement.quantityAfter }}
+                  {{ unitLabels[movement.unit] }}
+                </small>
+
+              </div>
+
+              <div class="movement-meta">
+
+                <strong>
+                  {{ movement.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                </strong>
+
+                <span>
+                  {{ movement.actorEmail || 'SYSTEM' }}
+                </span>
+
+                @if (movement.referenceCode) {
+                  <span>
+                    Rif. {{ movement.referenceCode }}
+                  </span>
+                }
+
+              </div>
+
+              <p>
+                {{ movement.reason || 'Nessuna nota' }}
+              </p>
+
+              @if (movement.formulaId) {
+
+                <a
+                  class="formula-link"
+                  [routerLink]="[
+                    '/color-lab/formulas',
+                    movement.formulaId
+                  ]">
+                  Apri formula #{{ movement.formulaId }}
+                </a>
+
+              }
+
+            </article>
+
+          }
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
 </section>

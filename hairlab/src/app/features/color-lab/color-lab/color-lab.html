@@ -397,10 +397,18 @@
             <span class="panel-eyebrow">GIACENZE COLOR LAB</span>
             <h2>Magazzino prodotti tecnici</h2>
             <p>
-              Le quantità registrate qui saranno il vincolo reale
-              del futuro Smart Formula Engine.
+              Le quantità registrate sono il vincolo reale
+              di Smart Formula e degli utilizzi professionali.
             </p>
           </div>
+        </div>
+
+        <div class="inventory-section-actions">
+          <a
+            class="secondary-button"
+            routerLink="/color-lab/movements">
+            Storico movimenti
+          </a>
         </div>
 
         <div class="inventory-tools">
@@ -453,7 +461,7 @@
                 </span>
 
                 @if (product.id) {
-                  <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Modifica scorta</a>
+                  <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Gestisci giacenza</a>
                 }
               </article>
             } @else {

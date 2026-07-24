@@ -1,0 +1,224 @@
+<section class="movement-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        COLOR LAB · AUDIT MAGAZZINO
+      </span>
+
+      <h1>
+        Movimenti magazzino
+      </h1>
+
+      <p>
+        Traccia carichi, scarichi, formule utilizzate,
+        resi, rettifiche e inventari fisici.
+      </p>
+
+    </div>
+
+    <a
+      class="secondary-button"
+      routerLink="/color-lab"
+      [queryParams]="{
+        tab: 'inventory'
+      }">
+      ← Magazzino
+    </a>
+
+  </header>
+
+  @if (
+    errorMessage()
+  ) {
+
+    <div class="message error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <div class="stats-grid">
+
+    <article>
+      <span>MOVIMENTI TOTALI</span>
+      <strong>{{ movements().length }}</strong>
+    </article>
+
+    <article>
+      <span>MOVIMENTI POSITIVI</span>
+      <strong>{{ totalPositive() }}</strong>
+    </article>
+
+    <article>
+      <span>MOVIMENTI NEGATIVI</span>
+      <strong>{{ totalNegative() }}</strong>
+    </article>
+
+  </div>
+
+  <div class="toolbar">
+
+    <label>
+
+      <span>Cerca</span>
+
+      <input
+        type="search"
+        placeholder="Prodotto, utente, riferimento, causale..."
+        [value]="search()"
+        (input)="onSearch($event)">
+
+    </label>
+
+    <label>
+
+      <span>Tipo movimento</span>
+
+      <select
+        [value]="typeFilter()"
+        (change)="onTypeFilter($event)">
+
+        <option value="ALL">
+          Tutti
+        </option>
+
+        @for (
+          type of availableTypes;
+          track type
+        ) {
+
+          <option [value]="type">
+            {{ typeLabels[type] }}
+          </option>
+
+        }
+
+      </select>
+
+    </label>
+
+  </div>
+
+  @if (
+    loading()
+  ) {
+
+    <div class="state-card">
+      Caricamento movimenti...
+    </div>
+
+  } @else if (
+    filteredMovements().length ===
+    0
+  ) {
+
+    <div class="state-card">
+      Nessun movimento corrisponde ai filtri.
+    </div>
+
+  } @else {
+
+    <div class="movement-table">
+
+      @for (
+        movement of filteredMovements();
+        track movement.id
+      ) {
+
+        <article class="movement-row">
+
+          <div class="product-cell">
+
+            <span>
+              {{ movement.brand }}
+              @if (movement.lineName) {
+                · {{ movement.lineName }}
+              }
+            </span>
+
+            <strong>
+              {{ movement.code }} · {{ movement.name }}
+            </strong>
+
+          </div>
+
+          <div>
+            <span>TIPO</span>
+            <strong>
+              {{ typeLabels[movement.movementType] }}
+            </strong>
+          </div>
+
+          <div>
+            <span>VARIAZIONE</span>
+            <strong
+              [class.positive]="movement.signedDelta > 0"
+              [class.negative]="movement.signedDelta < 0">
+              {{ getSign(movement) }}{{ movement.signedDelta }}
+              {{ unitLabels[movement.unit] }}
+            </strong>
+            <small>
+              {{ movement.quantityBefore }} → {{ movement.quantityAfter }}
+            </small>
+          </div>
+
+          <div>
+            <span>DATA / UTENTE</span>
+            <strong>
+              {{ movement.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </strong>
+            <small>
+              {{ movement.actorEmail || 'SYSTEM' }}
+            </small>
+          </div>
+
+          <div class="reason-cell">
+            <span>CAUSALE</span>
+            <strong>
+              {{ movement.reason || '—' }}
+            </strong>
+            @if (movement.referenceCode) {
+              <small>
+                Rif. {{ movement.referenceCode }}
+              </small>
+            }
+          </div>
+
+          <div class="actions">
+
+            <a
+              class="small-button"
+              [routerLink]="[
+                '/color-lab/inventory',
+                movement.hairDyeId
+              ]">
+              Giacenza
+            </a>
+
+            @if (movement.formulaId) {
+
+              <a
+                class="small-button"
+                [routerLink]="[
+                  '/color-lab/formulas',
+                  movement.formulaId
+                ]">
+                Formula
+              </a>
+
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

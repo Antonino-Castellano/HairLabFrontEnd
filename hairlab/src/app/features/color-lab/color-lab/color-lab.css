@@ -121,3 +121,10 @@
   background: #f5ebe5;
   color: #654b3e;
 }
+
+
+.inventory-section-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: -6px 0 12px;
+}
