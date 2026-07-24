@@ -1,0 +1,161 @@
+<section class="technical-record">
+  @if (loading()) {
+    <div class="record-state">Caricamento cartella tecnica colore...</div>
+  } @else if (errorMessage()) {
+    <div class="record-state error">{{ errorMessage() }}</div>
+  } @else if (analysis(); as current) {
+    <header class="record-header">
+      <div>
+        <span>CARTELLA TECNICA COLORE · BLOCCO 25</span>
+        <h2>{{ current.customer.firstName }} {{ current.customer.lastName }}</h2>
+        <p>Profilo tecnico, formule, risultati e appuntamenti riuniti in una sola vista.</p>
+      </div>
+      <div class="completeness" [class.complete]="current.completeProfile">
+        <strong>{{ current.completeProfile ? 'Completa' : 'Da completare' }}</strong>
+        <small>Qualità dati cliente</small>
+      </div>
+    </header>
+
+    <div class="record-kpis">
+      <article><span>Formule</span><strong>{{ formulaHistory()?.totalCount ?? 0 }}</strong></article>
+      <article><span>Utilizzate</span><strong>{{ formulaHistory()?.usedCount ?? 0 }}</strong></article>
+      <article><span>Esiti positivi</span><strong>{{ formulaHistory()?.positiveResultCount ?? 0 }}</strong></article>
+      <article><span>Appuntamenti completati</span><strong>{{ completedAppointments() }}</strong></article>
+      <article><span>Appuntamenti attivi</span><strong>{{ upcomingAppointments() }}</strong></article>
+    </div>
+
+    <div class="record-grid">
+      <article class="record-card">
+        <span class="eyebrow">PROFILO CAPELLI ATTUALE</span>
+        @if (current.hairProfile; as profile) {
+          <dl>
+            <div><dt>Tono naturale</dt><dd>{{ toneLabels[profile.naturalTone] }}</dd></div>
+            <div><dt>Tono attuale</dt><dd>{{ toneLabels[profile.currentTone] }}</dd></div>
+            <div><dt>Riflesso</dt><dd>{{ reflectionLabels[profile.reflection] }}</dd></div>
+            <div><dt>Porosità</dt><dd>{{ profile.porosity }}</dd></div>
+            <div><dt>Condizione</dt><dd>{{ profile.hairCondition }}</dd></div>
+            <div><dt>Capelli bianchi</dt><dd>{{ profile.whiteHairPercentage ?? 0 }}%</dd></div>
+          </dl>
+        } @else {
+          <p>Profilo capelli non compilato.</p>
+        }
+      </article>
+
+      <article class="record-card reference-card">
+        <span class="eyebrow">FORMULA DI RIFERIMENTO</span>
+        @if (referenceFormula(); as ref) {
+          <h3>{{ ref.formula.name }}</h3>
+          <p>{{ ref.formula.targetResult }}</p>
+          @if (ref.result) {
+            <strong>Ultimo esito: {{ ref.result.assessment }}</strong>
+          }
+          @if (ref.formula.id) {
+            <a [routerLink]="['/color-lab/formulas', ref.formula.id]">Apri formula →</a>
+          }
+        } @else {
+          <p>Nessuna formula di riferimento validata.</p>
+        }
+      </article>
+    </div>
+
+    <article class="record-card suggestions-card">
+      <span class="eyebrow">OBIETTIVI COLORE HAIRLAB</span>
+      @if (current.recommendations.colorRecommendations.length > 0) {
+        <div class="suggestion-list">
+          @for (suggestion of current.recommendations.colorRecommendations.slice(0, 5); track suggestion.title) {
+            <div>
+              <strong>{{ suggestion.title }}</strong>
+              <span>{{ suggestion.compatibilityScore }}/100</span>
+              <p>{{ suggestion.description }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>Nessun suggerimento colore disponibile.</p>
+      }
+    </article>
+
+    @if (learningInsight(); as learning) {
+      <article class="record-card learning-card">
+        <div class="learning-heading">
+          <div>
+            <span class="eyebrow">BLOCCO 27 · APPRENDIMENTO CONTROLLATO</span>
+            <h3>Cosa emerge dallo storico reale</h3>
+          </div>
+          <span class="evidence-badge" [attr.data-level]="learning.evidenceLevel">
+            Evidenza {{ learning.evidenceLevel }}
+          </span>
+        </div>
+
+        <p class="learning-summary">{{ learning.summary }}</p>
+
+        <div class="learning-grid">
+          <div>
+            <strong>Osservazioni</strong>
+            @for (observation of learning.observations; track observation) {
+              <p>• {{ observation }}</p>
+            }
+          </div>
+          <div>
+            <strong>Indicazioni da valutare</strong>
+            @for (recommendation of learning.recommendations; track recommendation) {
+              <p>→ {{ recommendation }}</p>
+            }
+          </div>
+        </div>
+
+        @if (learning.evidence.length > 0) {
+          <div class="learning-evidence">
+            <strong>Evidenze registrate</strong>
+            @for (item of learning.evidence; track item) {
+              <span>{{ item }}</span>
+            }
+          </div>
+        }
+
+        @if (learning.suggestedReferenceFormulaId) {
+          <div class="reference-suggestion">
+            <span>Formula positiva da valutare come riferimento</span>
+            <strong>{{ learning.suggestedReferenceFormulaName }}</strong>
+            <a [routerLink]="['/color-lab/formulas', learning.suggestedReferenceFormulaId]">
+              Apri e valuta →
+            </a>
+          </div>
+        }
+
+        <small class="learning-disclaimer">
+          HairLab non modifica automaticamente grammi, developer o tempi: le indicazioni derivano solo dai risultati registrati e richiedono conferma professionale.
+        </small>
+      </article>
+    }
+
+    <article class="record-card timeline-card">
+      <div class="timeline-heading">
+        <div>
+          <span class="eyebrow">TIMELINE TECNICA</span>
+          <h3>Ultimi eventi colore e appuntamenti</h3>
+        </div>
+      </div>
+
+      <div class="technical-timeline">
+        @for (event of timeline(); track event.kind + event.date + event.title) {
+          <div class="timeline-row" [class.formula]="event.kind === 'FORMULA'">
+            <div class="timeline-date">{{ event.date | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span>{{ event.kind === 'FORMULA' ? 'FORMULA' : 'APPUNTAMENTO' }} · {{ event.status }}</span>
+              <strong>{{ event.title }}</strong>
+              <p>{{ event.subtitle }}</p>
+              @if (event.formulaId) {
+                <a [routerLink]="['/color-lab/formulas', event.formulaId]">Apri formula →</a>
+              }
+              @if (event.appointmentId) {
+                <a [routerLink]="['/appointments', event.appointmentId]">Apri appuntamento →</a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+  }
+</section>

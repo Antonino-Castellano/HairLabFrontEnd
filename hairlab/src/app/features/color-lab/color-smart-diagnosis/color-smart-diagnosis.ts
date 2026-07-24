@@ -74,6 +74,8 @@ import {
   HairProfileService
 } from '../../../service/hair-profile-service';
 
+import { ColorLabSectionNavComponent } from '../color-lab-section-nav/color-lab-section-nav';
+
 import {
   COLOR_APPLICATION_LABELS
 } from '../color-formula-display';
@@ -111,7 +113,8 @@ import {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink
+    RouterLink,
+    ColorLabSectionNavComponent
   ],
   templateUrl:
     './color-smart-diagnosis.html',
@@ -176,6 +179,16 @@ export class ColorSmartDiagnosisComponent
     signal<ColorSmartFormulaResponse | null>(
       null
     );
+
+
+  /** Suggerimento colore HairLab da cui è stato aperto Smart Formula. */
+  protected readonly sourceRecommendation =
+    signal<{
+      customerId: number;
+      code: string;
+      title: string;
+      compatibilityScore: number | null;
+    } | null>(null);
 
 
   /**
@@ -345,22 +358,71 @@ export class ColorSmartDiagnosisComponent
   private applyContextFromQuery():
     void {
 
+    const params =
+      this.activatedRoute.snapshot.queryParamMap;
+
     const customerId =
       Number(
-        this.activatedRoute.snapshot.queryParamMap.get('customerId')
+        params.get('customerId')
       );
 
     if (
       !Number.isInteger(customerId)
-      ||
-      customerId <= 0
-      ||
-      !this.customers().some(customer => customer.id === customerId)
+      || customerId <= 0
+      || !this.customers().some(customer => customer.id === customerId)
     ) {
       return;
     }
 
     this.form.controls.customerId.setValue(customerId);
+
+    const targetTone =
+      params.get('targetToneLevel') as ToneLevel | null;
+
+    if (targetTone && Object.values(ToneLevel).includes(targetTone)) {
+      this.form.controls.targetToneLevel.setValue(targetTone);
+    }
+
+    const primary =
+      params.get('targetPrimaryReflection') as Reflection | null;
+
+    if (primary && Object.values(Reflection).includes(primary)) {
+      this.form.controls.targetPrimaryReflection.setValue(primary);
+    }
+
+    const secondary =
+      params.get('targetSecondaryReflection') as Reflection | null;
+
+    if (secondary && Object.values(Reflection).includes(secondary)) {
+      this.form.controls.targetSecondaryReflection.setValue(secondary);
+    }
+
+    const application =
+      params.get('applicationType') as ColorApplicationType | null;
+
+    if (application && Object.values(ColorApplicationType).includes(application)) {
+      this.form.controls.applicationType.setValue(application);
+    }
+
+    const targetResult = params.get('targetResult');
+    if (targetResult) {
+      this.form.controls.targetResult.setValue(targetResult);
+    }
+
+    const code = params.get('sourceRecommendationCode');
+    const title = params.get('sourceRecommendationTitle');
+    const scoreValue = Number(params.get('sourceRecommendationCompatibilityScore'));
+
+    if (code && title) {
+      this.sourceRecommendation.set({
+        customerId,
+        code,
+        title,
+        compatibilityScore:
+          Number.isFinite(scoreValue) ? scoreValue : null
+      });
+    }
+
     this.onCustomerChange();
   }
 
@@ -417,6 +479,18 @@ export class ColorSmartDiagnosisComponent
       this.form.controls
         .customerId
         .value;
+
+
+    const source =
+      this.sourceRecommendation();
+
+    if (
+      source
+      && customerId
+      && source.customerId !== customerId
+    ) {
+      this.sourceRecommendation.set(null);
+    }
 
     if (
       !customerId
@@ -713,7 +787,16 @@ export class ColorSmartDiagnosisComponent
 
       targetResult:
         value.targetResult?.trim() ??
-        ''
+        '',
+
+      sourceRecommendationCode:
+        this.sourceRecommendation()?.code ?? null,
+
+      sourceRecommendationTitle:
+        this.sourceRecommendation()?.title ?? null,
+
+      sourceRecommendationCompatibilityScore:
+        this.sourceRecommendation()?.compatibilityScore ?? null
     };
   }
 

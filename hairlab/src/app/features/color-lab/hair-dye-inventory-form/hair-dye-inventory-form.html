@@ -21,6 +21,7 @@
     </div>
 
     <div class="header-actions">
+      <a class="secondary-button" routerLink="/color-lab/reorder">Centro riordino</a>
 
       <a
         class="secondary-button"
@@ -177,6 +178,9 @@
             step="0.01"
             formControlName="lowStockThreshold">
         </label>
+
+        <label><span>Stock obiettivo riordino *</span><input type="number" min="0" step="0.01" formControlName="reorderTargetQuantity"></label>
+        <label><span>Fornitore preferenziale</span><select formControlName="preferredSupplierId"><option [value]="0">Nessun fornitore</option>@for(supplier of suppliers();track supplier.id){<option [value]="supplier.id">{{supplier.name}}</option>}</select></label>
 
       </div>
 
@@ -356,6 +360,22 @@
               min="0"
               step="0.01"
               formControlName="lowStockThreshold">
+          </label>
+
+          <label>
+            <span>Stock obiettivo riordino *</span>
+            <input type="number" min="0" step="0.01" formControlName="reorderTargetQuantity">
+            <small>Target usato dal Centro riordino.</small>
+          </label>
+
+          <label>
+            <span>Fornitore preferenziale</span>
+            <select formControlName="preferredSupplierId">
+              <option [value]="0">Nessun fornitore</option>
+              @for (supplier of suppliers(); track supplier.id) {
+                <option [value]="supplier.id">{{ supplier.name }}</option>
+              }
+            </select>
           </label>
 
         </div>

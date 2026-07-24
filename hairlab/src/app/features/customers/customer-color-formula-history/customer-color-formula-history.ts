@@ -31,12 +31,26 @@ import {
 } from '../../../models/enums/color-formula-status';
 
 import {
+  ColorFormulaOrigin
+} from '../../../models/enums/color-formula-origin';
+
+import {
+  ColorResultAssessment
+} from '../../../models/color-formula-result';
+
+import {
   ColorFormulaHistoryService
 } from '../../../service/color-formula-history-service';
 
 import {
+  COLOR_FORMULA_ORIGIN_LABELS,
   COLOR_FORMULA_STATUS_LABELS
 } from '../../color-lab/color-formula-display';
+
+import {
+  REFLECTION_LABELS,
+  TONE_LEVEL_LABELS
+} from '../../color-lab/color-lab-display';
 
 /**
  * Storico Color Lab integrato
@@ -89,6 +103,15 @@ export class CustomerColorFormulaHistoryComponent
       null
     );
 
+  protected readonly referenceActionFormulaId =
+    signal<number | null>(null);
+
+  protected readonly repeatingReference =
+    signal(false);
+
+  protected readonly successMessage =
+    signal('');
+
   protected readonly statusFilter =
     signal<
       ColorFormulaStatus |
@@ -104,6 +127,31 @@ export class CustomerColorFormulaHistoryComponent
 
   protected readonly statusLabels =
     COLOR_FORMULA_STATUS_LABELS;
+
+  protected readonly originLabels =
+    COLOR_FORMULA_ORIGIN_LABELS;
+
+  protected readonly toneLabels =
+    TONE_LEVEL_LABELS;
+
+  protected readonly reflectionLabels =
+    REFLECTION_LABELS;
+
+  protected readonly resultAssessmentLabels:
+    Record<ColorResultAssessment, string> = {
+
+      EXCELLENT:
+        'Eccellente',
+
+      GOOD:
+        'Buono',
+
+      PARTIAL:
+        'Parziale',
+
+      CORRECTION_REQUIRED:
+        'Da correggere'
+    };
 
   protected readonly filteredItems =
     computed(
@@ -308,6 +356,94 @@ export class CustomerColorFormulaHistoryComponent
       });
   }
 
+  protected isReference(
+    item: ColorFormulaHistoryItem
+  ): boolean {
+    return item.formula.referenceFormula === true;
+  }
+
+  protected canSetReference(
+    item: ColorFormulaHistoryItem
+  ): boolean {
+    return !item.formula.referenceFormula
+      && (
+        item.formula.status === ColorFormulaStatus.USED
+        || item.formula.status === ColorFormulaStatus.ARCHIVED
+      );
+  }
+
+  protected setReference(item: ColorFormulaHistoryItem): void {
+    const formulaId = item.formula.id;
+    if (!formulaId || this.referenceActionFormulaId() != null) return;
+
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.referenceActionFormulaId.set(formulaId);
+
+    this.historyService.setReferenceFormula(formulaId).subscribe({
+      next: () => {
+        this.referenceActionFormulaId.set(null);
+        this.successMessage.set('Formula impostata come riferimento corrente.');
+        this.loadHistory();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.referenceActionFormulaId.set(null);
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile impostare la formula come riferimento.')
+        );
+      }
+    });
+  }
+
+  protected clearReference(item: ColorFormulaHistoryItem): void {
+    const formulaId = item.formula.id;
+    if (!formulaId || this.referenceActionFormulaId() != null) return;
+
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.referenceActionFormulaId.set(formulaId);
+
+    this.historyService.clearReferenceFormula(formulaId).subscribe({
+      next: () => {
+        this.referenceActionFormulaId.set(null);
+        this.successMessage.set('Formula di riferimento rimossa.');
+        this.loadHistory();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.referenceActionFormulaId.set(null);
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile rimuovere la formula di riferimento.')
+        );
+      }
+    });
+  }
+
+  protected repeatReferenceFormula(): void {
+    if (!this.history()?.referenceFormulaId || this.repeatingReference()) return;
+
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.repeatingReference.set(true);
+
+    this.historyService.repeatReferenceAsDraft(this.customerId).subscribe({
+      next: detail => {
+        this.repeatingReference.set(false);
+        if (detail.formula.id) {
+          this.router.navigate(['/color-lab/formulas', detail.formula.id, 'edit']);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.repeatingReference.set(false);
+        this.errorMessage.set(
+          this.getErrorMessage(
+            error,
+            'Impossibile creare il nuovo servizio dalla formula di riferimento.'
+          )
+        );
+      }
+    });
+  }
+
   protected canEdit(
     item:
       ColorFormulaHistoryItem
@@ -320,6 +456,18 @@ export class CustomerColorFormulaHistoryComponent
       item.formula.status ===
         ColorFormulaStatus.PROPOSED
     );
+  }
+
+  protected getOriginLabel(
+    origin:
+      ColorFormulaOrigin |
+      null |
+      undefined
+  ): string {
+
+    return origin
+      ? this.originLabels[origin]
+      : 'Manuale';
   }
 
   private getErrorMessage(

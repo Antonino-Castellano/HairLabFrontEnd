@@ -28,6 +28,10 @@ import {
 } from '../../../models/appointment-management';
 
 import {
+  AppointmentColorFormulaLink
+} from '../../../models/appointment-color-formula';
+
+import {
   AppointmentStatus
 } from '../../../models/enums/appointment-status';
 
@@ -46,6 +50,10 @@ import {
 import {
   AppointmentManagementService
 } from '../../../service/appointment-management-service';
+
+import {
+  AppointmentColorFormulaService
+} from '../../../service/appointment-color-formula-service';
 
 import {
   AppointmentService
@@ -70,6 +78,11 @@ import {
 import {
   APPOINTMENT_STATUS_LABELS
 } from '../appointment-display';
+
+import {
+  COLOR_FORMULA_ORIGIN_LABELS,
+  COLOR_FORMULA_STATUS_LABELS
+} from '../../color-lab/color-formula-display';
 
 type WorkflowAction =
   | 'confirm'
@@ -100,6 +113,9 @@ export class AppointmentDetailComponent
     inject(
       AppointmentManagementService
     );
+
+  private readonly appointmentColorFormulaService =
+    inject(AppointmentColorFormulaService);
 
   private readonly appointmentService =
     inject(
@@ -139,6 +155,12 @@ export class AppointmentDetailComponent
   protected readonly products =
     signal<SalonProduct[]>([]);
 
+  protected readonly linkedFormulas =
+    signal<AppointmentColorFormulaLink[]>([]);
+
+  protected readonly preparingFormulaItemId =
+    signal<number | null>(null);
+
   protected readonly loading =
     signal(false);
 
@@ -153,6 +175,12 @@ export class AppointmentDetailComponent
 
   protected readonly statusLabels =
     APPOINTMENT_STATUS_LABELS;
+
+  protected readonly formulaStatusLabels =
+    COLOR_FORMULA_STATUS_LABELS;
+
+  protected readonly formulaOriginLabels =
+    COLOR_FORMULA_ORIGIN_LABELS;
 
   protected readonly AppointmentStatus =
     AppointmentStatus;
@@ -236,7 +264,11 @@ export class AppointmentDetailComponent
 
       products:
         this.salonProductService
-          .getAll()
+          .getAll(),
+
+      linkedFormulas:
+        this.appointmentColorFormulaService
+          .getByAppointment(id)
 
     }).subscribe({
 
@@ -259,6 +291,10 @@ export class AppointmentDetailComponent
         this.products.set(
           result.products ??
           []
+        );
+
+        this.linkedFormulas.set(
+          result.linkedFormulas ?? []
         );
 
         this.loading.set(
@@ -334,6 +370,43 @@ export class AppointmentDetailComponent
     return product
       ? product.name
       : `Servizio #${productId}`;
+  }
+
+  protected getFormulasForItem(appointmentItemId: number | undefined): AppointmentColorFormulaLink[] {
+    if (!appointmentItemId) return [];
+    return this.linkedFormulas().filter(item => item.appointmentItemId === appointmentItemId);
+  }
+
+  protected repeatReferenceForItem(appointmentItemId: number | undefined): void {
+    if (!appointmentItemId || this.preparingFormulaItemId() != null) return;
+
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.preparingFormulaItemId.set(appointmentItemId);
+
+    this.appointmentColorFormulaService
+      .repeatReferenceForItem(appointmentItemId)
+      .subscribe({
+        next: detail => {
+          this.preparingFormulaItemId.set(null);
+          this.successMessage.set('Formula ricorrente preparata e collegata al servizio.');
+          const formulaId = detail.formula.id;
+          if (formulaId) {
+            this.router.navigate(['/color-lab/formulas', formulaId, 'edit']);
+          } else if (this.appointmentId) {
+            this.loadDetail(this.appointmentId);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.preparingFormulaItemId.set(null);
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile preparare la formula di riferimento per questo servizio.'
+            )
+          );
+        }
+      });
   }
 
   protected getTotalDuration():

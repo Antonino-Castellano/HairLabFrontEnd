@@ -211,6 +211,12 @@
 
             }
 
+            @if (movement.supplierOrderId) {
+              <a class="small-button" [routerLink]="['/color-lab/orders', movement.supplierOrderId]">
+                Ordine
+              </a>
+            }
+
           </div>
 
         </article>

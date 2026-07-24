@@ -113,6 +113,95 @@
       </label>
     </section>
 
+    <section class="card intelligent-rules-card">
+      <div class="section-intro">
+        <div>
+          <span class="eyebrow">FORMULA INTELLIGENCE · BLOCCO 17</span>
+          <h2>Regole esecutive della linea</h2>
+          <p>Configura solo dati verificati sulla scheda tecnica reale della linea. Se un campo resta vuoto, HairLab non inventa la regola.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <label>
+          <span>Developer preferito per tonalizzazione</span>
+          <select formControlName="toningDeveloperVolume">
+            <option [ngValue]="null">Non configurato</option>
+            @for (oxygen of oxygens; track oxygen) {
+              <option [ngValue]="oxygen">{{ oxygenLabels[oxygen] }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Tempo di posa di riferimento (min)</span>
+          <input
+            type="number"
+            min="1"
+            max="180"
+            step="1"
+            formControlName="defaultProcessingTimeMinutes"
+            placeholder="Es. 35">
+        </label>
+      </div>
+
+      <div class="coverage-rule">
+        <label class="coverage-toggle">
+          <input type="checkbox" formControlName="whiteHairCoverageEnabled">
+          <span>Abilita regola di copertura capelli bianchi</span>
+        </label>
+
+        @if (isWhiteHairCoverageEnabled()) {
+          <div class="grid coverage-grid">
+            <label>
+              <span>Applica da capelli bianchi (%) *</span>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                formControlName="whiteHairCoverageFromPercentage"
+                placeholder="Es. 30">
+            </label>
+
+            <label>
+              <span>Quota base naturale nella parte colore (%) *</span>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                formControlName="whiteHairNaturalBaseSharePercentage"
+                placeholder="Es. 50">
+            </label>
+
+            <label>
+              <span>Developer preferito per copertura</span>
+              <select formControlName="whiteHairCoverageDeveloperVolume">
+                <option [ngValue]="null">Non configurato</option>
+                @for (oxygen of oxygens; track oxygen) {
+                  <option [ngValue]="oxygen">{{ oxygenLabels[oxygen] }}</option>
+                }
+              </select>
+            </label>
+          </div>
+
+          <label class="notes">
+            <span>Note copertura capelli bianchi</span>
+            <textarea
+              rows="4"
+              formControlName="whiteHairCoverageNotes"
+              placeholder="Riporta qui solo indicazioni verificate dalla scheda tecnica: serie naturale richiesta, eccezioni, resistenze, tempi specifici...">
+            </textarea>
+          </label>
+
+          <div class="safety-note">
+            La percentuale di base naturale è una regola configurabile della linea, non una regola universale HairLab. Smart Formula la applica soltanto quando la soglia impostata è raggiunta.
+          </div>
+        }
+      </div>
+    </section>
+
     <section class="card">
       <label class="active-row">
         <input type="checkbox" formControlName="active">

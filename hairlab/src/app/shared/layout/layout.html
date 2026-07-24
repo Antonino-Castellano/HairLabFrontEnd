@@ -181,7 +181,7 @@
               routerLink="/color-lab/formulas"
               routerLinkActive="active"
               (click)="closeSidebarAfterNavigation()">
-              Formule colore
+              Formula Center
             </a>
 
             <a
@@ -199,13 +199,6 @@
             </a>
 
             <a
-              routerLink="/color-lab/movements"
-              routerLinkActive="active"
-              (click)="closeSidebarAfterNavigation()">
-              Movimenti magazzino
-            </a>
-
-            <a
               routerLink="/color-lab/lines"
               routerLinkActive="active"
               (click)="closeSidebarAfterNavigation()">
@@ -213,6 +206,64 @@
             </a>
           </div>
         }
+      </div>
+
+      <!-- MAGAZZINO & ACQUISTI
+           Separato dal Color Lab tecnico:
+           contiene flussi operativi di scorte e fornitori. -->
+      <div
+        class="nav-group"
+        [class.expanded]="stockMenuOpen()">
+
+        <button
+          class="nav-item nav-group-toggle"
+          type="button"
+          (click)="toggleStockMenu()">
+
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4 9-4V7M12 11v10"></path>
+            </svg>
+          </span>
+
+          <span>Magazzino & Acquisti</span>
+          <span class="nav-chevron">›</span>
+        </button>
+
+        @if (stockMenuOpen()) {
+          <div class="nav-submenu">
+
+            <a
+              routerLink="/color-lab/movements"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Movimenti magazzino
+            </a>
+
+            <a
+              routerLink="/color-lab/reorder"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Riordino
+            </a>
+
+            <a
+              routerLink="/color-lab/orders"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Ordini fornitori
+            </a>
+
+            <a
+              routerLink="/color-lab/suppliers"
+              routerLinkActive="active"
+              (click)="closeSidebarAfterNavigation()">
+              Fornitori
+            </a>
+
+          </div>
+        }
+
       </div>
 
     </nav>

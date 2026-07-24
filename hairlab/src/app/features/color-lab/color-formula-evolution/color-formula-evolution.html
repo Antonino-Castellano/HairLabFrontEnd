@@ -1,0 +1,229 @@
+<section class="evolution-page">
+
+  @if (loading()) {
+    <div class="state-card">Caricamento evoluzione formula...</div>
+  } @else if (errorMessage()) {
+    <div class="state-card error">{{ errorMessage() }}</div>
+  } @else if (evolution(); as current) {
+
+    <header class="page-header">
+      <div>
+        <span class="eyebrow">FORMULA EVOLUTION</span>
+        <h1>Timeline e confronto revisioni</h1>
+        <p>
+          Segui l'evoluzione reale della ricetta senza confondere revisioni
+          tecniche e nuovi servizi ricorrenti.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <a
+          class="secondary-button"
+          [routerLink]="['/color-lab/formulas', current.currentFormulaId]">
+          ← Dettaglio formula
+        </a>
+
+        <a
+          class="secondary-button"
+          [routerLink]="['/customers', current.customerId, 'color-formulas']">
+          Storico cliente
+        </a>
+      </div>
+    </header>
+
+    <div class="evolution-summary">
+      <article>
+        <span>FAMIGLIA</span>
+        <strong>#{{ current.rootFormulaId }}</strong>
+      </article>
+      <article>
+        <span>REVISIONI</span>
+        <strong>{{ current.steps.length }}</strong>
+      </article>
+      <article>
+        <span>ULTIMA REVISIONE</span>
+        <strong>Rev. {{ latestStep()?.historyItem?.formula?.revisionNumber ?? 1 }}</strong>
+      </article>
+      <article>
+        <span>RIFERIMENTO CLIENTE</span>
+        <strong>{{ current.referenceFormulaId ? '#' + current.referenceFormulaId : 'Non impostato' }}</strong>
+      </article>
+    </div>
+
+    <div class="timeline">
+      @for (step of current.steps; track step.historyItem.formula.id; let index = $index) {
+
+        @if (previousStep(index); as previous) {
+          <section class="comparison-card">
+            <div class="comparison-title">
+              <span>CAMBIAMENTI</span>
+              <strong>
+                Rev. {{ previous.historyItem.formula.revisionNumber ?? 1 }}
+                →
+                Rev. {{ step.historyItem.formula.revisionNumber ?? 1 }}
+              </strong>
+            </div>
+
+            @if (hasChanges(previous.historyItem, step.historyItem)) {
+              <div class="comparison-grid">
+                <div>
+                  <h3>Impostazioni tecniche</h3>
+                  @if (formulaChanges(previous.historyItem, step.historyItem).length === 0) {
+                    <p class="muted">Nessuna modifica ai parametri generali.</p>
+                  } @else {
+                    <ul>
+                      @for (change of formulaChanges(previous.historyItem, step.historyItem); track change) {
+                        <li>{{ change }}</li>
+                      }
+                    </ul>
+                  }
+                </div>
+
+                <div>
+                  <h3>Ingredienti e grammature</h3>
+                  @if (ingredientDeltas(previous.historyItem, step.historyItem).length === 0) {
+                    <p class="muted">Composizione invariata.</p>
+                  } @else {
+                    <div class="delta-list">
+                      @for (delta of ingredientDeltas(previous.historyItem, step.historyItem); track delta.hairDyeId) {
+                        <div class="delta-row" [attr.data-kind]="delta.kind">
+                          <div>
+                            <strong>{{ delta.label }}</strong>
+                            <span>{{ delta.before }} g → {{ delta.after }} g</span>
+                          </div>
+                          <b>
+                            {{ delta.delta > 0 ? '+' : '' }}{{ delta.delta }} g
+                          </b>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            } @else {
+              <p class="no-change">
+                Nessuna variazione tecnica rilevata tra le due revisioni.
+              </p>
+            }
+          </section>
+        }
+
+        <article
+          class="timeline-step"
+          [class.current]="step.currentFormula"
+          [class.reference]="step.referenceFormula">
+
+          <div class="timeline-marker">
+            <span>{{ step.historyItem.formula.revisionNumber ?? 1 }}</span>
+          </div>
+
+          <div class="step-card">
+            <div class="step-head">
+              <div>
+                <div class="badges">
+                  <span class="revision-badge">
+                    Rev. {{ step.historyItem.formula.revisionNumber ?? 1 }}
+                  </span>
+                  <span class="status-badge" [attr.data-status]="step.historyItem.formula.status">
+                    {{ statusLabels[step.historyItem.formula.status] }}
+                  </span>
+                  <span class="origin-badge">
+                    {{ step.historyItem.formula.origin ? originLabels[step.historyItem.formula.origin!] : 'Manuale' }}
+                  </span>
+                  @if (step.currentFormula) {
+                    <span class="current-badge">Formula aperta</span>
+                  }
+                  @if (step.referenceFormula) {
+                    <span class="reference-badge">★ Formula di riferimento</span>
+                  }
+                </div>
+
+                <h2>{{ step.historyItem.formula.name }}</h2>
+                <p>{{ step.historyItem.formula.targetResult }}</p>
+              </div>
+
+              <div class="step-date">
+                <span>CREATA</span>
+                <strong>
+                  {{ step.historyItem.formula.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="technical-grid">
+              <div>
+                <span>TONO</span>
+                <strong>
+                  {{ step.historyItem.formula.targetToneLevel ? toneLabels[step.historyItem.formula.targetToneLevel!] : '—' }}
+                </strong>
+              </div>
+              <div>
+                <span>RIFLESSO</span>
+                <strong>
+                  {{ step.historyItem.formula.targetPrimaryReflection ? reflectionLabels[step.historyItem.formula.targetPrimaryReflection!] : '—' }}
+                </strong>
+              </div>
+              <div>
+                <span>DEVELOPER</span>
+                <strong>{{ oxygenLabels[step.historyItem.formula.volumeDeveloper] }}</strong>
+              </div>
+              <div>
+                <span>RAPPORTO</span>
+                <strong>{{ getRatioLabel(step.historyItem.formula) }}</strong>
+              </div>
+              <div>
+                <span>COLORE</span>
+                <strong>{{ step.historyItem.totalColorQuantity }} g</strong>
+              </div>
+              <div>
+                <span>MISCELA</span>
+                <strong>{{ step.historyItem.totalMixtureQuantity }}</strong>
+              </div>
+            </div>
+
+            <div class="ingredient-list">
+              @for (ingredient of step.historyItem.ingredients; track ingredient.hairDyeId) {
+                <div class="ingredient-chip">
+                  <span>{{ ingredient.brand }} · {{ ingredient.code }}</span>
+                  <strong>{{ ingredient.quantity }} g</strong>
+                </div>
+              }
+            </div>
+
+            @if (step.historyItem.result; as result) {
+              <div class="result-box" [attr.data-assessment]="result.assessment">
+                <div>
+                  <span>RISULTATO</span>
+                  <strong>{{ resultAssessmentLabels[result.assessment] }}</strong>
+                </div>
+                <div>
+                  <span>TONO OTTENUTO</span>
+                  <strong>
+                    {{ result.achievedToneLevel ? toneLabels[result.achievedToneLevel] : 'Non registrato' }}
+                  </strong>
+                </div>
+                <div>
+                  <span>RIFLESSO OTTENUTO</span>
+                  <strong>
+                    {{ result.achievedPrimaryReflection ? reflectionLabels[result.achievedPrimaryReflection] : 'Non registrato' }}
+                  </strong>
+                </div>
+                @if (result.correctionNotes) {
+                  <p><b>Correzione successiva:</b> {{ result.correctionNotes }}</p>
+                }
+              </div>
+            }
+
+            <div class="step-actions">
+              <a
+                class="secondary-button compact"
+                [routerLink]="['/color-lab/formulas', step.historyItem.formula.id]">
+                Apri formula
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

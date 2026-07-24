@@ -1,0 +1,2 @@
+import {HttpClient} from '@angular/common/http';import {inject,Injectable} from '@angular/core';import {hairLabApi} from '../core/config/api.config';import {ColorReorderSuggestion} from '../models/color-reorder';
+@Injectable({providedIn:'root'}) export class ColorReorderService{private http=inject(HttpClient);private url=hairLabApi('color-reorder');getSuggestions(){return this.http.get<ColorReorderSuggestion[]>(this.url)}}

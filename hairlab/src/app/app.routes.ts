@@ -42,6 +42,11 @@ import { ColorFormulaDetailComponent } from './features/color-lab/color-formula-
 import { ColorSmartDiagnosisComponent } from './features/color-lab/color-smart-diagnosis/color-smart-diagnosis';
 import { ColorProductLineProfileListComponent } from './features/color-lab/color-product-line-profile-list/color-product-line-profile-list';
 import { ColorProductLineProfileFormComponent } from './features/color-lab/color-product-line-profile-form/color-product-line-profile-form';
+import { ColorReorderCenterComponent } from './features/color-lab/color-reorder-center/color-reorder-center';
+import { ColorSupplierListComponent } from './features/color-lab/color-supplier-list/color-supplier-list';
+import { ColorSupplierFormComponent } from './features/color-lab/color-supplier-form/color-supplier-form';
+import { ColorSupplierOrderListComponent } from './features/color-lab/color-supplier-order-list/color-supplier-order-list';
+import { ColorSupplierOrderDetailComponent } from './features/color-lab/color-supplier-order-detail/color-supplier-order-detail';
 
 export const routes: Routes = [
   {
@@ -87,8 +92,8 @@ export const routes: Routes = [
 
       { path: 'profile', component: ProfileViewComponent },
       { path: 'profile/new', component: ProfileFormComponent },
-      { path: 'profile/all', component: ProfileListComponent },
       { path: 'profile/edit/:id', component: ProfileFormComponent },
+      { path: 'profile/all', component: ProfileListComponent },
 
       { path: 'color-lab', component: ColorLabComponent },
       { path: 'color-lab/smart-formula', component: ColorSmartDiagnosisComponent },
@@ -103,6 +108,12 @@ export const routes: Routes = [
       { path: 'color-lab/lines', component: ColorProductLineProfileListComponent },
       { path: 'color-lab/lines/new', component: ColorProductLineProfileFormComponent },
       { path: 'color-lab/lines/:id/edit', component: ColorProductLineProfileFormComponent },
+      { path: 'color-lab/reorder', component: ColorReorderCenterComponent },
+      { path: 'color-lab/suppliers', component: ColorSupplierListComponent },
+      { path: 'color-lab/suppliers/new', component: ColorSupplierFormComponent },
+      { path: 'color-lab/suppliers/:id/edit', component: ColorSupplierFormComponent },
+      { path: 'color-lab/orders', component: ColorSupplierOrderListComponent },
+      { path: 'color-lab/orders/:id', component: ColorSupplierOrderDetailComponent },
 
       {
         path: '',

@@ -461,7 +461,46 @@
 
               @if (item.id) {
 
+                @if (getFormulasForItem(item.id); as formulas) {
+                  @if (formulas.length > 0) {
+                    <div class="appointment-formula-links">
+                      <span class="formula-links-title">Formule collegate al servizio</span>
+                      @for (formula of formulas; track formula.formulaId) {
+                        <a
+                          class="appointment-formula-card"
+                          [routerLink]="['/color-lab/formulas', formula.formulaId]">
+                          <div>
+                            <strong>{{ formula.formulaName }}</strong>
+                            <small>
+                              {{ formulaStatusLabels[formula.status] }}
+                              @if (formula.origin) {
+                                · {{ formulaOriginLabels[formula.origin] }}
+                              }
+                              @if (formula.revisionNumber) {
+                                · Rev. {{ formula.revisionNumber }}
+                              }
+                            </small>
+                          </div>
+                          <span>Apri →</span>
+                        </a>
+                      }
+                    </div>
+                  }
+                }
+
                 <div class="color-lab-actions">
+
+                  <button
+                    type="button"
+                    class="color-lab-action reference"
+                    [disabled]="preparingFormulaItemId() !== null"
+                    (click)="repeatReferenceForItem(item.id)">
+                    {{
+                      preparingFormulaItemId() === item.id
+                        ? 'Preparazione...'
+                        : '↻ Usa formula di riferimento'
+                    }}
+                  </button>
 
                   <a
                     class="color-lab-action smart"

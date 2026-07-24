@@ -7,6 +7,8 @@ import {
   signal
 } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+
 import {
   RecommendationItem
 } from '../../../../models/recommendation-item';
@@ -35,7 +37,9 @@ import {
 @Component({
   selector: 'app-style-recommendation-detail',
   standalone: true,
-  imports: [],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './style-recommendation-detail.html',
   styleUrl: './style-recommendation-detail.css'
 })
@@ -224,6 +228,39 @@ export class StyleRecommendationDetailComponent
    * Lo utilizzeremo per evidenziare
    * visivamente la prima scelta HairLab.
    */
+  /**
+   * Parametri con cui un suggerimento colore apre Smart Formula.
+   * Il preset descrive il target estetico; il motore ricalcola comunque
+   * fattibilità, prodotti e dosi sui dati tecnici correnti del cliente.
+   */
+  protected smartFormulaQueryParams(
+    item: RecommendationItem
+  ): Record<string, string | number | null> {
+
+    const target =
+      item.technicalColorTarget;
+
+    return {
+      customerId: this.customerId,
+      sourceRecommendationCode:
+        item.code ?? target?.code ?? null,
+      sourceRecommendationTitle:
+        item.title,
+      sourceRecommendationCompatibilityScore:
+        item.compatibilityScore,
+      targetToneLevel:
+        target?.targetToneLevel ?? null,
+      targetPrimaryReflection:
+        target?.targetPrimaryReflection ?? null,
+      targetSecondaryReflection:
+        target?.targetSecondaryReflection ?? null,
+      applicationType:
+        target?.suggestedApplicationType ?? null,
+      targetResult:
+        target?.targetResult ?? item.title
+    };
+  }
+
   protected isTopRecommendation(
     item: RecommendationItem,
     items: RecommendationItem[]

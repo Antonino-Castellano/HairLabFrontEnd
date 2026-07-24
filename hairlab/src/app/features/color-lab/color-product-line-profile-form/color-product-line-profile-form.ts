@@ -45,6 +45,13 @@ export class ColorProductLineProfileFormComponent implements OnInit {
     depositOnly: [false],
     allowCrossLineMixing: [false],
     requireSameLineDeveloper: [true],
+    whiteHairCoverageEnabled: [false],
+    whiteHairCoverageFromPercentage: [null as number | null],
+    whiteHairNaturalBaseSharePercentage: [null as number | null],
+    whiteHairCoverageDeveloperVolume: [null as Oxygen | null],
+    toningDeveloperVolume: [null as Oxygen | null],
+    defaultProcessingTimeMinutes: [null as number | null],
+    whiteHairCoverageNotes: [''],
     technicalNotes: [''],
     active: [true]
   });
@@ -80,6 +87,13 @@ export class ColorProductLineProfileFormComponent implements OnInit {
           depositOnly: profile.depositOnly ?? false,
           allowCrossLineMixing: profile.allowCrossLineMixing,
           requireSameLineDeveloper: profile.requireSameLineDeveloper,
+          whiteHairCoverageEnabled: profile.whiteHairCoverageEnabled ?? false,
+          whiteHairCoverageFromPercentage: profile.whiteHairCoverageFromPercentage ?? null,
+          whiteHairNaturalBaseSharePercentage: profile.whiteHairNaturalBaseSharePercentage ?? null,
+          whiteHairCoverageDeveloperVolume: profile.whiteHairCoverageDeveloperVolume ?? null,
+          toningDeveloperVolume: profile.toningDeveloperVolume ?? null,
+          defaultProcessingTimeMinutes: profile.defaultProcessingTimeMinutes ?? null,
+          whiteHairCoverageNotes: profile.whiteHairCoverageNotes ?? '',
           technicalNotes: profile.technicalNotes ?? '',
           active: profile.active
         });
@@ -124,6 +138,10 @@ export class ColorProductLineProfileFormComponent implements OnInit {
     );
   }
 
+  protected isWhiteHairCoverageEnabled(): boolean {
+    return this.form.controls.whiteHairCoverageEnabled.value ?? false;
+  }
+
   protected submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -145,6 +163,25 @@ export class ColorProductLineProfileFormComponent implements OnInit {
       depositOnly: value.depositOnly ?? false,
       allowCrossLineMixing: value.allowCrossLineMixing ?? false,
       requireSameLineDeveloper: value.requireSameLineDeveloper ?? true,
+      whiteHairCoverageEnabled: value.whiteHairCoverageEnabled ?? false,
+      whiteHairCoverageFromPercentage:
+        value.whiteHairCoverageEnabled
+          ? (value.whiteHairCoverageFromPercentage ?? null)
+          : null,
+      whiteHairNaturalBaseSharePercentage:
+        value.whiteHairCoverageEnabled
+          ? (value.whiteHairNaturalBaseSharePercentage ?? null)
+          : null,
+      whiteHairCoverageDeveloperVolume:
+        value.whiteHairCoverageEnabled
+          ? (value.whiteHairCoverageDeveloperVolume ?? null)
+          : null,
+      toningDeveloperVolume: value.toningDeveloperVolume ?? null,
+      defaultProcessingTimeMinutes: value.defaultProcessingTimeMinutes ?? null,
+      whiteHairCoverageNotes:
+        value.whiteHairCoverageEnabled
+          ? (value.whiteHairCoverageNotes?.trim() || null)
+          : null,
       technicalNotes: value.technicalNotes?.trim() || null,
       active: value.active ?? true
     };

@@ -176,3 +176,57 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* BLOCCO 17 · regole esecutive di linea */
+.intelligent-rules-card {
+  border-color: #d8ccc4;
+  background: linear-gradient(180deg, #fff 0%, #fbf8f6 100%);
+}
+
+.section-intro {
+  margin-bottom: 14px;
+}
+
+.section-intro h2 {
+  margin-bottom: 5px;
+}
+
+.section-intro p {
+  max-width: 820px;
+  margin: 0;
+  color: #83766f;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.coverage-rule {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #e4d9d2;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.coverage-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #53453e;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.coverage-grid {
+  margin-top: 14px;
+}
+
+.safety-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 3px solid #9c6c50;
+  border-radius: 6px;
+  background: #f8f2ee;
+  color: #745f53;
+  font-size: 9px;
+  line-height: 1.55;
+}

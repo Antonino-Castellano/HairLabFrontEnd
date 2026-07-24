@@ -982,3 +982,38 @@
     flex-direction: column;
   }
 }
+
+/* =========================================================
+   BLOCCO 16 · SUGGERIMENTO -> SMART FORMULA
+   ========================================================= */
+.smart-formula-bridge {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid rgba(84, 60, 39, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  display: grid;
+  gap: 12px;
+}
+
+.smart-formula-bridge span {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.smart-formula-bridge p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.smart-formula-button {
+  width: fit-content;
+  padding: 11px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 800;
+  border: 1px solid currentColor;
+}

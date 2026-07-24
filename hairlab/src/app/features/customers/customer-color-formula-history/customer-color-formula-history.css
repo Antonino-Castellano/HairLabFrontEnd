@@ -495,3 +495,195 @@
     width: 100%;
   }
 }
+
+/* BLOCCO 15 - formula lineage e risultati nello storico cliente */
+.summary-grid {
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+}
+
+.origin-badge,
+.revision-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.origin-badge {
+  background: #f2e8f5;
+  color: #705474;
+}
+
+.revision-badge {
+  background: #edf0f5;
+  color: #5d6572;
+}
+
+.result-strip {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 12px;
+  border-radius: 9px;
+  background: #dfe7e1;
+}
+
+.result-strip > div {
+  padding: 11px;
+  background: #f5faf6;
+}
+
+.result-strip[data-assessment='PARTIAL'],
+.result-strip[data-assessment='CORRECTION_REQUIRED'] {
+  background: #eadbc7;
+}
+
+.result-strip[data-assessment='PARTIAL'] > div,
+.result-strip[data-assessment='CORRECTION_REQUIRED'] > div {
+  background: #fff9f1;
+}
+
+.result-strip span,
+.result-strip strong {
+  display: block;
+}
+
+.result-strip span {
+  color: #7f8a81;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.result-strip strong {
+  margin-top: 4px;
+  color: #526357;
+  font-size: 11px;
+}
+
+.result-strip .result-note {
+  grid-column: 1 / -1;
+}
+
+.result-strip .result-note strong {
+  line-height: 1.45;
+}
+
+.result-pending-strip {
+  margin-top: 12px;
+  padding: 11px 13px;
+  border: 1px solid #ead6ad;
+  border-radius: 9px;
+  background: #fffaf0;
+  color: #896b31;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1100px) {
+  .summary-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 620px) {
+  .summary-grid,
+  .result-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.recommendation-source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(117, 71, 54, 0.18);
+  background: rgba(117, 71, 54, 0.07);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.line-rule-source-badge {
+  display: inline-flex;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #f4ece7;
+  color: #755d50;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+/* BLOCCO 18-19 - formula di riferimento e ricorrenza */
+.reference-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.repeat-reference-button,
+.reference-action-button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid #a88770;
+  border-radius: 8px;
+  background: #fff7f1;
+  color: #725442;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.repeat-reference-button:disabled,
+.reference-action-button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.reference-formula-badge,
+.recurring-source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.reference-formula-badge {
+  background: #fff1c9;
+  color: #80601b;
+}
+
+.recurring-source-badge {
+  background: #eaf3ef;
+  color: #426a5a;
+}
+
+.success-message {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid #bfd8c9;
+  border-radius: 9px;
+  background: #f3faf6;
+  color: #456a54;
+  font-size: 10px;
+  font-weight: 700;
+}

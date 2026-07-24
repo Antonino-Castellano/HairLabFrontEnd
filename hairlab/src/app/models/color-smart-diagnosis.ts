@@ -60,6 +60,10 @@ export interface ColorSmartDiagnosisRequest {
   applicationType: ColorApplicationType;
 
   targetResult?: string;
+
+  sourceRecommendationCode?: string | null;
+  sourceRecommendationTitle?: string | null;
+  sourceRecommendationCompatibilityScore?: number | null;
 }
 
 /**
@@ -87,6 +91,8 @@ export interface ColorSmartDiagnosis {
 
   hairCondition: HairCondition;
 
+  whiteHairPercentage?: number | null;
+
   targetToneLevel: ToneLevel;
 
   targetPrimaryReflection: Reflection;
@@ -96,6 +102,12 @@ export interface ColorSmartDiagnosis {
   applicationType: ColorApplicationType;
 
   targetResult?: string | null;
+
+
+  sourceRecommendationCode?: string | null;
+  sourceRecommendationTitle?: string | null;
+  sourceRecommendationCompatibilityScore?: number | null;
+  sourceRecommendationValidated: boolean;
 
   toneDifference: number;
 
@@ -108,6 +120,12 @@ export interface ColorSmartDiagnosis {
   reasons: string[];
 
   warnings: string[];
+
+  personalizationFactors: string[];
+
+  missingPersonalizationData: string[];
+
+  transformationPlan: string[];
 
   automaticFormulaCandidate: boolean;
 

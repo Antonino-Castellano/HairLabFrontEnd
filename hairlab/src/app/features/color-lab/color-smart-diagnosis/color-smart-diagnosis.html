@@ -1,5 +1,7 @@
 <section class="smart-page">
 
+  <app-color-lab-section-nav activeSection="SMART_FORMULA" />
+
   <header class="page-header">
 
     <div>
@@ -272,6 +274,18 @@
 
               </div>
 
+              <div>
+
+                <span>
+                  CAPELLI BIANCHI
+                </span>
+
+                <strong>
+                  {{ profile.whiteHairPercentage ?? 0 }}%
+                </strong>
+
+              </div>
+
             </div>
 
           </div>
@@ -448,6 +462,30 @@
               non modifica automaticamente formula,
               developer o grammature.
             </small>
+
+          </section>
+
+        }
+
+        @if (
+          sourceRecommendation();
+          as source
+        ) {
+
+          <section class="source-recommendation-card">
+
+            <div>
+              <span>OBIETTIVO IMPORTATO DAI SUGGERIMENTI HAIRLAB</span>
+              <h3>{{ source.title }}</h3>
+              <p>
+                Il preset cromatico è già compilato. Smart Formula lo adatterà
+                alla base reale e ai dati tecnici del cliente.
+              </p>
+            </div>
+
+            @if (source.compatibilityScore != null) {
+              <strong>{{ source.compatibilityScore }}/100</strong>
+            }
 
           </section>
 
@@ -756,6 +794,58 @@
 
         </div>
 
+        <section class="personalization-audit">
+
+          <div class="personalization-head">
+            <span>PERSONALIZZAZIONE FORMULA</span>
+            <strong>
+              {{ result.personalizationFactors.length }} fattori considerati
+            </strong>
+          </div>
+
+          @if (result.sourceRecommendationCode) {
+            <p class="source-validation"
+              [class.validated]="result.sourceRecommendationValidated">
+              {{
+                result.sourceRecommendationValidated
+                  ? '✓ Suggerimento HairLab verificato sul profilo corrente'
+                  : '⚠ Suggerimento origine da ricontrollare'
+              }}
+            </p>
+          }
+
+          <div class="personalization-list">
+            @for (factor of result.personalizationFactors; track factor) {
+              <span>✓ {{ factor }}</span>
+            }
+          </div>
+
+          @if (result.missingPersonalizationData.length > 0) {
+            <div class="missing-personalization">
+              <strong>Dati da completare</strong>
+              @for (missing of result.missingPersonalizationData; track missing) {
+                <span>• {{ missing }}</span>
+              }
+            </div>
+          }
+
+        </section>
+
+        @if (result.transformationPlan.length > 0) {
+          <section class="transformation-plan">
+            <div class="personalization-head">
+              <span>PIANO OPERATIVO PERSONALIZZATO</span>
+              <strong>{{ result.transformationPlan.length }} step</strong>
+            </div>
+
+            <ol>
+              @for (step of result.transformationPlan; track step) {
+                <li>{{ step }}</li>
+              }
+            </ol>
+          </section>
+        }
+
         <div class="reflection-section">
 
           <span>
@@ -901,9 +991,9 @@
               </h2>
 
               <p>
-                Il motore seleziona i componenti tecnici.
-                Le grammature automatiche arriveranno
-                nel blocco successivo.
+                Il motore seleziona i componenti tecnici, stima le quantità
+                e integra il contesto storico disponibile senza sostituire
+                le istruzioni tecniche del produttore.
               </p>
 
             </div>
@@ -1336,6 +1426,58 @@
 
               }
 
+              @if (formulaResult.inventoryProposal.lineRuleProfileApplied) {
+                <div class="line-intelligence-panel">
+                  <div class="line-intelligence-head">
+                    <div>
+                      <span>REGOLE TECNICHE DI LINEA</span>
+                      <strong>
+                        {{ formulaResult.inventoryProposal.lineRuleBrand }}
+                        ·
+                        {{ formulaResult.inventoryProposal.lineRuleName }}
+                      </strong>
+                    </div>
+
+                    <span class="line-rule-badge">PROFILO APPLICATO</span>
+                  </div>
+
+                  <div class="line-intelligence-grid">
+                    <div>
+                      <span>DEVELOPER PREFERITO</span>
+                      <strong>
+                        {{ formulaResult.inventoryProposal.preferredLineDeveloperVolume ?? 'Non specificato' }}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>TEMPO DI POSA</span>
+                      <strong>
+                        @if (formulaResult.inventoryProposal.recommendedProcessingTimeMinutes) {
+                          {{ formulaResult.inventoryProposal.recommendedProcessingTimeMinutes }} min
+                        } @else {
+                          Non configurato
+                        }
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>COPERTURA CAPELLI BIANCHI</span>
+                      <strong>
+                        @if (formulaResult.inventoryProposal.whiteHairCoverageRuleApplied) {
+                          Attiva · base naturale {{ formulaResult.inventoryProposal.whiteHairNaturalBaseSharePercentage }}%
+                        } @else {
+                          Non applicata
+                        }
+                      </strong>
+                    </div>
+                  </div>
+
+                  <small>
+                    Questi valori provengono dal profilo tecnico configurato della linea, non da regole universali HairLab.
+                  </small>
+                </div>
+              }
+
               <div class="rule-set-strip">
 
                 <span>
@@ -1524,6 +1666,16 @@
                   class="primary-button builder-link"
                   routerLink="/color-lab/formulas/new"
                   [queryParams]="{
+                    origin:
+                      'SMART_FORMULA',
+                    sourceRecommendationCode:
+                      formulaResult.diagnosis.sourceRecommendationValidated
+                        ? formulaResult.diagnosis.sourceRecommendationCode
+                        : null,
+                    sourceRecommendationTitle:
+                      formulaResult.diagnosis.sourceRecommendationValidated
+                        ? formulaResult.diagnosis.sourceRecommendationTitle
+                        : null,
                     customerId:
                       formulaResult
                         .diagnosis
@@ -1573,7 +1725,17 @@
                           ? formulaResult
                               .inventoryProposal
                               .developerMultiplier
-                          : null
+                          : null,
+                    technicalLineBrand:
+                      formulaResult.inventoryProposal.lineRuleBrand,
+                    technicalLineName:
+                      formulaResult.inventoryProposal.lineRuleName,
+                    whiteHairCoverageApplied:
+                      formulaResult.inventoryProposal.whiteHairCoverageRuleApplied,
+                    whiteHairNaturalBaseSharePercentage:
+                      formulaResult.inventoryProposal.whiteHairNaturalBaseSharePercentage,
+                    recommendedProcessingTimeMinutes:
+                      formulaResult.inventoryProposal.recommendedProcessingTimeMinutes
                   }">
 
                   Apri proposta nel Formula Builder

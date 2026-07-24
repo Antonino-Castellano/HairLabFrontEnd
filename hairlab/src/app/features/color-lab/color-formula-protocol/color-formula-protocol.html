@@ -1,0 +1,286 @@
+<section class="protocol-page">
+  @if (errorMessage()) {
+    <div class="message error">{{ errorMessage() }}</div>
+  }
+  @if (successMessage()) {
+    <div class="message success">{{ successMessage() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="state-card">Caricamento protocollo tecnico...</div>
+  } @else if (detail(); as current) {
+    <header class="page-header">
+      <div>
+        <span class="eyebrow">COLOR LAB · PROTOCOLLO TECNICO</span>
+        <h1>{{ current.formula.name }}</h1>
+        <p>
+          Suddividi la formula per zone e costruisci, quando necessario,
+          un percorso tecnico in più fasi con rivalutazioni obbligatorie.
+        </p>
+      </div>
+      <div class="header-actions">
+        <a class="secondary-button" [routerLink]="['/color-lab/formulas', current.formula.id]">
+          Dettaglio formula
+        </a>
+        <a class="secondary-button" [routerLink]="['/color-lab/formulas', current.formula.id, 'evolution']">
+          Evoluzione
+        </a>
+        <button class="primary-button" type="button" [disabled]="saving() || !canEditProtocol()" (click)="save()">
+          {{ saving() ? 'Salvataggio...' : 'Salva protocollo' }}
+        </button>
+      </div>
+    </header>
+
+    @if (!canEditProtocol()) {
+      <div class="message info">
+        La formula è storica e il protocollo è in sola lettura. Per modificarlo crea una nuova revisione.
+      </div>
+    }
+
+    <section class="overview-grid">
+      <article class="overview-card">
+        <span>ZONE</span>
+        <strong>{{ zones.length }}</strong>
+        <small>{{ zones.length > 1 ? 'Formula multi-zona' : 'Workflow singola zona / classico' }}</small>
+      </article>
+      <article class="overview-card">
+        <span>STEP</span>
+        <strong>{{ steps.length }}</strong>
+        <small>{{ steps.length > 1 ? 'Percorso multi-step' : 'Percorso semplice' }}</small>
+      </article>
+      <article class="overview-card" [class.ok]="protocol()?.compatibility?.valid" [class.alert]="!protocol()?.compatibility?.valid">
+        <span>COMPATIBILITÀ</span>
+        <strong>{{ protocol()?.compatibility?.valid ? 'OK' : 'DA VERIFICARE' }}</strong>
+        <small>
+          {{ protocol()?.compatibility?.issues?.length ?? 0 }} segnalazioni tecniche
+        </small>
+      </article>
+    </section>
+
+    <section class="panel section-panel">
+      <div class="section-heading">
+        <div>
+          <span class="panel-eyebrow">BLOCCO 20 · FORMULA MULTI-ZONA</span>
+          <h2>Zone di applicazione</h2>
+          <p>
+            Ricrescita, lunghezze e punte possono avere ingredienti, developer,
+            rapporto e tempo di posa differenti. Gli ingredienti vengono aggregati
+            automaticamente per mantenere coerenti magazzino e storico.
+          </p>
+        </div>
+        <div class="inline-actions">
+          <button type="button" class="secondary-button" (click)="importCurrentFormulaAsSingleZone()">
+            Importa formula attuale
+          </button>
+          <button type="button" class="secondary-button" (click)="addRootsLengthsTemplate()">
+            Template ricrescita + lunghezze
+          </button>
+          <button type="button" class="primary-button" (click)="addZone()">
+            + Aggiungi zona
+          </button>
+        </div>
+      </div>
+
+      @if (zones.length === 0) {
+        <div class="empty-state">
+          Nessuna zona configurata. La formula continua a funzionare con il workflow classico.
+        </div>
+      }
+
+      <div class="zone-list">
+        @for (zone of zones; track $index; let zi = $index) {
+          <article class="zone-card">
+            <div class="zone-card-header">
+              <div class="zone-order">{{ zi + 1 }}</div>
+              <div class="zone-title-fields">
+                <select [(ngModel)]="zone.zoneType" name="zoneType-{{ zi }}">
+                  @for (type of zoneTypes; track type) {
+                    <option [ngValue]="type">{{ zoneLabels[type] }}</option>
+                  }
+                </select>
+                <input [(ngModel)]="zone.name" name="zoneName-{{ zi }}" placeholder="Nome zona" />
+              </div>
+              <div class="row-actions">
+                <button type="button" (click)="moveZone(zi, -1)" [disabled]="zi === 0">↑</button>
+                <button type="button" (click)="moveZone(zi, 1)" [disabled]="zi === zones.length - 1">↓</button>
+                <button type="button" class="danger" (click)="removeZone(zi)">Elimina</button>
+              </div>
+            </div>
+
+            <div class="technical-grid">
+              <label>
+                <span>Applicazione</span>
+                <select [(ngModel)]="zone.applicationType" name="application-{{ zi }}">
+                  <option [ngValue]="null">Non specificata</option>
+                  @for (application of applications; track application) {
+                    <option [ngValue]="application">{{ applicationLabels[application] }}</option>
+                  }
+                </select>
+              </label>
+              <label>
+                <span>Developer</span>
+                <select [(ngModel)]="zone.developerVolume" name="oxygen-{{ zi }}">
+                  @for (oxygen of oxygens; track oxygen) {
+                    <option [ngValue]="oxygen">{{ oxygenLabels[oxygen] }}</option>
+                  }
+                </select>
+              </label>
+              <label>
+                <span>Rapporto</span>
+                <select [(ngModel)]="zone.mixingRatio" name="ratio-{{ zi }}">
+                  @for (ratio of ratios; track ratio) {
+                    <option [ngValue]="ratio">{{ ratioLabels[ratio] }}</option>
+                  }
+                </select>
+              </label>
+              @if (zone.mixingRatio === customMixingRatio) {
+                <label>
+                  <span>Moltiplicatore developer</span>
+                  <input type="number" step="0.05" min="0.01" [(ngModel)]="zone.customDeveloperRatio" name="customRatio-{{ zi }}" />
+                </label>
+              }
+              <label>
+                <span>Posa zona (min)</span>
+                <input type="number" min="1" [(ngModel)]="zone.processingTimeMinutes" name="time-{{ zi }}" />
+              </label>
+            </div>
+
+            <div class="ingredients-heading">
+              <div>
+                <strong>Ingredienti della zona</strong>
+                <small>Il developer viene gestito separatamente durante l'utilizzo reale.</small>
+              </div>
+              <button type="button" class="secondary-button compact" (click)="addIngredient(zi)">
+                + Ingrediente
+              </button>
+            </div>
+
+            <div class="ingredients-list">
+              @for (ingredient of zone.ingredients; track $index; let ii = $index) {
+                <div class="ingredient-row">
+                  <select [(ngModel)]="ingredient.hairDyeId" name="product-{{ zi }}-{{ ii }}">
+                    @for (product of colorProducts; track product.id) {
+                      <option [ngValue]="product.id">
+                        {{ product.brand }} · {{ product.lineName ?? 'Linea n/d' }} · {{ product.code }} · {{ product.name }}
+                      </option>
+                    }
+                  </select>
+                  <input type="number" step="0.5" min="0.01" [(ngModel)]="ingredient.quantity" name="qty-{{ zi }}-{{ ii }}" />
+                  <span class="unit-chip">g</span>
+                  <button type="button" class="danger compact" (click)="removeIngredient(zi, ii)">×</button>
+                </div>
+              }
+            </div>
+
+            <label class="full-field">
+              <span>Note zona</span>
+              <textarea rows="2" [(ngModel)]="zone.notes" name="zoneNotes-{{ zi }}" placeholder="Sequenza, saturazione, protezioni, osservazioni tecniche..."></textarea>
+            </label>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="panel section-panel">
+      <div class="section-heading">
+        <div>
+          <span class="panel-eyebrow">BLOCCO 21 · PERCORSO MULTI-STEP</span>
+          <h2>Protocollo di trasformazione</h2>
+          <p>
+            Usa gli step quando il target non deve essere forzato in un'unica applicazione:
+            pre-schiaritura, pre-pigmentazione, rivalutazione e formula finale restano tracciati.
+          </p>
+        </div>
+        <div class="inline-actions">
+          <button type="button" class="secondary-button" (click)="addTransformationTemplate()">
+            Template trasformazione complessa
+          </button>
+          <button type="button" class="primary-button" (click)="addStep()">
+            + Aggiungi step
+          </button>
+        </div>
+      </div>
+
+      @if (steps.length === 0) {
+        <div class="empty-state">Nessun percorso multi-step configurato.</div>
+      }
+
+      <div class="step-list">
+        @for (step of steps; track $index; let si = $index) {
+          <article class="step-card">
+            <div class="step-number">{{ si + 1 }}</div>
+            <div class="step-content">
+              <div class="step-main-grid">
+                <select [(ngModel)]="step.stepType" name="stepType-{{ si }}">
+                  @for (type of stepTypes; track type) {
+                    <option [ngValue]="type">{{ stepLabels[type] }}</option>
+                  }
+                </select>
+                <input [(ngModel)]="step.title" name="stepTitle-{{ si }}" placeholder="Titolo step" />
+                <input type="number" min="1" [(ngModel)]="step.estimatedMinutes" name="stepMinutes-{{ si }}" placeholder="Minuti" />
+              </div>
+              <textarea rows="2" [(ngModel)]="step.description" name="stepDescription-{{ si }}" placeholder="Cosa deve essere fatto e cosa verificare..."></textarea>
+              <div class="check-row">
+                <label>
+                  <input type="checkbox" [(ngModel)]="step.requiresReevaluation" name="reeval-{{ si }}" />
+                  Richiede rivalutazione
+                </label>
+                <label>
+                  <input type="checkbox" [(ngModel)]="step.blocksNextStepUntilReevaluation" name="block-{{ si }}" />
+                  Blocca il passo successivo fino alla rivalutazione
+                </label>
+              </div>
+            </div>
+            <div class="row-actions vertical">
+              <button type="button" (click)="moveStep(si, -1)" [disabled]="si === 0">↑</button>
+              <button type="button" (click)="moveStep(si, 1)" [disabled]="si === steps.length - 1">↓</button>
+              <button type="button" class="danger" (click)="removeStep(si)">×</button>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="panel compatibility-panel">
+      <div class="section-heading">
+        <div>
+          <span class="panel-eyebrow">BLOCCO 22 · COMPATIBILITÀ TECNICA</span>
+          <h2>Report di validazione</h2>
+          <p>
+            HairLab controlla developer ammessi, rapporti, profili di linea e cross-line.
+            Le regole mancanti non vengono inventate: generano informazioni o warning, non false certezze.
+          </p>
+        </div>
+        @if (protocol()?.compatibility; as report) {
+          <span class="validation-badge" [class.ok]="report.valid" [class.error]="!report.valid">
+            {{ report.valid ? 'PROTOCOLLO COERENTE' : 'INCOMPATIBILITÀ PRESENTI' }}
+          </span>
+        }
+      </div>
+
+      @if (protocol()?.compatibility; as report) {
+        <div class="compatibility-summary">
+          <span>Multi-linea: <strong>{{ report.multiLine ? 'Sì' : 'No' }}</strong></span>
+          <span>Developer diversi: <strong>{{ report.multipleDeveloperVolumes ? 'Sì' : 'No' }}</strong></span>
+          <span>Rapporti diversi: <strong>{{ report.multipleMixingRatios ? 'Sì' : 'No' }}</strong></span>
+          <span>Eseguibile: <strong>{{ report.executionReady ? 'Sì' : 'No' }}</strong></span>
+        </div>
+
+        <div class="issue-list">
+          @for (issue of report.issues; track $index) {
+            <article class="issue" [attr.data-severity]="issue.severity">
+              <strong>{{ issue.severity }}</strong>
+              <div>
+                <span>{{ issue.code }}</span>
+                <p>{{ issue.message }}</p>
+                @if (issue.zoneName) {
+                  <small>Zona: {{ issue.zoneName }}</small>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  }
+</section>

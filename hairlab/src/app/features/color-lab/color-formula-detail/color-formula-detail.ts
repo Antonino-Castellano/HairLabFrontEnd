@@ -7,10 +7,12 @@ import {
   OnInit,
   signal
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { ColorFormulaDetail } from '../../../models/color-formula-management';
+import { ColorFormulaSimulation, ColorFormulaFeasibility } from '../../../models/color-formula-simulation';
+import { ColorFormulaProtocol, ColorFormulaZone } from '../../../models/color-formula-protocol';
 import {
   ColorFormulaResult,
   ColorFormulaResultRequest,
@@ -21,13 +23,18 @@ import { Customer } from '../../../models/customer';
 import { HairDye } from '../../../models/hair-dye';
 import { HairDyeInventory } from '../../../models/hair-dye-inventory';
 import { ColorFormulaStatus } from '../../../models/enums/color-formula-status';
+import { ColorFormulaOrigin } from '../../../models/enums/color-formula-origin';
 import { InventoryUnit } from '../../../models/enums/inventory-unit';
+import { MixingRatio } from '../../../models/enums/mixing-ratio';
 import { ProductType } from '../../../models/enums/product-type';
 import { Reflection } from '../../../models/enums/reflection';
 import { ToneLevel } from '../../../models/enums/tone-level';
 
+import { ColorFormulaHistoryService } from '../../../service/color-formula-history-service';
 import { ColorFormulaManagementService } from '../../../service/color-formula-management-service';
+import { ColorFormulaProtocolService } from '../../../service/color-formula-protocol-service';
 import { ColorFormulaResultService } from '../../../service/color-formula-result-service';
+import { ColorFormulaSimulationService } from '../../../service/color-formula-simulation-service';
 import { ColorFormulaUsageService } from '../../../service/color-formula-usage-service';
 import { CustomerService } from '../../../service/customer-service';
 import { HairDyeInventoryService } from '../../../service/hair-dye-inventory-service';
@@ -35,6 +42,7 @@ import { HairDyeService } from '../../../service/hair-dye-service';
 
 import {
   COLOR_APPLICATION_LABELS,
+  COLOR_FORMULA_ORIGIN_LABELS,
   COLOR_FORMULA_STATUS_LABELS,
   MIXING_RATIO_LABELS,
   OXYGEN_LABELS
@@ -57,19 +65,33 @@ import {
 export class ColorFormulaDetailComponent implements OnInit {
 
   private readonly managementService = inject(ColorFormulaManagementService);
+  private readonly protocolService = inject(ColorFormulaProtocolService);
+  private readonly historyService = inject(ColorFormulaHistoryService);
   private readonly usageService = inject(ColorFormulaUsageService);
   private readonly resultService = inject(ColorFormulaResultService);
+  private readonly simulationService = inject(ColorFormulaSimulationService);
   private readonly customerService = inject(CustomerService);
   private readonly hairDyeService = inject(HairDyeService);
   private readonly inventoryService = inject(HairDyeInventoryService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   protected readonly detail = signal<ColorFormulaDetail | null>(null);
+  protected readonly protocol = signal<ColorFormulaProtocol | null>(null);
+  protected readonly zoneDeveloperSelections = signal<Record<number, number | null>>({});
   protected readonly usage = signal<ColorFormulaUsage | null>(null);
   protected readonly formulaResult =
     signal<ColorFormulaResult | null>(null);
 
+  protected readonly simulation = signal<ColorFormulaSimulation | null>(null);
+
   protected readonly savingResult =
+    signal(false);
+
+  protected readonly creatingRevision =
+    signal(false);
+
+  protected readonly referenceAction =
     signal(false);
 
   protected readonly achievedToneLevel =
@@ -104,6 +126,7 @@ export class ColorFormulaDetailComponent implements OnInit {
   protected readonly selectedDeveloperId = signal<number | null>(null);
 
   protected readonly statusLabels = COLOR_FORMULA_STATUS_LABELS;
+  protected readonly originLabels = COLOR_FORMULA_ORIGIN_LABELS;
   protected readonly applicationLabels = COLOR_APPLICATION_LABELS;
   protected readonly oxygenLabels = OXYGEN_LABELS;
   protected readonly ratioLabels = MIXING_RATIO_LABELS;
@@ -181,16 +204,21 @@ export class ColorFormulaDetailComponent implements OnInit {
 
     forkJoin({
       detail: this.managementService.getById(id),
+      protocol: this.protocolService.getByFormulaId(id),
+      simulation: this.simulationService.simulate(id),
       customers: this.customerService.getAll(),
       products: this.hairDyeService.getAll(),
       inventories: this.inventoryService.getAll()
     }).subscribe({
       next: result => {
         this.detail.set(result.detail);
+        this.protocol.set(result.protocol);
+        this.simulation.set(result.simulation);
         this.customers.set(result.customers ?? []);
         this.products.set(result.products ?? []);
         this.inventories.set(result.inventories ?? []);
         this.autoSelectDeveloper();
+        this.autoSelectZoneDevelopers();
         this.loading.set(false);
         this.loadUsage(id);
       },
@@ -522,6 +550,99 @@ export class ColorFormulaDetailComponent implements OnInit {
       });
   }
 
+  protected hasMultiZoneProtocol(): boolean {
+    return (this.protocol()?.zones?.length ?? 0) > 0;
+  }
+
+  protected getZoneDeveloperCandidates(zone: ColorFormulaZone): HairDye[] {
+    return this.products()
+      .filter(product =>
+        !!product.id
+        && product.active
+        && product.productType === ProductType.DEVELOPER
+        && product.developerVolume === zone.developerVolume
+      )
+      .sort((a, b) =>
+        a.brand.localeCompare(b.brand, 'it')
+        || a.code.localeCompare(b.code, 'it', { numeric: true })
+      );
+  }
+
+  protected getZoneDeveloperSelection(zoneId: number | undefined): number | null {
+    if (!zoneId) return null;
+    return this.zoneDeveloperSelections()[zoneId] ?? null;
+  }
+
+  protected onZoneDeveloperChange(zoneId: number | undefined, event: Event): void {
+    if (!zoneId) return;
+    const value = (event.target as HTMLSelectElement).value;
+    this.zoneDeveloperSelections.update(current => ({
+      ...current,
+      [zoneId]: value ? Number(value) : null
+    }));
+  }
+
+  protected getZoneColorQuantity(zone: ColorFormulaZone): number {
+    return (zone.ingredients ?? []).reduce(
+      (sum, item) => sum + Number(item.quantity ?? 0),
+      0
+    );
+  }
+
+  protected getZoneDeveloperQuantity(zone: ColorFormulaZone): number {
+    const color = this.getZoneColorQuantity(zone);
+    let multiplier = 1;
+    switch (zone.mixingRatio) {
+      case MixingRatio.RATIO_1_TO_1_5: multiplier = 1.5; break;
+      case MixingRatio.RATIO_1_TO_2: multiplier = 2; break;
+      case MixingRatio.RATIO_1_TO_3: multiplier = 3; break;
+      case MixingRatio.CUSTOM: multiplier = Number(zone.customDeveloperRatio ?? 0); break;
+      default: multiplier = 1;
+    }
+    return Number((color * multiplier).toFixed(2));
+  }
+
+  private autoSelectZoneDevelopers(): void {
+    const zones = this.protocol()?.zones ?? [];
+    const selections: Record<number, number | null> = {};
+
+    for (const zone of zones) {
+      if (!zone.id) continue;
+      const needed = this.getZoneDeveloperQuantity(zone);
+      const candidates = this.getZoneDeveloperCandidates(zone);
+      const sufficient = candidates.find(candidate => {
+        if (!candidate.id) return false;
+        const inventory = this.getInventory(candidate.id);
+        return !!inventory && Number(inventory.quantityAvailable) >= needed;
+      });
+      selections[zone.id] = (sufficient ?? candidates[0])?.id ?? null;
+    }
+
+    this.zoneDeveloperSelections.set(selections);
+  }
+
+  private areZoneDeveloperStocksSufficient(): boolean {
+    const zones = this.protocol()?.zones ?? [];
+    const required = new Map<number, number>();
+
+    for (const zone of zones) {
+      if (!zone.id) return false;
+      const developerId = this.getZoneDeveloperSelection(zone.id);
+      if (!developerId) return false;
+      required.set(
+        developerId,
+        (required.get(developerId) ?? 0) + this.getZoneDeveloperQuantity(zone)
+      );
+    }
+
+    for (const [developerId, quantity] of required.entries()) {
+      const inventory = this.getInventory(developerId);
+      if (!inventory || Number(inventory.quantityAvailable) < quantity) return false;
+    }
+
+    return true;
+  }
+
   private autoSelectDeveloper(): void {
     const sufficient = this.developerCandidates().find(
       developer => this.isDeveloperStockSufficient(developer)
@@ -536,6 +657,155 @@ export class ColorFormulaDetailComponent implements OnInit {
     this.selectedDeveloperId.set(value ? Number(value) : null);
   }
 
+  protected isReferenceFormula(): boolean {
+    return this.detail()?.formula.referenceFormula === true;
+  }
+
+  protected canSetReferenceFormula(): boolean {
+    const formula = this.detail()?.formula;
+    return !!formula?.id
+      && !formula.referenceFormula
+      && (
+        formula.status === ColorFormulaStatus.USED
+        || formula.status === ColorFormulaStatus.ARCHIVED
+      );
+  }
+
+  protected setAsReferenceFormula(): void {
+    const formulaId = this.detail()?.formula.id;
+    if (!formulaId || this.referenceAction()) return;
+
+    this.referenceAction.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.historyService.setReferenceFormula(formulaId).subscribe({
+      next: formula => {
+        const current = this.detail();
+        if (current) this.detail.set({ ...current, formula });
+        this.referenceAction.set(false);
+        this.successMessage.set('Formula impostata come riferimento corrente della cliente.');
+      },
+      error: (error: HttpErrorResponse) => {
+        this.referenceAction.set(false);
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile impostare la formula come riferimento.')
+        );
+      }
+    });
+  }
+
+  protected clearReferenceFormula(): void {
+    const formulaId = this.detail()?.formula.id;
+    if (!formulaId || this.referenceAction()) return;
+
+    this.referenceAction.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.historyService.clearReferenceFormula(formulaId).subscribe({
+      next: formula => {
+        const current = this.detail();
+        if (current) this.detail.set({ ...current, formula });
+        this.referenceAction.set(false);
+        this.successMessage.set('Formula rimossa dai riferimenti correnti della cliente.');
+      },
+      error: (error: HttpErrorResponse) => {
+        this.referenceAction.set(false);
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile rimuovere la formula di riferimento.')
+        );
+      }
+    });
+  }
+
+  protected canCreateRevision(): boolean {
+    const status =
+      this.detail()?.formula.status;
+
+    return (
+      status === ColorFormulaStatus.USED
+      ||
+      status === ColorFormulaStatus.ARCHIVED
+    );
+  }
+
+  /**
+   * Crea una nuova revisione senza alterare la formula storica.
+   *
+   * Il backend collega automaticamente la nuova bozza
+   * alla formula corrente tramite parentFormulaId.
+   */
+  protected createRevision(): void {
+    const formulaId =
+      this.detail()?.formula.id;
+
+    if (
+      !formulaId
+      ||
+      this.creatingRevision()
+    ) {
+
+      return;
+    }
+
+    this.creatingRevision.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.historyService
+      .duplicateAsDraft(
+        formulaId
+      )
+      .subscribe({
+
+        next: detail => {
+
+          this.creatingRevision.set(false);
+
+          if (
+            detail.formula.id
+          ) {
+
+            this.router.navigate(
+              [
+                '/color-lab/formulas',
+                detail.formula.id,
+                'edit'
+              ]
+            );
+          }
+        },
+
+        error: (
+          error:
+            HttpErrorResponse
+        ) => {
+
+          this.creatingRevision.set(false);
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error,
+              'Impossibile creare una revisione della formula.'
+            )
+          );
+        }
+      });
+  }
+
+  protected getOriginLabel(
+    origin:
+      ColorFormulaOrigin |
+      null |
+      undefined
+  ): string {
+
+    return origin
+      ? this.originLabels[origin]
+      : 'Manuale';
+  }
+
   protected canEditFormula(): boolean {
     const status = this.detail()?.formula.status;
     return status === ColorFormulaStatus.DRAFT
@@ -546,6 +816,12 @@ export class ColorFormulaDetailComponent implements OnInit {
     if (!this.canEditFormula() || this.usingFormula()) return false;
     if (!this.areIngredientStocksSufficient()) return false;
 
+    if (this.hasMultiZoneProtocol()) {
+      const report = this.protocol()?.compatibility;
+      if (!report?.valid || !report.executionReady) return false;
+      return this.areZoneDeveloperStocksSufficient();
+    }
+
     const developerId = this.selectedDeveloperId();
     if (!developerId) return false;
 
@@ -555,24 +831,32 @@ export class ColorFormulaDetailComponent implements OnInit {
 
   protected useFormula(): void {
     const current = this.detail();
-    const developerId = this.selectedDeveloperId();
-
-    if (!current?.formula.id || !developerId) {
-      this.errorMessage.set('Seleziona un developer valido.');
-      return;
-    }
+    if (!current?.formula.id) return;
 
     if (!this.canUseFormula()) {
       this.errorMessage.set(
-        'La formula non può essere utilizzata: verifica ingredienti e developer in magazzino.'
+        'La formula non può essere utilizzata: verifica protocollo, compatibilità tecnica, ingredienti e developer in magazzino.'
       );
       return;
     }
 
+    const request = this.hasMultiZoneProtocol()
+      ? {
+          zoneDevelopers: (this.protocol()?.zones ?? [])
+            .filter(zone => !!zone.id)
+            .map(zone => ({
+              zoneId: zone.id!,
+              developerHairDyeId: this.getZoneDeveloperSelection(zone.id)!
+            }))
+        }
+      : {
+          developerHairDyeId: this.selectedDeveloperId()!
+        };
+
     const confirmed = window.confirm(
-      'Confermi l’utilizzo reale della formula?\n\n'
-      + 'HairLab scaricherà definitivamente ingredienti e developer dal magazzino '
-      + 'e imposterà la formula come UTILIZZATA.'
+      this.hasMultiZoneProtocol()
+        ? 'Confermi l’utilizzo reale del protocollo multi-zona?\n\nHairLab scaricherà ingredienti e i developer specifici di ogni zona in un’unica transazione.'
+        : 'Confermi l’utilizzo reale della formula?\n\nHairLab scaricherà definitivamente ingredienti e developer dal magazzino e imposterà la formula come UTILIZZATA.'
     );
 
     if (!confirmed) return;
@@ -583,13 +867,15 @@ export class ColorFormulaDetailComponent implements OnInit {
 
     this.usageService.useFormula(
       current.formula.id,
-      { developerHairDyeId: developerId }
+      request
     ).subscribe({
       next: usage => {
         this.usage.set(usage);
         this.usingFormula.set(false);
         this.successMessage.set(
-          'Formula utilizzata correttamente. Il magazzino è stato aggiornato.'
+          this.hasMultiZoneProtocol()
+            ? 'Protocollo multi-zona utilizzato correttamente. Tutti gli scarichi sono stati registrati.'
+            : 'Formula utilizzata correttamente. Il magazzino è stato aggiornato.'
         );
         this.load(current.formula.id!);
       },
@@ -669,6 +955,23 @@ export class ColorFormulaDetailComponent implements OnInit {
 
   protected getUnitLabel(unit: InventoryUnit): string {
     return unit === InventoryUnit.MILLILITER ? 'ml' : 'g';
+  }
+
+  protected getFeasibilityLabel(value: ColorFormulaFeasibility): string {
+    const labels: Record<ColorFormulaFeasibility, string> = {
+      DIRECT_POSSIBLE: 'Percorso diretto plausibile',
+      MULTI_STEP: 'Percorso multi-step consigliato',
+      NEEDS_DATA: 'Dati insufficienti',
+      PROFESSIONAL_REVIEW: 'Rivalutazione professionale necessaria'
+    };
+
+    return labels[value];
+  }
+
+  protected getConfidenceClass(value: number): string {
+    if (value >= 80) return 'high';
+    if (value >= 55) return 'medium';
+    return 'low';
   }
 
   private getErrorMessage(

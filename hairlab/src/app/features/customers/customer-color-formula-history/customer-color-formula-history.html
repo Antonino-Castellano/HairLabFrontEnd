@@ -43,6 +43,10 @@
 
   </header>
 
+  @if (successMessage()) {
+    <div class="success-message">{{ successMessage() }}</div>
+  }
+
   @if (
     history();
     as currentHistory
@@ -77,6 +81,54 @@
       <article>
 
         <span>
+          Risultati registrati
+        </span>
+
+        <strong>
+          {{ currentHistory.resultRecordedCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Risultati da completare
+        </span>
+
+        <strong>
+          {{ currentHistory.resultPendingCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Esiti positivi
+        </span>
+
+        <strong>
+          {{ currentHistory.positiveResultCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
+          Da attenzionare
+        </span>
+
+        <strong>
+          {{ currentHistory.attentionResultCount }}
+        </strong>
+
+      </article>
+
+      <article>
+
+        <span>
           Bozze / proposte
         </span>
 
@@ -92,25 +144,41 @@
 
       <article class="latest-summary">
 
-        <span>
-          Ultimo utilizzo
-        </span>
+        <span>Ultimo utilizzo</span>
 
         <strong>
-
           {{
             currentHistory.latestUsedAt
-              ? (
-                  currentHistory.latestUsedAt
-                  |
-                  date:
-                    'dd/MM/yyyy'
-                )
+              ? (currentHistory.latestUsedAt | date:'dd/MM/yyyy')
               : '—'
           }}
-
         </strong>
 
+      </article>
+
+      <article class="reference-summary">
+        <span>Formula di riferimento</span>
+        <strong>
+          {{
+            currentHistory.referenceFormulaId
+              ? '#' + currentHistory.referenceFormulaId
+              : 'Non impostata'
+          }}
+        </strong>
+
+        @if (currentHistory.referenceFormulaId) {
+          <button
+            type="button"
+            class="repeat-reference-button"
+            [disabled]="repeatingReference()"
+            (click)="repeatReferenceFormula()">
+            {{
+              repeatingReference()
+                ? 'Preparazione...'
+                : '↻ Nuovo servizio dalla formula'
+            }}
+          </button>
+        }
       </article>
 
     </div>
@@ -252,6 +320,36 @@
                   }}
 
                 </span>
+
+                <span class="origin-badge">
+                  {{ getOriginLabel(item.formula.origin) }}
+                </span>
+
+                <span class="revision-badge">
+                  Rev. {{ item.formula.revisionNumber ?? 1 }}
+                </span>
+
+                @if (item.formula.referenceFormula) {
+                  <span class="reference-formula-badge">★ Riferimento</span>
+                }
+
+                @if (item.formula.referenceSourceFormulaId) {
+                  <span class="recurring-source-badge">
+                    ↻ Da formula #{{ item.formula.referenceSourceFormulaId }}
+                  </span>
+                }
+
+                @if (item.formula.sourceRecommendationTitle) {
+                  <span class="recommendation-source-badge">
+                    HairLab · {{ item.formula.sourceRecommendationTitle }}
+                  </span>
+                }
+
+                @if (item.formula.technicalLineName) {
+                  <span class="line-rule-source-badge">
+                    {{ item.formula.technicalLineBrand }} · {{ item.formula.technicalLineName }}
+                  </span>
+                }
 
                 @if (
                   isLatestUsed(
@@ -421,9 +519,13 @@
 
                 <strong>
 
-                  {{ item.usage.developerBrand }}
-                  ·
-                  {{ item.usage.developerCode }}
+                  @if (item.usage.multiZone) {
+                    Protocollo multi-zona · {{ item.usage.developerUsages?.length ?? 0 }} miscele
+                  } @else {
+                    {{ item.usage.developerBrand }}
+                    ·
+                    {{ item.usage.developerCode }}
+                  }
 
                 </strong>
 
@@ -441,6 +543,67 @@
 
               </div>
 
+            </div>
+
+          }
+
+          @if (item.result; as result) {
+
+            <div
+              class="result-strip"
+              [attr.data-assessment]="result.assessment">
+
+              <div>
+                <span>RISULTATO TECNICO</span>
+                <strong>
+                  {{
+                    resultAssessmentLabels[
+                      result.assessment
+                    ]
+                  }}
+                </strong>
+              </div>
+
+              <div>
+                <span>TONO OTTENUTO</span>
+                <strong>
+                  {{
+                    result.achievedToneLevel
+                      ? toneLabels[
+                          result.achievedToneLevel
+                        ]
+                      : 'Non registrato'
+                  }}
+                </strong>
+              </div>
+
+              <div>
+                <span>RIFLESSO OTTENUTO</span>
+                <strong>
+                  {{
+                    result.achievedPrimaryReflection
+                      ? reflectionLabels[
+                          result.achievedPrimaryReflection
+                        ]
+                      : 'Non registrato'
+                  }}
+                </strong>
+              </div>
+
+              @if (result.correctionNotes) {
+                <div class="result-note">
+                  <span>INDICAZIONE PER LA PROSSIMA FORMULA</span>
+                  <strong>{{ result.correctionNotes }}</strong>
+                </div>
+              }
+
+            </div>
+
+          } @else if (item.formula.status === 'USED') {
+
+            <div class="result-pending-strip">
+              Risultato post-servizio non ancora registrato.
+              Apri il dettaglio della formula per completare lo storico tecnico.
             </div>
 
           }
@@ -477,6 +640,43 @@
                   Modifica
                 </a>
 
+              }
+
+              <a
+                class="secondary-button compact"
+                [routerLink]="['/color-lab/formulas', formulaId, 'evolution']">
+                Evoluzione
+              </a>
+              <a
+                class="secondary-button compact"
+                [routerLink]="['/color-lab/formulas', formulaId, 'protocol']">
+                Protocollo
+              </a>
+
+              @if (isReference(item)) {
+                <button
+                  type="button"
+                  class="reference-action-button"
+                  [disabled]="referenceActionFormulaId() != null"
+                  (click)="clearReference(item)">
+                  {{
+                    referenceActionFormulaId() === formulaId
+                      ? 'Aggiornamento...'
+                      : 'Rimuovi riferimento'
+                  }}
+                </button>
+              } @else if (canSetReference(item)) {
+                <button
+                  type="button"
+                  class="reference-action-button"
+                  [disabled]="referenceActionFormulaId() != null"
+                  (click)="setReference(item)">
+                  {{
+                    referenceActionFormulaId() === formulaId
+                      ? 'Impostazione...'
+                      : '★ Imposta riferimento'
+                  }}
+                </button>
               }
 
               <button

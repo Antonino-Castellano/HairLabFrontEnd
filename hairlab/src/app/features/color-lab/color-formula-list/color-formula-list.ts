@@ -35,6 +35,10 @@ import {
 } from '../../../models/enums/color-formula-status';
 
 import {
+  ColorFormulaOrigin
+} from '../../../models/enums/color-formula-origin';
+
+import {
   ColorFormulaService
 } from '../../../service/color-formula-service';
 
@@ -42,9 +46,18 @@ import {
   CustomerService
 } from '../../../service/customer-service';
 
+import { ColorLabSectionNavComponent } from '../color-lab-section-nav/color-lab-section-nav';
+
 import {
+  COLOR_APPLICATION_LABELS,
+  COLOR_FORMULA_ORIGIN_LABELS,
   COLOR_FORMULA_STATUS_LABELS
 } from '../color-formula-display';
+
+import {
+  REFLECTION_LABELS,
+  TONE_LEVEL_LABELS
+} from '../color-lab-display';
 
 /**
  * Elenco delle formule salvate.
@@ -55,7 +68,8 @@ import {
   standalone: true,
   imports: [
     DatePipe,
-    RouterLink
+    RouterLink,
+    ColorLabSectionNavComponent
   ],
   templateUrl:
     './color-formula-list.html',
@@ -106,6 +120,14 @@ export class ColorFormulaListComponent
       'ALL'
     );
 
+  protected readonly originFilter =
+    signal<
+      ColorFormulaOrigin |
+      'ALL'
+    >(
+      'ALL'
+    );
+
   protected readonly statuses =
     Object.values(
       ColorFormulaStatus
@@ -113,6 +135,65 @@ export class ColorFormulaListComponent
 
   protected readonly statusLabels =
     COLOR_FORMULA_STATUS_LABELS;
+
+  protected readonly origins =
+    Object.values(
+      ColorFormulaOrigin
+    );
+
+  protected readonly originLabels =
+    COLOR_FORMULA_ORIGIN_LABELS;
+
+  protected readonly toneLabels =
+    TONE_LEVEL_LABELS;
+
+  protected readonly reflectionLabels =
+    REFLECTION_LABELS;
+
+  protected readonly applicationLabels =
+    COLOR_APPLICATION_LABELS;
+
+  protected readonly totalCount =
+    computed(
+      () =>
+        this.formulas().length
+    );
+
+  protected readonly usedCount =
+    computed(
+      () =>
+        this.formulas()
+          .filter(
+            formula =>
+              formula.status ===
+              ColorFormulaStatus.USED
+          )
+          .length
+    );
+
+  protected readonly smartCount =
+    computed(
+      () =>
+        this.formulas()
+          .filter(
+            formula =>
+              formula.origin ===
+              ColorFormulaOrigin.SMART_FORMULA
+          )
+          .length
+    );
+
+  protected readonly revisionCount =
+    computed(
+      () =>
+        this.formulas()
+          .filter(
+            formula =>
+              formula.origin ===
+              ColorFormulaOrigin.REVISION
+          )
+          .length
+    );
 
   protected readonly filteredFormulas =
     computed(
@@ -146,6 +227,20 @@ export class ColorFormulaListComponent
                 &&
                 formula.status !==
                   this.statusFilter()
+              ) {
+
+                return false;
+              }
+
+              if (
+                this.originFilter() !==
+                  'ALL'
+                &&
+                (
+                  formula.origin ??
+                  ColorFormulaOrigin.MANUAL
+                ) !==
+                  this.originFilter()
               ) {
 
                 return false;
@@ -308,6 +403,33 @@ export class ColorFormulaListComponent
         ColorFormulaStatus |
         'ALL'
     );
+  }
+
+  protected onOriginFilterChange(
+    event:
+      Event
+  ): void {
+
+    this.originFilter.set(
+      (
+        event.target as
+          HTMLSelectElement
+      ).value as
+        ColorFormulaOrigin |
+        'ALL'
+    );
+  }
+
+  protected getOriginLabel(
+    origin:
+      ColorFormulaOrigin |
+      null |
+      undefined
+  ): string {
+
+    return origin
+      ? this.originLabels[origin]
+      : 'Manuale';
   }
 
   protected getCustomerName(

@@ -219,6 +219,15 @@ export class HairProfileFormComponent implements OnInit {
         Validators.required
       ],
 
+      whiteHairPercentage: [
+        0,
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.max(100)
+        ]
+      ],
+
       scalpConditionText: [''],
 
       chemicalHistoryText: [''],
@@ -350,6 +359,9 @@ export class HairProfileFormComponent implements OnInit {
             hairCondition:
               profile.hairCondition,
 
+            whiteHairPercentage:
+              profile.whiteHairPercentage ?? 0,
+
             scalpConditionText:
               this.arrayToText(
                 profile.scalpCondition
@@ -447,6 +459,9 @@ export class HairProfileFormComponent implements OnInit {
 
       hairCondition:
         formValue.hairCondition,
+
+      whiteHairPercentage:
+        Number(formValue.whiteHairPercentage),
 
       scalpCondition:
         this.textToArray(

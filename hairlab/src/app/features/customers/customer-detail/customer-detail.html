@@ -345,6 +345,15 @@
 
       </button>
 
+      <!-- CARTELLA COLORE -->
+      <button
+        type="button"
+        [class.active]="isSectionActive('color-record')"
+        (click)="selectSection('color-record')">
+        <span class="tab-icon">▤</span>
+        Cartella colore
+      </button>
+
     </nav>
 
     <!-- ===================================================
@@ -840,6 +849,18 @@
                 selectedCustomer.id!
               ">
             </app-style-recommendation-detail>
+
+          </section>
+
+        }
+
+        @case ('color-record') {
+
+          <section class="module-panel">
+
+            <app-customer-color-technical-record
+              [customerId]="selectedCustomer.id!">
+            </app-customer-color-technical-record>
 
           </section>
 
