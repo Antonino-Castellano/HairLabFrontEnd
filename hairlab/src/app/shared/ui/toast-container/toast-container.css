@@ -1,0 +1,127 @@
+:host {
+  position: fixed;
+  z-index: 5000;
+  top: 18px;
+  right: 18px;
+  pointer-events: none;
+}
+
+.toast-region {
+  width: min(390px, calc(100vw - 32px));
+  display: grid;
+  gap: 10px;
+}
+
+.toast {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 30px;
+  align-items: start;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid var(--hl-color-border);
+  border-left-width: 4px;
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-md);
+  color: var(--hl-color-text);
+  pointer-events: auto;
+  animation: toast-enter 180ms ease-out both;
+}
+
+.toast-success {
+  border-left-color: var(--hl-color-success);
+}
+.toast-error {
+  border-left-color: var(--hl-color-danger);
+}
+.toast-warning {
+  border-left-color: var(--hl-color-warning);
+}
+.toast-info {
+  border-left-color: var(--hl-color-info);
+}
+
+.toast-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--hl-color-primary-soft);
+  color: var(--hl-color-primary-strong);
+  font-weight: 800;
+}
+
+.toast-success .toast-icon {
+  background: var(--hl-color-success-soft);
+  color: var(--hl-color-success);
+}
+
+.toast-error .toast-icon {
+  background: var(--hl-color-danger-soft);
+  color: var(--hl-color-danger);
+}
+
+.toast-warning .toast-icon {
+  background: var(--hl-color-warning-soft);
+  color: var(--hl-color-warning);
+}
+
+.toast-info .toast-icon {
+  background: var(--hl-color-info-soft);
+  color: var(--hl-color-info);
+}
+
+.toast-copy strong {
+  display: block;
+  font-size: var(--hl-font-size-sm);
+  line-height: 1.35;
+}
+
+.toast-copy p {
+  margin: 4px 0 0;
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-size-xs);
+  line-height: 1.45;
+}
+
+.toast-close {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--hl-color-text-muted);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.toast-close:hover {
+  background: var(--hl-color-surface-alt);
+  color: var(--hl-color-text);
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast-region {
+    width: 100%;
+  }
+}

@@ -1,22 +1,19 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { ColorFormulaDetail } from '../../../models/color-formula-management';
-import { ColorFormulaSimulation, ColorFormulaFeasibility } from '../../../models/color-formula-simulation';
+import {
+  ColorFormulaSimulation,
+  ColorFormulaFeasibility,
+} from '../../../models/color-formula-simulation';
 import { ColorFormulaProtocol, ColorFormulaZone } from '../../../models/color-formula-protocol';
 import {
   ColorFormulaResult,
   ColorFormulaResultRequest,
-  ColorResultAssessment
+  ColorResultAssessment,
 } from '../../../models/color-formula-result';
 import { ColorFormulaUsage } from '../../../models/color-formula-usage';
 import { Customer } from '../../../models/customer';
@@ -39,18 +36,17 @@ import { ColorFormulaUsageService } from '../../../service/color-formula-usage-s
 import { CustomerService } from '../../../service/customer-service';
 import { HairDyeInventoryService } from '../../../service/hair-dye-inventory-service';
 import { HairDyeService } from '../../../service/hair-dye-service';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
 import {
   COLOR_APPLICATION_LABELS,
   COLOR_FORMULA_ORIGIN_LABELS,
   COLOR_FORMULA_STATUS_LABELS,
   MIXING_RATIO_LABELS,
-  OXYGEN_LABELS
+  OXYGEN_LABELS,
 } from '../color-formula-display';
-import {
-  REFLECTION_LABELS,
-  TONE_LEVEL_LABELS
-} from '../color-lab-display';
+import { REFLECTION_LABELS, TONE_LEVEL_LABELS } from '../color-lab-display';
 
 /**
  * Dettaglio formula + workflow di utilizzo reale.
@@ -60,10 +56,9 @@ import {
   standalone: true,
   imports: [RouterLink, DatePipe],
   templateUrl: './color-formula-detail.html',
-  styleUrl: './color-formula-detail.css'
+  styleUrl: './color-formula-detail.css',
 })
 export class ColorFormulaDetailComponent implements OnInit {
-
   private readonly managementService = inject(ColorFormulaManagementService);
   private readonly protocolService = inject(ColorFormulaProtocolService);
   private readonly historyService = inject(ColorFormulaHistoryService);
@@ -75,45 +70,36 @@ export class ColorFormulaDetailComponent implements OnInit {
   private readonly inventoryService = inject(HairDyeInventoryService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
 
   protected readonly detail = signal<ColorFormulaDetail | null>(null);
   protected readonly protocol = signal<ColorFormulaProtocol | null>(null);
   protected readonly zoneDeveloperSelections = signal<Record<number, number | null>>({});
   protected readonly usage = signal<ColorFormulaUsage | null>(null);
-  protected readonly formulaResult =
-    signal<ColorFormulaResult | null>(null);
+  protected readonly formulaResult = signal<ColorFormulaResult | null>(null);
 
   protected readonly simulation = signal<ColorFormulaSimulation | null>(null);
 
-  protected readonly savingResult =
-    signal(false);
+  protected readonly savingResult = signal(false);
 
-  protected readonly creatingRevision =
-    signal(false);
+  protected readonly creatingRevision = signal(false);
 
-  protected readonly referenceAction =
-    signal(false);
+  protected readonly referenceAction = signal(false);
 
-  protected readonly achievedToneLevel =
-    signal<ToneLevel | null>(null);
+  protected readonly achievedToneLevel = signal<ToneLevel | null>(null);
 
-  protected readonly achievedPrimaryReflection =
-    signal<Reflection | null>(null);
+  protected readonly achievedPrimaryReflection = signal<Reflection | null>(null);
 
-  protected readonly achievedSecondaryReflection =
-    signal<Reflection | null>(null);
+  protected readonly achievedSecondaryReflection = signal<Reflection | null>(null);
 
-  protected readonly resultAssessment =
-    signal<ColorResultAssessment>('GOOD');
+  protected readonly resultAssessment = signal<ColorResultAssessment>('GOOD');
 
-  protected readonly technicalResultNotes =
-    signal('');
+  protected readonly technicalResultNotes = signal('');
 
-  protected readonly correctionResultNotes =
-    signal('');
+  protected readonly correctionResultNotes = signal('');
 
-  protected readonly clientFeedback =
-    signal('');
+  protected readonly clientFeedback = signal('');
 
   protected readonly customers = signal<Customer[]>([]);
   protected readonly products = signal<HairDye[]>([]);
@@ -133,39 +119,26 @@ export class ColorFormulaDetailComponent implements OnInit {
   protected readonly toneLabels = TONE_LEVEL_LABELS;
   protected readonly reflectionLabels = REFLECTION_LABELS;
 
-  protected readonly toneLevels =
-    Object.values(
-      ToneLevel
-    );
+  protected readonly toneLevels = Object.values(ToneLevel);
 
-  protected readonly reflections =
-    Object.values(
-      Reflection
-    );
+  protected readonly reflections = Object.values(Reflection);
 
-  protected readonly resultAssessments:
-    ColorResultAssessment[] = [
-      'EXCELLENT',
-      'GOOD',
-      'PARTIAL',
-      'CORRECTION_REQUIRED'
-    ];
+  protected readonly resultAssessments: ColorResultAssessment[] = [
+    'EXCELLENT',
+    'GOOD',
+    'PARTIAL',
+    'CORRECTION_REQUIRED',
+  ];
 
-  protected readonly resultAssessmentLabels:
-    Record<ColorResultAssessment, string> = {
+  protected readonly resultAssessmentLabels: Record<ColorResultAssessment, string> = {
+    EXCELLENT: 'Obiettivo pienamente raggiunto',
 
-      EXCELLENT:
-        'Obiettivo pienamente raggiunto',
+    GOOD: 'Buon risultato',
 
-      GOOD:
-        'Buon risultato',
+    PARTIAL: 'Obiettivo raggiunto in parte',
 
-      PARTIAL:
-        'Obiettivo raggiunto in parte',
-
-      CORRECTION_REQUIRED:
-        'Correzione necessaria'
-    };
+    CORRECTION_REQUIRED: 'Correzione necessaria',
+  };
 
   protected readonly developerCandidates = computed(() => {
     const current = this.detail();
@@ -173,22 +146,22 @@ export class ColorFormulaDetailComponent implements OnInit {
     if (!current) return [];
 
     return this.products()
-      .filter(product =>
-        !!product.id
-        && product.active
-        && product.productType === ProductType.DEVELOPER
-        && product.developerVolume === current.formula.volumeDeveloper
+      .filter(
+        (product) =>
+          !!product.id &&
+          product.active &&
+          product.productType === ProductType.DEVELOPER &&
+          product.developerVolume === current.formula.volumeDeveloper,
       )
-      .sort((a, b) =>
-        a.brand.localeCompare(b.brand, 'it')
-        || a.code.localeCompare(b.code, 'it', { numeric: true })
+      .sort(
+        (a, b) =>
+          a.brand.localeCompare(b.brand, 'it') ||
+          a.code.localeCompare(b.code, 'it', { numeric: true }),
       );
   });
 
   ngOnInit(): void {
-    const id = Number(
-      this.activatedRoute.snapshot.paramMap.get('id')
-    );
+    const id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
 
     if (Number.isNaN(id) || id <= 0) {
       this.errorMessage.set('ID formula non valido.');
@@ -208,9 +181,9 @@ export class ColorFormulaDetailComponent implements OnInit {
       simulation: this.simulationService.simulate(id),
       customers: this.customerService.getAll(),
       products: this.hairDyeService.getAll(),
-      inventories: this.inventoryService.getAll()
+      inventories: this.inventoryService.getAll(),
     }).subscribe({
-      next: result => {
+      next: (result) => {
         this.detail.set(result.detail);
         this.protocol.set(result.protocol);
         this.simulation.set(result.simulation);
@@ -224,16 +197,14 @@ export class ColorFormulaDetailComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.loading.set(false);
-        this.errorMessage.set(
-          this.getErrorMessage(error, 'Impossibile caricare la formula.')
-        );
-      }
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile caricare la formula.'));
+      },
     });
   }
 
   private loadUsage(formulaId: number): void {
     this.usageService.getByFormulaId(formulaId).subscribe({
-      next: usage => {
+      next: (usage) => {
         this.usage.set(usage);
         this.loadFormulaResult(formulaId);
       },
@@ -245,199 +216,81 @@ export class ColorFormulaDetailComponent implements OnInit {
         }
 
         this.errorMessage.set(
-          this.getErrorMessage(error, 'Impossibile caricare lo storico utilizzo.')
+          this.getErrorMessage(error, 'Impossibile caricare lo storico utilizzo.'),
         );
-      }
+      },
     });
   }
 
   /**
    * Carica l'eventuale risultato tecnico già registrato.
    */
-  private loadFormulaResult(
-    formulaId:
-      number
-  ): void {
+  private loadFormulaResult(formulaId: number): void {
+    this.resultService.getByFormulaId(formulaId).subscribe({
+      next: (result) => {
+        this.formulaResult.set(result);
 
-    this.resultService
-      .getByFormulaId(
-        formulaId
-      )
-      .subscribe({
+        this.achievedToneLevel.set(result.achievedToneLevel ?? null);
 
-        next: result => {
+        this.achievedPrimaryReflection.set(result.achievedPrimaryReflection ?? null);
 
-          this.formulaResult.set(
-            result
-          );
+        this.achievedSecondaryReflection.set(result.achievedSecondaryReflection ?? null);
 
-          this.achievedToneLevel.set(
-            result.achievedToneLevel ??
-            null
-          );
+        this.resultAssessment.set(result.assessment);
 
-          this.achievedPrimaryReflection.set(
-            result.achievedPrimaryReflection ??
-            null
-          );
+        this.technicalResultNotes.set(result.technicalNotes ?? '');
 
-          this.achievedSecondaryReflection.set(
-            result.achievedSecondaryReflection ??
-            null
-          );
+        this.correctionResultNotes.set(result.correctionNotes ?? '');
 
-          this.resultAssessment.set(
-            result.assessment
-          );
+        this.clientFeedback.set(result.clientFeedback ?? '');
+      },
 
-          this.technicalResultNotes.set(
-            result.technicalNotes ??
-            ''
-          );
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          this.formulaResult.set(null);
 
-          this.correctionResultNotes.set(
-            result.correctionNotes ??
-            ''
-          );
-
-          this.clientFeedback.set(
-            result.clientFeedback ??
-            ''
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          if (
-            error.status ===
-            404
-          ) {
-
-            this.formulaResult.set(
-              null
-            );
-
-            return;
-          }
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile caricare il risultato tecnico.'
-            )
-          );
+          return;
         }
-      });
+
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile caricare il risultato tecnico.'),
+        );
+      },
+    });
   }
 
-  protected onAchievedToneChange(
-    event:
-      Event
-  ): void {
+  protected onAchievedToneChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
 
-    const value =
-      (
-        event.target as
-          HTMLSelectElement
-      ).value;
-
-    this.achievedToneLevel.set(
-      value
-        ? value as ToneLevel
-        : null
-    );
+    this.achievedToneLevel.set(value ? (value as ToneLevel) : null);
   }
 
-  protected onPrimaryReflectionChange(
-    event:
-      Event
-  ): void {
+  protected onPrimaryReflectionChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
 
-    const value =
-      (
-        event.target as
-          HTMLSelectElement
-      ).value;
-
-    this.achievedPrimaryReflection.set(
-      value
-        ? value as Reflection
-        : null
-    );
+    this.achievedPrimaryReflection.set(value ? (value as Reflection) : null);
   }
 
-  protected onSecondaryReflectionChange(
-    event:
-      Event
-  ): void {
+  protected onSecondaryReflectionChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
 
-    const value =
-      (
-        event.target as
-          HTMLSelectElement
-      ).value;
-
-    this.achievedSecondaryReflection.set(
-      value
-        ? value as Reflection
-        : null
-    );
+    this.achievedSecondaryReflection.set(value ? (value as Reflection) : null);
   }
 
-  protected onAssessmentChange(
-    event:
-      Event
-  ): void {
-
-    this.resultAssessment.set(
-      (
-        event.target as
-          HTMLSelectElement
-      ).value as
-        ColorResultAssessment
-    );
+  protected onAssessmentChange(event: Event): void {
+    this.resultAssessment.set((event.target as HTMLSelectElement).value as ColorResultAssessment);
   }
 
-  protected onTechnicalNotesChange(
-    event:
-      Event
-  ): void {
-
-    this.technicalResultNotes.set(
-      (
-        event.target as
-          HTMLTextAreaElement
-      ).value
-    );
+  protected onTechnicalNotesChange(event: Event): void {
+    this.technicalResultNotes.set((event.target as HTMLTextAreaElement).value);
   }
 
-  protected onCorrectionNotesChange(
-    event:
-      Event
-  ): void {
-
-    this.correctionResultNotes.set(
-      (
-        event.target as
-          HTMLTextAreaElement
-      ).value
-    );
+  protected onCorrectionNotesChange(event: Event): void {
+    this.correctionResultNotes.set((event.target as HTMLTextAreaElement).value);
   }
 
-  protected onClientFeedbackChange(
-    event:
-      Event
-  ): void {
-
-    this.clientFeedback.set(
-      (
-        event.target as
-          HTMLTextAreaElement
-      ).value
-    );
+  protected onClientFeedbackChange(event: Event): void {
+    this.clientFeedback.set((event.target as HTMLTextAreaElement).value);
   }
 
   /**
@@ -450,104 +303,56 @@ export class ColorFormulaDetailComponent implements OnInit {
    * - utilizzo;
    * - movimenti magazzino.
    */
-  protected saveFormulaResult():
-    void {
+  protected saveFormulaResult(): void {
+    const current = this.detail();
 
-    const current =
-      this.detail();
-
-    if (
-      !current?.formula.id
-      ||
-      !this.usage()
-    ) {
-
+    if (!current?.formula.id || !this.usage()) {
       this.errorMessage.set(
-        'Il risultato può essere registrato soltanto dopo l’utilizzo reale della formula.'
+        'Il risultato può essere registrato soltanto dopo l’utilizzo reale della formula.',
       );
 
       return;
     }
 
-    const request:
-      ColorFormulaResultRequest = {
+    const request: ColorFormulaResultRequest = {
+      achievedToneLevel: this.achievedToneLevel(),
 
-      achievedToneLevel:
-        this.achievedToneLevel(),
+      achievedPrimaryReflection: this.achievedPrimaryReflection(),
 
-      achievedPrimaryReflection:
-        this.achievedPrimaryReflection(),
+      achievedSecondaryReflection: this.achievedSecondaryReflection(),
 
-      achievedSecondaryReflection:
-        this.achievedSecondaryReflection(),
+      assessment: this.resultAssessment(),
 
-      assessment:
-        this.resultAssessment(),
+      technicalNotes: this.technicalResultNotes().trim(),
 
-      technicalNotes:
-        this.technicalResultNotes()
-          .trim(),
+      correctionNotes: this.correctionResultNotes().trim(),
 
-      correctionNotes:
-        this.correctionResultNotes()
-          .trim(),
-
-      clientFeedback:
-        this.clientFeedback()
-          .trim()
+      clientFeedback: this.clientFeedback().trim(),
     };
 
-    this.savingResult.set(
-      true
-    );
+    this.savingResult.set(true);
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    this.successMessage.set(
-      ''
-    );
+    this.successMessage.set('');
 
-    this.resultService
-      .save(
-        current.formula.id,
-        request
-      )
-      .subscribe({
+    this.resultService.save(current.formula.id, request).subscribe({
+      next: (result) => {
+        this.formulaResult.set(result);
 
-        next: result => {
+        this.savingResult.set(false);
 
-          this.formulaResult.set(
-            result
-          );
+        this.successMessage.set('Risultato tecnico post-servizio salvato correttamente.');
+      },
 
-          this.savingResult.set(
-            false
-          );
+      error: (error: HttpErrorResponse) => {
+        this.savingResult.set(false);
 
-          this.successMessage.set(
-            'Risultato tecnico post-servizio salvato correttamente.'
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.savingResult.set(
-            false
-          );
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile salvare il risultato tecnico.'
-            )
-          );
-        }
-      });
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile salvare il risultato tecnico.'),
+        );
+      },
+    });
   }
 
   protected hasMultiZoneProtocol(): boolean {
@@ -556,15 +361,17 @@ export class ColorFormulaDetailComponent implements OnInit {
 
   protected getZoneDeveloperCandidates(zone: ColorFormulaZone): HairDye[] {
     return this.products()
-      .filter(product =>
-        !!product.id
-        && product.active
-        && product.productType === ProductType.DEVELOPER
-        && product.developerVolume === zone.developerVolume
+      .filter(
+        (product) =>
+          !!product.id &&
+          product.active &&
+          product.productType === ProductType.DEVELOPER &&
+          product.developerVolume === zone.developerVolume,
       )
-      .sort((a, b) =>
-        a.brand.localeCompare(b.brand, 'it')
-        || a.code.localeCompare(b.code, 'it', { numeric: true })
+      .sort(
+        (a, b) =>
+          a.brand.localeCompare(b.brand, 'it') ||
+          a.code.localeCompare(b.code, 'it', { numeric: true }),
       );
   }
 
@@ -576,28 +383,34 @@ export class ColorFormulaDetailComponent implements OnInit {
   protected onZoneDeveloperChange(zoneId: number | undefined, event: Event): void {
     if (!zoneId) return;
     const value = (event.target as HTMLSelectElement).value;
-    this.zoneDeveloperSelections.update(current => ({
+    this.zoneDeveloperSelections.update((current) => ({
       ...current,
-      [zoneId]: value ? Number(value) : null
+      [zoneId]: value ? Number(value) : null,
     }));
   }
 
   protected getZoneColorQuantity(zone: ColorFormulaZone): number {
-    return (zone.ingredients ?? []).reduce(
-      (sum, item) => sum + Number(item.quantity ?? 0),
-      0
-    );
+    return (zone.ingredients ?? []).reduce((sum, item) => sum + Number(item.quantity ?? 0), 0);
   }
 
   protected getZoneDeveloperQuantity(zone: ColorFormulaZone): number {
     const color = this.getZoneColorQuantity(zone);
     let multiplier = 1;
     switch (zone.mixingRatio) {
-      case MixingRatio.RATIO_1_TO_1_5: multiplier = 1.5; break;
-      case MixingRatio.RATIO_1_TO_2: multiplier = 2; break;
-      case MixingRatio.RATIO_1_TO_3: multiplier = 3; break;
-      case MixingRatio.CUSTOM: multiplier = Number(zone.customDeveloperRatio ?? 0); break;
-      default: multiplier = 1;
+      case MixingRatio.RATIO_1_TO_1_5:
+        multiplier = 1.5;
+        break;
+      case MixingRatio.RATIO_1_TO_2:
+        multiplier = 2;
+        break;
+      case MixingRatio.RATIO_1_TO_3:
+        multiplier = 3;
+        break;
+      case MixingRatio.CUSTOM:
+        multiplier = Number(zone.customDeveloperRatio ?? 0);
+        break;
+      default:
+        multiplier = 1;
     }
     return Number((color * multiplier).toFixed(2));
   }
@@ -610,7 +423,7 @@ export class ColorFormulaDetailComponent implements OnInit {
       if (!zone.id) continue;
       const needed = this.getZoneDeveloperQuantity(zone);
       const candidates = this.getZoneDeveloperCandidates(zone);
-      const sufficient = candidates.find(candidate => {
+      const sufficient = candidates.find((candidate) => {
         if (!candidate.id) return false;
         const inventory = this.getInventory(candidate.id);
         return !!inventory && Number(inventory.quantityAvailable) >= needed;
@@ -631,7 +444,7 @@ export class ColorFormulaDetailComponent implements OnInit {
       if (!developerId) return false;
       required.set(
         developerId,
-        (required.get(developerId) ?? 0) + this.getZoneDeveloperQuantity(zone)
+        (required.get(developerId) ?? 0) + this.getZoneDeveloperQuantity(zone),
       );
     }
 
@@ -644,8 +457,8 @@ export class ColorFormulaDetailComponent implements OnInit {
   }
 
   private autoSelectDeveloper(): void {
-    const sufficient = this.developerCandidates().find(
-      developer => this.isDeveloperStockSufficient(developer)
+    const sufficient = this.developerCandidates().find((developer) =>
+      this.isDeveloperStockSufficient(developer),
     );
 
     const selected = sufficient ?? this.developerCandidates()[0];
@@ -663,12 +476,11 @@ export class ColorFormulaDetailComponent implements OnInit {
 
   protected canSetReferenceFormula(): boolean {
     const formula = this.detail()?.formula;
-    return !!formula?.id
-      && !formula.referenceFormula
-      && (
-        formula.status === ColorFormulaStatus.USED
-        || formula.status === ColorFormulaStatus.ARCHIVED
-      );
+    return (
+      !!formula?.id &&
+      !formula.referenceFormula &&
+      (formula.status === ColorFormulaStatus.USED || formula.status === ColorFormulaStatus.ARCHIVED)
+    );
   }
 
   protected setAsReferenceFormula(): void {
@@ -680,7 +492,7 @@ export class ColorFormulaDetailComponent implements OnInit {
     this.successMessage.set('');
 
     this.historyService.setReferenceFormula(formulaId).subscribe({
-      next: formula => {
+      next: (formula) => {
         const current = this.detail();
         if (current) this.detail.set({ ...current, formula });
         this.referenceAction.set(false);
@@ -689,9 +501,9 @@ export class ColorFormulaDetailComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.referenceAction.set(false);
         this.errorMessage.set(
-          this.getErrorMessage(error, 'Impossibile impostare la formula come riferimento.')
+          this.getErrorMessage(error, 'Impossibile impostare la formula come riferimento.'),
         );
-      }
+      },
     });
   }
 
@@ -704,7 +516,7 @@ export class ColorFormulaDetailComponent implements OnInit {
     this.successMessage.set('');
 
     this.historyService.clearReferenceFormula(formulaId).subscribe({
-      next: formula => {
+      next: (formula) => {
         const current = this.detail();
         if (current) this.detail.set({ ...current, formula });
         this.referenceAction.set(false);
@@ -713,21 +525,16 @@ export class ColorFormulaDetailComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.referenceAction.set(false);
         this.errorMessage.set(
-          this.getErrorMessage(error, 'Impossibile rimuovere la formula di riferimento.')
+          this.getErrorMessage(error, 'Impossibile rimuovere la formula di riferimento.'),
         );
-      }
+      },
     });
   }
 
   protected canCreateRevision(): boolean {
-    const status =
-      this.detail()?.formula.status;
+    const status = this.detail()?.formula.status;
 
-    return (
-      status === ColorFormulaStatus.USED
-      ||
-      status === ColorFormulaStatus.ARCHIVED
-    );
+    return status === ColorFormulaStatus.USED || status === ColorFormulaStatus.ARCHIVED;
   }
 
   /**
@@ -737,15 +544,9 @@ export class ColorFormulaDetailComponent implements OnInit {
    * alla formula corrente tramite parentFormulaId.
    */
   protected createRevision(): void {
-    const formulaId =
-      this.detail()?.formula.id;
+    const formulaId = this.detail()?.formula.id;
 
-    if (
-      !formulaId
-      ||
-      this.creatingRevision()
-    ) {
-
+    if (!formulaId || this.creatingRevision()) {
       return;
     }
 
@@ -753,63 +554,32 @@ export class ColorFormulaDetailComponent implements OnInit {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    this.historyService
-      .duplicateAsDraft(
-        formulaId
-      )
-      .subscribe({
+    this.historyService.duplicateAsDraft(formulaId).subscribe({
+      next: (detail) => {
+        this.creatingRevision.set(false);
 
-        next: detail => {
-
-          this.creatingRevision.set(false);
-
-          if (
-            detail.formula.id
-          ) {
-
-            this.router.navigate(
-              [
-                '/color-lab/formulas',
-                detail.formula.id,
-                'edit'
-              ]
-            );
-          }
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.creatingRevision.set(false);
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile creare una revisione della formula.'
-            )
-          );
+        if (detail.formula.id) {
+          this.router.navigate(['/color-lab/formulas', detail.formula.id, 'edit']);
         }
-      });
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.creatingRevision.set(false);
+
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile creare una revisione della formula.'),
+        );
+      },
+    });
   }
 
-  protected getOriginLabel(
-    origin:
-      ColorFormulaOrigin |
-      null |
-      undefined
-  ): string {
-
-    return origin
-      ? this.originLabels[origin]
-      : 'Manuale';
+  protected getOriginLabel(origin: ColorFormulaOrigin | null | undefined): string {
+    return origin ? this.originLabels[origin] : 'Manuale';
   }
 
   protected canEditFormula(): boolean {
     const status = this.detail()?.formula.status;
-    return status === ColorFormulaStatus.DRAFT
-      || status === ColorFormulaStatus.PROPOSED;
+    return status === ColorFormulaStatus.DRAFT || status === ColorFormulaStatus.PROPOSED;
   }
 
   protected canUseFormula(): boolean {
@@ -825,17 +595,17 @@ export class ColorFormulaDetailComponent implements OnInit {
     const developerId = this.selectedDeveloperId();
     if (!developerId) return false;
 
-    const developer = this.products().find(item => item.id === developerId);
+    const developer = this.products().find((item) => item.id === developerId);
     return !!developer && this.isDeveloperStockSufficient(developer);
   }
 
-  protected useFormula(): void {
+  protected async useFormula(): Promise<void> {
     const current = this.detail();
     if (!current?.formula.id) return;
 
     if (!this.canUseFormula()) {
       this.errorMessage.set(
-        'La formula non può essere utilizzata: verifica protocollo, compatibilità tecnica, ingredienti e developer in magazzino.'
+        'La formula non può essere utilizzata: verifica protocollo, compatibilità tecnica, ingredienti e developer in magazzino.',
       );
       return;
     }
@@ -843,21 +613,26 @@ export class ColorFormulaDetailComponent implements OnInit {
     const request = this.hasMultiZoneProtocol()
       ? {
           zoneDevelopers: (this.protocol()?.zones ?? [])
-            .filter(zone => !!zone.id)
-            .map(zone => ({
+            .filter((zone) => !!zone.id)
+            .map((zone) => ({
               zoneId: zone.id!,
-              developerHairDyeId: this.getZoneDeveloperSelection(zone.id)!
-            }))
+              developerHairDyeId: this.getZoneDeveloperSelection(zone.id)!,
+            })),
         }
       : {
-          developerHairDyeId: this.selectedDeveloperId()!
+          developerHairDyeId: this.selectedDeveloperId()!,
         };
 
-    const confirmed = window.confirm(
-      this.hasMultiZoneProtocol()
-        ? 'Confermi l’utilizzo reale del protocollo multi-zona?\n\nHairLab scaricherà ingredienti e i developer specifici di ogni zona in un’unica transazione.'
-        : 'Confermi l’utilizzo reale della formula?\n\nHairLab scaricherà definitivamente ingredienti e developer dal magazzino e imposterà la formula come UTILIZZATA.'
-    );
+    const confirmed = await this.confirmDialog.confirm({
+      title: this.hasMultiZoneProtocol()
+        ? 'Utilizzare il protocollo multi-zona?'
+        : 'Utilizzare la formula?',
+      message: this.hasMultiZoneProtocol()
+        ? 'HairLab scaricherà ingredienti e developer specifici di ogni zona in un’unica transazione.'
+        : 'HairLab scaricherà ingredienti e developer dal magazzino e imposterà la formula come utilizzata.',
+      confirmLabel: 'Conferma utilizzo',
+      severity: 'warning',
+    });
 
     if (!confirmed) return;
 
@@ -865,69 +640,59 @@ export class ColorFormulaDetailComponent implements OnInit {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    this.usageService.useFormula(
-      current.formula.id,
-      request
-    ).subscribe({
-      next: usage => {
+    this.usageService.useFormula(current.formula.id, request).subscribe({
+      next: (usage) => {
         this.usage.set(usage);
         this.usingFormula.set(false);
-        this.successMessage.set(
-          this.hasMultiZoneProtocol()
-            ? 'Protocollo multi-zona utilizzato correttamente. Tutti gli scarichi sono stati registrati.'
-            : 'Formula utilizzata correttamente. Il magazzino è stato aggiornato.'
-        );
+        const successMessage = this.hasMultiZoneProtocol()
+          ? 'Protocollo multi-zona utilizzato correttamente. Tutti gli scarichi sono stati registrati.'
+          : 'Formula utilizzata correttamente. Il magazzino è stato aggiornato.';
+        this.successMessage.set(successMessage);
+        this.toastService.success('Formula utilizzata', successMessage);
         this.load(current.formula.id!);
       },
       error: (error: HttpErrorResponse) => {
         this.usingFormula.set(false);
-        this.errorMessage.set(
-          this.getErrorMessage(error, 'Impossibile utilizzare la formula.')
-        );
-      }
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile utilizzare la formula.'));
+      },
     });
   }
 
   protected getCustomerName(customerId: number | undefined): string {
-    const customer = this.customers().find(item => item.id === customerId);
-    return customer
-      ? `${customer.firstName} ${customer.lastName}`
-      : 'Cliente non disponibile';
+    const customer = this.customers().find((item) => item.id === customerId);
+    return customer ? `${customer.firstName} ${customer.lastName}` : 'Cliente non disponibile';
   }
 
   protected getProductName(hairDyeId: number): string {
-    const product = this.products().find(item => item.id === hairDyeId);
+    const product = this.products().find((item) => item.id === hairDyeId);
     return product
       ? `${product.brand} · ${product.code} · ${product.name}`
       : `Prodotto #${hairDyeId}`;
   }
 
   protected getInventory(hairDyeId: number): HairDyeInventory | undefined {
-    return this.inventories().find(item => item.hairDyeId === hairDyeId);
+    return this.inventories().find((item) => item.hairDyeId === hairDyeId);
   }
 
-  protected isIngredientStockSufficient(
-    hairDyeId: number,
-    quantity: number
-  ): boolean {
+  protected isIngredientStockSufficient(hairDyeId: number, quantity: number): boolean {
     const inventory = this.getInventory(hairDyeId);
-    return !!inventory
-      && inventory.unit === InventoryUnit.GRAM
-      && inventory.quantityAvailable >= quantity;
+    return (
+      !!inventory &&
+      inventory.unit === InventoryUnit.GRAM &&
+      inventory.quantityAvailable >= quantity
+    );
   }
 
   protected areIngredientStocksSufficient(): boolean {
     const current = this.detail();
     if (!current || current.ingredients.length === 0) return false;
 
-    return current.ingredients.every(item =>
-      this.isIngredientStockSufficient(item.hairDyeId, item.quantity)
+    return current.ingredients.every((item) =>
+      this.isIngredientStockSufficient(item.hairDyeId, item.quantity),
     );
   }
 
-  protected getDeveloperInventory(
-    developer: HairDye
-  ): HairDyeInventory | undefined {
+  protected getDeveloperInventory(developer: HairDye): HairDyeInventory | undefined {
     if (!developer.id) return undefined;
     return this.getInventory(developer.id);
   }
@@ -936,10 +701,12 @@ export class ColorFormulaDetailComponent implements OnInit {
     const current = this.detail();
     const inventory = this.getDeveloperInventory(developer);
 
-    return !!current
-      && !!inventory
-      && inventory.unit === InventoryUnit.MILLILITER
-      && inventory.quantityAvailable >= current.developerQuantity;
+    return (
+      !!current &&
+      !!inventory &&
+      inventory.unit === InventoryUnit.MILLILITER &&
+      inventory.quantityAvailable >= current.developerQuantity
+    );
   }
 
   protected getRatioLabel(): string {
@@ -962,7 +729,7 @@ export class ColorFormulaDetailComponent implements OnInit {
       DIRECT_POSSIBLE: 'Percorso diretto plausibile',
       MULTI_STEP: 'Percorso multi-step consigliato',
       NEEDS_DATA: 'Dati insufficienti',
-      PROFESSIONAL_REVIEW: 'Rivalutazione professionale necessaria'
+      PROFESSIONAL_REVIEW: 'Rivalutazione professionale necessaria',
     };
 
     return labels[value];
@@ -974,13 +741,8 @@ export class ColorFormulaDetailComponent implements OnInit {
     return 'low';
   }
 
-  private getErrorMessage(
-    error: HttpErrorResponse,
-    fallback: string
-  ): string {
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
     const message = error.error?.message;
-    return typeof message === 'string' && message.trim()
-      ? message
-      : fallback;
+    return typeof message === 'string' && message.trim() ? message : fallback;
   }
 }

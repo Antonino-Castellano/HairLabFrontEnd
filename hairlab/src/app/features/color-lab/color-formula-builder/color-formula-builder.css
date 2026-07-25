@@ -23,7 +23,7 @@
 
 .eyebrow {
   color: #9c6e51;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.6px;
 }
@@ -38,7 +38,7 @@
   max-width: 700px;
   margin: 6px 0 0;
   color: #91847c;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
@@ -67,7 +67,7 @@
 .back-button {
   min-height: 38px;
   padding: 0 12px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .form-card {
@@ -92,7 +92,7 @@
   border-radius: 8px;
   background: #f0e6e0;
   color: #856451;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -109,13 +109,13 @@
 .section-heading p {
   margin: 4px 0 0;
   color: #978a82;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .add-button {
   min-height: 34px;
   padding: 0 10px;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .form-grid {
@@ -124,27 +124,15 @@
 }
 
 .form-grid.two {
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .form-grid.three {
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .form-grid.four {
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .form-grid label,
@@ -159,7 +147,7 @@
 .full-field > span,
 .ingredient-row label > span {
   color: #796b63;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -177,7 +165,7 @@ textarea {
   background: white;
   color: #564942;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 input,
@@ -195,13 +183,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid
-    rgba(
-      151,
-      112,
-      88,
-      0.13
-    );
+  outline: 2px solid rgba(151, 112, 88, 0.13);
   border-color: #b99b89;
 }
 
@@ -240,7 +222,7 @@ textarea:focus {
   border-radius: 8px;
   background: #eee4de;
   color: #765a4b;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -251,7 +233,7 @@ textarea:focus {
 .product-meta {
   overflow: hidden;
   color: #9a8d85;
-  font-size: 7px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -276,7 +258,7 @@ textarea:focus {
 .custom-ratio-input b {
   padding: 0 9px;
   color: #8e8179;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .stock-info {
@@ -298,14 +280,14 @@ textarea:focus {
 
 .stock-info span {
   color: #9b8e87;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .stock-info strong {
   margin-top: 3px;
   color: #75675f;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .stock-info[data-stock='OK'] {
@@ -349,7 +331,7 @@ textarea:focus {
   border-radius: 8px;
   background: #fffbf1;
   color: #8d6e28;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 /*
@@ -359,11 +341,7 @@ textarea:focus {
  */
 .calculation-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
@@ -383,7 +361,7 @@ textarea:focus {
 
 .calculation-grid span {
   color: #978a82;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -396,7 +374,7 @@ textarea:focus {
 .calculation-grid small {
   margin-top: 3px;
   color: #9c8f87;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .calculation-grid .total-card {
@@ -413,7 +391,7 @@ textarea:focus {
 .secondary-button {
   min-height: 40px;
   padding: 0 15px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .primary-button {
@@ -432,7 +410,7 @@ textarea:focus {
   margin-bottom: 12px;
   padding: 12px 14px;
   border-radius: 8px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .message.error {
@@ -449,7 +427,6 @@ textarea:focus {
 }
 
 @media (max-width: 1080px) {
-
   .ingredient-row {
     grid-template-columns:
       32px
@@ -460,22 +437,15 @@ textarea:focus {
   }
 
   .stock-info {
-    grid-column:
-      2 /
-      5;
+    grid-column: 2 / 5;
   }
 
   .form-grid.four {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-
   .builder-page {
     padding: 16px;
   }
@@ -528,28 +498,179 @@ textarea:focus {
 
 .formula-provenance span {
   color: #9b8d84;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: .6px;
+  letter-spacing: 0.6px;
 }
 
 .formula-provenance strong,
 .formula-provenance a {
   margin-top: 3px;
   color: #5d493f;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 
 .formula-provenance p {
   margin: 0;
   color: #81736b;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
 @media (max-width: 760px) {
   .formula-provenance {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   PACCHETTO 36 — FORMULA BUILDER PROGRESSIVO
+   ========================================================= */
+.builder-live-summary {
+  position: sticky;
+  top: calc(var(--hl-topbar-height, 72px) + var(--hl-space-3));
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--hl-space-2);
+  margin-bottom: var(--hl-space-4);
+  padding: var(--hl-space-3);
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-lg);
+  background: color-mix(in srgb, var(--hl-color-surface) 94%, transparent);
+  box-shadow: var(--hl-shadow-sm);
+  backdrop-filter: blur(12px);
+}
+
+.builder-live-summary > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: var(--hl-space-2) var(--hl-space-3);
+  border-radius: var(--hl-radius-sm);
+  background: var(--hl-color-surface-alt);
+}
+
+.builder-live-summary span {
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.builder-live-summary strong {
+  overflow: hidden;
+  font-size: var(--hl-font-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.builder-live-summary .summary-warning {
+  color: var(--hl-color-warning);
+  background: var(--hl-color-warning-soft);
+}
+
+.compatibility-review {
+  display: grid;
+  gap: var(--hl-space-4);
+}
+
+.compatibility-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--hl-space-3);
+}
+
+.compatibility-overview article {
+  display: grid;
+  gap: var(--hl-space-1);
+  padding: var(--hl-space-4);
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface-alt);
+}
+
+.compatibility-overview span,
+.compatibility-row span {
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-xs);
+}
+
+.compatibility-overview strong {
+  font-size: var(--hl-font-lg);
+}
+
+.compatibility-list {
+  display: grid;
+  gap: var(--hl-space-2);
+}
+
+.compatibility-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hl-space-3);
+  padding: var(--hl-space-3) var(--hl-space-4);
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+}
+
+.compatibility-row > div {
+  display: grid;
+  gap: 2px;
+}
+
+.compatibility-row > div:last-child {
+  text-align: right;
+}
+
+.compatibility-row[data-state='OK'] {
+  border-color: color-mix(in srgb, var(--hl-color-success) 38%, var(--hl-color-border));
+  background: var(--hl-color-success-soft);
+}
+
+.compatibility-row[data-state='WARNING'] {
+  border-color: color-mix(in srgb, var(--hl-color-warning) 45%, var(--hl-color-border));
+  background: var(--hl-color-warning-soft);
+}
+
+.workflow-actions {
+  position: sticky;
+  bottom: var(--hl-space-3);
+  z-index: 5;
+  padding: var(--hl-space-3);
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-lg);
+  background: color-mix(in srgb, var(--hl-color-surface) 94%, transparent);
+  box-shadow: var(--hl-shadow-md);
+  backdrop-filter: blur(12px);
+}
+
+@media (max-width: 980px) {
+  .builder-live-summary {
+    position: static;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .compatibility-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .builder-live-summary,
+  .compatibility-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .compatibility-row,
+  .workflow-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .compatibility-row > div:last-child {
+    text-align: left;
   }
 }

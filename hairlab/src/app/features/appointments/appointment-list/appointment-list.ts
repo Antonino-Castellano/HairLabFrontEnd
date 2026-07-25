@@ -1,84 +1,45 @@
-import {
-  DatePipe
-} from '@angular/common';
+import { DatePipe } from '@angular/common';
 
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  computed,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 
-import {
-  RouterLink
-} from '@angular/router';
+import { RouterLink } from '@angular/router';
 
-import {
-  forkJoin,
-  Observable
-} from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
-import {
-  Appointment
-} from '../../../models/appointment';
+import { Appointment } from '../../../models/appointment';
 
-import {
-  Customer
-} from '../../../models/customer';
+import { Customer } from '../../../models/customer';
 
-import {
-  Employee
-} from '../../../models/employee';
+import { Employee } from '../../../models/employee';
 
-import {
-  AppointmentStatus
-} from '../../../models/enums/appointment-status';
+import { AppointmentStatus } from '../../../models/enums/appointment-status';
 
-import {
-  AppointmentQueryService
-} from '../../../service/appointment-query-service';
+import { AppointmentQueryService } from '../../../service/appointment-query-service';
 
-import {
-  AppointmentService
-} from '../../../service/appointment-service';
+import { AppointmentService } from '../../../service/appointment-service';
 
-import {
-  CustomerService
-} from '../../../service/customer-service';
+import { CustomerService } from '../../../service/customer-service';
 
-import {
-  EmployeeService
-} from '../../../service/employee-service';
+import { EmployeeService } from '../../../service/employee-service';
 
-import {
-  APPOINTMENT_STATUS_LABELS
-} from '../appointment-display';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
+import { APPOINTMENT_STATUS_LABELS } from '../appointment-display';
 
-import {
-  AppointmentOperatorTimelineComponent
-} from '../appointment-operator-timeline/appointment-operator-timeline';
+import { AppointmentOperatorTimelineComponent } from '../appointment-operator-timeline/appointment-operator-timeline';
 
 /**
  * Modalità visuale dell'Agenda.
  */
-type AgendaViewMode =
-  | 'DAY'
-  | 'WEEK'
-  | 'OPERATORS';
+type AgendaViewMode = 'DAY' | 'WEEK' | 'OPERATORS';
 
 /**
  * Filtro tecnico per stato.
  */
-type AppointmentStatusFilter =
-  | 'ALL'
-  | AppointmentStatus;
+type AppointmentStatusFilter = 'ALL' | AppointmentStatus;
 
 /**
  * Filtro operativo.
@@ -90,12 +51,7 @@ type AppointmentStatusFilter =
  * - quali appuntamenti sono in corso?
  * - quali sono già chiusi?
  */
-type AgendaOperationalFilter =
-  | 'ALL'
-  | 'UPCOMING'
-  | 'LATE'
-  | 'IN_PROGRESS'
-  | 'FINISHED';
+type AgendaOperationalFilter = 'ALL' | 'UPCOMING' | 'LATE' | 'IN_PROGRESS' | 'FINISHED';
 
 /**
  * Stato persistito della toolbar.
@@ -109,66 +65,44 @@ type AgendaOperationalFilter =
  *   la sessione viene naturalmente azzerata.
  */
 interface AgendaStoredState {
+  selectedDate: string;
 
-  selectedDate:
-    string;
+  viewMode: AgendaViewMode;
 
-  viewMode:
-    AgendaViewMode;
+  statusFilter: AppointmentStatusFilter;
 
-  statusFilter:
-    AppointmentStatusFilter;
+  employeeFilterId: number | null;
 
-  employeeFilterId:
-    number | null;
+  searchText: string;
 
-  searchText:
-    string;
-
-  operationalFilter:
-    AgendaOperationalFilter;
+  operationalFilter: AgendaOperationalFilter;
 }
 
 @Component({
   selector: 'app-appointment-list',
   standalone: true,
-  imports: [
-    RouterLink,
-    DatePipe,
-    AppointmentOperatorTimelineComponent
-  ],
+  imports: [RouterLink, DatePipe, AppointmentOperatorTimelineComponent],
   templateUrl: './appointment-list.html',
-  styleUrl: './appointment-list.css'
+  styleUrl: './appointment-list.css',
 })
-export class AppointmentListComponent
-  implements OnInit, OnDestroy {
-
+export class AppointmentListComponent implements OnInit, OnDestroy {
   /**
    * Chiave unica usata per salvare
    * i filtri durante la sessione.
    */
-  private readonly storageKey =
-    'hairlab.appointments.agenda.filters.v1';
+  private readonly storageKey = 'hairlab.appointments.agenda.filters.v1';
 
-  private readonly appointmentService =
-    inject(
-      AppointmentService
-    );
+  private readonly appointmentService = inject(AppointmentService);
 
-  private readonly appointmentQueryService =
-    inject(
-      AppointmentQueryService
-    );
+  private readonly appointmentQueryService = inject(AppointmentQueryService);
 
-  private readonly customerService =
-    inject(
-      CustomerService
-    );
+  private readonly customerService = inject(CustomerService);
 
-  private readonly employeeService =
-    inject(
-      EmployeeService
-    );
+  private readonly employeeService = inject(EmployeeService);
+
+  private readonly confirmDialog = inject(ConfirmDialogService);
+
+  private readonly toastService = inject(ToastService);
 
   /**
    * Timer che aggiorna il concetto di "adesso".
@@ -176,48 +110,28 @@ export class AppointmentListComponent
    * Serve soprattutto per evidenziare
    * automaticamente gli appuntamenti in ritardo.
    */
-  private nowTimer:
-    ReturnType<typeof setInterval> |
-    null =
-      null;
+  private nowTimer: ReturnType<typeof setInterval> | null = null;
 
-  protected readonly appointments =
-    signal<Appointment[]>([]);
+  protected readonly appointments = signal<Appointment[]>([]);
 
-  protected readonly customers =
-    signal<Customer[]>([]);
+  protected readonly customers = signal<Customer[]>([]);
 
   /**
    * Mostriamo anche operatori disattivati
    * per poter consultare lo storico.
    */
-  protected readonly employees =
-    signal<Employee[]>([]);
+  protected readonly employees = signal<Employee[]>([]);
 
-  protected readonly selectedDate =
-    signal(
-      this.toDateInputValue(
-        new Date()
-      )
-    );
+  protected readonly selectedDate = signal(this.toDateInputValue(new Date()));
 
-  protected readonly viewMode =
-    signal<AgendaViewMode>(
-      'DAY'
-    );
+  protected readonly viewMode = signal<AgendaViewMode>('DAY');
 
-  protected readonly statusFilter =
-    signal<AppointmentStatusFilter>(
-      'ALL'
-    );
+  protected readonly statusFilter = signal<AppointmentStatusFilter>('ALL');
 
   /**
    * null = tutti gli operatori.
    */
-  protected readonly employeeFilterId =
-    signal<number | null>(
-      null
-    );
+  protected readonly employeeFilterId = signal<number | null>(null);
 
   /**
    * Ricerca libera:
@@ -227,105 +141,61 @@ export class AppointmentListComponent
    * - note;
    * - ID appuntamento.
    */
-  protected readonly searchText =
-    signal('');
+  protected readonly searchText = signal('');
 
   /**
    * Filtro operativo rapido.
    */
-  protected readonly operationalFilter =
-    signal<AgendaOperationalFilter>(
-      'ALL'
-    );
+  protected readonly operationalFilter = signal<AgendaOperationalFilter>('ALL');
 
   /**
    * Timestamp aggiornato ogni minuto.
    */
-  protected readonly nowTimestamp =
-    signal(
-      Date.now()
-    );
+  protected readonly nowTimestamp = signal(Date.now());
 
-  protected readonly loading =
-    signal(false);
+  protected readonly loading = signal(false);
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
-  protected readonly successMessage =
-    signal('');
+  protected readonly successMessage = signal('');
 
-  protected readonly statusLabels =
-    APPOINTMENT_STATUS_LABELS;
+  protected readonly statusLabels = APPOINTMENT_STATUS_LABELS;
 
-  protected readonly AppointmentStatus =
-    AppointmentStatus;
+  protected readonly AppointmentStatus = AppointmentStatus;
 
   /**
    * Appuntamenti futuri ancora operativi.
    */
-  protected readonly upcomingCount =
-    computed(
-      () =>
-        this.appointments()
-          .filter(
-            appointment =>
-              this.isUpcoming(
-                appointment
-              )
-          )
-          .length
-    );
+  protected readonly upcomingCount = computed(
+    () => this.appointments().filter((appointment) => this.isUpcoming(appointment)).length,
+  );
 
   /**
    * Appuntamenti che avrebbero già
    * dovuto iniziare ma sono ancora
    * BOOKED o CONFIRMED.
    */
-  protected readonly lateCount =
-    computed(
-      () =>
-        this.appointments()
-          .filter(
-            appointment =>
-              this.isLate(
-                appointment
-              )
-          )
-          .length
-    );
+  protected readonly lateCount = computed(
+    () => this.appointments().filter((appointment) => this.isLate(appointment)).length,
+  );
 
   /**
    * Appuntamenti attualmente
    * in lavorazione.
    */
-  protected readonly inProgressCount =
-    computed(
-      () =>
-        this.appointments()
-          .filter(
-            appointment =>
-              appointment.status ===
-              AppointmentStatus.IN_PROGRESS
-          )
-          .length
-    );
+  protected readonly inProgressCount = computed(
+    () =>
+      this.appointments().filter(
+        (appointment) => appointment.status === AppointmentStatus.IN_PROGRESS,
+      ).length,
+  );
 
   /**
    * Stati terminali.
    */
-  protected readonly finishedCount =
-    computed(
-      () =>
-        this.appointments()
-          .filter(
-            appointment =>
-              this.isFinished(
-                appointment
-              )
-          )
-          .length
-    );
+  protected readonly finishedCount = computed(
+    () => this.appointments().filter((appointment) => this.isFinished(appointment)).length,
+  );
 
   /**
    * Pipeline completa dei filtri frontend:
@@ -337,84 +207,41 @@ export class AppointmentListComponent
    * Il filtro operatore viene invece eseguito
    * dal backend perché passa dagli AppointmentItem.
    */
-  protected readonly filteredAppointments =
-    computed(
-      () => {
+  protected readonly filteredAppointments = computed(() => {
+    const statusFilter = this.statusFilter();
 
-        const statusFilter =
-          this.statusFilter();
+    const search = this.normalizeSearch(this.searchText());
 
-        const search =
-          this.normalizeSearch(
-            this.searchText()
-          );
+    const operationalFilter = this.operationalFilter();
 
-        const operationalFilter =
-          this.operationalFilter();
-
-        return this.appointments()
-          .filter(
-            appointment => {
-
-              if (
-                statusFilter !== 'ALL' &&
-                appointment.status !==
-                  statusFilter
-              ) {
-
-                return false;
-              }
-
-              if (
-                search &&
-                !this.matchesSearch(
-                  appointment,
-                  search
-                )
-              ) {
-
-                return false;
-              }
-
-              return this.matchesOperationalFilter(
-                appointment,
-                operationalFilter
-              );
-            }
-          );
+    return this.appointments().filter((appointment) => {
+      if (statusFilter !== 'ALL' && appointment.status !== statusFilter) {
+        return false;
       }
-    );
+
+      if (search && !this.matchesSearch(appointment, search)) {
+        return false;
+      }
+
+      return this.matchesOperationalFilter(appointment, operationalFilter);
+    });
+  });
 
   /**
    * Sette giorni della settimana corrente.
    */
-  protected readonly weekDays =
-    computed(
-      () => {
+  protected readonly weekDays = computed(() => {
+    const monday = this.getMonday(this.selectedDate());
 
-        const monday =
-          this.getMonday(
-            this.selectedDate()
-          );
-
-        return Array.from(
-          {
-            length: 7
-          },
-          (
-            _,
-            index
-          ) =>
-            this.addDays(
-              monday,
-              index
-            )
-        );
-      }
+    return Array.from(
+      {
+        length: 7,
+      },
+      (_, index) => this.addDays(monday, index),
     );
+  });
 
   ngOnInit(): void {
-
     /*
      * Ripristiniamo prima i filtri,
      * poi effettuiamo la query.
@@ -427,35 +254,20 @@ export class AppointmentListComponent
   }
 
   ngOnDestroy(): void {
-
-    if (
-      this.nowTimer
-    ) {
-
-      clearInterval(
-        this.nowTimer
-      );
+    if (this.nowTimer) {
+      clearInterval(this.nowTimer);
     }
   }
 
   /**
    * Cambia vista Giorno / Settimana.
    */
-  protected setViewMode(
-    mode: AgendaViewMode
-  ): void {
-
-    if (
-      this.viewMode() ===
-      mode
-    ) {
-
+  protected setViewMode(mode: AgendaViewMode): void {
+    if (this.viewMode() === mode) {
       return;
     }
 
-    this.viewMode.set(
-      mode
-    );
+    this.viewMode.set(mode);
 
     this.persistState();
 
@@ -465,18 +277,10 @@ export class AppointmentListComponent
   /**
    * Filtro stato.
    */
-  protected onStatusFilterChange(
-    event: Event
-  ): void {
+  protected onStatusFilterChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
 
-    const select =
-      event.target as
-        HTMLSelectElement;
-
-    this.statusFilter.set(
-      select.value as
-        AppointmentStatusFilter
-    );
+    this.statusFilter.set(select.value as AppointmentStatusFilter);
 
     this.persistState();
   }
@@ -486,21 +290,10 @@ export class AppointmentListComponent
    *
    * Richiede una nuova query al backend.
    */
-  protected onEmployeeFilterChange(
-    event: Event
-  ): void {
+  protected onEmployeeFilterChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
 
-    const select =
-      event.target as
-        HTMLSelectElement;
-
-    this.employeeFilterId.set(
-      select.value
-        ? Number(
-            select.value
-          )
-        : null
-    );
+    this.employeeFilterId.set(select.value ? Number(select.value) : null);
 
     this.persistState();
 
@@ -513,17 +306,10 @@ export class AppointmentListComponent
    * È un filtro locale,
    * quindi non richiede una nuova HTTP call.
    */
-  protected onSearchInput(
-    event: Event
-  ): void {
+  protected onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-    const input =
-      event.target as
-        HTMLInputElement;
-
-    this.searchText.set(
-      input.value
-    );
+    this.searchText.set(input.value);
 
     this.persistState();
   }
@@ -531,13 +317,8 @@ export class AppointmentListComponent
   /**
    * Seleziona il filtro operativo.
    */
-  protected setOperationalFilter(
-    filter: AgendaOperationalFilter
-  ): void {
-
-    this.operationalFilter.set(
-      filter
-    );
+  protected setOperationalFilter(filter: AgendaOperationalFilter): void {
+    this.operationalFilter.set(filter);
 
     this.persistState();
   }
@@ -550,26 +331,15 @@ export class AppointmentListComponent
    * - modalità Giorno/Settimana.
    */
   protected resetFilters(): void {
+    const hadEmployeeFilter = this.employeeFilterId() !== null;
 
-    const hadEmployeeFilter =
-      this.employeeFilterId() !==
-      null;
+    this.statusFilter.set('ALL');
 
-    this.statusFilter.set(
-      'ALL'
-    );
+    this.employeeFilterId.set(null);
 
-    this.employeeFilterId.set(
-      null
-    );
+    this.searchText.set('');
 
-    this.searchText.set(
-      ''
-    );
-
-    this.operationalFilter.set(
-      'ALL'
-    );
+    this.operationalFilter.set('ALL');
 
     this.persistState();
 
@@ -577,10 +347,7 @@ export class AppointmentListComponent
      * Se prima filtravamo per dipendente,
      * dobbiamo ricaricare tutti gli appuntamenti.
      */
-    if (
-      hadEmployeeFilter
-    ) {
-
+    if (hadEmployeeFilter) {
       this.loadAgenda();
     }
   }
@@ -589,181 +356,86 @@ export class AppointmentListComponent
    * Carica lookup + appuntamenti.
    */
   protected loadAgenda(): void {
+    this.loading.set(true);
 
-    this.loading.set(
-      true
-    );
+    this.errorMessage.set('');
 
-    this.errorMessage.set(
-      ''
-    );
+    const range = this.getCurrentRange();
 
-    const range =
-      this.getCurrentRange();
-
-    const appointmentRequest =
-      this.buildAppointmentRequest(
-        range.start,
-        range.end
-      );
+    const appointmentRequest = this.buildAppointmentRequest(range.start, range.end);
 
     forkJoin({
+      customers: this.customerService.getAll(),
 
-      customers:
-        this.customerService
-          .getAll(),
+      employees: this.employeeService.getAll(),
 
-      employees:
-        this.employeeService
-          .getAll(),
-
-      appointments:
-        appointmentRequest
-
+      appointments: appointmentRequest,
     }).subscribe({
+      next: (result) => {
+        this.customers.set(result.customers ?? []);
 
-      next: result => {
+        this.employees.set(result.employees ?? []);
 
-        this.customers.set(
-          result.customers ??
-          []
-        );
+        this.appointments.set(result.appointments ?? []);
 
-        this.employees.set(
-          result.employees ??
-          []
-        );
+        this.nowTimestamp.set(Date.now());
 
-        this.appointments.set(
-          result.appointments ??
-          []
-        );
-
-        this.nowTimestamp.set(
-          Date.now()
-        );
-
-        this.loading.set(
-          false
-        );
+        this.loading.set(false);
       },
 
-      error: (
-        error:
-          HttpErrorResponse
-      ) => {
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
 
-        this.loading.set(
-          false
-        );
-
-        this.errorMessage.set(
-          this.getErrorMessage(
-            error,
-            'Impossibile caricare l’agenda.'
-          )
-        );
-      }
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile caricare l’agenda.'));
+      },
     });
   }
 
   /**
    * Sceglie l'endpoint corretto.
    */
-  private buildAppointmentRequest(
-    start: string,
-    end: string
-  ): Observable<Appointment[]> {
+  private buildAppointmentRequest(start: string, end: string): Observable<Appointment[]> {
+    const employeeId = this.employeeFilterId();
 
-    const employeeId =
-      this.employeeFilterId();
-
-    if (
-      employeeId
-    ) {
-
-      return this.appointmentQueryService
-        .getByEmployeeBetween(
-          employeeId,
-          start,
-          end
-        );
+    if (employeeId) {
+      return this.appointmentQueryService.getByEmployeeBetween(employeeId, start, end);
     }
 
-    return this.appointmentService
-      .getBetween(
-        start,
-        end
-      );
+    return this.appointmentService.getBetween(start, end);
   }
 
-  protected previousPeriod():
-    void {
+  protected previousPeriod(): void {
+    const amount = this.viewMode() === 'WEEK' ? -7 : -1;
 
-    const amount =
-      this.viewMode() ===
-      'WEEK'
-        ? -7
-        : -1;
-
-    this.selectedDate.set(
-      this.addDays(
-        this.selectedDate(),
-        amount
-      )
-    );
+    this.selectedDate.set(this.addDays(this.selectedDate(), amount));
 
     this.persistState();
 
     this.loadAgenda();
   }
 
-  protected nextPeriod():
-    void {
+  protected nextPeriod(): void {
+    const amount = this.viewMode() === 'WEEK' ? 7 : 1;
 
-    const amount =
-      this.viewMode() ===
-      'WEEK'
-        ? 7
-        : 1;
-
-    this.selectedDate.set(
-      this.addDays(
-        this.selectedDate(),
-        amount
-      )
-    );
+    this.selectedDate.set(this.addDays(this.selectedDate(), amount));
 
     this.persistState();
 
     this.loadAgenda();
   }
 
-  protected goToday():
-    void {
-
-    this.selectedDate.set(
-      this.toDateInputValue(
-        new Date()
-      )
-    );
+  protected goToday(): void {
+    this.selectedDate.set(this.toDateInputValue(new Date()));
 
     this.persistState();
 
     this.loadAgenda();
   }
 
-  protected onDateChange(
-    event: Event
-  ): void {
+  protected onDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-    const input =
-      event.target as
-        HTMLInputElement;
-
-    this.selectedDate.set(
-      input.value
-    );
+    this.selectedDate.set(input.value);
 
     this.persistState();
 
@@ -773,42 +445,20 @@ export class AppointmentListComponent
   /**
    * Restituisce il nome leggibile del cliente.
    */
-  protected getCustomerName(
-    customerId: number
-  ): string {
+  protected getCustomerName(customerId: number): string {
+    const customer = this.customers().find((item) => item.id === customerId);
 
-    const customer =
-      this.customers()
-        .find(
-          item =>
-            item.id ===
-            customerId
-        );
-
-    return customer
-      ? `${customer.firstName} ${customer.lastName}`
-      : `Cliente #${customerId}`;
+    return customer ? `${customer.firstName} ${customer.lastName}` : `Cliente #${customerId}`;
   }
 
   /**
    * Appuntamenti filtrati
    * del singolo giorno.
    */
-  protected getAppointmentsForDay(
-    date: string
-  ): Appointment[] {
-
-    return this.filteredAppointments()
-      .filter(
-        appointment =>
-          appointment
-            .startDateTime
-            .substring(
-              0,
-              10
-            ) ===
-          date
-      );
+  protected getAppointmentsForDay(date: string): Appointment[] {
+    return this.filteredAppointments().filter(
+      (appointment) => appointment.startDateTime.substring(0, 10) === date,
+    );
   }
 
   /**
@@ -817,158 +467,90 @@ export class AppointmentListComponent
    * - stato BOOKED / CONFIRMED;
    * - orario già trascorso.
    */
-  protected isLate(
-    appointment: Appointment
-  ): boolean {
-
+  protected isLate(appointment: Appointment): boolean {
     const statusIsWaiting =
-      appointment.status ===
-        AppointmentStatus.BOOKED ||
-      appointment.status ===
-        AppointmentStatus.CONFIRMED;
+      appointment.status === AppointmentStatus.BOOKED ||
+      appointment.status === AppointmentStatus.CONFIRMED;
 
-    if (
-      !statusIsWaiting
-    ) {
-
+    if (!statusIsWaiting) {
       return false;
     }
 
-    return (
-      new Date(
-        appointment.startDateTime
-      ).getTime() <
-      this.nowTimestamp()
-    );
+    return new Date(appointment.startDateTime).getTime() < this.nowTimestamp();
   }
 
   /**
    * TRUE quando è ancora futuro
    * e operativo.
    */
-  protected isUpcoming(
-    appointment: Appointment
-  ): boolean {
-
+  protected isUpcoming(appointment: Appointment): boolean {
     const statusIsWaiting =
-      appointment.status ===
-        AppointmentStatus.BOOKED ||
-      appointment.status ===
-        AppointmentStatus.CONFIRMED;
+      appointment.status === AppointmentStatus.BOOKED ||
+      appointment.status === AppointmentStatus.CONFIRMED;
 
-    if (
-      !statusIsWaiting
-    ) {
-
+    if (!statusIsWaiting) {
       return false;
     }
 
-    return (
-      new Date(
-        appointment.startDateTime
-      ).getTime() >=
-      this.nowTimestamp()
-    );
+    return new Date(appointment.startDateTime).getTime() >= this.nowTimestamp();
   }
 
   /**
    * TRUE per gli stati terminali.
    */
-  protected isFinished(
-    appointment: Appointment
-  ): boolean {
-
+  protected isFinished(appointment: Appointment): boolean {
     return (
-      appointment.status ===
-        AppointmentStatus.COMPLETED ||
-      appointment.status ===
-        AppointmentStatus.CANCELLED ||
-      appointment.status ===
-        AppointmentStatus.NO_SHOW
+      appointment.status === AppointmentStatus.COMPLETED ||
+      appointment.status === AppointmentStatus.CANCELLED ||
+      appointment.status === AppointmentStatus.NO_SHOW
     );
   }
 
-  protected cancelAppointment(
-    appointment: Appointment
-  ): void {
-
-    if (
-      !appointment.id
-    ) {
-
+  protected async cancelAppointment(appointment: Appointment): Promise<void> {
+    if (!appointment.id) {
       return;
     }
 
-    const confirmed =
-      confirm(
-        'Vuoi cancellare questo appuntamento?\n\n' +
-        'Lo storico resterà nel database con stato CANCELLATO.'
-      );
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Cancellare l’appuntamento?',
+      message: 'Lo storico resterà nel database con stato CANCELLATO.',
+      confirmLabel: 'Cancella appuntamento',
+      severity: 'danger',
+    });
 
-    if (
-      !confirmed
-    ) {
-
+    if (!confirmed) {
       return;
     }
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    this.successMessage.set(
-      ''
-    );
+    this.successMessage.set('');
 
-    this.appointmentService
-      .delete(
-        appointment.id
-      )
-      .subscribe({
+    this.appointmentService.delete(appointment.id).subscribe({
+      next: () => {
+        this.successMessage.set('Appuntamento cancellato correttamente.');
+        this.toastService.success('Appuntamento cancellato');
 
-        next: () => {
+        this.loadAgenda();
+      },
 
-          this.successMessage.set(
-            'Appuntamento cancellato correttamente.'
-          );
-
-          this.loadAgenda();
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile cancellare l’appuntamento.'
-            )
-          );
-        }
-      });
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile cancellare l’appuntamento.'),
+        );
+      },
+    });
   }
 
-  protected canCancel(
-    appointment: Appointment
-  ): boolean {
-
+  protected canCancel(appointment: Appointment): boolean {
     return (
-      appointment.status ===
-        AppointmentStatus.BOOKED ||
-      appointment.status ===
-        AppointmentStatus.CONFIRMED
+      appointment.status === AppointmentStatus.BOOKED ||
+      appointment.status === AppointmentStatus.CONFIRMED
     );
   }
 
-  protected canEdit(
-    appointment: Appointment
-  ): boolean {
-
-    return this.canCancel(
-      appointment
-    );
+  protected canEdit(appointment: Appointment): boolean {
+    return this.canCancel(appointment);
   }
 
   /**
@@ -976,42 +558,24 @@ export class AppointmentListComponent
    */
   private matchesOperationalFilter(
     appointment: Appointment,
-    filter: AgendaOperationalFilter
+    filter: AgendaOperationalFilter,
   ): boolean {
-
-    switch (
-      filter
-    ) {
-
+    switch (filter) {
       case 'UPCOMING':
-
-        return this.isUpcoming(
-          appointment
-        );
+        return this.isUpcoming(appointment);
 
       case 'LATE':
-
-        return this.isLate(
-          appointment
-        );
+        return this.isLate(appointment);
 
       case 'IN_PROGRESS':
-
-        return (
-          appointment.status ===
-          AppointmentStatus.IN_PROGRESS
-        );
+        return appointment.status === AppointmentStatus.IN_PROGRESS;
 
       case 'FINISHED':
-
-        return this.isFinished(
-          appointment
-        );
+        return this.isFinished(appointment);
 
       case 'ALL':
 
       default:
-
         return true;
     }
   }
@@ -1023,50 +587,20 @@ export class AppointmentListComponent
    * note,
    * ID appuntamento.
    */
-  private matchesSearch(
-    appointment: Appointment,
-    search: string
-  ): boolean {
+  private matchesSearch(appointment: Appointment, search: string): boolean {
+    const customerName = this.normalizeSearch(this.getCustomerName(appointment.customerId));
 
-    const customerName =
-      this.normalizeSearch(
-        this.getCustomerName(
-          appointment.customerId
-        )
-      );
+    const notes = this.normalizeSearch(appointment.notes ?? '');
 
-    const notes =
-      this.normalizeSearch(
-        appointment.notes ??
-        ''
-      );
-
-    const appointmentId =
-      String(
-        appointment.id ??
-        ''
-      );
+    const appointmentId = String(appointment.id ?? '');
 
     return (
-      customerName.includes(
-        search
-      ) ||
-      notes.includes(
-        search
-      ) ||
-      appointmentId.includes(
-        search
-      )
+      customerName.includes(search) || notes.includes(search) || appointmentId.includes(search)
     );
   }
 
-  private normalizeSearch(
-    value: string
-  ): string {
-
-    return value
-      .trim()
-      .toLocaleLowerCase();
+  private normalizeSearch(value: string): string {
+    return value.trim().toLocaleLowerCase();
   }
 
   /**
@@ -1076,188 +610,91 @@ export class AppointmentListComponent
     start: string;
     end: string;
   } {
-
-    if (
-      this.viewMode() ===
-        'DAY'
-      ||
-      this.viewMode() ===
-        'OPERATORS'
-    ) {
-
+    if (this.viewMode() === 'DAY' || this.viewMode() === 'OPERATORS') {
       return {
+        start: `${this.selectedDate()}T00:00:00`,
 
-        start:
-          `${this.selectedDate()}T00:00:00`,
-
-        end:
-          `${this.selectedDate()}T23:59:59`
+        end: `${this.selectedDate()}T23:59:59`,
       };
     }
 
-    const monday =
-      this.getMonday(
-        this.selectedDate()
-      );
+    const monday = this.getMonday(this.selectedDate());
 
-    const sunday =
-      this.addDays(
-        monday,
-        6
-      );
+    const sunday = this.addDays(monday, 6);
 
     return {
+      start: `${monday}T00:00:00`,
 
-      start:
-        `${monday}T00:00:00`,
-
-      end:
-        `${sunday}T23:59:59`
+      end: `${sunday}T23:59:59`,
     };
   }
 
-  private getMonday(
-    value: string
-  ): string {
+  private getMonday(value: string): string {
+    const date = new Date(`${value}T12:00:00`);
 
-    const date =
-      new Date(
-        `${value}T12:00:00`
-      );
+    const day = date.getDay();
 
-    const day =
-      date.getDay();
+    const difference = day === 0 ? -6 : 1 - day;
 
-    const difference =
-      day === 0
-        ? -6
-        : 1 - day;
+    date.setDate(date.getDate() + difference);
 
-    date.setDate(
-      date.getDate() +
-      difference
-    );
-
-    return this.toDateInputValue(
-      date
-    );
+    return this.toDateInputValue(date);
   }
 
-  private addDays(
-    value: string,
-    amount: number
-  ): string {
+  private addDays(value: string, amount: number): string {
+    const date = new Date(`${value}T12:00:00`);
 
-    const date =
-      new Date(
-        `${value}T12:00:00`
-      );
+    date.setDate(date.getDate() + amount);
 
-    date.setDate(
-      date.getDate() +
-      amount
-    );
-
-    return this.toDateInputValue(
-      date
-    );
+    return this.toDateInputValue(date);
   }
 
-  private toDateInputValue(
-    date: Date
-  ): string {
+  private toDateInputValue(date: Date): string {
+    const year = date.getFullYear();
 
-    const year =
-      date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
 
-    const month =
-      String(
-        date.getMonth() +
-        1
-      ).padStart(
-        2,
-        '0'
-      );
+    const day = String(date.getDate()).padStart(2, '0');
 
-    const day =
-      String(
-        date.getDate()
-      ).padStart(
-        2,
-        '0'
-      );
-
-    return (
-      `${year}-${month}-${day}`
-    );
+    return `${year}-${month}-${day}`;
   }
 
   /**
    * Aggiorna "adesso" ogni minuto.
    */
   private startClock(): void {
-
-    if (
-      typeof window ===
-      'undefined'
-    ) {
-
+    if (typeof window === 'undefined') {
       return;
     }
 
-    this.nowTimer =
-      window.setInterval(
-        () => {
-
-          this.nowTimestamp.set(
-            Date.now()
-          );
-        },
-        60_000
-      );
+    this.nowTimer = window.setInterval(() => {
+      this.nowTimestamp.set(Date.now());
+    }, 60_000);
   }
 
   /**
    * Salva filtri e vista.
    */
   private persistState(): void {
-
-    if (
-      typeof window ===
-      'undefined'
-    ) {
-
+    if (typeof window === 'undefined') {
       return;
     }
 
-    const state:
-      AgendaStoredState = {
+    const state: AgendaStoredState = {
+      selectedDate: this.selectedDate(),
 
-      selectedDate:
-        this.selectedDate(),
+      viewMode: this.viewMode(),
 
-      viewMode:
-        this.viewMode(),
+      statusFilter: this.statusFilter(),
 
-      statusFilter:
-        this.statusFilter(),
+      employeeFilterId: this.employeeFilterId(),
 
-      employeeFilterId:
-        this.employeeFilterId(),
+      searchText: this.searchText(),
 
-      searchText:
-        this.searchText(),
-
-      operationalFilter:
-        this.operationalFilter()
+      operationalFilter: this.operationalFilter(),
     };
 
-    window.sessionStorage.setItem(
-      this.storageKey,
-      JSON.stringify(
-        state
-      )
-    );
+    window.sessionStorage.setItem(this.storageKey, JSON.stringify(state));
   }
 
   /**
@@ -1267,143 +704,62 @@ export class AppointmentListComponent
    * torna semplicemente ai default.
    */
   private restoreState(): void {
-
-    if (
-      typeof window ===
-      'undefined'
-    ) {
-
+    if (typeof window === 'undefined') {
       return;
     }
 
-    const raw =
-      window.sessionStorage.getItem(
-        this.storageKey
-      );
+    const raw = window.sessionStorage.getItem(this.storageKey);
 
-    if (
-      !raw
-    ) {
-
+    if (!raw) {
       return;
     }
 
     try {
+      const saved = JSON.parse(raw) as Partial<AgendaStoredState>;
 
-      const saved =
-        JSON.parse(
-          raw
-        ) as
-          Partial<AgendaStoredState>;
+      if (saved.selectedDate && /^\d{4}-\d{2}-\d{2}$/.test(saved.selectedDate)) {
+        this.selectedDate.set(saved.selectedDate);
+      }
 
-      if (
-        saved.selectedDate &&
-        /^\d{4}-\d{2}-\d{2}$/
-          .test(
-            saved.selectedDate
-          )
-      ) {
+      if (saved.viewMode === 'DAY' || saved.viewMode === 'WEEK') {
+        this.viewMode.set(saved.viewMode);
+      }
 
-        this.selectedDate.set(
-          saved.selectedDate
-        );
+      if (saved.statusFilter) {
+        this.statusFilter.set(saved.statusFilter);
+      }
+
+      if (typeof saved.employeeFilterId === 'number' || saved.employeeFilterId === null) {
+        this.employeeFilterId.set(saved.employeeFilterId ?? null);
+      }
+
+      if (typeof saved.searchText === 'string') {
+        this.searchText.set(saved.searchText);
       }
 
       if (
-        saved.viewMode ===
-          'DAY' ||
-        saved.viewMode ===
-          'WEEK'
+        saved.operationalFilter === 'ALL' ||
+        saved.operationalFilter === 'UPCOMING' ||
+        saved.operationalFilter === 'LATE' ||
+        saved.operationalFilter === 'IN_PROGRESS' ||
+        saved.operationalFilter === 'FINISHED'
       ) {
-
-        this.viewMode.set(
-          saved.viewMode
-        );
+        this.operationalFilter.set(saved.operationalFilter);
       }
-
-      if (
-        saved.statusFilter
-      ) {
-
-        this.statusFilter.set(
-          saved.statusFilter
-        );
-      }
-
-      if (
-        typeof saved.employeeFilterId ===
-          'number' ||
-        saved.employeeFilterId ===
-          null
-      ) {
-
-        this.employeeFilterId.set(
-          saved.employeeFilterId ??
-          null
-        );
-      }
-
-      if (
-        typeof saved.searchText ===
-        'string'
-      ) {
-
-        this.searchText.set(
-          saved.searchText
-        );
-      }
-
-      if (
-        saved.operationalFilter ===
-          'ALL' ||
-        saved.operationalFilter ===
-          'UPCOMING' ||
-        saved.operationalFilter ===
-          'LATE' ||
-        saved.operationalFilter ===
-          'IN_PROGRESS' ||
-        saved.operationalFilter ===
-          'FINISHED'
-      ) {
-
-        this.operationalFilter.set(
-          saved.operationalFilter
-        );
-      }
-
     } catch {
-
-      window.sessionStorage.removeItem(
-        this.storageKey
-      );
+      window.sessionStorage.removeItem(this.storageKey);
     }
   }
 
-  private getErrorMessage(
-    error: HttpErrorResponse,
-    fallback: string
-  ): string {
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    const backendMessage = error.error?.message;
 
-    const backendMessage =
-      error.error?.message;
-
-    if (
-      typeof backendMessage ===
-        'string' &&
-      backendMessage.trim()
-    ) {
-
+    if (typeof backendMessage === 'string' && backendMessage.trim()) {
       return backendMessage;
     }
 
-    if (
-      error.status ===
-      0
-    ) {
-
-      return (
-        'Impossibile comunicare con il backend.'
-      );
+    if (error.status === 0) {
+      return 'Impossibile comunicare con il backend.';
     }
 
     return fallback;

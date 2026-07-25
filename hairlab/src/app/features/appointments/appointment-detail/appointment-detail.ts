@@ -1,380 +1,196 @@
-import {
-  DatePipe
-} from '@angular/common';
+import { DatePipe } from '@angular/common';
 
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import {
-  forkJoin
-} from 'rxjs';
+import { forkJoin } from 'rxjs';
 
-import {
-  AppointmentDetail
-} from '../../../models/appointment-management';
+import { AppointmentDetail } from '../../../models/appointment-management';
 
-import {
-  AppointmentColorFormulaLink
-} from '../../../models/appointment-color-formula';
+import { AppointmentColorFormulaLink } from '../../../models/appointment-color-formula';
 
-import {
-  AppointmentStatus
-} from '../../../models/enums/appointment-status';
+import { AppointmentStatus } from '../../../models/enums/appointment-status';
 
-import {
-  Customer
-} from '../../../models/customer';
+import { Customer } from '../../../models/customer';
 
-import {
-  Employee
-} from '../../../models/employee';
+import { Employee } from '../../../models/employee';
 
-import {
-  SalonProduct
-} from '../../../models/salon-product';
+import { SalonProduct } from '../../../models/salon-product';
 
-import {
-  AppointmentManagementService
-} from '../../../service/appointment-management-service';
+import { AppointmentManagementService } from '../../../service/appointment-management-service';
 
-import {
-  AppointmentColorFormulaService
-} from '../../../service/appointment-color-formula-service';
+import { AppointmentColorFormulaService } from '../../../service/appointment-color-formula-service';
 
-import {
-  AppointmentService
-} from '../../../service/appointment-service';
+import { AppointmentService } from '../../../service/appointment-service';
 
-import {
-  AppointmentWorkflowService
-} from '../../../service/appointment-workflow-service';
+import { AppointmentWorkflowService } from '../../../service/appointment-workflow-service';
 
-import {
-  CustomerService
-} from '../../../service/customer-service';
+import { CustomerService } from '../../../service/customer-service';
 
-import {
-  EmployeeService
-} from '../../../service/employee-service';
+import { EmployeeService } from '../../../service/employee-service';
 
-import {
-  SalonProductService
-} from '../../../service/salon-product-service';
+import { SalonProductService } from '../../../service/salon-product-service';
 
-import {
-  APPOINTMENT_STATUS_LABELS
-} from '../appointment-display';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
+
+import { APPOINTMENT_STATUS_LABELS } from '../appointment-display';
 
 import {
   COLOR_FORMULA_ORIGIN_LABELS,
-  COLOR_FORMULA_STATUS_LABELS
+  COLOR_FORMULA_STATUS_LABELS,
 } from '../../color-lab/color-formula-display';
 
-type WorkflowAction =
-  | 'confirm'
-  | 'start'
-  | 'complete'
-  | 'no-show';
+type WorkflowAction = 'confirm' | 'start' | 'complete' | 'no-show';
 
 @Component({
   selector: 'app-appointment-detail',
   standalone: true,
-  imports: [
-    RouterLink,
-    DatePipe
-  ],
+  imports: [RouterLink, DatePipe],
   templateUrl: './appointment-detail.html',
-  styleUrl: './appointment-detail.css'
+  styleUrl: './appointment-detail.css',
 })
-export class AppointmentDetailComponent
-  implements OnInit {
+export class AppointmentDetailComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
 
-  private readonly route =
-    inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  private readonly router =
-    inject(Router);
+  private readonly managementService = inject(AppointmentManagementService);
 
-  private readonly managementService =
-    inject(
-      AppointmentManagementService
-    );
+  private readonly appointmentColorFormulaService = inject(AppointmentColorFormulaService);
 
-  private readonly appointmentColorFormulaService =
-    inject(AppointmentColorFormulaService);
+  private readonly appointmentService = inject(AppointmentService);
 
-  private readonly appointmentService =
-    inject(
-      AppointmentService
-    );
+  private readonly workflowService = inject(AppointmentWorkflowService);
 
-  private readonly workflowService =
-    inject(
-      AppointmentWorkflowService
-    );
+  private readonly customerService = inject(CustomerService);
 
-  private readonly customerService =
-    inject(CustomerService);
+  private readonly employeeService = inject(EmployeeService);
 
-  private readonly employeeService =
-    inject(EmployeeService);
+  private readonly salonProductService = inject(SalonProductService);
 
-  private readonly salonProductService =
-    inject(
-      SalonProductService
-    );
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
-  protected readonly detail =
-    signal<
-      AppointmentDetail |
-      null
-    >(
-      null
-    );
+  private readonly toastService = inject(ToastService);
 
-  protected readonly customers =
-    signal<Customer[]>([]);
+  protected readonly detail = signal<AppointmentDetail | null>(null);
 
-  protected readonly employees =
-    signal<Employee[]>([]);
+  protected readonly customers = signal<Customer[]>([]);
 
-  protected readonly products =
-    signal<SalonProduct[]>([]);
+  protected readonly employees = signal<Employee[]>([]);
 
-  protected readonly linkedFormulas =
-    signal<AppointmentColorFormulaLink[]>([]);
+  protected readonly products = signal<SalonProduct[]>([]);
 
-  protected readonly preparingFormulaItemId =
-    signal<number | null>(null);
+  protected readonly linkedFormulas = signal<AppointmentColorFormulaLink[]>([]);
 
-  protected readonly loading =
-    signal(false);
+  protected readonly preparingFormulaItemId = signal<number | null>(null);
 
-  protected readonly workflowLoading =
-    signal(false);
+  protected readonly loading = signal(false);
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly workflowLoading = signal(false);
 
-  protected readonly successMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
-  protected readonly statusLabels =
-    APPOINTMENT_STATUS_LABELS;
+  protected readonly successMessage = signal('');
 
-  protected readonly formulaStatusLabels =
-    COLOR_FORMULA_STATUS_LABELS;
+  protected readonly statusLabels = APPOINTMENT_STATUS_LABELS;
 
-  protected readonly formulaOriginLabels =
-    COLOR_FORMULA_ORIGIN_LABELS;
+  protected readonly formulaStatusLabels = COLOR_FORMULA_STATUS_LABELS;
 
-  protected readonly AppointmentStatus =
-    AppointmentStatus;
+  protected readonly formulaOriginLabels = COLOR_FORMULA_ORIGIN_LABELS;
 
-  private appointmentId:
-    number | null =
-      null;
+  protected readonly AppointmentStatus = AppointmentStatus;
+
+  private appointmentId: number | null = null;
 
   ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-    const idParam =
-      this.route.snapshot
-        .paramMap
-        .get('id');
-
-    if (
-      !idParam
-    ) {
-
-      this.errorMessage.set(
-        'ID appuntamento non presente.'
-      );
+    if (!idParam) {
+      this.errorMessage.set('ID appuntamento non presente.');
 
       return;
     }
 
-    const id =
-      Number(
-        idParam
-      );
+    const id = Number(idParam);
 
-    if (
-      Number.isNaN(
-        id
-      ) ||
-      id <= 0
-    ) {
-
-      this.errorMessage.set(
-        'ID appuntamento non valido.'
-      );
+    if (Number.isNaN(id) || id <= 0) {
+      this.errorMessage.set('ID appuntamento non valido.');
 
       return;
     }
 
-    this.appointmentId =
-      id;
+    this.appointmentId = id;
 
-    this.loadDetail(
-      id
-    );
+    this.loadDetail(id);
   }
 
-  private loadDetail(
-    id: number
-  ): void {
+  private loadDetail(id: number): void {
+    this.loading.set(true);
 
-    this.loading.set(
-      true
-    );
-
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
     forkJoin({
+      detail: this.managementService.getById(id),
 
-      detail:
-        this.managementService
-          .getById(
-            id
-          ),
+      customers: this.customerService.getAll(),
 
-      customers:
-        this.customerService
-          .getAll(),
+      employees: this.employeeService.getAll(),
 
-      employees:
-        this.employeeService
-          .getAll(),
+      products: this.salonProductService.getAll(),
 
-      products:
-        this.salonProductService
-          .getAll(),
-
-      linkedFormulas:
-        this.appointmentColorFormulaService
-          .getByAppointment(id)
-
+      linkedFormulas: this.appointmentColorFormulaService.getByAppointment(id),
     }).subscribe({
+      next: (result) => {
+        this.detail.set(result.detail);
 
-      next: result => {
+        this.customers.set(result.customers ?? []);
 
-        this.detail.set(
-          result.detail
-        );
+        this.employees.set(result.employees ?? []);
 
-        this.customers.set(
-          result.customers ??
-          []
-        );
+        this.products.set(result.products ?? []);
 
-        this.employees.set(
-          result.employees ??
-          []
-        );
+        this.linkedFormulas.set(result.linkedFormulas ?? []);
 
-        this.products.set(
-          result.products ??
-          []
-        );
-
-        this.linkedFormulas.set(
-          result.linkedFormulas ?? []
-        );
-
-        this.loading.set(
-          false
-        );
+        this.loading.set(false);
       },
 
-      error: (
-        error:
-          HttpErrorResponse
-      ) => {
-
-        this.loading.set(
-          false
-        );
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
 
         this.errorMessage.set(
-          this.getErrorMessage(
-            error,
-            'Impossibile caricare il dettaglio appuntamento.'
-          )
+          this.getErrorMessage(error, 'Impossibile caricare il dettaglio appuntamento.'),
         );
-      }
+      },
     });
   }
 
-  protected getCustomerName(
-    customerId: number
-  ): string {
+  protected getCustomerName(customerId: number): string {
+    const customer = this.customers().find((item) => item.id === customerId);
 
-    const customer =
-      this.customers()
-        .find(
-          item =>
-            item.id ===
-            customerId
-        );
-
-    return customer
-      ? `${customer.firstName} ${customer.lastName}`
-      : `Cliente #${customerId}`;
+    return customer ? `${customer.firstName} ${customer.lastName}` : `Cliente #${customerId}`;
   }
 
-  protected getEmployeeName(
-    employeeId: number
-  ): string {
+  protected getEmployeeName(employeeId: number): string {
+    const employee = this.employees().find((item) => item.id === employeeId);
 
-    const employee =
-      this.employees()
-        .find(
-          item =>
-            item.id ===
-            employeeId
-        );
-
-    return employee
-      ? `${employee.firstName} ${employee.lastName}`
-      : `Dipendente #${employeeId}`;
+    return employee ? `${employee.firstName} ${employee.lastName}` : `Dipendente #${employeeId}`;
   }
 
-  protected getProductName(
-    productId: number
-  ): string {
+  protected getProductName(productId: number): string {
+    const product = this.products().find((item) => item.id === productId);
 
-    const product =
-      this.products()
-        .find(
-          item =>
-            item.id ===
-            productId
-        );
-
-    return product
-      ? product.name
-      : `Servizio #${productId}`;
+    return product ? product.name : `Servizio #${productId}`;
   }
 
-  protected getFormulasForItem(appointmentItemId: number | undefined): AppointmentColorFormulaLink[] {
+  protected getFormulasForItem(
+    appointmentItemId: number | undefined,
+  ): AppointmentColorFormulaLink[] {
     if (!appointmentItemId) return [];
-    return this.linkedFormulas().filter(item => item.appointmentItemId === appointmentItemId);
+    return this.linkedFormulas().filter((item) => item.appointmentItemId === appointmentItemId);
   }
 
   protected repeatReferenceForItem(appointmentItemId: number | undefined): void {
@@ -384,425 +200,225 @@ export class AppointmentDetailComponent
     this.successMessage.set('');
     this.preparingFormulaItemId.set(appointmentItemId);
 
-    this.appointmentColorFormulaService
-      .repeatReferenceForItem(appointmentItemId)
-      .subscribe({
-        next: detail => {
-          this.preparingFormulaItemId.set(null);
-          this.successMessage.set('Formula ricorrente preparata e collegata al servizio.');
-          const formulaId = detail.formula.id;
-          if (formulaId) {
-            this.router.navigate(['/color-lab/formulas', formulaId, 'edit']);
-          } else if (this.appointmentId) {
-            this.loadDetail(this.appointmentId);
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          this.preparingFormulaItemId.set(null);
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile preparare la formula di riferimento per questo servizio.'
-            )
-          );
+    this.appointmentColorFormulaService.repeatReferenceForItem(appointmentItemId).subscribe({
+      next: (detail) => {
+        this.preparingFormulaItemId.set(null);
+        this.successMessage.set('Formula ricorrente preparata e collegata al servizio.');
+        const formulaId = detail.formula.id;
+        if (formulaId) {
+          this.router.navigate(['/color-lab/formulas', formulaId, 'edit']);
+        } else if (this.appointmentId) {
+          this.loadDetail(this.appointmentId);
         }
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.preparingFormulaItemId.set(null);
+        this.errorMessage.set(
+          this.getErrorMessage(
+            error,
+            'Impossibile preparare la formula di riferimento per questo servizio.',
+          ),
+        );
+      },
+    });
   }
 
-  protected getTotalDuration():
-    number {
-
-    return (
-      this.detail()
-        ?.items
-        .reduce(
-          (
-            total,
-            item
-          ) =>
-            total +
-            item.duration,
-          0
-        ) ??
-      0
-    );
+  protected getTotalDuration(): number {
+    return this.detail()?.items.reduce((total, item) => total + item.duration, 0) ?? 0;
   }
 
-  protected getTotalPrice():
-    number {
-
-    return (
-      this.detail()
-        ?.items
-        .reduce(
-          (
-            total,
-            item
-          ) =>
-            total +
-            item.agreedPrice,
-          0
-        ) ??
-      0
-    );
+  protected getTotalPrice(): number {
+    return this.detail()?.items.reduce((total, item) => total + item.agreedPrice, 0) ?? 0;
   }
 
   /**
    * Modifica strutturale consentita
    * solamente prima dell'avvio.
    */
-  protected canEdit():
-    boolean {
+  protected canEdit(): boolean {
+    const status = this.detail()?.appointment.status;
 
-    const status =
-      this.detail()
-        ?.appointment
-        .status;
-
-    return (
-      status ===
-        AppointmentStatus.BOOKED ||
-      status ===
-        AppointmentStatus.CONFIRMED
-    );
+    return status === AppointmentStatus.BOOKED || status === AppointmentStatus.CONFIRMED;
   }
 
-  protected canCancel():
-    boolean {
-
+  protected canCancel(): boolean {
     return this.canEdit();
   }
 
-  protected canConfirm():
-    boolean {
-
-    return (
-      this.detail()
-        ?.appointment
-        .status ===
-      AppointmentStatus.BOOKED
-    );
+  protected canConfirm(): boolean {
+    return this.detail()?.appointment.status === AppointmentStatus.BOOKED;
   }
 
-  protected canStart():
-    boolean {
+  protected canStart(): boolean {
+    const status = this.detail()?.appointment.status;
 
-    const status =
-      this.detail()
-        ?.appointment
-        .status;
-
-    return (
-      status ===
-        AppointmentStatus.BOOKED ||
-      status ===
-        AppointmentStatus.CONFIRMED
-    );
+    return status === AppointmentStatus.BOOKED || status === AppointmentStatus.CONFIRMED;
   }
 
-  protected canComplete():
-    boolean {
-
-    return (
-      this.detail()
-        ?.appointment
-        .status ===
-      AppointmentStatus.IN_PROGRESS
-    );
+  protected canComplete(): boolean {
+    return this.detail()?.appointment.status === AppointmentStatus.IN_PROGRESS;
   }
 
-  protected canMarkNoShow():
-    boolean {
+  protected canMarkNoShow(): boolean {
+    const status = this.detail()?.appointment.status;
 
-    const status =
-      this.detail()
-        ?.appointment
-        .status;
-
-    return (
-      status ===
-        AppointmentStatus.BOOKED ||
-      status ===
-        AppointmentStatus.CONFIRMED
-    );
+    return status === AppointmentStatus.BOOKED || status === AppointmentStatus.CONFIRMED;
   }
 
-  protected confirmAppointment():
-    void {
-
-    this.executeWorkflow(
-      'confirm',
-      'Appuntamento confermato.'
-    );
+  protected confirmAppointment(): void {
+    this.executeWorkflow('confirm', 'Appuntamento confermato.');
   }
 
-  protected startAppointment():
-    void {
+  protected async startAppointment(): Promise<void> {
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Avviare l’appuntamento?',
+      message: 'L’appuntamento passerà allo stato IN CORSO.',
+      confirmLabel: 'Avvia',
+      severity: 'default',
+    });
 
-    const confirmed =
-      confirm(
-        'Vuoi avviare questo appuntamento?'
-      );
-
-    if (
-      !confirmed
-    ) {
-
+    if (!confirmed) {
       return;
     }
 
-    this.executeWorkflow(
-      'start',
-      'Appuntamento avviato.'
-    );
+    this.executeWorkflow('start', 'Appuntamento avviato.');
   }
 
-  protected completeAppointment():
-    void {
+  protected async completeAppointment(): Promise<void> {
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Completare l’appuntamento?',
+      message: 'I servizi ancora aperti verranno marcati come completati.',
+      confirmLabel: 'Completa',
+      severity: 'default',
+    });
 
-    const confirmed =
-      confirm(
-        'Confermi che l’appuntamento è stato completato?\n\n' +
-        'I servizi ancora aperti verranno marcati come completati.'
-      );
-
-    if (
-      !confirmed
-    ) {
-
+    if (!confirmed) {
       return;
     }
 
-    this.executeWorkflow(
-      'complete',
-      'Appuntamento completato.'
-    );
+    this.executeWorkflow('complete', 'Appuntamento completato.');
   }
 
-  protected markNoShow():
-    void {
+  protected async markNoShow(): Promise<void> {
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Cliente non presentato?',
+      message: 'L’appuntamento verrà chiuso come NO SHOW mantenendo lo storico.',
+      confirmLabel: 'Segna no show',
+      severity: 'warning',
+    });
 
-    const confirmed =
-      confirm(
-        'Segnare il cliente come non presentato?'
-      );
-
-    if (
-      !confirmed
-    ) {
-
+    if (!confirmed) {
       return;
     }
 
-    this.executeWorkflow(
-      'no-show',
-      'Appuntamento segnato come non presentato.'
-    );
+    this.executeWorkflow('no-show', 'Appuntamento segnato come non presentato.');
   }
 
-  protected cancelAppointment():
-    void {
+  protected async cancelAppointment(): Promise<void> {
+    const appointment = this.detail()?.appointment;
 
-    const appointment =
-      this.detail()
-        ?.appointment;
-
-    if (
-      !appointment?.id
-    ) {
-
+    if (!appointment?.id) {
       return;
     }
 
-    const confirmed =
-      confirm(
-        'Vuoi cancellare questo appuntamento?\n\n' +
-        'Lo storico rimarrà disponibile.'
-      );
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Cancellare l’appuntamento?',
+      message: 'Lo storico rimarrà disponibile con stato CANCELLATO.',
+      confirmLabel: 'Cancella appuntamento',
+      severity: 'danger',
+    });
 
-    if (
-      !confirmed
-    ) {
-
+    if (!confirmed) {
       return;
     }
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    this.successMessage.set(
-      ''
-    );
+    this.successMessage.set('');
 
-    this.workflowLoading.set(
-      true
-    );
+    this.workflowLoading.set(true);
 
-    this.appointmentService
-      .delete(
-        appointment.id
-      )
-      .subscribe({
+    this.appointmentService.delete(appointment.id).subscribe({
+      next: () => {
+        this.workflowLoading.set(false);
 
-        next: () => {
+        this.successMessage.set('Appuntamento cancellato.');
+        this.toastService.success('Appuntamento cancellato');
 
-          this.workflowLoading.set(
-            false
-          );
+        this.loadDetail(appointment.id!);
+      },
 
-          this.successMessage.set(
-            'Appuntamento cancellato.'
-          );
+      error: (error: HttpErrorResponse) => {
+        this.workflowLoading.set(false);
 
-          this.loadDetail(
-            appointment.id!
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.workflowLoading.set(
-            false
-          );
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile cancellare l’appuntamento.'
-            )
-          );
-        }
-      });
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile cancellare l’appuntamento.'),
+        );
+      },
+    });
   }
 
-  private executeWorkflow(
-    action: WorkflowAction,
-    successMessage: string
-  ): void {
+  private executeWorkflow(action: WorkflowAction, successMessage: string): void {
+    const id = this.appointmentId;
 
-    const id =
-      this.appointmentId;
-
-    if (
-      !id
-    ) {
-
+    if (!id) {
       return;
     }
 
-    this.workflowLoading.set(
-      true
-    );
+    this.workflowLoading.set(true);
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    this.successMessage.set(
-      ''
-    );
+    this.successMessage.set('');
 
     let request$;
 
-    switch (
-      action
-    ) {
-
+    switch (action) {
       case 'confirm':
-
-        request$ =
-          this.workflowService
-            .confirm(
-              id
-            );
+        request$ = this.workflowService.confirm(id);
 
         break;
 
       case 'start':
-
-        request$ =
-          this.workflowService
-            .start(
-              id
-            );
+        request$ = this.workflowService.start(id);
 
         break;
 
       case 'complete':
-
-        request$ =
-          this.workflowService
-            .complete(
-              id
-            );
+        request$ = this.workflowService.complete(id);
 
         break;
 
       case 'no-show':
-
-        request$ =
-          this.workflowService
-            .markNoShow(
-              id
-            );
+        request$ = this.workflowService.markNoShow(id);
 
         break;
     }
 
     request$.subscribe({
-
       next: () => {
+        this.workflowLoading.set(false);
 
-        this.workflowLoading.set(
-          false
-        );
+        this.successMessage.set(successMessage);
+        this.toastService.success(successMessage);
 
-        this.successMessage.set(
-          successMessage
-        );
-
-        this.loadDetail(
-          id
-        );
+        this.loadDetail(id);
       },
 
-      error: (
-        error:
-          HttpErrorResponse
-      ) => {
-
-        this.workflowLoading.set(
-          false
-        );
+      error: (error: HttpErrorResponse) => {
+        this.workflowLoading.set(false);
 
         this.errorMessage.set(
-          this.getErrorMessage(
-            error,
-            'Impossibile modificare lo stato dell’appuntamento.'
-          )
+          this.getErrorMessage(error, 'Impossibile modificare lo stato dell’appuntamento.'),
         );
-      }
+      },
     });
   }
 
-  private getErrorMessage(
-    error: HttpErrorResponse,
-    fallback: string
-  ): string {
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    const backendMessage = error.error?.message;
 
-    const backendMessage =
-      error.error?.message;
-
-    if (
-      typeof backendMessage ===
-        'string' &&
-      backendMessage.trim()
-    ) {
-
+    if (typeof backendMessage === 'string' && backendMessage.trim()) {
       return backendMessage;
     }
 

@@ -6,9 +6,7 @@
   border: 1px solid #e8e1dc;
   border-radius: 13px;
   background: white;
-  box-shadow:
-    0 3px 14px
-    rgba(49, 39, 33, 0.035);
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
 }
 
 .history-header {
@@ -22,7 +20,7 @@
 
 .eyebrow {
   color: #a06f50;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.4px;
 }
@@ -36,7 +34,7 @@
 .history-header p {
   margin: 5px 0 0;
   color: #958981;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .primary-button {
@@ -48,15 +46,14 @@
   border-radius: 8px;
   background: #3b312c;
   color: white;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   text-decoration: none;
 }
 
 .summary-grid {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   padding: 15px 20px;
   border-bottom: 1px solid #eee8e4;
@@ -73,7 +70,7 @@
 .summary-grid span {
   display: block;
   color: #9a8e87;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -91,8 +88,7 @@
 
 .history-row {
   display: grid;
-  grid-template-columns:
-    70px minmax(0, 1fr) auto;
+  grid-template-columns: 70px minmax(0, 1fr) auto;
   align-items: center;
   gap: 15px;
   padding: 14px 0;
@@ -122,7 +118,7 @@
 .date-box span {
   margin-top: 2px;
   color: #9b8d85;
-  font-size: 7px;
+  font-size: 12px;
   text-transform: uppercase;
 }
 
@@ -135,7 +131,7 @@
 .history-content strong {
   overflow: hidden;
   color: #51443e;
-  font-size: 10px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -143,7 +139,7 @@
 .history-content span {
   margin-top: 5px;
   color: #9b8f88;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .status {
@@ -151,7 +147,7 @@
   border-radius: 20px;
   background: #f0e9e5;
   color: #705e54;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -200,13 +196,10 @@
 .empty-state p {
   margin: 6px 0 0;
   color: #998d86;
-  font-size: 10px;
+  font-size: 13px;
 }
 
-@media (
-  max-width: 650px
-) {
-
+@media (max-width: 650px) {
   .history-header {
     align-items: stretch;
     flex-direction: column;
@@ -217,8 +210,7 @@
   }
 
   .history-row {
-    grid-template-columns:
-      60px minmax(0, 1fr);
+    grid-template-columns: 60px minmax(0, 1fr);
   }
 
   .status {

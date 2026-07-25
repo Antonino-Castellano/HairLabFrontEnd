@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.workflow-stepper {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  align-items: center;
+  gap: var(--hl-space-2);
+  padding: var(--hl-space-4);
+  margin-bottom: var(--hl-space-5);
+  overflow-x: auto;
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-lg);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-sm);
+}
+
+.workflow-step {
+  display: flex;
+  align-items: center;
+  gap: var(--hl-space-2);
+  min-width: 154px;
+  padding: var(--hl-space-2);
+  border: 0;
+  border-radius: var(--hl-radius-md);
+  background: transparent;
+  color: var(--hl-color-text-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--hl-transition-fast);
+}
+
+.workflow-step:hover:not(:disabled),
+.workflow-step:focus-visible {
+  background: var(--hl-color-primary-soft);
+  color: var(--hl-color-text);
+}
+
+.workflow-step.active {
+  background: var(--hl-color-primary-soft);
+  color: var(--hl-color-primary);
+}
+
+.workflow-step.completed {
+  color: var(--hl-color-success);
+}
+
+.workflow-step.locked {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.workflow-step-index {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: var(--hl-font-sm);
+  font-weight: 800;
+}
+
+.workflow-step.active .workflow-step-index {
+  color: #fff;
+  border-color: var(--hl-color-primary);
+  background: var(--hl-color-primary);
+}
+
+.workflow-step-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.workflow-step-copy strong {
+  font-size: var(--hl-font-sm);
+  white-space: nowrap;
+}
+
+.workflow-step-copy small {
+  font-size: var(--hl-font-xs);
+  white-space: nowrap;
+}
+
+.workflow-connector {
+  width: 24px;
+  height: 2px;
+  background: var(--hl-color-border);
+}
+
+.workflow-connector.completed {
+  background: var(--hl-color-success);
+}
+
+@media (max-width: 900px) {
+  .workflow-stepper {
+    display: flex;
+  }
+
+  .workflow-connector {
+    flex: 0 0 18px;
+  }
+}

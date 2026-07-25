@@ -1,1776 +1,999 @@
 <section class="smart-page">
-
   <app-color-lab-section-nav activeSection="SMART_FORMULA" />
 
   <header class="page-header">
-
     <div>
+      <span class="eyebrow"> COLOR LAB · SMART FORMULA </span>
 
-      <span class="eyebrow">
-        COLOR LAB · SMART FORMULA
-      </span>
-
-      <h1>
-        Diagnosi tecnica colore
-      </h1>
+      <h1>Diagnosi tecnica colore</h1>
 
       <p>
-        Confronta la base reale della cliente
-        con l’obiettivo e definisce
-        la strategia tecnica prima della formula automatica.
+        Confronta la base reale della cliente con l’obiettivo e definisce la strategia tecnica prima
+        della formula automatica.
       </p>
-
     </div>
 
     <div class="header-actions">
+      <a class="secondary-button" routerLink="/color-lab"> Color Lab </a>
 
-      <a
-        class="secondary-button"
-        routerLink="/color-lab">
-        Color Lab
-      </a>
-
-      <a
-        class="secondary-button"
-        routerLink="/color-lab/formulas">
-        Formule
-      </a>
-
+      <a class="secondary-button" routerLink="/color-lab/formulas"> Formule </a>
     </div>
-
   </header>
 
-  @if (
-    errorMessage()
-  ) {
+  <app-workflow-stepper
+    [steps]="workflowSteps"
+    [activeStep]="activeWorkflowStep()"
+    [maxAvailableStep]="getMaxWorkflowStep()"
+    (stepChange)="selectWorkflowStep($event)"
+  />
 
+  @if (errorMessage()) {
     <div class="message error">
       {{ errorMessage() }}
     </div>
-
   }
 
-  <div class="smart-grid">
-
+  <div class="smart-grid progressive">
     <!-- ===================================================
          INPUT
          =================================================== -->
-    <section class="panel input-panel">
+    @if (activeWorkflowStep() === 1) {
+      <section class="panel input-panel">
+        <div class="panel-heading">
+          <span> 01 </span>
 
-      <div class="panel-heading">
+          <div>
+            <h2>Cliente e obiettivo</h2>
 
-        <span>
-          01
-        </span>
-
-        <div>
-
-          <h2>
-            Cliente e obiettivo
-          </h2>
-
-          <p>
-            La base viene letta
-            dal Profilo Capelli salvato.
-          </p>
-
+            <p>La base viene letta dal Profilo Capelli salvato.</p>
+          </div>
         </div>
 
-      </div>
+        <form [formGroup]="form" (ngSubmit)="analyze()">
+          <label>
+            <span> Cliente * </span>
 
-      <form
-        [formGroup]="form"
-        (ngSubmit)="analyze()">
+            <select formControlName="customerId" (change)="onCustomerChange()">
+              <option [ngValue]="null">Seleziona cliente</option>
 
-        <label>
+              @for (customer of customers(); track customer.id) {
+                <option [ngValue]="customer.id">
+                  {{ customer.firstName }}
+                  {{ customer.lastName }}
+                </option>
+              }
+            </select>
+          </label>
 
-          <span>
-            Cliente *
-          </span>
+          @if (loadingProfile()) {
+            <div class="mini-state">Caricamento profilo tecnico...</div>
+          }
 
-          <select
-            formControlName="customerId"
-            (change)="onCustomerChange()">
-
-            <option [ngValue]="null">
-              Seleziona cliente
-            </option>
-
-            @for (
-              customer of customers();
-              track customer.id
-            ) {
-
-              <option
-                [ngValue]="customer.id">
-
-                {{ customer.firstName }}
-                {{ customer.lastName }}
-
-              </option>
-
-            }
-
-          </select>
-
-        </label>
-
-        @if (
-          loadingProfile()
-        ) {
-
-          <div class="mini-state">
-            Caricamento profilo tecnico...
-          </div>
-
-        }
-
-        @if (
-          selectedProfile();
-          as profile
-        ) {
-
-          <div class="base-summary">
-
-            <div class="summary-title">
-
-              <span>
-                BASE REGISTRATA
-              </span>
-
-              <strong>
-                {{ getCustomerName() }}
-              </strong>
-
-            </div>
-
-            <div class="base-grid">
-
-              <div>
-
-                <span>
-                  TONO ATTUALE
-                </span>
+          @if (selectedProfile(); as profile) {
+            <div class="base-summary">
+              <div class="summary-title">
+                <span> BASE REGISTRATA </span>
 
                 <strong>
-
-                  {{
-                    toneLabels[
-                      profile.currentTone
-                    ]
-                  }}
-
+                  {{ getCustomerName() }}
                 </strong>
-
               </div>
 
-              <div>
-
-                <span>
-                  RIFLESSO
-                </span>
-
-                <strong>
-
-                  {{
-                    reflectionLabels[
-                      profile.reflection
-                    ]
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  LUNGHEZZA
-                </span>
-
-                <strong>
-
-                  {{
-                    profile.hairLength
-                      ? hairLengthLabels[
-                          profile.hairLength
-                        ]
-                      : 'Non registrata'
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  SPESSORE
-                </span>
-
-                <strong>
-
-                  {{
-                    hairTextureLabels[
-                      profile.texture
-                    ]
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  DENSITÀ
-                </span>
-
-                <strong>
-
-                  {{
-                    physicalValueLabels[
-                      profile.density
-                    ]
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  POROSITÀ
-                </span>
-
-                <strong>
-
-                  {{
-                    physicalValueLabels[
-                      profile.porosity
-                    ]
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  CONDIZIONE
-                </span>
-
-                <strong>
-
-                  {{
-                    hairConditionLabels[
-                      profile.hairCondition
-                    ]
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  CAPELLI BIANCHI
-                </span>
-
-                <strong>
-                  {{ profile.whiteHairPercentage ?? 0 }}%
-                </strong>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        }
-
-
-        @if (
-          loadingHistoryInsight()
-        ) {
-
-          <div class="history-insight loading">
-            Analisi dello storico tecnico...
-          </div>
-
-        } @else if (
-          historyInsight();
-          as history
-        ) {
-
-          <section
-            class="history-insight"
-            [attr.data-level]="history.level">
-
-            <div class="history-insight-head">
-
-              <div>
-
-                <span>
-                  MEMORIA TECNICA CLIENTE
-                </span>
-
-                <h3>
-                  Storico risultati reali
-                </h3>
-
-              </div>
-
-              <strong>
-                {{ history.evaluatedResults }}
-                risultati analizzati
-              </strong>
-
-            </div>
-
-            <p class="history-summary">
-              {{ history.summary }}
-            </p>
-
-            @if (
-              history.hasHistory
-            ) {
-
-              <div class="history-metrics">
-
+              <div class="base-grid">
                 <div>
-
-                  <span>
-                    DEVIAZIONI TONO
-                  </span>
+                  <span> TONO ATTUALE </span>
 
                   <strong>
-                    {{ history.toneDeviationCount }}
+                    {{ toneLabels[profile.currentTone] }}
                   </strong>
-
                 </div>
 
                 <div>
-
-                  <span>
-                    DEVIAZIONI RIFLESSO
-                  </span>
+                  <span> RIFLESSO </span>
 
                   <strong>
-                    {{ history.reflectionDeviationCount }}
+                    {{ reflectionLabels[profile.reflection] }}
                   </strong>
-
                 </div>
 
                 <div>
-
-                  <span>
-                    RISULTATI DA ATTENZIONARE
-                  </span>
+                  <span> LUNGHEZZA </span>
 
                   <strong>
-                    {{ history.problematicAssessmentCount }}
+                    {{
+                      profile.hairLength ? hairLengthLabels[profile.hairLength] : 'Non registrata'
+                    }}
                   </strong>
-
                 </div>
 
+                <div>
+                  <span> SPESSORE </span>
+
+                  <strong>
+                    {{ hairTextureLabels[profile.texture] }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span> DENSITÀ </span>
+
+                  <strong>
+                    {{ physicalValueLabels[profile.density] }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span> POROSITÀ </span>
+
+                  <strong>
+                    {{ physicalValueLabels[profile.porosity] }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span> CONDIZIONE </span>
+
+                  <strong>
+                    {{ hairConditionLabels[profile.hairCondition] }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span> CAPELLI BIANCHI </span>
+
+                  <strong> {{ profile.whiteHairPercentage ?? 0 }}% </strong>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (loadingHistoryInsight()) {
+            <div class="history-insight loading">Analisi dello storico tecnico...</div>
+          } @else if (historyInsight(); as history) {
+            <section class="history-insight" [attr.data-level]="history.level">
+              <div class="history-insight-head">
+                <div>
+                  <span> MEMORIA TECNICA CLIENTE </span>
+
+                  <h3>Storico risultati reali</h3>
+                </div>
+
+                <strong>
+                  {{ history.evaluatedResults }}
+                  risultati analizzati
+                </strong>
               </div>
 
-              @if (
-                history.observations.length >
-                0
-              ) {
-
-                <div class="history-observations">
-
-                  <span>
-                    OSSERVAZIONI
-                  </span>
-
-                  @for (
-                    observation of
-                      history.observations;
-                    track observation
-                  ) {
-
-                    <p>
-                      {{ observation }}
-                    </p>
-
-                  }
-
-                </div>
-
-              }
-
-              @if (
-                history.previousCorrectionHints.length >
-                0
-              ) {
-
-                <div class="history-corrections">
-
-                  <span>
-                    NOTE CORRETTIVE PRECEDENTI
-                  </span>
-
-                  @for (
-                    correction of
-                      history.previousCorrectionHints;
-                    track correction
-                  ) {
-
-                    <p>
-                      {{ correction }}
-                    </p>
-
-                  }
-
-                </div>
-
-              }
-
-              @if (
-                history.latestFormulaId
-              ) {
-
-                <a
-                  class="history-detail-link"
-                  [routerLink]="[
-                    '/color-lab/formulas',
-                    history.latestFormulaId
-                  ]">
-                  Apri ultima formula con risultato
-                </a>
-
-              }
-
-            } @else {
-
-              <p class="history-empty">
-                I prossimi risultati post-servizio
-                alimenteranno questo riepilogo tecnico.
+              <p class="history-summary">
+                {{ history.summary }}
               </p>
 
-            }
+              @if (history.hasHistory) {
+                <div class="history-metrics">
+                  <div>
+                    <span> DEVIAZIONI TONO </span>
 
-            <small class="history-disclaimer">
-              Lo storico segnala pattern osservati:
-              non modifica automaticamente formula,
-              developer o grammature.
-            </small>
+                    <strong>
+                      {{ history.toneDeviationCount }}
+                    </strong>
+                  </div>
 
-          </section>
+                  <div>
+                    <span> DEVIAZIONI RIFLESSO </span>
 
-        }
+                    <strong>
+                      {{ history.reflectionDeviationCount }}
+                    </strong>
+                  </div>
 
-        @if (
-          sourceRecommendation();
-          as source
-        ) {
+                  <div>
+                    <span> RISULTATI DA ATTENZIONARE </span>
 
-          <section class="source-recommendation-card">
+                    <strong>
+                      {{ history.problematicAssessmentCount }}
+                    </strong>
+                  </div>
+                </div>
 
-            <div>
-              <span>OBIETTIVO IMPORTATO DAI SUGGERIMENTI HAIRLAB</span>
-              <h3>{{ source.title }}</h3>
-              <p>
-                Il preset cromatico è già compilato. Smart Formula lo adatterà
-                alla base reale e ai dati tecnici del cliente.
-              </p>
-            </div>
+                @if (history.observations.length > 0) {
+                  <div class="history-observations">
+                    <span> OSSERVAZIONI </span>
 
-            @if (source.compatibilityScore != null) {
-              <strong>{{ source.compatibilityScore }}/100</strong>
-            }
+                    @for (observation of history.observations; track observation) {
+                      <p>
+                        {{ observation }}
+                      </p>
+                    }
+                  </div>
+                }
 
-          </section>
+                @if (history.previousCorrectionHints.length > 0) {
+                  <div class="history-corrections">
+                    <span> NOTE CORRETTIVE PRECEDENTI </span>
 
-        }
+                    @for (correction of history.previousCorrectionHints; track correction) {
+                      <p>
+                        {{ correction }}
+                      </p>
+                    }
+                  </div>
+                }
 
-        <div class="form-grid">
-
-          <label>
-
-            <span>
-              Tono target *
-            </span>
-
-            <select
-              formControlName="targetToneLevel">
-
-              <option [ngValue]="null">
-                Seleziona tono
-              </option>
-
-              @for (
-                tone of toneLevels;
-                track tone
-              ) {
-
-                <option [ngValue]="tone">
-
-                  {{
-                    toneLabels[
-                      tone
-                    ]
-                  }}
-
-                </option>
-
+                @if (history.latestFormulaId) {
+                  <a
+                    class="history-detail-link"
+                    [routerLink]="['/color-lab/formulas', history.latestFormulaId]"
+                  >
+                    Apri ultima formula con risultato
+                  </a>
+                }
+              } @else {
+                <p class="history-empty">
+                  I prossimi risultati post-servizio alimenteranno questo riepilogo tecnico.
+                </p>
               }
 
-            </select>
+              <small class="history-disclaimer">
+                Lo storico segnala pattern osservati: non modifica automaticamente formula,
+                developer o grammature.
+              </small>
+            </section>
+          }
 
-          </label>
+          @if (sourceRecommendation(); as source) {
+            <section class="source-recommendation-card">
+              <div>
+                <span>OBIETTIVO IMPORTATO DAI SUGGERIMENTI HAIRLAB</span>
+                <h3>{{ source.title }}</h3>
+                <p>
+                  Il preset cromatico è già compilato. Smart Formula lo adatterà alla base reale e
+                  ai dati tecnici del cliente.
+                </p>
+              </div>
 
-          <label>
-
-            <span>
-              Riflesso target *
-            </span>
-
-            <select
-              formControlName="targetPrimaryReflection">
-
-              <option [ngValue]="null">
-                Seleziona riflesso
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
-                <option [ngValue]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
-                </option>
-
+              @if (source.compatibilityScore != null) {
+                <strong>{{ source.compatibilityScore }}/100</strong>
               }
+            </section>
+          }
 
-            </select>
+          <div class="form-grid">
+            <label>
+              <span> Tono target * </span>
 
+              <select formControlName="targetToneLevel">
+                <option [ngValue]="null">Seleziona tono</option>
+
+                @for (tone of toneLevels; track tone) {
+                  <option [ngValue]="tone">
+                    {{ toneLabels[tone] }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span> Riflesso target * </span>
+
+              <select formControlName="targetPrimaryReflection">
+                <option [ngValue]="null">Seleziona riflesso</option>
+
+                @for (reflection of reflections; track reflection) {
+                  <option [ngValue]="reflection">
+                    {{ reflectionLabels[reflection] }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span> Secondo riflesso </span>
+
+              <select formControlName="targetSecondaryReflection">
+                <option [ngValue]="null">Nessuno</option>
+
+                @for (reflection of reflections; track reflection) {
+                  <option [ngValue]="reflection">
+                    {{ reflectionLabels[reflection] }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span> Applicazione * </span>
+
+              <select formControlName="applicationType">
+                @for (application of applications; track application) {
+                  <option [value]="application">
+                    {{ applicationLabels[application] }}
+                  </option>
+                }
+              </select>
+            </label>
+          </div>
+
+          <label class="full-field">
+            <span> Descrizione obiettivo </span>
+
+            <textarea
+              rows="3"
+              formControlName="targetResult"
+              placeholder="Es. castano chiaro freddo, naturale e luminoso"
+            >
+            </textarea>
           </label>
 
-          <label>
-
-            <span>
-              Secondo riflesso
-            </span>
-
-            <select
-              formControlName="targetSecondaryReflection">
-
-              <option [ngValue]="null">
-                Nessuno
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
-                <option [ngValue]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Applicazione *
-            </span>
-
-            <select
-              formControlName="applicationType">
-
-              @for (
-                application of applications;
-                track application
-              ) {
-
-                <option [value]="application">
-
-                  {{
-                    applicationLabels[
-                      application
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-        </div>
-
-        <label class="full-field">
-
-          <span>
-            Descrizione obiettivo
-          </span>
-
-          <textarea
-            rows="3"
-            formControlName="targetResult"
-            placeholder="Es. castano chiaro freddo, naturale e luminoso">
-          </textarea>
-
-        </label>
-
-        <button
-          type="submit"
-          class="primary-button analyze-button"
-          [disabled]="
-            analyzing()
-            ||
-            !selectedProfile()
-          ">
-
-          {{
-            analyzing()
-              ? 'Analisi in corso...'
-              : 'Analizza obiettivo'
-          }}
-
-        </button>
-
-      </form>
-
-    </section>
+          <button
+            type="submit"
+            class="primary-button analyze-button"
+            [disabled]="analyzing() || !selectedProfile()"
+          >
+            {{ analyzing() ? 'Analisi in corso...' : 'Analizza obiettivo' }}
+          </button>
+        </form>
+      </section>
+    }
 
     <!-- ===================================================
          RISULTATO
          =================================================== -->
-    <section class="panel result-panel">
+    @if (activeWorkflowStep() === 2 || activeWorkflowStep() === 3) {
+      <section class="panel result-panel">
+        <div class="panel-heading">
+          <span> 02 </span>
 
-      <div class="panel-heading">
+          <div>
+            <h2>Strategia tecnica</h2>
 
-        <span>
-          02
-        </span>
-
-        <div>
-
-          <h2>
-            Strategia tecnica
-          </h2>
-
-          <p>
-            Diagnosi deterministica
-            e motivazioni leggibili.
-          </p>
-
-        </div>
-
-      </div>
-
-      @if (
-        diagnosis();
-        as result
-      ) {
-
-        <div class="result-hero">
-
-          <span>
-            FATTIBILITÀ
-          </span>
-
-          <strong>
-
-            {{
-              feasibilityLabels[
-                result.feasibility
-              ]
-            }}
-
-          </strong>
-
-          <small>
-
-            {{
-              getToneDifferenceLabel(
-                result.toneDifference
-              )
-            }}
-
-          </small>
-
-        </div>
-
-        <div class="strategy-card">
-
-          <span>
-            STRATEGIA
-          </span>
-
-          <strong>
-
-            {{
-              strategyLabels[
-                result.strategy
-              ]
-            }}
-
-          </strong>
-
-        </div>
-
-        <div class="diagnosis-columns">
-
-          <article>
-
-            <h3>
-              Perché
-            </h3>
-
-            @for (
-              reason of result.reasons;
-              track reason
-            ) {
-
-              <p class="reason">
-                {{ reason }}
-              </p>
-
-            }
-
-          </article>
-
-          <article>
-
-            <h3>
-              Warning
-            </h3>
-
-            @if (
-              result.warnings.length ===
-              0
-            ) {
-
-              <p class="empty-note">
-                Nessun warning aggiuntivo.
-              </p>
-
-            } @else {
-
-              @for (
-                warning of result.warnings;
-                track warning
-              ) {
-
-                <p class="warning">
-                  {{ warning }}
-                </p>
-
-              }
-
-            }
-
-          </article>
-
-        </div>
-
-        <section class="personalization-audit">
-
-          <div class="personalization-head">
-            <span>PERSONALIZZAZIONE FORMULA</span>
-            <strong>
-              {{ result.personalizationFactors.length }} fattori considerati
-            </strong>
+            <p>Diagnosi deterministica e motivazioni leggibili.</p>
           </div>
+        </div>
 
-          @if (result.sourceRecommendationCode) {
-            <p class="source-validation"
-              [class.validated]="result.sourceRecommendationValidated">
-              {{
-                result.sourceRecommendationValidated
-                  ? '✓ Suggerimento HairLab verificato sul profilo corrente'
-                  : '⚠ Suggerimento origine da ricontrollare'
-              }}
-            </p>
-          }
+        @if (activeWorkflowStep() === 2) {
+          @if (diagnosis(); as result) {
+            <div class="result-hero">
+              <span> FATTIBILITÀ </span>
 
-          <div class="personalization-list">
-            @for (factor of result.personalizationFactors; track factor) {
-              <span>✓ {{ factor }}</span>
-            }
-          </div>
+              <strong>
+                {{ feasibilityLabels[result.feasibility] }}
+              </strong>
 
-          @if (result.missingPersonalizationData.length > 0) {
-            <div class="missing-personalization">
-              <strong>Dati da completare</strong>
-              @for (missing of result.missingPersonalizationData; track missing) {
-                <span>• {{ missing }}</span>
-              }
-            </div>
-          }
-
-        </section>
-
-        @if (result.transformationPlan.length > 0) {
-          <section class="transformation-plan">
-            <div class="personalization-head">
-              <span>PIANO OPERATIVO PERSONALIZZATO</span>
-              <strong>{{ result.transformationPlan.length }} step</strong>
+              <small>
+                {{ getToneDifferenceLabel(result.toneDifference) }}
+              </small>
             </div>
 
-            <ol>
-              @for (step of result.transformationPlan; track step) {
-                <li>{{ step }}</li>
-              }
-            </ol>
-          </section>
-        }
+            <div class="strategy-card">
+              <span> STRATEGIA </span>
 
-        <div class="reflection-section">
-
-          <span>
-            DIREZIONE RIFLESSI
-          </span>
-
-          <div class="reflection-list">
-
-            @for (
-              reflection of
-                result.recommendedReflectionFamilies;
-              track reflection
-            ) {
-
-              <span>
-
-                {{
-                  reflectionLabels[
-                    reflection
-                  ]
-                }}
-
-              </span>
-
-            }
-
-          </div>
-
-        </div>
-
-        <div class="readiness-grid">
-
-          <div
-            [class.ready]="
-              result.automaticFormulaCandidate
-            "
-            [class.not-ready]="
-              !result.automaticFormulaCandidate
-            ">
-
-            <span>
-              FORMULA AUTOMATICA
-            </span>
-
-            <strong>
-
-              {{
-                result.automaticFormulaCandidate
-                  ? 'Candidata alla generazione'
-                  : 'Richiede revisione prima della generazione'
-              }}
-
-            </strong>
-
-          </div>
-
-          <div
-            [class.warning-state]="
-              result.strandTestRecommended
-            ">
-
-            <span>
-              PROVA CIOCCA
-            </span>
-
-            <strong>
-
-              {{
-                result.strandTestRecommended
-                  ? 'Raccomandata'
-                  : 'Non evidenziata come necessaria'
-              }}
-
-            </strong>
-
-          </div>
-
-        </div>
-
-        <div class="result-actions">
-
-          <a
-            class="secondary-button"
-            [routerLink]="[
-              '/customers',
-              result.customerId
-            ]">
-            Apri cliente
-          </a>
-
-          <button
-            type="button"
-            class="primary-button"
-            [disabled]="proposing()"
-            (click)="generateProductProposal()">
-
-            {{
-              proposing()
-                ? 'Ricerca prodotti...'
-                : 'Genera proposta prodotti'
-            }}
-
-          </button>
-
-        </div>
-
-      } @else {
-
-        <div class="empty-result">
-
-          <strong>
-            Nessuna analisi ancora eseguita
-          </strong>
-
-          <p>
-            Seleziona una cliente con Profilo Capelli,
-            definisci l’obiettivo e premi
-            “Analizza obiettivo”.
-          </p>
-
-        </div>
-
-      }
-
-
-      @if (
-        formulaResponse();
-        as formulaResult
-      ) {
-
-        <section class="proposal-section">
-
-          <div class="proposal-heading">
-
-            <span class="proposal-index">
-              03
-            </span>
-
-            <div>
-
-              <h2>
-                Proposte prodotti
-              </h2>
-
-              <p>
-                Il motore seleziona i componenti tecnici, stima le quantità
-                e integra il contesto storico disponibile senza sostituire
-                le istruzioni tecniche del produttore.
-              </p>
-
+              <strong>
+                {{ strategyLabels[result.strategy] }}
+              </strong>
             </div>
 
-          </div>
+            <div class="diagnosis-columns">
+              <article>
+                <h3>Perché</h3>
 
-          <div class="proposal-grid">
+                @for (reason of result.reasons; track reason) {
+                  <p class="reason">
+                    {{ reason }}
+                  </p>
+                }
+              </article>
 
-            <!-- FORMULA IDEALE -->
-            <article class="proposal-card">
+              <article>
+                <h3>Warning</h3>
 
-              <div class="proposal-card-head">
+                @if (result.warnings.length === 0) {
+                  <p class="empty-note">Nessun warning aggiuntivo.</p>
+                } @else {
+                  @for (warning of result.warnings; track warning) {
+                    <p class="warning">
+                      {{ warning }}
+                    </p>
+                  }
+                }
+              </article>
+            </div>
 
-                <div>
-
-                  <span>
-                    CATALOGO COMPLETO
-                  </span>
-
-                  <h3>
-                    {{
-                      formulaResult
-                        .idealProposal
-                        .title
-                    }}
-                  </h3>
-
-                </div>
-
-                <span
-                  class="proposal-status"
-                  [class.complete]="
-                    formulaResult
-                      .idealProposal
-                      .complete
-                  ">
-
-                  {{
-                    formulaResult
-                      .idealProposal
-                      .complete
-                      ? 'Completa'
-                      : 'Parziale'
-                  }}
-
-                </span>
-
+            <section class="personalization-audit">
+              <div class="personalization-head">
+                <span>PERSONALIZZAZIONE FORMULA</span>
+                <strong> {{ result.personalizationFactors.length }} fattori considerati </strong>
               </div>
 
-              <p class="proposal-description">
+              @if (result.sourceRecommendationCode) {
+                <p
+                  class="source-validation"
+                  [class.validated]="result.sourceRecommendationValidated"
+                >
+                  {{
+                    result.sourceRecommendationValidated
+                      ? '✓ Suggerimento HairLab verificato sul profilo corrente'
+                      : '⚠ Suggerimento origine da ricontrollare'
+                  }}
+                </p>
+              }
 
-                {{
-                  formulaResult
-                    .idealProposal
-                    .description
-                }}
+              <div class="personalization-list">
+                @for (factor of result.personalizationFactors; track factor) {
+                  <span>✓ {{ factor }}</span>
+                }
+              </div>
 
+              @if (result.missingPersonalizationData.length > 0) {
+                <div class="missing-personalization">
+                  <strong>Dati da completare</strong>
+                  @for (missing of result.missingPersonalizationData; track missing) {
+                    <span>• {{ missing }}</span>
+                  }
+                </div>
+              }
+            </section>
+
+            @if (result.transformationPlan.length > 0) {
+              <section class="transformation-plan">
+                <div class="personalization-head">
+                  <span>PIANO OPERATIVO PERSONALIZZATO</span>
+                  <strong>{{ result.transformationPlan.length }} step</strong>
+                </div>
+
+                <ol>
+                  @for (step of result.transformationPlan; track step) {
+                    <li>{{ step }}</li>
+                  }
+                </ol>
+              </section>
+            }
+
+            <div class="reflection-section">
+              <span> DIREZIONE RIFLESSI </span>
+
+              <div class="reflection-list">
+                @for (reflection of result.recommendedReflectionFamilies; track reflection) {
+                  <span>
+                    {{ reflectionLabels[reflection] }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <div class="readiness-grid">
+              <div
+                [class.ready]="result.automaticFormulaCandidate"
+                [class.not-ready]="!result.automaticFormulaCandidate"
+              >
+                <span> FORMULA AUTOMATICA </span>
+
+                <strong>
+                  {{
+                    result.automaticFormulaCandidate
+                      ? 'Candidata alla generazione'
+                      : 'Richiede revisione prima della generazione'
+                  }}
+                </strong>
+              </div>
+
+              <div [class.warning-state]="result.strandTestRecommended">
+                <span> PROVA CIOCCA </span>
+
+                <strong>
+                  {{
+                    result.strandTestRecommended
+                      ? 'Raccomandata'
+                      : 'Non evidenziata come necessaria'
+                  }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <a class="secondary-button" [routerLink]="['/customers', result.customerId]">
+                Apri cliente
+              </a>
+
+              <button
+                type="button"
+                class="primary-button"
+                [disabled]="proposing()"
+                (click)="generateProductProposal()"
+              >
+                {{ proposing() ? 'Ricerca prodotti...' : 'Genera proposta prodotti' }}
+              </button>
+            </div>
+          } @else {
+            <div class="empty-result">
+              <strong> Nessuna analisi ancora eseguita </strong>
+
+              <p>
+                Seleziona una cliente con Profilo Capelli, definisci l’obiettivo e premi “Analizza
+                obiettivo”.
               </p>
+            </div>
+          }
+        }
 
-              <div class="component-list">
+        @if (activeWorkflowStep() === 3 && formulaResponse(); as formulaResult) {
+          <section class="proposal-section">
+            <div class="proposal-heading">
+              <span class="proposal-index"> 03 </span>
 
-                @for (
-                  component of
-                    formulaResult
-                      .idealProposal
-                      .components;
-                  track component.hairDyeId
-                ) {
+              <div>
+                <h2>Proposte prodotti</h2>
 
-                  <div class="component-row">
+                <p>
+                  Il motore seleziona i componenti tecnici, stima le quantità e integra il contesto
+                  storico disponibile senza sostituire le istruzioni tecniche del produttore.
+                </p>
+              </div>
+            </div>
 
-                    <div>
+            <div class="proposal-grid">
+              <!-- FORMULA IDEALE -->
+              <article class="proposal-card">
+                <div class="proposal-card-head">
+                  <div>
+                    <span> CATALOGO COMPLETO </span>
 
-                      <span class="component-role">
+                    <h3>
+                      {{ formulaResult.idealProposal.title }}
+                    </h3>
+                  </div>
 
-                        {{
-                          componentRoleLabels[
-                            component.role
-                          ]
-                        }}
+                  <span
+                    class="proposal-status"
+                    [class.complete]="formulaResult.idealProposal.complete"
+                  >
+                    {{ formulaResult.idealProposal.complete ? 'Completa' : 'Parziale' }}
+                  </span>
+                </div>
 
-                      </span>
+                <p class="proposal-description">
+                  {{ formulaResult.idealProposal.description }}
+                </p>
 
-                      <strong>
+                <div class="component-list">
+                  @for (
+                    component of formulaResult.idealProposal.components;
+                    track component.hairDyeId
+                  ) {
+                    <div class="component-row">
+                      <div>
+                        <span class="component-role">
+                          {{ componentRoleLabels[component.role] }}
+                        </span>
 
-                        {{ component.brand }}
-                        ·
-                        {{ component.code }}
-
-                        @if (
-                          component.lineName
-                        ) {
-
+                        <strong>
+                          {{ component.brand }}
                           ·
-                          {{ component.lineName }}
+                          {{ component.code }}
 
-                        }
-
-                      </strong>
-
-                      <small>
-                        {{ component.name }}
-                      </small>
-
-                    </div>
-
-                    <div class="component-stock">
-
-                      @if (
-                        component.dosageCalculated
-                      ) {
-
-                        <span class="required-quantity">
-
-                          {{
-                            component.recommendedQuantity
-                          }}
-
-                          g richiesti
-
-                        </span>
-
-                      } @else {
-
-                        <span class="manual-dose">
-                          Dose manuale
-                        </span>
-
-                      }
-
-                      @if (
-                        component.stockConfigured
-                      ) {
+                          @if (component.lineName) {
+                            ·
+                            {{ component.lineName }}
+                          }
+                        </strong>
 
                         <small>
+                          {{ component.name }}
+                        </small>
+                      </div>
 
+                      <div class="component-stock">
+                        @if (component.dosageCalculated) {
+                          <span class="required-quantity">
+                            {{ component.recommendedQuantity }}
+
+                            g richiesti
+                          </span>
+                        } @else {
+                          <span class="manual-dose"> Dose manuale </span>
+                        }
+
+                        @if (component.stockConfigured) {
+                          <small>
+                            Stock:
+
+                            {{ component.quantityAvailable }}
+
+                            {{ component.inventoryUnit === 'MILLILITER' ? 'ml' : 'g' }}
+                          </small>
+
+                          <strong
+                            [class.ok]="component.stockSufficient"
+                            [class.warning]="!component.stockSufficient"
+                          >
+                            {{
+                              component.manualDosageRequired
+                                ? 'Da dosare'
+                                : component.stockSufficient
+                                  ? 'Sufficiente'
+                                  : 'Mancano ' + getShortageLabel(component.shortageQuantity)
+                            }}
+                          </strong>
+                        } @else {
+                          <strong class="warning"> Stock non configurato </strong>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                @if (formulaResult.idealProposal.missingRequirements.length > 0) {
+                  <div class="missing-box">
+                    <strong> Requisiti mancanti </strong>
+
+                    @for (
+                      missing of formulaResult.idealProposal.missingRequirements;
+                      track missing
+                    ) {
+                      <p>
+                        {{ missing }}
+                      </p>
+                    }
+                  </div>
+                }
+              </article>
+
+              <!-- FORMULA MAGAZZINO -->
+              <article class="proposal-card inventory-proposal">
+                <div class="proposal-card-head">
+                  <div>
+                    <span> GIACENZE ATTUALI </span>
+
+                    <h3>
+                      {{ formulaResult.inventoryProposal.title }}
+                    </h3>
+                  </div>
+
+                  <span
+                    class="proposal-status"
+                    [class.complete]="formulaResult.inventoryProposal.complete"
+                  >
+                    {{
+                      formulaResult.inventoryProposal.complete
+                        ? 'Prodotti presenti'
+                        : 'Da completare'
+                    }}
+                  </span>
+                </div>
+
+                <p class="proposal-description">
+                  {{ formulaResult.inventoryProposal.description }}
+                </p>
+
+                <div class="component-list">
+                  @for (
+                    component of formulaResult.inventoryProposal.components;
+                    track component.hairDyeId
+                  ) {
+                    <div class="component-row">
+                      <div>
+                        <span class="component-role">
+                          {{ componentRoleLabels[component.role] }}
+                        </span>
+
+                        <strong>
+                          {{ component.brand }}
+                          ·
+                          {{ component.code }}
+
+                          @if (component.lineName) {
+                            ·
+                            {{ component.lineName }}
+                          }
+                        </strong>
+
+                        <small>
+                          {{ component.name }}
+                        </small>
+                      </div>
+
+                      <div class="component-stock">
+                        @if (component.dosageCalculated) {
+                          <span class="required-quantity">
+                            {{ component.recommendedQuantity }}
+
+                            g richiesti
+                          </span>
+                        } @else {
+                          <span class="manual-dose"> Dose manuale </span>
+                        }
+
+                        <small>
                           Stock:
 
-                          {{
-                            component.quantityAvailable
-                          }}
+                          {{ component.quantityAvailable }}
 
-                          {{
-                            component.inventoryUnit ===
-                              'MILLILITER'
-                              ? 'ml'
-                              : 'g'
-                          }}
-
+                          {{ component.inventoryUnit === 'MILLILITER' ? 'ml' : 'g' }}
                         </small>
 
                         <strong
-                          [class.ok]="
-                            component.stockSufficient
-                          "
-                          [class.warning]="
-                            !component.stockSufficient
-                          ">
-
+                          [class.ok]="component.stockSufficient"
+                          [class.warning]="!component.stockSufficient"
+                        >
                           {{
                             component.manualDosageRequired
                               ? 'Da dosare'
-                              : (
-                                  component.stockSufficient
-                                    ? 'Sufficiente'
-                                    : (
-                                        'Mancano '
-                                        + getShortageLabel(
-                                            component.shortageQuantity
-                                          )
-                                      )
-                                )
+                              : component.stockSufficient
+                                ? 'Sufficiente'
+                                : 'Mancano ' + getShortageLabel(component.shortageQuantity)
                           }}
-
                         </strong>
-
-                      } @else {
-
-                        <strong class="warning">
-                          Stock non configurato
-                        </strong>
-
-                      }
-
+                      </div>
                     </div>
+                  }
+                </div>
 
+                @if (formulaResult.inventoryProposal.missingRequirements.length > 0) {
+                  <div class="missing-box">
+                    <strong> Cosa manca </strong>
+
+                    @for (
+                      missing of formulaResult.inventoryProposal.missingRequirements;
+                      track missing
+                    ) {
+                      <p>
+                        {{ missing }}
+                      </p>
+                    }
                   </div>
-
                 }
 
-              </div>
-
-              @if (
-                formulaResult
-                  .idealProposal
-                  .missingRequirements
-                  .length >
-                0
-              ) {
-
-                <div class="missing-box">
-
-                  <strong>
-                    Requisiti mancanti
-                  </strong>
-
-                  @for (
-                    missing of
-                      formulaResult
-                        .idealProposal
-                        .missingRequirements;
-                    track missing
-                  ) {
-
-                    <p>
-                      {{ missing }}
-                    </p>
-
-                  }
-
-                </div>
-
-              }
-
-            </article>
-
-            <!-- FORMULA MAGAZZINO -->
-            <article class="proposal-card inventory-proposal">
-
-              <div class="proposal-card-head">
-
-                <div>
-
-                  <span>
-                    GIACENZE ATTUALI
-                  </span>
-
-                  <h3>
-
-                    {{
-                      formulaResult
-                        .inventoryProposal
-                        .title
-                    }}
-
-                  </h3>
-
-                </div>
-
-                <span
-                  class="proposal-status"
-                  [class.complete]="
-                    formulaResult
-                      .inventoryProposal
-                      .complete
-                  ">
-
-                  {{
-                    formulaResult
-                      .inventoryProposal
-                      .complete
-                      ? 'Prodotti presenti'
-                      : 'Da completare'
-                  }}
-
-                </span>
-
-              </div>
-
-              <p class="proposal-description">
-
-                {{
-                  formulaResult
-                    .inventoryProposal
-                    .description
-                }}
-
-              </p>
-
-              <div class="component-list">
-
-                @for (
-                  component of
-                    formulaResult
-                      .inventoryProposal
-                      .components;
-                  track component.hairDyeId
-                ) {
-
-                  <div class="component-row">
-
-                    <div>
-
-                      <span class="component-role">
-
-                        {{
-                          componentRoleLabels[
-                            component.role
-                          ]
-                        }}
-
-                      </span>
-
-                      <strong>
-
-                        {{ component.brand }}
-                        ·
-                        {{ component.code }}
-
-                        @if (
-                          component.lineName
-                        ) {
-
+                @if (formulaResult.inventoryProposal.lineRuleProfileApplied) {
+                  <div class="line-intelligence-panel">
+                    <div class="line-intelligence-head">
+                      <div>
+                        <span>REGOLE TECNICHE DI LINEA</span>
+                        <strong>
+                          {{ formulaResult.inventoryProposal.lineRuleBrand }}
                           ·
-                          {{ component.lineName }}
+                          {{ formulaResult.inventoryProposal.lineRuleName }}
+                        </strong>
+                      </div>
 
-                        }
-
-                      </strong>
-
-                      <small>
-                        {{ component.name }}
-                      </small>
-
+                      <span class="line-rule-badge">PROFILO APPLICATO</span>
                     </div>
 
-                    <div class="component-stock">
-
-                      @if (
-                        component.dosageCalculated
-                      ) {
-
-                        <span class="required-quantity">
-
+                    <div class="line-intelligence-grid">
+                      <div>
+                        <span>DEVELOPER PREFERITO</span>
+                        <strong>
                           {{
-                            component.recommendedQuantity
+                            formulaResult.inventoryProposal.preferredLineDeveloperVolume ??
+                              'Non specificato'
                           }}
+                        </strong>
+                      </div>
 
-                          g richiesti
+                      <div>
+                        <span>TEMPO DI POSA</span>
+                        <strong>
+                          @if (formulaResult.inventoryProposal.recommendedProcessingTimeMinutes) {
+                            {{ formulaResult.inventoryProposal.recommendedProcessingTimeMinutes }}
+                            min
+                          } @else {
+                            Non configurato
+                          }
+                        </strong>
+                      </div>
 
-                        </span>
-
-                      } @else {
-
-                        <span class="manual-dose">
-                          Dose manuale
-                        </span>
-
-                      }
-
-                      <small>
-
-                        Stock:
-
-                        {{
-                          component.quantityAvailable
-                        }}
-
-                        {{
-                          component.inventoryUnit ===
-                            'MILLILITER'
-                            ? 'ml'
-                            : 'g'
-                        }}
-
-                      </small>
-
-                      <strong
-                        [class.ok]="
-                          component.stockSufficient
-                        "
-                        [class.warning]="
-                          !component.stockSufficient
-                        ">
-
-                        {{
-                          component.manualDosageRequired
-                            ? 'Da dosare'
-                            : (
-                                component.stockSufficient
-                                  ? 'Sufficiente'
-                                  : (
-                                      'Mancano '
-                                      + getShortageLabel(
-                                          component.shortageQuantity
-                                        )
-                                    )
-                              )
-                        }}
-
-                      </strong>
-
+                      <div>
+                        <span>COPERTURA CAPELLI BIANCHI</span>
+                        <strong>
+                          @if (formulaResult.inventoryProposal.whiteHairCoverageRuleApplied) {
+                            Attiva · base naturale
+                            {{
+                              formulaResult.inventoryProposal.whiteHairNaturalBaseSharePercentage
+                            }}%
+                          } @else {
+                            Non applicata
+                          }
+                        </strong>
+                      </div>
                     </div>
 
+                    <small>
+                      Questi valori provengono dal profilo tecnico configurato della linea, non da
+                      regole universali HairLab.
+                    </small>
                   </div>
-
                 }
 
-              </div>
-
-              @if (
-                formulaResult
-                  .inventoryProposal
-                  .missingRequirements
-                  .length >
-                0
-              ) {
-
-                <div class="missing-box">
+                <div class="rule-set-strip">
+                  <span> RULE SET </span>
 
                   <strong>
-                    Cosa manca
+                    {{ formulaResult.inventoryProposal.dosageRuleSet ?? 'Non definito' }}
                   </strong>
-
-                  @for (
-                    missing of
-                      formulaResult
-                        .inventoryProposal
-                        .missingRequirements;
-                    track missing
-                  ) {
-
-                    <p>
-                      {{ missing }}
-                    </p>
-
-                  }
-
                 </div>
 
-              }
+                <div class="dosage-summary">
+                  <div>
+                    <span> COLORE STIMATO </span>
 
-              @if (formulaResult.inventoryProposal.lineRuleProfileApplied) {
-                <div class="line-intelligence-panel">
-                  <div class="line-intelligence-head">
-                    <div>
-                      <span>REGOLE TECNICHE DI LINEA</span>
-                      <strong>
-                        {{ formulaResult.inventoryProposal.lineRuleBrand }}
-                        ·
-                        {{ formulaResult.inventoryProposal.lineRuleName }}
-                      </strong>
-                    </div>
+                    <strong>
+                      {{ formulaResult.inventoryProposal.totalColorQuantity ?? '—' }}
 
-                    <span class="line-rule-badge">PROFILO APPLICATO</span>
+                      g
+                    </strong>
                   </div>
 
-                  <div class="line-intelligence-grid">
-                    <div>
-                      <span>DEVELOPER PREFERITO</span>
-                      <strong>
-                        {{ formulaResult.inventoryProposal.preferredLineDeveloperVolume ?? 'Non specificato' }}
-                      </strong>
-                    </div>
+                  <div>
+                    <span> DEVELOPER </span>
 
-                    <div>
-                      <span>TEMPO DI POSA</span>
-                      <strong>
-                        @if (formulaResult.inventoryProposal.recommendedProcessingTimeMinutes) {
-                          {{ formulaResult.inventoryProposal.recommendedProcessingTimeMinutes }} min
-                        } @else {
-                          Non configurato
-                        }
-                      </strong>
-                    </div>
+                    <strong>
+                      {{ formulaResult.inventoryProposal.developerQuantity ?? '—' }}
 
-                    <div>
-                      <span>COPERTURA CAPELLI BIANCHI</span>
-                      <strong>
-                        @if (formulaResult.inventoryProposal.whiteHairCoverageRuleApplied) {
-                          Attiva · base naturale {{ formulaResult.inventoryProposal.whiteHairNaturalBaseSharePercentage }}%
-                        } @else {
-                          Non applicata
-                        }
-                      </strong>
-                    </div>
+                      g
+                    </strong>
+
+                    <small>
+                      {{ formulaResult.inventoryProposal.recommendedDeveloperVolume ?? '—' }}
+
+                      ·
+
+                      {{ formulaResult.inventoryProposal.recommendedMixingRatio ?? '—' }}
+                    </small>
                   </div>
 
-                  <small>
-                    Questi valori provengono dal profilo tecnico configurato della linea, non da regole universali HairLab.
-                  </small>
-                </div>
-              }
+                  <div class="mixture-total">
+                    <span> TOTALE MISCELA </span>
 
-              <div class="rule-set-strip">
+                    <strong>
+                      {{ formulaResult.inventoryProposal.totalMixtureQuantity ?? '—' }}
 
-                <span>
-                  RULE SET
-                </span>
-
-                <strong>
-
-                  {{
-                    formulaResult
-                      .inventoryProposal
-                      .dosageRuleSet ??
-                    'Non definito'
-                  }}
-
-                </strong>
-
-              </div>
-
-              <div class="dosage-summary">
-
-                <div>
-
-                  <span>
-                    COLORE STIMATO
-                  </span>
-
-                  <strong>
-
-                    {{
-                      formulaResult
-                        .inventoryProposal
-                        .totalColorQuantity ??
-                      '—'
-                    }}
-
-                    g
-
-                  </strong>
-
+                      g
+                    </strong>
+                  </div>
                 </div>
 
-                <div>
-
-                  <span>
-                    DEVELOPER
-                  </span>
+                <div
+                  class="stock-readiness"
+                  [class.ready]="formulaResult.inventoryProposal.colorStockSufficient"
+                >
+                  <span> VERIFICA QUANTITATIVA </span>
 
                   <strong>
-
                     {{
-                      formulaResult
-                        .inventoryProposal
-                        .developerQuantity ??
-                      '—'
+                      formulaResult.inventoryProposal.colorStockSufficient
+                        ? 'Componenti colore quantitativamente sufficienti'
+                        : 'Formula non completamente coperta dal magazzino'
                     }}
-
-                    g
-
                   </strong>
 
                   <small>
-
                     {{
-                      formulaResult
-                        .inventoryProposal
-                        .recommendedDeveloperVolume ??
-                      '—'
+                      formulaResult.inventoryProposal.dosageComplete
+                        ? 'Grammatura automatica completata.'
+                        : 'Uno o più componenti richiedono ancora dosaggio manuale.'
                     }}
-
-                    ·
-
-                    {{
-                      formulaResult
-                        .inventoryProposal
-                        .recommendedMixingRatio ??
-                      '—'
-                    }}
-
                   </small>
-
                 </div>
 
-                <div class="mixture-total">
+                @if (formulaResult.inventoryProposal.dosageWarnings.length > 0) {
+                  <div class="dosage-warning-box">
+                    <strong> Note di calcolo </strong>
 
-                  <span>
-                    TOTALE MISCELA
-                  </span>
+                    @for (
+                      warning of formulaResult.inventoryProposal.dosageWarnings;
+                      track warning
+                    ) {
+                      <p>
+                        {{ warning }}
+                      </p>
+                    }
+                  </div>
+                }
+              </article>
+            </div>
 
-                  <strong>
+            <div class="phase-note">
+              <strong> Blocco 6 · Dosage Engine </strong>
 
-                    {{
-                      formulaResult
-                        .inventoryProposal
-                        .totalMixtureQuantity ??
-                      '—'
-                    }}
+              <p>
+                HairLab ha ora stimato il fabbisogno colore usando applicazione, lunghezza, densità
+                e spessore, distribuendo i grammi tra i componenti e confrontandoli con la giacenza
+                reale. I correttori restano volutamente a dosaggio manuale finché non esiste una
+                regola prodotto-specifica affidabile.
+              </p>
+            </div>
 
-                    g
+            <div class="workflow-page-actions">
+              <button type="button" class="secondary-button" (click)="previousWorkflowStep()">
+                ← Torna alla diagnosi
+              </button>
 
-                  </strong>
-
-                </div>
-
-              </div>
-
-              <div
-                class="stock-readiness"
-                [class.ready]="
-                  formulaResult
-                    .inventoryProposal
-                    .colorStockSufficient
-                ">
-
-                <span>
-                  VERIFICA QUANTITATIVA
-                </span>
-
-                <strong>
-
-                  {{
-                    formulaResult
-                      .inventoryProposal
-                      .colorStockSufficient
-                      ? 'Componenti colore quantitativamente sufficienti'
-                      : 'Formula non completamente coperta dal magazzino'
-                  }}
-
-                </strong>
-
-                <small>
-
-                  {{
-                    formulaResult
-                      .inventoryProposal
-                      .dosageComplete
-                      ? 'Grammatura automatica completata.'
-                      : 'Uno o più componenti richiedono ancora dosaggio manuale.'
-                  }}
-
-                </small>
-
-              </div>
-
-              @if (
-                formulaResult
-                  .inventoryProposal
-                  .dosageWarnings
-                  .length >
-                0
-              ) {
-
-                <div class="dosage-warning-box">
-
-                  <strong>
-                    Note di calcolo
-                  </strong>
-
-                  @for (
-                    warning of
-                      formulaResult
-                        .inventoryProposal
-                        .dosageWarnings;
-                    track warning
-                  ) {
-
-                    <p>
-                      {{ warning }}
-                    </p>
-
-                  }
-
-                </div>
-
-              }
-
-              @if (
-                formulaResult
-                  .inventoryProposal
-                  .components
-                  .length >
-                0
-              ) {
-
-                <a
-                  class="primary-button builder-link"
-                  routerLink="/color-lab/formulas/new"
-                  [queryParams]="{
-                    origin:
-                      'SMART_FORMULA',
-                    sourceRecommendationCode:
-                      formulaResult.diagnosis.sourceRecommendationValidated
-                        ? formulaResult.diagnosis.sourceRecommendationCode
-                        : null,
-                    sourceRecommendationTitle:
-                      formulaResult.diagnosis.sourceRecommendationValidated
-                        ? formulaResult.diagnosis.sourceRecommendationTitle
-                        : null,
-                    customerId:
-                      formulaResult
-                        .diagnosis
-                        .customerId,
-                    targetToneLevel:
-                      formulaResult
-                        .diagnosis
-                        .targetToneLevel,
-                    targetPrimaryReflection:
-                      formulaResult
-                        .diagnosis
-                        .targetPrimaryReflection,
-                    targetSecondaryReflection:
-                      formulaResult
-                        .diagnosis
-                        .targetSecondaryReflection,
-                    applicationType:
-                      formulaResult
-                        .diagnosis
-                        .applicationType,
-                    targetResult:
-                      formulaResult
-                        .diagnosis
-                        .targetResult,
-                    consultationId:
-                      getConsultationIdFromContext(),
-                    appointmentItemId:
-                      getAppointmentItemIdFromContext(),
-                    ingredientPlan:
-                      getIngredientPlan(
-                        formulaResult
-                          .inventoryProposal
-                      ),
-                    volumeDeveloper:
-                      formulaResult
-                        .inventoryProposal
-                        .recommendedDeveloperVolume,
-                    mixingRatio:
-                      formulaResult
-                        .inventoryProposal
-                        .recommendedMixingRatio,
-                    customDeveloperRatio:
-                      formulaResult
-                        .inventoryProposal
-                        .recommendedMixingRatio ===
-                          'CUSTOM'
-                          ? formulaResult
-                              .inventoryProposal
-                              .developerMultiplier
-                          : null,
-                    technicalLineBrand:
-                      formulaResult.inventoryProposal.lineRuleBrand,
-                    technicalLineName:
-                      formulaResult.inventoryProposal.lineRuleName,
-                    whiteHairCoverageApplied:
-                      formulaResult.inventoryProposal.whiteHairCoverageRuleApplied,
-                    whiteHairNaturalBaseSharePercentage:
-                      formulaResult.inventoryProposal.whiteHairNaturalBaseSharePercentage,
-                    recommendedProcessingTimeMinutes:
-                      formulaResult.inventoryProposal.recommendedProcessingTimeMinutes
-                  }">
-
-                  Apri proposta nel Formula Builder
-
-                </a>
-
-              }
-
-            </article>
-
-          </div>
-
-          <div class="phase-note">
-
-            <strong>
-              Blocco 6 · Dosage Engine
-            </strong>
-
-            <p>
-              HairLab ha ora stimato il fabbisogno colore usando
-              applicazione, lunghezza, densità e spessore,
-              distribuendo i grammi tra i componenti e confrontandoli
-              con la giacenza reale. I correttori restano volutamente
-              a dosaggio manuale finché non esiste una regola
-              prodotto-specifica affidabile.
-            </p>
-
-          </div>
-
-        </section>
-
-      }
-
-    </section>
-
+              <button type="button" class="primary-button" (click)="openFormulaReview()">
+                Rivedi e conferma →
+              </button>
+            </div>
+          </section>
+        }
+      </section>
+    }
   </div>
 
+  @if (activeWorkflowStep() === 4 && formulaResponse(); as formulaResult) {
+    <section class="smart-confirmation hl-card">
+      <div class="smart-confirmation-head">
+        <div>
+          <span class="eyebrow">CONFERMA PROFESSIONALE</span>
+          <h2>Riepilogo Smart Formula</h2>
+          <p>Controlla il risultato prima di trasferirlo nel Formula Builder.</p>
+        </div>
+
+        <span
+          class="hl-badge"
+          [class.hl-badge-success]="formulaResult.inventoryProposal.complete"
+          [class.hl-badge-warning]="!formulaResult.inventoryProposal.complete"
+        >
+          {{ formulaResult.inventoryProposal.complete ? 'Proposta completa' : 'Da completare' }}
+        </span>
+      </div>
+
+      <div class="smart-confirmation-grid">
+        <article>
+          <span>CLIENTE</span>
+          <strong>{{ getCustomerName() }}</strong>
+        </article>
+        <article>
+          <span>TARGET</span>
+          <strong>
+            {{ toneLabels[formulaResult.diagnosis.targetToneLevel] }} ·
+            {{ reflectionLabels[formulaResult.diagnosis.targetPrimaryReflection] }}
+          </strong>
+        </article>
+        <article>
+          <span>COMPONENTI</span>
+          <strong>{{ formulaResult.inventoryProposal.components.length }}</strong>
+        </article>
+        <article>
+          <span>TOTALE MISCELA</span>
+          <strong>{{ formulaResult.inventoryProposal.totalMixtureQuantity ?? '—' }} g</strong>
+        </article>
+        <article>
+          <span>DEVELOPER</span>
+          <strong>{{
+            formulaResult.inventoryProposal.recommendedDeveloperVolume ?? 'Da definire'
+          }}</strong>
+        </article>
+        <article>
+          <span>MAGAZZINO</span>
+          <strong>
+            {{
+              formulaResult.inventoryProposal.colorStockSufficient
+                ? 'Quantità disponibili'
+                : 'Verifica scorte necessaria'
+            }}
+          </strong>
+        </article>
+      </div>
+
+      @if (formulaResult.inventoryProposal.dosageWarnings.length > 0) {
+        <div class="hl-alert hl-alert-warning">
+          <strong>Controlli prima del Builder</strong>
+          @for (warning of formulaResult.inventoryProposal.dosageWarnings; track warning) {
+            <p>{{ warning }}</p>
+          }
+        </div>
+      }
+
+      <div class="workflow-page-actions">
+        <button type="button" class="secondary-button" (click)="selectWorkflowStep(3)">
+          ← Modifica proposta
+        </button>
+
+        <a
+          class="primary-button"
+          routerLink="/color-lab/formulas/new"
+          [queryParams]="getBuilderQueryParams(formulaResult)"
+        >
+          Apri nel Formula Builder →
+        </a>
+      </div>
+    </section>
+  }
 </section>

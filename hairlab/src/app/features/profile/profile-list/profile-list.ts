@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../service/user-service';
 import { User } from '../../../models/user';
-
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
 @Component({
   selector: 'app-profile-list',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './profile-list.html',
-  styleUrl: './profile-list.css'
+  styleUrl: './profile-list.css',
 })
 export class ProfileListComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
 
   users = signal<User[]>([]);
   loading = signal<boolean>(true);
@@ -34,7 +37,7 @@ export class ProfileListComponent implements OnInit {
       error: (err) => {
         this.errorMessage.set('Errore durante il caricamento degli utenti.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -43,17 +46,25 @@ export class ProfileListComponent implements OnInit {
     this.router.navigate(['/profile/edit', user.id]);
   }
 
-  onDelete(id: number): void {
-    if (confirm('Sei sicuro di voler eliminare questo utente?')) {
-      this.userService.deleteUser(id).subscribe({
-        next: () => {
-          // Rimuove l'utente dalla lista locale senza dover ricaricare tutto
-          this.users.update(list => list.filter(u => u.id !== id));
-        },
-        error: (err) => {
-          this.errorMessage.set('Errore durante l eliminazione dell utente.');
-        }
-      });
-    }
+  async onDelete(id: number): Promise<void> {
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Eliminare l’utente?',
+      message: 'L’account verrà eliminato definitivamente.',
+      confirmLabel: 'Elimina',
+      severity: 'danger',
+    });
+
+    if (!confirmed) return;
+
+    this.userService.deleteUser(id).subscribe({
+      next: () => {
+        this.users.update((list) => list.filter((user) => user.id !== id));
+        this.toastService.success('Utente eliminato');
+      },
+      error: () => {
+        this.errorMessage.set('Errore durante l’eliminazione dell’utente.');
+        this.toastService.error('Eliminazione non riuscita');
+      },
+    });
   }
 }

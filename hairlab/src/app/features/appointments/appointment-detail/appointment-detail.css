@@ -28,7 +28,7 @@
 .eyebrow,
 .workflow-label {
   color: #a06f50;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.5px;
 }
@@ -42,7 +42,7 @@
 .page-header p {
   margin: 0;
   color: #8d817a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .header-actions,
@@ -63,7 +63,7 @@
   background: white;
   color: #675a53;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -157,7 +157,7 @@
   border-radius: 20px;
   background: #f3efec;
   color: #a29790;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -179,8 +179,7 @@
  */
 .summary-grid {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 16px;
 }
@@ -195,7 +194,7 @@
 .summary-card span {
   display: block;
   color: #9b8f88;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -208,7 +207,7 @@
 }
 
 .summary-card strong.small-value {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /*
@@ -244,7 +243,7 @@
   border-radius: 8px;
   background: #efe4dd;
   color: #8b624c;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -257,7 +256,7 @@
 .section-header p {
   margin: 3px 0 0;
   color: #968a83;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .service-list {
@@ -266,8 +265,7 @@
 
 .service-row {
   display: grid;
-  grid-template-columns:
-    38px minmax(0, 1fr);
+  grid-template-columns: 38px minmax(0, 1fr);
   gap: 12px;
   padding: 15px 0;
   border-bottom: 1px solid #eee8e4;
@@ -285,7 +283,7 @@
   border-radius: 50%;
   background: #f1e8e2;
   color: #855e49;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -303,7 +301,7 @@
   display: block;
   margin-top: 3px;
   color: #978b84;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .price {
@@ -314,7 +312,7 @@
 .completed-label {
   margin-top: 8px;
   color: #8f837c;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .operator strong {
@@ -329,14 +327,14 @@
 .notes {
   margin: 9px 0 0;
   color: #81756e;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .notes-box {
   padding: 20px;
   color: #665951;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -359,10 +357,7 @@
   color: #4c7256;
 }
 
-@media (
-  max-width: 850px
-) {
-
+@media (max-width: 850px) {
   .page-header,
   .workflow-header {
     align-items: flex-start;
@@ -370,8 +365,7 @@
   }
 
   .summary-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .workflow-steps {
@@ -379,15 +373,11 @@
   }
 }
 
-@media (
-  max-width: 500px
-) {
-
+@media (max-width: 500px) {
   .summary-grid {
     grid-template-columns: 1fr;
   }
 }
-
 
 .color-lab-actions {
   display: flex;
@@ -408,7 +398,7 @@
   border-radius: 7px;
   background: #fff;
   color: #725e53;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
 }
@@ -422,11 +412,48 @@
 /* ==========================================================
    BLOCCO 24 — APPUNTAMENTO ↔ COLOR LAB
    ========================================================== */
-.appointment-formula-links { margin-top:16px; display:grid; gap:8px; }
-.formula-links-title { font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#667085; }
-.appointment-formula-card { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 14px; border:1px solid #e4e7ec; border-radius:12px; text-decoration:none; color:inherit; background:#fff; }
-.appointment-formula-card:hover { border-color:#b692f6; background:#f9f5ff; }
-.appointment-formula-card div { display:grid; gap:3px; }
-.appointment-formula-card small { color:#667085; }
-.color-lab-action.reference { border:1px solid #b692f6; background:#f9f5ff; color:#6941c6; cursor:pointer; }
-.color-lab-action.reference:disabled { opacity:.55; cursor:not-allowed; }
+.appointment-formula-links {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+.formula-links-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #667085;
+}
+.appointment-formula-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+}
+.appointment-formula-card:hover {
+  border-color: #b692f6;
+  background: #f9f5ff;
+}
+.appointment-formula-card div {
+  display: grid;
+  gap: 3px;
+}
+.appointment-formula-card small {
+  color: #667085;
+}
+.color-lab-action.reference {
+  border: 1px solid #b692f6;
+  background: #f9f5ff;
+  color: #6941c6;
+  cursor: pointer;
+}
+.color-lab-action.reference:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

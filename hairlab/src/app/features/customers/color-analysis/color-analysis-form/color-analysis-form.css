@@ -37,7 +37,7 @@
 .mini-eyebrow {
   display: block;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .page-header h1 {
@@ -79,16 +79,13 @@ form {
 
   background: white;
 
-  box-shadow:
-    0 8px 28px
-    rgba(60, 45, 37, 0.035);
+  box-shadow: 0 8px 28px rgba(60, 45, 37, 0.035);
 }
 
 .form-section {
   padding: 38px;
 
-  border-bottom:
-    1px solid #eee8e4;
+  border-bottom: 1px solid #eee8e4;
 }
 
 .section-heading {
@@ -144,8 +141,7 @@ form {
 .skin-tone-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 14px;
 }
@@ -179,17 +175,13 @@ form {
 
   border-color: #b99a88;
 
-  box-shadow:
-    0 7px 20px
-    rgba(62, 44, 36, 0.05);
+  box-shadow: 0 7px 20px rgba(62, 44, 36, 0.05);
 }
 
 .skin-tone-option.selected {
   border-color: #875f4b;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(135, 95, 75, 0.09);
+  box-shadow: 0 0 0 3px rgba(135, 95, 75, 0.09);
 }
 
 .skin-swatch {
@@ -218,7 +210,7 @@ form {
 
   color: #968981;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /*
@@ -229,8 +221,7 @@ form {
 .skin-reference-panel {
   display: grid;
 
-  grid-template-columns:
-    270px 1fr;
+  grid-template-columns: 270px 1fr;
 
   gap: 28px;
 
@@ -241,12 +232,7 @@ form {
   border: 1px solid #e2d8d2;
   border-radius: 15px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fdfbf9,
-      #f8f2ee
-    );
+  background: linear-gradient(145deg, #fdfbf9, #f8f2ee);
 }
 
 .reference-preview {
@@ -263,9 +249,7 @@ form {
 
   border-radius: 13px;
 
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .reference-data {
@@ -319,9 +303,7 @@ form {
 .reference-picker-row strong {
   color: #564941;
 
-  font-family:
-    'Courier New',
-    monospace;
+  font-family: 'Courier New', monospace;
 
   font-size: 16px;
 }
@@ -334,8 +316,7 @@ form {
 .undertone-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 
   gap: 12px;
 }
@@ -369,9 +350,7 @@ form {
 
   background: #f6ece7;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(137, 97, 76, 0.08);
+  box-shadow: 0 0 0 3px rgba(137, 97, 76, 0.08);
 }
 
 .undertone-symbol {
@@ -392,8 +371,7 @@ form {
 .season-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 15px;
 }
@@ -427,47 +405,25 @@ form {
 }
 
 .season-option.spring {
-  background:
-    linear-gradient(
-      145deg,
-      #f8e8c7,
-      #ebca92
-    );
+  background: linear-gradient(145deg, #f8e8c7, #ebca92);
 }
 
 .season-option.summer {
-  background:
-    linear-gradient(
-      145deg,
-      #e9e8ef,
-      #c9d3df
-    );
+  background: linear-gradient(145deg, #e9e8ef, #c9d3df);
 }
 
 .season-option.autumn {
-  background:
-    linear-gradient(
-      145deg,
-      #dec09b,
-      #aa7955
-    );
+  background: linear-gradient(145deg, #dec09b, #aa7955);
 }
 
 .season-option.winter {
-  background:
-    linear-gradient(
-      145deg,
-      #e0e2ec,
-      #abb2c5
-    );
+  background: linear-gradient(145deg, #e0e2ec, #abb2c5);
 }
 
 .season-option.selected {
   border-color: #493a32;
 
-  box-shadow:
-    0 0 0 4px
-    rgba(73, 58, 50, 0.1);
+  box-shadow: 0 0 0 4px rgba(73, 58, 50, 0.1);
 }
 
 .season-kicker {
@@ -475,7 +431,7 @@ form {
 
   color: #6f6057;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.3px;
@@ -507,8 +463,7 @@ form {
   right: 18px;
   bottom: 10px;
 
-  color:
-    rgba(70, 55, 47, 0.25);
+  color: rgba(70, 55, 47, 0.25);
 
   font-size: 65px;
 }
@@ -521,8 +476,7 @@ form {
 .subseason-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 14px;
 }
@@ -552,22 +506,15 @@ form {
 .subseason-option.selected {
   border-color: #87604b;
 
-  background:
-    linear-gradient(
-      145deg,
-      #f8efea,
-      #f3e5dd
-    );
+  background: linear-gradient(145deg, #f8efea, #f3e5dd);
 
-  box-shadow:
-    0 0 0 3px
-    rgba(135, 96, 75, 0.08);
+  box-shadow: 0 0 0 3px rgba(135, 96, 75, 0.08);
 }
 
 .subseason-option span {
   color: #a18474;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 
   letter-spacing: 1px;
@@ -629,8 +576,7 @@ form {
 .parameter-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 15px;
 }
@@ -649,7 +595,7 @@ form {
 .parameter-label {
   color: #9b6d54;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1px;
@@ -704,8 +650,7 @@ form {
 .color-builder {
   display: grid;
 
-  grid-template-columns:
-    1fr 120px auto;
+  grid-template-columns: 1fr 120px auto;
 
   align-items: end;
 
@@ -786,8 +731,7 @@ form {
 .selected-colors {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 12px;
 
@@ -801,8 +745,7 @@ form {
 
   display: grid;
 
-  grid-template-columns:
-    70px 1fr auto;
+  grid-template-columns: 70px 1fr auto;
 
   align-items: center;
 
@@ -840,11 +783,9 @@ form {
 
   color: #9b8f87;
 
-  font-family:
-    'Courier New',
-    monospace;
+  font-family: 'Courier New', monospace;
 
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .selected-color button {
@@ -880,8 +821,7 @@ form {
 .metal-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 
   gap: 11px;
 }
@@ -915,9 +855,7 @@ form {
 
   background: #f7efea;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(137, 99, 79, 0.08);
+  box-shadow: 0 0 0 3px rgba(137, 99, 79, 0.08);
 }
 
 .metal-symbol {
@@ -928,52 +866,25 @@ form {
 
   border-radius: 50%;
 
-  background:
-    linear-gradient(
-      145deg,
-      #b7bbc1,
-      #eeeeef
-    );
+  background: linear-gradient(145deg, #b7bbc1, #eeeeef);
 
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .metal-symbol.gold {
-  background:
-    linear-gradient(
-      145deg,
-      #c49a3a,
-      #f1d683
-    );
+  background: linear-gradient(145deg, #c49a3a, #f1d683);
 }
 
 .metal-symbol.rose {
-  background:
-    linear-gradient(
-      145deg,
-      #bd8178,
-      #e7b5ad
-    );
+  background: linear-gradient(145deg, #bd8178, #e7b5ad);
 }
 
 .metal-symbol.bronze {
-  background:
-    linear-gradient(
-      145deg,
-      #805632,
-      #ba8a57
-    );
+  background: linear-gradient(145deg, #805632, #ba8a57);
 }
 
 .metal-symbol.copper {
-  background:
-    linear-gradient(
-      145deg,
-      #a85f38,
-      #d88c5c
-    );
+  background: linear-gradient(145deg, #a85f38, #d88c5c);
 }
 
 .metal-option strong {
@@ -1011,9 +922,7 @@ textarea:focus,
 .color-input-group input:focus {
   border-color: #9a7159;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(154, 113, 89, 0.09);
+  box-shadow: 0 0 0 3px rgba(154, 113, 89, 0.09);
 }
 
 /*
@@ -1107,26 +1016,21 @@ textarea:focus,
  * ==========================================================
  */
 @media (max-width: 1200px) {
-
   .skin-tone-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .undertone-grid,
   .metal-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .selected-colors {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 850px) {
-
   .page-header {
     align-items: flex-start;
     flex-direction: column;
@@ -1134,8 +1038,7 @@ textarea:focus,
 
   .season-grid,
   .parameter-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .skin-reference-panel {
@@ -1152,7 +1055,6 @@ textarea:focus,
 }
 
 @media (max-width: 600px) {
-
   .form-section {
     padding: 24px 18px;
   }

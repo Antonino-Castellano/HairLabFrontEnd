@@ -5,18 +5,21 @@ import { SalonProduct } from '../../../models/salon-product';
 import { ProductCategory } from '../../../models/product-category';
 import { SalonProductService } from '../../../service/salon-product-service';
 import { ProductCategoryService } from '../../../service/product-category-service'; // Verifica che il path di questo import sia corretto
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
 @Component({
   selector: 'app-salon-product-list',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './salon-product-list.html',
-  styleUrl: './salon-product-list.css'
+  styleUrl: './salon-product-list.css',
 })
 export class SalonProductListComponent implements OnInit {
-
   private readonly salonProductService = inject(SalonProductService);
   private readonly productCategoryService = inject(ProductCategoryService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
 
   // Stato e Signal richiesti dal template HTML
   products = signal<SalonProduct[]>([]);
@@ -30,13 +33,15 @@ export class SalonProductListComponent implements OnInit {
 
   // Computed signal per la lista filtrata richiesta nel template (@for (product of filteredProducts()))
   filteredProducts = computed(() => {
-    return this.products().filter(product => {
+    return this.products().filter((product) => {
       // Filtro per Categoria
-      const matchesCategory = this.selectedCategoryId() === 'ALL' ||
+      const matchesCategory =
+        this.selectedCategoryId() === 'ALL' ||
         product.productCategoryId === Number(this.selectedCategoryId());
 
       // Filtro per Stato (Attivo / Inattivo)
-      const matchesStatus = this.selectedStatus() === 'ALL' ||
+      const matchesStatus =
+        this.selectedStatus() === 'ALL' ||
         (this.selectedStatus() === 'ACTIVE' && product.active) ||
         (this.selectedStatus() === 'INACTIVE' && !product.active);
 
@@ -55,7 +60,7 @@ export class SalonProductListComponent implements OnInit {
     // Caricamento categorie
     this.productCategoryService.getAll().subscribe({
       next: (cats) => this.categories.set(cats),
-      error: (err) => console.error('Errore durante il caricamento delle categorie:', err)
+      error: (err) => console.error('Errore durante il caricamento delle categorie:', err),
     });
 
     // Caricamento prodotti
@@ -68,7 +73,7 @@ export class SalonProductListComponent implements OnInit {
         console.error('Errore durante il caricamento dei servizi:', err);
         this.errorMessage.set('Impossibile caricare il listino dei servizi.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -86,7 +91,7 @@ export class SalonProductListComponent implements OnInit {
 
   // Mappa l'ID della categoria al nome visualizzato nella tabella
   getCategoryName(categoryId: number): string {
-    const cat = this.categories().find(c => c.id === categoryId);
+    const cat = this.categories().find((c) => c.id === categoryId);
     return cat ? cat.name : 'N/D';
   }
 
@@ -97,30 +102,45 @@ export class SalonProductListComponent implements OnInit {
     if (product.active) {
       this.salonProductService.deactivate(product.id).subscribe({
         next: () => this.loadData(),
-        error: (err) => alert('Errore durante la disattivazione del servizio')
+        error: () => this.toastService.error('Errore durante la disattivazione del servizio'),
       });
     } else {
       this.salonProductService.activate(product.id).subscribe({
         next: () => this.loadData(),
-        error: (err) => alert('Impossibile riattivare il servizio. Controlla la categoria.')
+        error: () =>
+          this.toastService.error(
+            'Impossibile riattivare il servizio',
+            'Controlla che la categoria sia attiva.',
+          ),
       });
     }
   }
 
   // Cancellazione permanente tramite delete()
-  deleteProduct(product: SalonProduct): void {
+  async deleteProduct(product: SalonProduct): Promise<void> {
     if (!product.id) return;
 
-    const confirmMsg = `Sei sicuro di voler eliminare DEFINITIVAMENTE il servizio "${product.name}"? L'azione è irreversibile.`;
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Eliminare definitivamente il servizio?',
+      message: `${product.name}. L’operazione è irreversibile e può essere bloccata se il servizio possiede storico appuntamenti.`,
+      confirmLabel: 'Elimina definitivamente',
+      severity: 'danger',
+    });
 
-    if (confirm(confirmMsg)) {
-      this.salonProductService.delete(product.id).subscribe({
-        next: () => this.loadData(),
-        error: (err) => {
-          console.error('Errore durante l\'eliminazione:', err);
-          alert('Impossibile eliminare il servizio. Potrebbe essere già associato ad appuntamenti esistenti.');
-        }
-      });
-    }
+    if (!confirmed) return;
+
+    this.salonProductService.delete(product.id).subscribe({
+      next: () => {
+        this.toastService.success('Servizio eliminato');
+        this.loadData();
+      },
+      error: (err) => {
+        console.error('Errore durante l’eliminazione:', err);
+        this.toastService.error(
+          'Impossibile eliminare il servizio',
+          'Potrebbe essere associato ad appuntamenti esistenti.',
+        );
+      },
+    });
   }
 }

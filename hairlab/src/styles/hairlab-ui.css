@@ -1,0 +1,192 @@
+.hl-page {
+  width: min(100%, var(--hl-content-max-width));
+  margin: 0 auto;
+}
+
+.hl-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--hl-space-5);
+  margin-bottom: var(--hl-space-6);
+}
+
+.hl-page-title {
+  margin: 0;
+  color: var(--hl-color-text);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-weight: 760;
+  line-height: var(--hl-line-height-tight);
+  letter-spacing: -0.025em;
+}
+
+.hl-page-subtitle {
+  max-width: 760px;
+  margin: var(--hl-space-2) 0 0;
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-size-md);
+  line-height: var(--hl-line-height-normal);
+}
+
+.hl-card {
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface);
+  box-shadow: var(--hl-shadow-sm);
+}
+
+.hl-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--hl-space-4);
+  padding: var(--hl-space-5);
+  border-bottom: 1px solid var(--hl-color-border);
+}
+
+.hl-card-body {
+  padding: var(--hl-space-5);
+}
+
+.hl-section-title {
+  margin: 0;
+  color: var(--hl-color-text);
+  font-size: var(--hl-font-size-xl);
+  font-weight: 730;
+  line-height: var(--hl-line-height-tight);
+}
+
+.hl-text-muted {
+  color: var(--hl-color-text-muted);
+}
+
+.hl-btn {
+  min-height: var(--hl-control-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hl-space-2);
+  padding: 0 var(--hl-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--hl-radius-sm);
+  font-family: inherit;
+  font-size: var(--hl-font-size-sm);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform var(--hl-transition-fast),
+    background var(--hl-transition-fast),
+    border-color var(--hl-transition-fast),
+    box-shadow var(--hl-transition-fast);
+}
+
+.hl-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.hl-btn:focus-visible,
+.hl-control:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgb(185 130 98 / 28%);
+  outline-offset: 2px;
+}
+
+.hl-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.hl-btn-primary {
+  background: var(--hl-color-primary-strong);
+  color: var(--hl-color-text-inverse);
+  box-shadow: 0 8px 18px rgb(98 64 51 / 18%);
+}
+
+.hl-btn-primary:hover:not(:disabled) {
+  background: var(--hl-color-primary);
+}
+
+.hl-btn-secondary {
+  border-color: var(--hl-color-border-strong);
+  background: var(--hl-color-surface);
+  color: var(--hl-color-text-soft);
+}
+
+.hl-btn-danger {
+  background: var(--hl-color-danger);
+  color: var(--hl-color-text-inverse);
+}
+
+.hl-btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--hl-color-text-soft);
+}
+
+.hl-badge {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border-radius: var(--hl-radius-pill);
+  background: var(--hl-color-primary-soft);
+  color: var(--hl-color-primary-strong);
+  font-size: var(--hl-font-size-xs);
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.hl-control,
+input:not([type='checkbox']):not([type='radio']),
+select,
+textarea {
+  border-color: var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-sm);
+  color: var(--hl-color-text);
+}
+
+.hl-empty-state {
+  padding: var(--hl-space-7) var(--hl-space-5);
+  border: 1px dashed var(--hl-color-border-strong);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface-alt);
+  color: var(--hl-color-text-muted);
+  text-align: center;
+}
+
+.hl-alert {
+  padding: var(--hl-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--hl-radius-sm);
+  font-size: var(--hl-font-size-sm);
+  line-height: var(--hl-line-height-normal);
+}
+
+.hl-alert-success {
+  border-color: color-mix(in srgb, var(--hl-color-success) 25%, transparent);
+  background: var(--hl-color-success-soft);
+  color: var(--hl-color-success);
+}
+
+.hl-alert-error {
+  border-color: color-mix(in srgb, var(--hl-color-danger) 25%, transparent);
+  background: var(--hl-color-danger-soft);
+  color: var(--hl-color-danger);
+}
+
+@media (max-width: 760px) {
+  .hl-page-header {
+    flex-direction: column;
+  }
+
+  .hl-page-header > * {
+    width: 100%;
+  }
+}

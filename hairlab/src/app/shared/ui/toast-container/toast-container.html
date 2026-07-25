@@ -1,0 +1,44 @@
+<div class="toast-region" aria-live="polite" aria-atomic="false">
+  @for (toast of toastService.messages(); track toast.id) {
+    <article
+      class="toast"
+      [class.toast-success]="toast.type === 'success'"
+      [class.toast-error]="toast.type === 'error'"
+      [class.toast-warning]="toast.type === 'warning'"
+      [class.toast-info]="toast.type === 'info'"
+    >
+      <span class="toast-icon" aria-hidden="true">
+        @switch (toast.type) {
+          @case ('success') {
+            ✓
+          }
+          @case ('error') {
+            !
+          }
+          @case ('warning') {
+            !
+          }
+          @default {
+            i
+          }
+        }
+      </span>
+
+      <div class="toast-copy">
+        <strong>{{ toast.title }}</strong>
+        @if (toast.message) {
+          <p>{{ toast.message }}</p>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="toast-close"
+        (click)="toastService.dismiss(toast.id)"
+        aria-label="Chiudi notifica"
+      >
+        ×
+      </button>
+    </article>
+  }
+</div>

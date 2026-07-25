@@ -18,7 +18,7 @@
 
 .eyebrow {
   color: #9b6d50;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.6px;
 }
@@ -33,7 +33,7 @@
   max-width: 740px;
   margin: 6px 0 0;
   color: #91847c;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
@@ -51,7 +51,7 @@
   padding: 0 13px;
   border-radius: 8px;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
   cursor: pointer;
@@ -100,7 +100,7 @@
   border-radius: 8px;
   background: #f0e6e0;
   color: #856451;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -113,7 +113,7 @@
 .panel-heading p {
   margin: 4px 0 0;
   color: #978a82;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 form label {
@@ -124,7 +124,7 @@ form label {
 
 form label > span {
   color: #796b63;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -138,7 +138,7 @@ textarea {
   background: white;
   color: #564942;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 input,
@@ -155,11 +155,7 @@ textarea {
 
 .form-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 12px;
 }
@@ -195,22 +191,18 @@ textarea {
 
 .summary-title span {
   color: #9b8d85;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .summary-title strong {
   color: #574941;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .base-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
   margin-top: 10px;
@@ -231,14 +223,14 @@ textarea {
 
 .base-grid span {
   color: #a0948c;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .base-grid strong {
   margin-top: 4px;
   color: #5b4d45;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .result-hero {
@@ -256,7 +248,7 @@ textarea {
 
 .result-hero span {
   color: #967563;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -269,7 +261,7 @@ textarea {
 .result-hero small {
   margin-top: 4px;
   color: #8d7568;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .strategy-card {
@@ -286,23 +278,19 @@ textarea {
 
 .strategy-card span {
   color: #9a8a81;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .strategy-card strong {
   margin-top: 4px;
   color: #594941;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .diagnosis-columns {
   display: grid;
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 10px;
 }
@@ -316,7 +304,7 @@ textarea {
 .diagnosis-columns h3 {
   margin: 0 0 8px;
   color: #564841;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .reason,
@@ -326,7 +314,7 @@ textarea {
   padding-left: 9px;
   border-left: 2px solid #d5c3b8;
   color: #7f7169;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -344,7 +332,7 @@ textarea {
 
 .reflection-section > span {
   color: #998c84;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -360,17 +348,13 @@ textarea {
   border-radius: 14px;
   background: #eee4de;
   color: #72594c;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 750;
 }
 
 .readiness-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
   margin-top: 10px;
 }
@@ -400,14 +384,14 @@ textarea {
 
 .readiness-grid span {
   color: #9b8d85;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .readiness-grid strong {
   margin-top: 4px;
   color: #5b4d45;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .result-actions {
@@ -436,14 +420,14 @@ textarea {
 
 .empty-result strong {
   color: #5a4c44;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .empty-result p {
   max-width: 360px;
   margin: 6px 0 0;
   color: #958880;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -452,7 +436,7 @@ textarea {
   border: 1px dashed #ddd3cd;
   background: #fbf9f8;
   color: #8f827a;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .message.error {
@@ -460,18 +444,16 @@ textarea {
   border: 1px solid #edcfcb;
   background: #fff4f3;
   color: #9d4f48;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 980px) {
-
   .smart-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 700px) {
-
   .smart-page {
     padding: 16px;
   }
@@ -493,7 +475,6 @@ textarea {
     flex-direction: column;
   }
 }
-
 
 /*
  * ==========================================================
@@ -522,7 +503,7 @@ textarea {
   border-radius: 8px;
   background: #f0e6e0;
   color: #856451;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -535,16 +516,12 @@ textarea {
 .proposal-heading p {
   margin: 4px 0 0;
   color: #978a82;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .proposal-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -569,7 +546,7 @@ textarea {
 
 .proposal-card-head span:first-child {
   color: #9a8b82;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.6px;
 }
@@ -585,7 +562,7 @@ textarea {
   border-radius: 13px;
   background: #f4e9d2;
   color: #876728;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -597,7 +574,7 @@ textarea {
 .proposal-description {
   margin: 10px 0;
   color: #877a72;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -626,7 +603,7 @@ textarea {
 
 .component-role {
   color: #a07861;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
   text-transform: uppercase;
 }
@@ -634,13 +611,13 @@ textarea {
 .component-row strong {
   margin-top: 3px;
   color: #564841;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .component-row small {
   margin-top: 2px;
   color: #978a82;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .component-stock {
@@ -651,12 +628,12 @@ textarea {
 .component-stock span {
   display: block;
   color: #66584f;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .component-stock strong {
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .component-stock strong.ok {
@@ -677,13 +654,13 @@ textarea {
 
 .missing-box strong {
   color: #876724;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .missing-box p {
   margin: 5px 0 0;
   color: #917535;
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -702,20 +679,20 @@ textarea {
 
 .stock-readiness span {
   color: #9b8c84;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .stock-readiness strong {
   margin-top: 4px;
   color: #55473f;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .stock-readiness small {
   margin-top: 4px;
   color: #958880;
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -735,23 +712,21 @@ textarea {
 
 .phase-note strong {
   color: #725849;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .phase-note p {
   margin: 4px 0 0;
   color: #8f8179;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
 @media (max-width: 760px) {
-
   .proposal-grid {
     grid-template-columns: 1fr;
   }
 }
-
 
 /*
  * ==========================================================
@@ -760,13 +735,13 @@ textarea {
  */
 .component-stock .required-quantity {
   color: #5d473b;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .component-stock .manual-dose {
   color: #9b7128;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -774,16 +749,12 @@ textarea {
   display: block;
   margin-top: 3px;
   color: #9a8c84;
-  font-size: 6px;
+  font-size: 12px;
 }
 
 .dosage-summary {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
   margin-top: 10px;
@@ -809,7 +780,7 @@ textarea {
 
 .dosage-summary span {
   color: #9b8d85;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -822,7 +793,7 @@ textarea {
 .dosage-summary small {
   margin-top: 3px;
   color: #94867e;
-  font-size: 6px;
+  font-size: 12px;
 }
 
 .stock-readiness.ready {
@@ -840,23 +811,21 @@ textarea {
 
 .dosage-warning-box strong {
   color: #826529;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .dosage-warning-box p {
   margin: 5px 0 0;
   color: #90773d;
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 @media (max-width: 760px) {
-
   .dosage-summary {
     grid-template-columns: 1fr;
   }
 }
-
 
 /*
  * ==========================================================
@@ -889,7 +858,7 @@ textarea {
 
 .history-insight.loading {
   color: #8d8078;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .history-insight-head {
@@ -907,7 +876,7 @@ textarea {
 
 .history-insight-head span {
   color: #92796b;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.7px;
 }
@@ -920,23 +889,19 @@ textarea {
 
 .history-insight-head strong {
   color: #776961;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .history-summary {
   margin: 9px 0 0;
   color: #796c64;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .history-metrics {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
   margin-top: 10px;
@@ -957,7 +922,7 @@ textarea {
 
 .history-metrics span {
   color: #9a8c84;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -987,7 +952,7 @@ textarea {
 .history-observations > span,
 .history-corrections > span {
   color: #8a766a;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -995,7 +960,7 @@ textarea {
 .history-corrections p {
   margin: 5px 0 0;
   color: #756860;
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -1003,7 +968,7 @@ textarea {
   display: inline-flex;
   margin-top: 9px;
   color: #725244;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -1012,19 +977,18 @@ textarea {
 .history-empty {
   margin: 9px 0 0;
   color: #8c7f77;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .history-disclaimer {
   display: block;
   margin-top: 9px;
   color: #a0938b;
-  font-size: 6px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
 @media (max-width: 650px) {
-
   .history-insight-head {
     flex-direction: column;
   }
@@ -1033,7 +997,6 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
-
 
 /*
  * ==========================================================
@@ -1054,16 +1017,15 @@ textarea {
 
 .rule-set-strip span {
   color: #9a8c84;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .rule-set-strip strong {
   color: #67554b;
-  font-size: 7px;
+  font-size: 12px;
   text-align: right;
 }
-
 
 /* =========================================================
    BLOCCO 16 · BRIDGE SUGGERIMENTI E AUDIT PERSONALIZZAZIONE
@@ -1151,7 +1113,6 @@ textarea {
   }
 }
 
-
 .transformation-plan {
   margin: 18px 0;
   padding: 18px;
@@ -1191,9 +1152,9 @@ textarea {
 .line-intelligence-grid span {
   display: block;
   color: #9b8173;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 850;
-  letter-spacing: .55px;
+  letter-spacing: 0.55px;
 }
 
 .line-intelligence-head strong {
@@ -1229,7 +1190,7 @@ textarea {
   display: block;
   margin-top: 5px;
   color: #5c4b42;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1237,12 +1198,93 @@ textarea {
   display: block;
   margin-top: 10px;
   color: #8b7a70;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 @media (max-width: 800px) {
   .line-intelligence-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   PACCHETTO 35 — WORKFLOW PROGRESSIVO SMART FORMULA
+   ========================================================= */
+.smart-grid.progressive {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.smart-grid.progressive > .panel {
+  width: 100%;
+}
+
+.workflow-page-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--hl-space-3);
+  margin-top: var(--hl-space-5);
+  padding-top: var(--hl-space-4);
+  border-top: 1px solid var(--hl-color-border);
+}
+
+.smart-confirmation {
+  display: grid;
+  gap: var(--hl-space-5);
+  padding: var(--hl-space-5);
+}
+
+.smart-confirmation-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--hl-space-4);
+}
+
+.smart-confirmation-head h2 {
+  margin: var(--hl-space-1) 0;
+  font-size: var(--hl-font-xl);
+}
+
+.smart-confirmation-head p {
+  margin: 0;
+  color: var(--hl-color-text-muted);
+}
+
+.smart-confirmation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--hl-space-3);
+}
+
+.smart-confirmation-grid article {
+  display: grid;
+  gap: var(--hl-space-1);
+  padding: var(--hl-space-4);
+  border: 1px solid var(--hl-color-border);
+  border-radius: var(--hl-radius-md);
+  background: var(--hl-color-surface-alt);
+}
+
+.smart-confirmation-grid span {
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.smart-confirmation-grid strong {
+  font-size: var(--hl-font-md);
+}
+
+@media (max-width: 780px) {
+  .smart-confirmation-head,
+  .workflow-page-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .smart-confirmation-grid {
     grid-template-columns: 1fr;
   }
 }

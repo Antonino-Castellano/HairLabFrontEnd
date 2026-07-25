@@ -1,28 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import {
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet
-} from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth-service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive
-  ],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './layout.html',
-  styleUrl: './layout.css'
+  styleUrl: './layout.css',
 })
 export class LayoutComponent {
-
   public readonly router = inject(Router);
   public readonly authService = inject(AuthService);
 
@@ -34,7 +23,7 @@ export class LayoutComponent {
   user = this.authService.getUserFromToken() || {
     username: 'Utente',
     email: '',
-    role: 'USER'
+    role: 'USER',
   };
 
   sidebarOpen = signal<boolean>(false);
@@ -49,17 +38,14 @@ export class LayoutComponent {
     '/color-lab/movements',
     '/color-lab/reorder',
     '/color-lab/orders',
-    '/color-lab/suppliers'
+    '/color-lab/suppliers',
   ];
 
   colorLabMenuOpen = signal<boolean>(
-    this.router.url.startsWith('/color-lab')
-    && !this.isStockManagementRoute(this.router.url)
+    this.router.url.startsWith('/color-lab') && !this.isStockManagementRoute(this.router.url),
   );
 
-  stockMenuOpen = signal<boolean>(
-    this.isStockManagementRoute(this.router.url)
-  );
+  stockMenuOpen = signal<boolean>(this.isStockManagementRoute(this.router.url));
 
   /**
    * Helper centralizzato per la visibilità delle voci di menu.
@@ -70,18 +56,24 @@ export class LayoutComponent {
     return role != null && roles.includes(role);
   }
 
+  getHomeRoute(): string {
+    return this.authService.getRoleFromToken() === 'CUSTOMER' ? '/my-dashboard' : '/dashboard';
+  }
+
+  getProfileRoute(): string {
+    return this.authService.getRoleFromToken() === 'CUSTOMER' ? '/my-account' : '/profile';
+  }
+
   toggleColorLabMenu(): void {
-    this.colorLabMenuOpen.update(open => !open);
+    this.colorLabMenuOpen.update((open) => !open);
   }
 
   toggleStockMenu(): void {
-    this.stockMenuOpen.update(open => !open);
+    this.stockMenuOpen.update((open) => !open);
   }
 
   private isStockManagementRoute(url: string): boolean {
-    return this.stockManagementRoutes.some(
-      route => url.startsWith(route)
-    );
+    return this.stockManagementRoutes.some((route) => url.startsWith(route));
   }
 
   openSidebar(): void {
@@ -95,11 +87,11 @@ export class LayoutComponent {
   }
 
   toggleSidebar(): void {
-    this.sidebarOpen.update(open => !open);
+    this.sidebarOpen.update((open) => !open);
   }
 
   toggleSidebarPin(): void {
-    this.sidebarPinned.update(pinned => !pinned);
+    this.sidebarPinned.update((pinned) => !pinned);
 
     if (this.sidebarPinned()) {
       this.sidebarOpen.set(true);

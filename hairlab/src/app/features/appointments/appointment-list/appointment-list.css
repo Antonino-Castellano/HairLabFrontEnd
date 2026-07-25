@@ -33,7 +33,7 @@
 
 .eyebrow {
   color: #a06f50;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.6px;
 }
@@ -58,7 +58,7 @@
   justify-content: center;
   padding: 0 15px;
   border-radius: 8px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -84,11 +84,7 @@
  */
 .operational-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      5,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -112,17 +108,13 @@
 .operational-card:hover {
   transform: translateY(-1px);
   border-color: #ccb9ae;
-  box-shadow:
-    0 4px 12px
-    rgba(49, 39, 33, 0.045);
+  box-shadow: 0 4px 12px rgba(49, 39, 33, 0.045);
 }
 
 .operational-card.active {
   border-color: #a9836d;
   background: #faf5f2;
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(169, 131, 109, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(169, 131, 109, 0.13);
 }
 
 .operational-card span,
@@ -132,7 +124,7 @@
 
 .operational-card span {
   color: #8c7f78;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -148,7 +140,7 @@
 .operational-card small {
   margin-top: 3px;
   color: #a0958e;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .operational-card.late-card strong {
@@ -189,7 +181,7 @@
   background: transparent;
   color: #84766e;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -197,9 +189,7 @@
 .view-switch button.active {
   background: white;
   color: #4f423b;
-  box-shadow:
-    0 2px 6px
-    rgba(50, 39, 33, 0.08);
+  box-shadow: 0 2px 6px rgba(50, 39, 33, 0.08);
 }
 
 .date-navigation {
@@ -217,7 +207,7 @@
   background: white;
   color: #564b45;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   outline: none;
 }
 
@@ -268,9 +258,7 @@
 .employee-filter:focus,
 .search-field input:focus {
   border-color: #aa816b;
-  box-shadow:
-    0 0 0 3px
-    rgba(170, 129, 107, 0.08);
+  box-shadow: 0 0 0 3px rgba(170, 129, 107, 0.08);
 }
 
 .icon-button,
@@ -292,7 +280,7 @@
 .today-button,
 .reset-button {
   padding: 0 11px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -306,7 +294,7 @@
   border-radius: 20px;
   background: #efe7e2;
   color: #795e4f;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -320,9 +308,7 @@
   border: 1px solid #ebe5e1;
   border-radius: 13px;
   background: white;
-  box-shadow:
-    0 3px 14px
-    rgba(49, 39, 33, 0.035);
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
 }
 
 /*
@@ -336,8 +322,7 @@
 
 .appointment-card {
   display: grid;
-  grid-template-columns:
-    85px minmax(0, 1fr);
+  grid-template-columns: 85px minmax(0, 1fr);
   border-bottom: 1px solid #eee8e4;
   transition:
     background 0.15s ease,
@@ -354,12 +339,7 @@
 
 .appointment-card.late {
   border-left: 3px solid #c86f63;
-  background:
-    linear-gradient(
-      90deg,
-      #fff8f6,
-      #ffffff 42%
-    );
+  background: linear-gradient(90deg, #fff8f6, #ffffff 42%);
 }
 
 .time-column {
@@ -379,7 +359,7 @@
 .time-column span {
   margin-top: 3px;
   color: #9d918a;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .late-label {
@@ -388,7 +368,7 @@
   border-radius: 12px;
   background: #fde9e6;
   color: #a14d43;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -411,7 +391,7 @@
 .appointment-title p {
   margin: 5px 0 0;
   color: #938780;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .status-badge {
@@ -419,7 +399,7 @@
   border-radius: 20px;
   background: #eee8e4;
   color: #65564e;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -461,7 +441,7 @@
   background: white;
   color: #675850;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -480,11 +460,7 @@
 .week-grid {
   min-width: 1000px;
   display: grid;
-  grid-template-columns:
-    repeat(
-      7,
-      minmax(135px, 1fr)
-    );
+  grid-template-columns: repeat(7, minmax(135px, 1fr));
 }
 
 .week-day {
@@ -506,7 +482,7 @@
 .week-day-header span {
   display: block;
   color: #9a8e87;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -537,13 +513,13 @@
 }
 
 .week-appointment strong {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .week-appointment span {
   overflow: hidden;
   margin-top: 4px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -552,7 +528,7 @@
 .week-appointment > small {
   margin-top: 5px;
   color: #998b83;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .week-time-row {
@@ -565,7 +541,7 @@
   border-radius: 8px;
   background: #fde7e3;
   color: #a64e43;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -604,7 +580,7 @@
 .week-empty {
   padding: 15px 5px;
   color: #b0a59f;
-  font-size: 8px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -670,7 +646,7 @@
 .empty-state p {
   margin: 7px 0 18px;
   color: #91857e;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .empty-actions {
@@ -683,16 +659,9 @@
  * RESPONSIVE
  * ==========================================================
  */
-@media (
-  max-width: 1150px
-) {
-
+@media (max-width: 1150px) {
   .operational-grid {
-    grid-template-columns:
-      repeat(
-        3,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .appointment-count {
@@ -700,21 +669,14 @@
   }
 }
 
-@media (
-  max-width: 850px
-) {
-
+@media (max-width: 850px) {
   .page-header {
     align-items: flex-start;
     flex-direction: column;
   }
 
   .operational-grid {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .agenda-panel {
@@ -722,10 +684,7 @@
   }
 }
 
-@media (
-  max-width: 700px
-) {
-
+@media (max-width: 700px) {
   .appointment-title {
     align-items: flex-start;
     flex-direction: column;
@@ -746,10 +705,7 @@
   }
 }
 
-@media (
-  max-width: 500px
-) {
-
+@media (max-width: 500px) {
   .operational-grid {
     grid-template-columns: 1fr;
   }
@@ -766,7 +722,6 @@
   }
 }
 
-
 /*
  * Etichetta mostrata nella toolbar
  * quando è attiva la timeline operatori.
@@ -777,7 +732,7 @@
   border-radius: 20px;
   background: #f0e8e3;
   color: #765a4b;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.4px;

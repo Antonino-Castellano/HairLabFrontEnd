@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -12,5 +12,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     // Rende disponibile HttpClient in tutta l'applicazione
     // e fa passare le richieste HTTP attraverso il JWT interceptor.
-    provideHttpClient(withInterceptors([jwtInterceptor]))]
+    provideHttpClient(withInterceptors([jwtInterceptor])),
+    { provide: LOCALE_ID, useValue: 'it-IT' },
+  ],
 };

@@ -23,7 +23,7 @@
 
 .eyebrow {
   color: #a06f50;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1.6px;
 }
@@ -106,8 +106,7 @@
  */
 .tone-selector {
   display: grid;
-  grid-template-columns:
-    repeat(5, minmax(120px, 1fr));
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
   gap: 9px;
 }
 
@@ -171,7 +170,7 @@
   justify-content: center;
   padding: 7px;
   color: #534741;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
 }
@@ -181,8 +180,7 @@
  */
 .reflection-selector {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
   gap: 9px;
 }
 
@@ -199,7 +197,7 @@
   border-radius: 9px;
   background: #faf9f8;
   color: #574b45;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -239,14 +237,12 @@
  */
 .form-grid {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
 .textarea-grid {
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 /*
@@ -295,8 +291,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: #9a6e52;
-  box-shadow:
-    0 0 0 3px rgba(154, 110, 82, 0.11);
+  box-shadow: 0 0 0 3px rgba(154, 110, 82, 0.11);
 }
 
 /*
@@ -359,20 +354,17 @@
  */
 @media (max-width: 1000px) {
   .tone-selector {
-    grid-template-columns:
-      repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .reflection-selector {
-    grid-template-columns:
-      repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 900px) {
   .form-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -386,13 +378,11 @@
   }
 
   .tone-selector {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .reflection-selector {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .form-grid,

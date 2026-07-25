@@ -1,0 +1,137 @@
+<section class="customer-dashboard hl-page">
+  @if (loading()) {
+    <div class="hl-card customer-state">Caricamento della tua dashboard...</div>
+  } @else if (errorMessage()) {
+    <div class="hl-card customer-state error-state">
+      <strong>Non è stato possibile aprire la dashboard</strong>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="hl-btn hl-btn-primary" (click)="loadArea()">Riprova</button>
+    </div>
+  } @else if (area(); as customerArea) {
+    <header class="customer-hero">
+      <div class="customer-avatar">
+        @if (customerArea.customer.profileImage) {
+          <img
+            [src]="customerArea.customer.profileImage"
+            [alt]="customerArea.customer.firstName + ' ' + customerArea.customer.lastName"
+          />
+        } @else {
+          <span>{{
+            getInitials(customerArea.customer.firstName, customerArea.customer.lastName)
+          }}</span>
+        }
+      </div>
+
+      <div class="hero-copy">
+        <span class="eyebrow">DASHBOARD CLIENTE</span>
+        <h1>Ciao, {{ customerArea.customer.firstName }}</h1>
+        <p>
+          Prenota il prossimo servizio, consulta il tuo profilo HairLab e ritrova tutto il tuo
+          storico professionale.
+        </p>
+      </div>
+
+      <a class="hl-btn hl-btn-primary" routerLink="/my-appointments">Prenota appuntamento</a>
+    </header>
+
+    <section class="dashboard-stats">
+      <article class="hl-card stat-card">
+        <span>PROSSIMI APPUNTAMENTI</span>
+        <strong>{{ upcomingCount() }}</strong>
+        <a routerLink="/my-appointments">Apri agenda personale</a>
+      </article>
+
+      <article class="hl-card stat-card">
+        <span>PROFILO HAIRLAB</span>
+        <strong>{{ profileCompletion() }}%</strong>
+        <a routerLink="/my-profile">Consulta la scheda</a>
+      </article>
+
+      <article class="hl-card stat-card">
+        <span>CONSULENZE</span>
+        <strong>{{ customerArea.consultations.length }}</strong>
+        <a routerLink="/my-profile">Apri lo storico</a>
+      </article>
+
+      <article class="hl-card stat-card">
+        <span>SERVIZI ATTIVI</span>
+        <strong>{{ customerArea.services.length }}</strong>
+        <a routerLink="/my-services">Esplora il listino</a>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="hl-card next-card">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">PROSSIMO APPUNTAMENTO</span>
+            <h2>Il prossimo incontro</h2>
+          </div>
+          <a routerLink="/my-appointments">Tutti gli appuntamenti</a>
+        </div>
+
+        @if (nextAppointment(); as appointment) {
+          <div class="appointment-date">
+            <strong>{{ appointment.startDateTime | date: 'EEEE d MMMM' : '' : 'it-IT' }}</strong>
+            <b>{{ appointment.startDateTime | date: 'HH:mm' }}</b>
+          </div>
+
+          <div class="appointment-services">
+            @for (item of appointment.items; track item.id) {
+              <div>
+                <strong>{{ item.serviceName }}</strong>
+                <span>con {{ item.employeeName }} · {{ item.duration }} min</span>
+              </div>
+            }
+          </div>
+
+          <footer>
+            <span class="status-pill" [attr.data-status]="appointment.status">
+              {{ appointmentStatusLabels[appointment.status] }}
+            </span>
+            <strong>{{
+              appointment.totalPrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+            }}</strong>
+          </footer>
+        } @else {
+          <div class="hl-empty-state">
+            <strong>Nessun appuntamento programmato</strong>
+            <p>Scegli un servizio e il professionista che preferisci.</p>
+            <a class="hl-btn hl-btn-primary" routerLink="/my-appointments">Prenota ora</a>
+          </div>
+        }
+      </article>
+
+      <article class="hl-card quick-links-card">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">ACCESSO RAPIDO</span>
+            <h2>La tua esperienza HairLab</h2>
+          </div>
+        </div>
+
+        <div class="quick-links">
+          <a routerLink="/my-profile">
+            <strong>Il mio HairLab</strong>
+            <span>Capelli, viso, armocromia, suggerimenti e storico.</span>
+          </a>
+
+          <a routerLink="/my-appointments">
+            <strong>Appuntamenti</strong>
+            <span>Prenotazione self-service e storico personale.</span>
+          </a>
+
+          <a routerLink="/my-services">
+            <strong>Servizi e professionisti</strong>
+            <span>Listino, durata, prezzi e schede del team.</span>
+          </a>
+
+          <a routerLink="/my-account">
+            <strong>La mia area</strong>
+            <span>Dati account, accesso e sicurezza del tuo profilo.</span>
+          </a>
+        </div>
+      </article>
+    </section>
+  }
+</section>

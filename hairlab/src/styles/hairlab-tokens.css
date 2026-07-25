@@ -1,0 +1,75 @@
+:root {
+  /* Brand */
+  --hl-color-primary: #7f4f3f;
+  --hl-color-primary-strong: #624033;
+  --hl-color-primary-soft: #f2e8e2;
+  --hl-color-accent: #b98262;
+  --hl-color-accent-soft: #f7eee8;
+
+  /* Surfaces */
+  --hl-color-page: #f7f4f2;
+  --hl-color-surface: #ffffff;
+  --hl-color-surface-alt: #fcfaf9;
+  --hl-color-surface-dark: #292421;
+  --hl-color-border: #e4dbd6;
+  --hl-color-border-strong: #d4c6be;
+
+  /* Text */
+  --hl-color-text: #342d29;
+  --hl-color-text-soft: #5f554f;
+  --hl-color-text-muted: #81756f;
+  --hl-color-text-inverse: #ffffff;
+
+  /* Semantic */
+  --hl-color-success: #2f7557;
+  --hl-color-success-soft: #edf7f1;
+  --hl-color-warning: #9b671d;
+  --hl-color-warning-soft: #fff7e8;
+  --hl-color-danger: #a9434b;
+  --hl-color-danger-soft: #fff0f1;
+  --hl-color-info: #386e99;
+  --hl-color-info-soft: #eef6fb;
+
+  /* Typography */
+  --hl-font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --hl-font-size-xs: 0.75rem;
+  --hl-font-size-sm: 0.875rem;
+  --hl-font-size-md: 1rem;
+  --hl-font-size-lg: 1.125rem;
+  --hl-font-size-xl: 1.375rem;
+  --hl-font-size-2xl: 1.75rem;
+  --hl-font-size-3xl: 2.25rem;
+
+  --hl-line-height-tight: 1.2;
+  --hl-line-height-normal: 1.5;
+  --hl-line-height-relaxed: 1.7;
+
+  /* Spacing */
+  --hl-space-1: 0.25rem;
+  --hl-space-2: 0.5rem;
+  --hl-space-3: 0.75rem;
+  --hl-space-4: 1rem;
+  --hl-space-5: 1.5rem;
+  --hl-space-6: 2rem;
+  --hl-space-7: 2.5rem;
+  --hl-space-8: 3rem;
+
+  /* Shape */
+  --hl-radius-sm: 8px;
+  --hl-radius-md: 14px;
+  --hl-radius-lg: 20px;
+  --hl-radius-pill: 999px;
+
+  /* Elevation */
+  --hl-shadow-sm: 0 4px 14px rgb(48 36 30 / 7%);
+  --hl-shadow-md: 0 12px 34px rgb(48 36 30 / 12%);
+  --hl-shadow-lg: 0 24px 60px rgb(48 36 30 / 18%);
+
+  /* Motion */
+  --hl-transition-fast: 140ms ease;
+  --hl-transition-normal: 220ms ease;
+
+  /* Layout */
+  --hl-content-max-width: 1480px;
+  --hl-control-height: 42px;
+}

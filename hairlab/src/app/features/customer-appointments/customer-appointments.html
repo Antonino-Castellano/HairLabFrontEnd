@@ -1,0 +1,259 @@
+<section class="customer-appointments-page hl-page">
+  <header class="hl-page-header">
+    <div>
+      <span class="eyebrow">AGENDA PERSONALE</span>
+      <h1>I miei appuntamenti</h1>
+      <p>Prenota un servizio in autonomia e consulta lo storico degli incontri con il salone.</p>
+    </div>
+    <a class="hl-btn hl-btn-secondary" routerLink="/my-services">Esplora i servizi</a>
+  </header>
+
+  @if (loading()) {
+    <div class="hl-card state-card">Caricamento appuntamenti...</div>
+  } @else if (errorMessage()) {
+    <div class="hl-card state-card error-state">
+      <strong>Agenda non disponibile</strong>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="hl-btn hl-btn-primary" (click)="loadArea()">Riprova</button>
+    </div>
+  } @else if (area(); as customerArea) {
+    <section class="booking-layout">
+      <article class="hl-card booking-card">
+        <div class="card-title-row">
+          <div>
+            <span class="eyebrow">PRENOTAZIONE SELF-SERVICE</span>
+            <h2>Scegli il prossimo servizio</h2>
+          </div>
+          <span class="step-badge">1 servizio</span>
+        </div>
+
+        <div class="booking-form">
+          <label>
+            <span>Servizio</span>
+            <select
+              name="service"
+              [(ngModel)]="selectedServiceId"
+              (ngModelChange)="resetAvailability()"
+            >
+              <option [ngValue]="null">Seleziona un servizio</option>
+              @for (service of customerArea.services; track service.id) {
+                <option [ngValue]="service.id">
+                  {{ service.name }} · {{ service.duration }} min ·
+                  {{ service.basePrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Professionista</span>
+            <select
+              name="employee"
+              [(ngModel)]="selectedEmployeeId"
+              (ngModelChange)="resetAvailability()"
+            >
+              <option [ngValue]="null">Seleziona un professionista</option>
+              @for (employee of customerArea.employees; track employee.id) {
+                <option [ngValue]="employee.id">
+                  {{ employee.firstName }} {{ employee.lastName }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Data</span>
+            <input
+              type="date"
+              name="date"
+              [(ngModel)]="selectedDate"
+              [min]="minDate"
+              [max]="maxDate"
+              (ngModelChange)="resetAvailability()"
+            />
+          </label>
+
+          <button
+            type="button"
+            class="hl-btn hl-btn-primary search-button"
+            [disabled]="searchingSlots()"
+            (click)="findSlots()"
+          >
+            {{ searchingSlots() ? 'Ricerca in corso...' : 'Cerca orari disponibili' }}
+          </button>
+        </div>
+
+        @if (slots().length) {
+          <div class="slots-section">
+            <div class="slots-heading">
+              <div>
+                <span class="eyebrow">DISPONIBILITÀ</span>
+                <h3>Seleziona un orario</h3>
+              </div>
+              <span>{{ slots().length }} proposte</span>
+            </div>
+
+            <div class="slot-grid">
+              @for (slot of slots(); track slot.startDateTime) {
+                <button
+                  type="button"
+                  [class.selected]="selectedSlot === slot.startDateTime"
+                  (click)="selectedSlot = slot.startDateTime"
+                >
+                  <strong>{{ slot.startDateTime | date: 'HH:mm' }}</strong>
+                  <span>fino alle {{ slot.endDateTime | date: 'HH:mm' }}</span>
+                </button>
+              }
+            </div>
+
+            <label class="notes-field">
+              <span>Note per il salone <small>(facoltative)</small></span>
+              <textarea
+                name="notes"
+                [(ngModel)]="notes"
+                maxlength="500"
+                rows="3"
+                placeholder="Esigenze, preferenze o informazioni utili..."
+              ></textarea>
+            </label>
+
+            <div class="booking-summary">
+              <div>
+                <span>Servizio</span>
+                <strong>{{ serviceName() }}</strong>
+              </div>
+              <div>
+                <span>Professionista</span>
+                <strong>{{ employeeName() }}</strong>
+              </div>
+              <div>
+                <span>Orario</span>
+                <strong>
+                  {{ selectedSlot ? (selectedSlot | date: 'dd/MM/yyyy HH:mm') : 'Da selezionare' }}
+                </strong>
+              </div>
+              <button
+                type="button"
+                class="hl-btn hl-btn-primary"
+                [disabled]="!selectedSlot || booking()"
+                (click)="bookSelectedSlot()"
+              >
+                {{ booking() ? 'Prenotazione...' : 'Conferma prenotazione' }}
+              </button>
+            </div>
+          </div>
+        }
+      </article>
+
+      <aside class="hl-card booking-info-card">
+        <span class="eyebrow">COME FUNZIONA</span>
+        <h2>Prenotazione guidata</h2>
+        <ol>
+          <li>Scegli il servizio dal listino attivo.</li>
+          <li>Seleziona il professionista che preferisci.</li>
+          <li>HairLab mostra soltanto gli orari realmente liberi.</li>
+          <li>La prenotazione viene salvata con stato “Prenotato”.</li>
+        </ol>
+        <p>
+          Il prezzo mostrato è il prezzo base del servizio. Eventuali variazioni concordate saranno
+          comunicate dal salone.
+        </p>
+      </aside>
+    </section>
+
+    <section class="appointment-section">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">IN PROGRAMMA</span>
+          <h2>Prossimi appuntamenti</h2>
+        </div>
+        <span>{{ upcomingAppointments().length }}</span>
+      </div>
+
+      @if (upcomingAppointments().length) {
+        <div class="appointment-grid">
+          @for (appointment of upcomingAppointments(); track appointment.id) {
+            <article class="hl-card appointment-card">
+              <header>
+                <div class="date-block">
+                  <strong>{{ appointment.startDateTime | date: 'dd' }}</strong>
+                  <span>{{ appointment.startDateTime | date: 'MMM' : '' : 'it-IT' }}</span>
+                </div>
+                <div>
+                  <strong>{{ appointment.startDateTime | date: 'EEEE' : '' : 'it-IT' }}</strong>
+                  <span>{{ appointment.startDateTime | date: 'HH:mm' }}</span>
+                </div>
+                <span class="status-pill" [attr.data-status]="appointment.status">
+                  {{ appointmentStatusLabels[appointment.status] }}
+                </span>
+              </header>
+
+              <div class="item-list">
+                @for (item of appointment.items; track item.id) {
+                  <div>
+                    <strong>{{ item.serviceName }}</strong>
+                    <span>{{ item.employeeName }} · {{ item.duration }} min</span>
+                  </div>
+                }
+              </div>
+
+              <footer>
+                <strong>
+                  {{ appointment.totalPrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}
+                </strong>
+                @if (appointment.cancellable) {
+                  <button
+                    type="button"
+                    class="cancel-button"
+                    (click)="cancelAppointment(appointment)"
+                  >
+                    Annulla
+                  </button>
+                }
+              </footer>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="hl-empty-state">Non ci sono appuntamenti futuri.</div>
+      }
+    </section>
+
+    <section class="appointment-section">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">STORICO</span>
+          <h2>Appuntamenti precedenti</h2>
+        </div>
+        <span>{{ appointmentHistory().length }}</span>
+      </div>
+
+      @if (appointmentHistory().length) {
+        <div class="history-table">
+          @for (appointment of appointmentHistory(); track appointment.id) {
+            <article>
+              <div>
+                <strong>{{ appointment.startDateTime | date: 'dd/MM/yyyy' }}</strong>
+                <span>{{ appointment.startDateTime | date: 'HH:mm' }}</span>
+              </div>
+              <div>
+                @for (item of appointment.items; track item.id) {
+                  <strong>{{ item.serviceName }}</strong>
+                  <span>con {{ item.employeeName }}</span>
+                }
+              </div>
+              <span class="status-pill" [attr.data-status]="appointment.status">
+                {{ appointmentStatusLabels[appointment.status] }}
+              </span>
+              <strong>
+                {{ appointment.totalPrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}
+              </strong>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="hl-empty-state">Lo storico appuntamenti è ancora vuoto.</div>
+      }
+    </section>
+  }
+</section>

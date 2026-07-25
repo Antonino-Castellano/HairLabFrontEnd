@@ -5,6 +5,11 @@ import { LayoutComponent } from './shared/layout/layout';
 
 import { LoginComponent } from './features/login/login';
 import { DashboardComponent } from './features/dashboard/dashboard';
+import { AccessDeniedComponent } from './features/access-denied/access-denied';
+import { CustomerAreaComponent } from './features/customer-area/customer-area';
+import { CustomerProfileComponent } from './features/customer-profile/customer-profile';
+import { CustomerAppointmentsComponent } from './features/customer-appointments/customer-appointments';
+import { CustomerServicesComponent } from './features/customer-services/customer-services';
 
 import { CustomerListComponent } from './features/customers/customer-list/customer-list';
 import { CustomerFormComponent } from './features/customers/customer-form/customer-form';
@@ -57,7 +62,7 @@ import { ColorSupplierOrderDetailComponent } from './features/color-lab/color-su
 export const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: '',
@@ -68,14 +73,63 @@ export const routes: Routes = [
      * ogni rotta dichiara esplicitamente i ruoli consentiti.
      */
     children: [
-
       {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
+      },
+
+      {
+        path: 'access-denied',
+        component: AccessDeniedComponent,
+      },
+      {
+        path: 'my-area',
+        redirectTo: 'my-dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'my-dashboard',
+        component: CustomerAreaComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['CUSTOMER'],
+        },
+      },
+      {
+        path: 'my-profile',
+        component: CustomerProfileComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['CUSTOMER'],
+        },
+      },
+      {
+        path: 'my-appointments',
+        component: CustomerAppointmentsComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['CUSTOMER'],
+        },
+      },
+      {
+        path: 'my-services',
+        component: CustomerServicesComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['CUSTOMER'],
+        },
+      },
+      {
+        path: 'my-account',
+        component: ProfileViewComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['CUSTOMER'],
+        },
       },
 
       // ====================================================
@@ -87,88 +141,88 @@ export const routes: Routes = [
         component: CustomerListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'customers/new',
         component: CustomerFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'customers/:customerId/hair-profile/new',
         component: HairProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:customerId/hair-profile/:profileId/edit',
         component: HairProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:customerId/face-profile/new',
         component: FaceProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:customerId/face-profile/:profileId/edit',
         component: FaceProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:customerId/color-analysis/new',
         component: ColorAnalysisFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:customerId/color-analysis/:analysisId/edit',
         component: ColorAnalysisFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:id/color-formulas',
         component: CustomerColorFormulaHistoryPageComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'customers/:id/edit',
         component: CustomerFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'customers/:id',
         component: CustomerDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
 
       // ====================================================
@@ -180,32 +234,32 @@ export const routes: Routes = [
         component: AppointmentListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'appointments/new',
         component: AppointmentFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'appointments/:id/edit',
         component: AppointmentFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'appointments/:id',
         component: AppointmentDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
 
       // ====================================================
@@ -217,32 +271,32 @@ export const routes: Routes = [
         component: EmployeeListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'employees/new',
         component: EmployeeFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'employees/:id/edit',
         component: EmployeeFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'employees/:id',
         component: EmployeeDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       // ====================================================
@@ -254,24 +308,24 @@ export const routes: Routes = [
         component: SalonProductListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'services/new',
         component: SalonProductFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'services/:id/edit',
         component: SalonProductFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       // ====================================================
@@ -283,24 +337,24 @@ export const routes: Routes = [
         component: ConsultationListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'consultations/new',
         component: ConsultationFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'consultations/:id/edit',
         component: ConsultationFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
 
       // ====================================================
@@ -312,32 +366,32 @@ export const routes: Routes = [
         component: ProfileViewComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'profile/new',
         component: ProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'profile/edit/:id',
         component: ProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'profile/all',
         component: ProfileListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       // ====================================================
@@ -349,16 +403,16 @@ export const routes: Routes = [
         component: ColorLabComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'color-lab/smart-formula',
         component: ColorSmartDiagnosisComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
 
       // Prodotti / giacenze
@@ -367,24 +421,24 @@ export const routes: Routes = [
         component: HairDyeFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/products/:id/edit',
         component: HairDyeFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/inventory/:hairDyeId',
         component: HairDyeInventoryFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       // Formula Center
@@ -393,48 +447,48 @@ export const routes: Routes = [
         component: ColorFormulaListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'color-lab/formulas/new',
         component: ColorFormulaBuilderComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/formulas/:id/edit',
         component: ColorFormulaBuilderComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/formulas/:id/evolution',
         component: ColorFormulaEvolutionComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
       {
         path: 'color-lab/formulas/:id/protocol',
         component: ColorFormulaProtocolComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/formulas/:id',
         component: ColorFormulaDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST']
-        }
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
       },
 
       // Profili tecnici di linea
@@ -443,24 +497,24 @@ export const routes: Routes = [
         component: ColorProductLineProfileListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/lines/new',
         component: ColorProductLineProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/lines/:id/edit',
         component: ColorProductLineProfileFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       // ====================================================
@@ -473,67 +527,67 @@ export const routes: Routes = [
         component: HairDyeInventoryMovementListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/reorder',
         component: ColorReorderCenterComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/suppliers',
         component: ColorSupplierListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/suppliers/new',
         component: ColorSupplierFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/suppliers/:id/edit',
         component: ColorSupplierFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/orders',
         component: ColorSupplierOrderListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
       {
         path: 'color-lab/orders/:id',
         component: ColorSupplierOrderDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN']
-        }
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
       },
 
       {
         path: '',
         redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '**',
-    redirectTo: 'login'
-  }
+    redirectTo: 'login',
+  },
 ];

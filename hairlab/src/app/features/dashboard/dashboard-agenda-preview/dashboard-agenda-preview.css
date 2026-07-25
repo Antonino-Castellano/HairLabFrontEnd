@@ -8,9 +8,7 @@
   border: 1px solid #ebe5e1;
   border-radius: 13px;
   background: white;
-  box-shadow:
-    0 3px 14px
-    rgba(49, 39, 33, 0.035);
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
 }
 
 .panel-header {
@@ -31,12 +29,12 @@
 .panel-header p {
   margin: 5px 0 0;
   color: #978c85;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .text-button {
   color: #93664a;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -47,8 +45,7 @@
 
 .agenda-row {
   display: grid;
-  grid-template-columns:
-    55px minmax(0, 1fr) auto;
+  grid-template-columns: 55px minmax(0, 1fr) auto;
   align-items: center;
   gap: 13px;
   padding: 14px 0;
@@ -76,7 +73,7 @@
 .agenda-content strong {
   overflow: hidden;
   color: #4b403a;
-  font-size: 11px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -85,7 +82,7 @@
   overflow: hidden;
   margin-top: 4px;
   color: #978b84;
-  font-size: 9px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -95,7 +92,7 @@
   border-radius: 20px;
   background: #f0e9e5;
   color: #705e54;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -127,7 +124,7 @@
   justify-content: center;
   padding: 30px;
   color: #91857e;
-  font-size: 11px;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -169,16 +166,12 @@
 .empty-state p {
   margin: 6px 0 0;
   color: #9c918b;
-  font-size: 10px;
+  font-size: 13px;
 }
 
-@media (
-  max-width: 650px
-) {
-
+@media (max-width: 650px) {
   .agenda-row {
-    grid-template-columns:
-      48px minmax(0, 1fr);
+    grid-template-columns: 48px minmax(0, 1fr);
   }
 
   .status {

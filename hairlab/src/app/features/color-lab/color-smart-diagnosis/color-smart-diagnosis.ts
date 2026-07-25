@@ -1,93 +1,55 @@
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  ActivatedRoute,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, Params, RouterLink } from '@angular/router';
 
-import {
-  Customer
-} from '../../../models/customer';
+import { Customer } from '../../../models/customer';
 
-import {
-  HairProfile
-} from '../../../models/hair-profile';
+import { HairProfile } from '../../../models/hair-profile';
 
 import {
   ColorSmartDiagnosis,
-  ColorSmartDiagnosisRequest
+  ColorSmartDiagnosisRequest,
 } from '../../../models/color-smart-diagnosis';
 
 import {
   ColorSmartFormulaProposal,
-  ColorSmartFormulaResponse
+  ColorSmartFormulaResponse,
 } from '../../../models/color-smart-formula';
 
-import {
-  ColorSmartHistoryInsight
-} from '../../../models/color-smart-history-insight';
+import { ColorSmartHistoryInsight } from '../../../models/color-smart-history-insight';
 
-import {
-  ColorApplicationType
-} from '../../../models/enums/color-application-type';
+import { ColorApplicationType } from '../../../models/enums/color-application-type';
 
-import {
-  Reflection
-} from '../../../models/enums/reflection';
+import { Reflection } from '../../../models/enums/reflection';
 
-import {
-  ToneLevel
-} from '../../../models/enums/tone-level';
+import { ToneLevel } from '../../../models/enums/tone-level';
 
-import {
-  ColorSmartDiagnosisService
-} from '../../../service/color-smart-diagnosis-service';
+import { ColorSmartDiagnosisService } from '../../../service/color-smart-diagnosis-service';
 
-import {
-  ColorSmartFormulaService
-} from '../../../service/color-smart-formula-service';
+import { ColorSmartFormulaService } from '../../../service/color-smart-formula-service';
 
-import {
-  ColorSmartHistoryInsightService
-} from '../../../service/color-smart-history-insight-service';
+import { ColorSmartHistoryInsightService } from '../../../service/color-smart-history-insight-service';
 
-import {
-  CustomerService
-} from '../../../service/customer-service';
+import { CustomerService } from '../../../service/customer-service';
 
-import {
-  HairProfileService
-} from '../../../service/hair-profile-service';
+import { HairProfileService } from '../../../service/hair-profile-service';
 
 import { ColorLabSectionNavComponent } from '../color-lab-section-nav/color-lab-section-nav';
 
 import {
-  COLOR_APPLICATION_LABELS
-} from '../color-formula-display';
+  WorkflowStep,
+  WorkflowStepperComponent,
+} from '../../../shared/workflow-stepper/workflow-stepper';
 
-import {
-  REFLECTION_LABELS,
-  TONE_LEVEL_LABELS
-} from '../color-lab-display';
+import { COLOR_APPLICATION_LABELS } from '../color-formula-display';
 
-import {
-  COLOR_FORMULA_COMPONENT_ROLE_LABELS
-} from './color-smart-formula-display';
+import { REFLECTION_LABELS, TONE_LEVEL_LABELS } from '../color-lab-display';
+
+import { COLOR_FORMULA_COMPONENT_ROLE_LABELS } from './color-smart-formula-display';
 
 import {
   COLOR_DIAGNOSIS_FEASIBILITY_LABELS,
@@ -95,7 +57,7 @@ import {
   HAIR_CONDITION_LABELS_SMART,
   HAIR_LENGTH_LABELS_SMART,
   HAIR_TEXTURE_LABELS_SMART,
-  PHYSICAL_VALUE_LABELS_SMART
+  PHYSICAL_VALUE_LABELS_SMART,
 } from './color-smart-diagnosis-display';
 
 /**
@@ -108,88 +70,42 @@ import {
  * e mostra diagnosi e strategia.
  */
 @Component({
-  selector:
-    'app-color-smart-diagnosis',
+  selector: 'app-color-smart-diagnosis',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ColorLabSectionNavComponent
-  ],
-  templateUrl:
-    './color-smart-diagnosis.html',
-  styleUrl:
-    './color-smart-diagnosis.css'
+  imports: [ReactiveFormsModule, RouterLink, ColorLabSectionNavComponent, WorkflowStepperComponent],
+  templateUrl: './color-smart-diagnosis.html',
+  styleUrl: './color-smart-diagnosis.css',
 })
-export class ColorSmartDiagnosisComponent
-  implements OnInit {
+export class ColorSmartDiagnosisComponent implements OnInit {
+  private readonly formBuilder = inject(FormBuilder);
 
-  private readonly formBuilder =
-    inject(
-      FormBuilder
-    );
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  private readonly activatedRoute =
-    inject(
-      ActivatedRoute
-    );
+  private readonly customerService = inject(CustomerService);
 
-  private readonly customerService =
-    inject(
-      CustomerService
-    );
+  private readonly hairProfileService = inject(HairProfileService);
 
-  private readonly hairProfileService =
-    inject(
-      HairProfileService
-    );
+  private readonly diagnosisService = inject(ColorSmartDiagnosisService);
 
-  private readonly diagnosisService =
-    inject(
-      ColorSmartDiagnosisService
-    );
+  private readonly smartFormulaService = inject(ColorSmartFormulaService);
 
+  private readonly historyInsightService = inject(ColorSmartHistoryInsightService);
 
-  private readonly smartFormulaService =
-    inject(
-      ColorSmartFormulaService
-    );
+  protected readonly customers = signal<Customer[]>([]);
 
+  protected readonly selectedProfile = signal<HairProfile | null>(null);
 
-  private readonly historyInsightService =
-    inject(
-      ColorSmartHistoryInsightService
-    );
+  protected readonly diagnosis = signal<ColorSmartDiagnosis | null>(null);
 
-  protected readonly customers =
-    signal<Customer[]>([]);
-
-  protected readonly selectedProfile =
-    signal<HairProfile | null>(
-      null
-    );
-
-  protected readonly diagnosis =
-    signal<ColorSmartDiagnosis | null>(
-      null
-    );
-
-
-  protected readonly formulaResponse =
-    signal<ColorSmartFormulaResponse | null>(
-      null
-    );
-
+  protected readonly formulaResponse = signal<ColorSmartFormulaResponse | null>(null);
 
   /** Suggerimento colore HairLab da cui è stato aperto Smart Formula. */
-  protected readonly sourceRecommendation =
-    signal<{
-      customerId: number;
-      code: string;
-      title: string;
-      compatibilityScore: number | null;
-    } | null>(null);
-
+  protected readonly sourceRecommendation = signal<{
+    customerId: number;
+    code: string;
+    title: string;
+    compatibilityScore: number | null;
+  } | null>(null);
 
   /**
    * Contesto tecnico storico.
@@ -197,208 +113,127 @@ export class ColorSmartDiagnosisComponent
    * Non modifica automaticamente
    * la formula proposta.
    */
-  protected readonly historyInsight =
-    signal<ColorSmartHistoryInsight | null>(
-      null
-    );
+  protected readonly historyInsight = signal<ColorSmartHistoryInsight | null>(null);
 
-  protected readonly loadingHistoryInsight =
-    signal(false);
+  protected readonly loadingHistoryInsight = signal(false);
 
-  protected readonly proposing =
-    signal(false);
+  protected readonly proposing = signal(false);
 
-  protected readonly loadingCustomers =
-    signal(false);
+  protected readonly loadingCustomers = signal(false);
 
-  protected readonly loadingProfile =
-    signal(false);
+  protected readonly loadingProfile = signal(false);
 
-  protected readonly analyzing =
-    signal(false);
+  protected readonly analyzing = signal(false);
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
-  protected readonly toneLevels =
-    Object.values(
-      ToneLevel
-    );
+  protected readonly activeWorkflowStep = signal(1);
 
-  protected readonly reflections =
-    Object.values(
-      Reflection
-    );
+  protected readonly workflowSteps: WorkflowStep[] = [
+    { id: 1, label: 'Cliente e obiettivo', description: 'Base e risultato desiderato' },
+    { id: 2, label: 'Diagnosi', description: 'Fattibilità e strategia' },
+    { id: 3, label: 'Formula', description: 'Prodotti, dosi e stock' },
+    { id: 4, label: 'Conferma', description: 'Riepilogo professionale' },
+  ];
 
-  protected readonly applications =
-    Object.values(
-      ColorApplicationType
-    );
+  protected readonly toneLevels = Object.values(ToneLevel);
 
-  protected readonly toneLabels =
-    TONE_LEVEL_LABELS;
+  protected readonly reflections = Object.values(Reflection);
 
-  protected readonly reflectionLabels =
-    REFLECTION_LABELS;
+  protected readonly applications = Object.values(ColorApplicationType);
 
-  protected readonly applicationLabels =
-    COLOR_APPLICATION_LABELS;
+  protected readonly toneLabels = TONE_LEVEL_LABELS;
 
-  protected readonly feasibilityLabels =
-    COLOR_DIAGNOSIS_FEASIBILITY_LABELS;
+  protected readonly reflectionLabels = REFLECTION_LABELS;
 
-  protected readonly strategyLabels =
-    COLOR_DIAGNOSIS_STRATEGY_LABELS;
+  protected readonly applicationLabels = COLOR_APPLICATION_LABELS;
 
-  protected readonly hairConditionLabels =
-    HAIR_CONDITION_LABELS_SMART;
+  protected readonly feasibilityLabels = COLOR_DIAGNOSIS_FEASIBILITY_LABELS;
 
-  protected readonly hairLengthLabels =
-    HAIR_LENGTH_LABELS_SMART;
+  protected readonly strategyLabels = COLOR_DIAGNOSIS_STRATEGY_LABELS;
 
-  protected readonly hairTextureLabels =
-    HAIR_TEXTURE_LABELS_SMART;
+  protected readonly hairConditionLabels = HAIR_CONDITION_LABELS_SMART;
 
-  protected readonly physicalValueLabels =
-    PHYSICAL_VALUE_LABELS_SMART;
+  protected readonly hairLengthLabels = HAIR_LENGTH_LABELS_SMART;
 
+  protected readonly hairTextureLabels = HAIR_TEXTURE_LABELS_SMART;
 
-  protected readonly componentRoleLabels =
-    COLOR_FORMULA_COMPONENT_ROLE_LABELS;
+  protected readonly physicalValueLabels = PHYSICAL_VALUE_LABELS_SMART;
 
-  protected readonly form =
-    this.formBuilder.group({
+  protected readonly componentRoleLabels = COLOR_FORMULA_COMPONENT_ROLE_LABELS;
 
-      customerId: [
-        null as
-          number |
-          null,
-        Validators.required
-      ],
+  protected readonly form = this.formBuilder.group({
+    customerId: [null as number | null, Validators.required],
 
-      targetToneLevel: [
-        null as
-          ToneLevel |
-          null,
-        Validators.required
-      ],
+    targetToneLevel: [null as ToneLevel | null, Validators.required],
 
-      targetPrimaryReflection: [
-        null as
-          Reflection |
-          null,
-        Validators.required
-      ],
+    targetPrimaryReflection: [null as Reflection | null, Validators.required],
 
-      targetSecondaryReflection: [
-        null as
-          Reflection |
-          null
-      ],
+    targetSecondaryReflection: [null as Reflection | null],
 
-      applicationType: [
-        ColorApplicationType.FULL_HEAD,
-        Validators.required
-      ],
+    applicationType: [ColorApplicationType.FULL_HEAD, Validators.required],
 
-      targetResult: [
-        ''
-      ]
-    });
+    targetResult: [''],
+  });
 
   ngOnInit(): void {
-
     this.loadCustomers();
   }
 
-  private loadCustomers():
-    void {
+  private loadCustomers(): void {
+    this.loadingCustomers.set(true);
 
-    this.loadingCustomers.set(
-      true
-    );
+    this.customerService.getActive().subscribe({
+      next: (customers) => {
+        this.customers.set(customers ?? []);
 
-    this.customerService
-      .getActive()
-      .subscribe({
+        this.applyContextFromQuery();
 
-        next: customers => {
+        this.loadingCustomers.set(false);
+      },
 
-          this.customers.set(
-            customers ??
-            []
-          );
+      error: (error: HttpErrorResponse) => {
+        this.loadingCustomers.set(false);
 
-          this.applyContextFromQuery();
-
-          this.loadingCustomers.set(
-            false
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.loadingCustomers.set(
-            false
-          );
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile caricare i clienti.'
-            )
-          );
-        }
-      });
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile caricare i clienti.'));
+      },
+    });
   }
 
-  private applyContextFromQuery():
-    void {
+  private applyContextFromQuery(): void {
+    const params = this.activatedRoute.snapshot.queryParamMap;
 
-    const params =
-      this.activatedRoute.snapshot.queryParamMap;
-
-    const customerId =
-      Number(
-        params.get('customerId')
-      );
+    const customerId = Number(params.get('customerId'));
 
     if (
-      !Number.isInteger(customerId)
-      || customerId <= 0
-      || !this.customers().some(customer => customer.id === customerId)
+      !Number.isInteger(customerId) ||
+      customerId <= 0 ||
+      !this.customers().some((customer) => customer.id === customerId)
     ) {
       return;
     }
 
     this.form.controls.customerId.setValue(customerId);
 
-    const targetTone =
-      params.get('targetToneLevel') as ToneLevel | null;
+    const targetTone = params.get('targetToneLevel') as ToneLevel | null;
 
     if (targetTone && Object.values(ToneLevel).includes(targetTone)) {
       this.form.controls.targetToneLevel.setValue(targetTone);
     }
 
-    const primary =
-      params.get('targetPrimaryReflection') as Reflection | null;
+    const primary = params.get('targetPrimaryReflection') as Reflection | null;
 
     if (primary && Object.values(Reflection).includes(primary)) {
       this.form.controls.targetPrimaryReflection.setValue(primary);
     }
 
-    const secondary =
-      params.get('targetSecondaryReflection') as Reflection | null;
+    const secondary = params.get('targetSecondaryReflection') as Reflection | null;
 
     if (secondary && Object.values(Reflection).includes(secondary)) {
       this.form.controls.targetSecondaryReflection.setValue(secondary);
     }
 
-    const application =
-      params.get('applicationType') as ColorApplicationType | null;
+    const application = params.get('applicationType') as ColorApplicationType | null;
 
     if (application && Object.values(ColorApplicationType).includes(application)) {
       this.form.controls.applicationType.setValue(application);
@@ -418,142 +253,78 @@ export class ColorSmartDiagnosisComponent
         customerId,
         code,
         title,
-        compatibilityScore:
-          Number.isFinite(scoreValue) ? scoreValue : null
+        compatibilityScore: Number.isFinite(scoreValue) ? scoreValue : null,
       });
     }
 
     this.onCustomerChange();
   }
 
-  protected getConsultationIdFromContext():
-    number | null {
+  protected getConsultationIdFromContext(): number | null {
+    const value = Number(this.activatedRoute.snapshot.queryParamMap.get('consultationId'));
 
-    const value =
-      Number(
-        this.activatedRoute.snapshot.queryParamMap.get('consultationId')
-      );
-
-    return Number.isInteger(value) && value > 0
-      ? value
-      : null;
+    return Number.isInteger(value) && value > 0 ? value : null;
   }
 
-  protected getAppointmentItemIdFromContext():
-    number | null {
+  protected getAppointmentItemIdFromContext(): number | null {
+    const value = Number(this.activatedRoute.snapshot.queryParamMap.get('appointmentItemId'));
 
-    const value =
-      Number(
-        this.activatedRoute.snapshot.queryParamMap.get('appointmentItemId')
-      );
-
-    return Number.isInteger(value) && value > 0
-      ? value
-      : null;
+    return Number.isInteger(value) && value > 0 ? value : null;
   }
 
-  protected onCustomerChange():
-    void {
+  protected onCustomerChange(): void {
+    this.diagnosis.set(null);
 
-    this.diagnosis.set(
-      null
-    );
+    this.formulaResponse.set(null);
 
-    this.formulaResponse.set(
-      null
-    );
+    this.activeWorkflowStep.set(1);
 
-    this.selectedProfile.set(
-      null
-    );
+    this.selectedProfile.set(null);
 
-    this.historyInsight.set(
-      null
-    );
+    this.historyInsight.set(null);
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    const customerId =
-      this.form.controls
-        .customerId
-        .value;
+    const customerId = this.form.controls.customerId.value;
 
+    const source = this.sourceRecommendation();
 
-    const source =
-      this.sourceRecommendation();
-
-    if (
-      source
-      && customerId
-      && source.customerId !== customerId
-    ) {
+    if (source && customerId && source.customerId !== customerId) {
       this.sourceRecommendation.set(null);
     }
 
-    if (
-      !customerId
-    ) {
-
+    if (!customerId) {
       return;
     }
 
-    this.loadHistoryInsight(
-      customerId
-    );
+    this.loadHistoryInsight(customerId);
 
-    this.loadingProfile.set(
-      true
-    );
+    this.loadingProfile.set(true);
 
-    this.hairProfileService
-      .getByCustomerId(
-        customerId
-      )
-      .subscribe({
+    this.hairProfileService.getByCustomerId(customerId).subscribe({
+      next: (profile) => {
+        this.selectedProfile.set(profile);
 
-        next: profile => {
+        this.loadingProfile.set(false);
+      },
 
-          this.selectedProfile.set(
-            profile
-          );
+      error: (error: HttpErrorResponse) => {
+        this.loadingProfile.set(false);
 
-          this.loadingProfile.set(
-            false
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.loadingProfile.set(
-            false
-          );
-
-          if (
-            error.status ===
-            404
-          ) {
-
-            this.errorMessage.set(
-              'Il cliente non possiede ancora un Profilo Capelli. '
-              + 'Compilalo prima di usare Smart Formula.'
-            );
-
-            return;
-          }
-
+        if (error.status === 404) {
           this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile caricare il Profilo Capelli.'
-            )
+            'Il cliente non possiede ancora un Profilo Capelli. ' +
+              'Compilalo prima di usare Smart Formula.',
           );
+
+          return;
         }
-      });
+
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile caricare il Profilo Capelli.'),
+        );
+      },
+    });
   }
 
   /**
@@ -563,126 +334,66 @@ export class ColorSmartDiagnosisComponent
    * Un eventuale errore in questo endpoint
    * NON blocca la Smart Formula.
    */
-  private loadHistoryInsight(
-    customerId:
-      number
-  ): void {
+  private loadHistoryInsight(customerId: number): void {
+    this.loadingHistoryInsight.set(true);
 
-    this.loadingHistoryInsight.set(
-      true
-    );
+    this.historyInsightService.getByCustomerId(customerId).subscribe({
+      next: (insight) => {
+        this.historyInsight.set(insight);
 
-    this.historyInsightService
-      .getByCustomerId(
-        customerId
-      )
-      .subscribe({
+        this.loadingHistoryInsight.set(false);
+      },
 
-        next: insight => {
+      error: () => {
+        /*
+         * Lo storico è un supporto aggiuntivo:
+         * non deve impedire diagnosi e formula.
+         */
+        this.historyInsight.set(null);
 
-          this.historyInsight.set(
-            insight
-          );
-
-          this.loadingHistoryInsight.set(
-            false
-          );
-        },
-
-        error: () => {
-
-          /*
-           * Lo storico è un supporto aggiuntivo:
-           * non deve impedire diagnosi e formula.
-           */
-          this.historyInsight.set(
-            null
-          );
-
-          this.loadingHistoryInsight.set(
-            false
-          );
-        }
-      });
+        this.loadingHistoryInsight.set(false);
+      },
+    });
   }
 
-  protected analyze():
-    void {
+  protected analyze(): void {
+    this.errorMessage.set('');
 
-    this.errorMessage.set(
-      ''
-    );
+    this.diagnosis.set(null);
 
-    this.diagnosis.set(
-      null
-    );
+    this.formulaResponse.set(null);
 
-    this.formulaResponse.set(
-      null
-    );
-
-    if (
-      this.form.invalid
-    ) {
-
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
 
-      this.errorMessage.set(
-        'Seleziona cliente, tono target, riflesso e applicazione.'
-      );
+      this.errorMessage.set('Seleziona cliente, tono target, riflesso e applicazione.');
 
       return;
     }
 
-    if (
-      !this.selectedProfile()
-    ) {
-
-      this.errorMessage.set(
-        'Il Profilo Capelli del cliente è necessario per l’analisi.'
-      );
+    if (!this.selectedProfile()) {
+      this.errorMessage.set('Il Profilo Capelli del cliente è necessario per l’analisi.');
 
       return;
     }
 
-    this.analyzing.set(
-      true
-    );
+    this.analyzing.set(true);
 
-    this.diagnosisService
-      .analyze(
-        this.buildRequest()
-      )
-      .subscribe({
+    this.diagnosisService.analyze(this.buildRequest()).subscribe({
+      next: (result) => {
+        this.diagnosis.set(result);
 
-        next: result => {
+        this.activeWorkflowStep.set(2);
 
-          this.diagnosis.set(
-            result
-          );
+        this.analyzing.set(false);
+      },
 
-          this.analyzing.set(
-            false
-          );
-        },
+      error: (error: HttpErrorResponse) => {
+        this.analyzing.set(false);
 
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.analyzing.set(
-            false
-          );
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile completare l’analisi.'
-            )
-          );
-        }
-      });
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile completare l’analisi.'));
+      },
+    });
   }
 
   /**
@@ -690,113 +401,128 @@ export class ColorSmartDiagnosisComponent
    * partendo dagli stessi input
    * usati dalla diagnosi.
    */
-  protected generateProductProposal():
-    void {
-
-    if (
-      !this.diagnosis()
-      ||
-      this.form.invalid
-    ) {
-
+  protected generateProductProposal(): void {
+    if (!this.diagnosis() || this.form.invalid) {
       return;
     }
 
-    this.proposing.set(
-      true
-    );
+    this.proposing.set(true);
 
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
-    this.smartFormulaService
-      .propose(
-        this.buildRequest()
-      )
-      .subscribe({
+    this.smartFormulaService.propose(this.buildRequest()).subscribe({
+      next: (response) => {
+        this.formulaResponse.set(response);
 
-        next: response => {
+        this.activeWorkflowStep.set(3);
 
-          this.formulaResponse.set(
-            response
-          );
+        /*
+         * La response contiene di nuovo la diagnosi:
+         * la manteniamo sincronizzata
+         * con la versione usata dal motore formula.
+         */
+        this.diagnosis.set(response.diagnosis);
 
-          /*
-           * La response contiene di nuovo la diagnosi:
-           * la manteniamo sincronizzata
-           * con la versione usata dal motore formula.
-           */
-          this.diagnosis.set(
-            response.diagnosis
-          );
+        this.proposing.set(false);
+      },
 
-          this.proposing.set(
-            false
-          );
-        },
+      error: (error: HttpErrorResponse) => {
+        this.proposing.set(false);
 
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
+        this.errorMessage.set(
+          this.getErrorMessage(error, 'Impossibile generare la proposta prodotti.'),
+        );
+      },
+    });
+  }
 
-          this.proposing.set(
-            false
-          );
+  protected getMaxWorkflowStep(): number {
+    if (this.formulaResponse()) {
+      return 4;
+    }
 
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile generare la proposta prodotti.'
-            )
-          );
-        }
-      });
+    if (this.diagnosis()) {
+      return 2;
+    }
+
+    return 1;
+  }
+
+  protected selectWorkflowStep(step: number): void {
+    if (step <= this.getMaxWorkflowStep()) {
+      this.activeWorkflowStep.set(step);
+    }
+  }
+
+  protected previousWorkflowStep(): void {
+    this.activeWorkflowStep.update((step) => Math.max(1, step - 1));
+  }
+
+  protected openFormulaReview(): void {
+    if (this.formulaResponse()) {
+      this.activeWorkflowStep.set(4);
+    }
+  }
+
+  protected getBuilderQueryParams(formulaResult: ColorSmartFormulaResponse): Params {
+    const proposal = formulaResult.inventoryProposal;
+    const diagnosis = formulaResult.diagnosis;
+
+    return {
+      origin: 'SMART_FORMULA',
+      sourceRecommendationCode: diagnosis.sourceRecommendationValidated
+        ? diagnosis.sourceRecommendationCode
+        : null,
+      sourceRecommendationTitle: diagnosis.sourceRecommendationValidated
+        ? diagnosis.sourceRecommendationTitle
+        : null,
+      customerId: diagnosis.customerId,
+      targetToneLevel: diagnosis.targetToneLevel,
+      targetPrimaryReflection: diagnosis.targetPrimaryReflection,
+      targetSecondaryReflection: diagnosis.targetSecondaryReflection,
+      applicationType: diagnosis.applicationType,
+      targetResult: diagnosis.targetResult,
+      consultationId: this.getConsultationIdFromContext(),
+      appointmentItemId: this.getAppointmentItemIdFromContext(),
+      ingredientPlan: this.getIngredientPlan(proposal),
+      volumeDeveloper: proposal.recommendedDeveloperVolume,
+      mixingRatio: proposal.recommendedMixingRatio,
+      customDeveloperRatio:
+        proposal.recommendedMixingRatio === 'CUSTOM' ? proposal.developerMultiplier : null,
+      technicalLineBrand: proposal.lineRuleBrand,
+      technicalLineName: proposal.lineRuleName,
+      whiteHairCoverageApplied: proposal.whiteHairCoverageRuleApplied,
+      whiteHairNaturalBaseSharePercentage: proposal.whiteHairNaturalBaseSharePercentage,
+      recommendedProcessingTimeMinutes: proposal.recommendedProcessingTimeMinutes,
+    };
   }
 
   /**
    * Costruisce l'input comune
    * per diagnosi e proposta formula.
    */
-  private buildRequest():
-    ColorSmartDiagnosisRequest {
-
-    const value =
-      this.form.getRawValue();
+  private buildRequest(): ColorSmartDiagnosisRequest {
+    const value = this.form.getRawValue();
 
     return {
+      customerId: Number(value.customerId),
 
-      customerId:
-        Number(
-          value.customerId
-        ),
+      targetToneLevel: value.targetToneLevel!,
 
-      targetToneLevel:
-        value.targetToneLevel!,
+      targetPrimaryReflection: value.targetPrimaryReflection!,
 
-      targetPrimaryReflection:
-        value.targetPrimaryReflection!,
+      targetSecondaryReflection: value.targetSecondaryReflection ?? null,
 
-      targetSecondaryReflection:
-        value.targetSecondaryReflection ??
-        null,
+      applicationType: value.applicationType!,
 
-      applicationType:
-        value.applicationType!,
+      targetResult: value.targetResult?.trim() ?? '',
 
-      targetResult:
-        value.targetResult?.trim() ??
-        '',
+      sourceRecommendationCode: this.sourceRecommendation()?.code ?? null,
 
-      sourceRecommendationCode:
-        this.sourceRecommendation()?.code ?? null,
-
-      sourceRecommendationTitle:
-        this.sourceRecommendation()?.title ?? null,
+      sourceRecommendationTitle: this.sourceRecommendation()?.title ?? null,
 
       sourceRecommendationCompatibilityScore:
-        this.sourceRecommendation()?.compatibilityScore ?? null
+        this.sourceRecommendation()?.compatibilityScore ?? null,
     };
   }
 
@@ -817,104 +543,43 @@ export class ColorSmartDiagnosisComponent
    * così il Builder obbliga il professionista
    * a completare il valore prima del salvataggio.
    */
-  protected getIngredientPlan(
-    proposal:
-      ColorSmartFormulaProposal
-  ): string {
-
+  protected getIngredientPlan(proposal: ColorSmartFormulaProposal): string {
     return proposal.components
-      .map(
-        component =>
-          `${component.hairDyeId}:${component.recommendedQuantity ?? 0}`
-      )
-      .join(
-        '|'
-      );
+      .map((component) => `${component.hairDyeId}:${component.recommendedQuantity ?? 0}`)
+      .join('|');
   }
 
-  protected getShortageLabel(
-    shortage:
-      number |
-      null |
-      undefined
-  ): string {
-
-    if (
-      shortage == null
-    ) {
-
+  protected getShortageLabel(shortage: number | null | undefined): string {
+    if (shortage == null) {
       return 'non verificabile';
     }
 
     return `${shortage} g`;
   }
 
-  protected getCustomerName():
-    string {
+  protected getCustomerName(): string {
+    const customerId = this.form.controls.customerId.value;
 
-    const customerId =
-      this.form.controls
-        .customerId
-        .value;
+    const customer = this.customers().find((item) => item.id === customerId);
 
-    const customer =
-      this.customers()
-        .find(
-          item =>
-            item.id ===
-            customerId
-        );
-
-    return customer
-      ? `${customer.firstName} ${customer.lastName}`
-      : 'Cliente';
+    return customer ? `${customer.firstName} ${customer.lastName}` : 'Cliente';
   }
 
-  protected getToneDifferenceLabel(
-    difference:
-      number
-  ): string {
-
-    if (
-      difference ===
-      0
-    ) {
-
+  protected getToneDifferenceLabel(difference: number): string {
+    if (difference === 0) {
       return 'Stessa altezza di tono';
     }
 
-    if (
-      difference >
-      0
-    ) {
-
-      return (
-        `+${difference} livello/i · schiarire`
-      );
+    if (difference > 0) {
+      return `+${difference} livello/i · schiarire`;
     }
 
-    return (
-      `${difference} livello/i · scurire`
-    );
+    return `${difference} livello/i · scurire`;
   }
 
-  private getErrorMessage(
-    error:
-      HttpErrorResponse,
-    fallback:
-      string
-  ): string {
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    const message = error.error?.message;
 
-    const message =
-      error.error?.message;
-
-    return (
-      typeof message ===
-        'string'
-      &&
-      message.trim()
-    )
-      ? message
-      : fallback;
+    return typeof message === 'string' && message.trim() ? message : fallback;
   }
 }

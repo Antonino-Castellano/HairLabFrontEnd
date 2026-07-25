@@ -1,20 +1,27 @@
 <section class="profile-page">
-
   <div class="page-header-row">
     <div class="page-header">
-      <span class="eyebrow">Account</span>
-      <h1>Profilo Utente</h1>
-      <p>Visualizza i dettagli del tuo account e gestisci le credenziali di accesso.</p>
+      <span class="eyebrow">ACCOUNT</span>
+      <h1>{{ isCustomer ? 'Il mio account' : 'Profilo utente' }}</h1>
+      <p>
+        {{
+          isCustomer
+            ? 'Consulta i dati associati al tuo accesso e gestisci in sicurezza la password.'
+            : 'Visualizza i dettagli del tuo account e gestisci le credenziali di accesso.'
+        }}
+      </p>
     </div>
 
-    <div class="header-actions">
+    @if (!isCustomer) {
+      <div class="header-actions">
         <button class="secondary-button" routerLink="/profile/all" type="button">
-            Visualizza utenti
+          Visualizza utenti
         </button>
         <button class="primary-button add-user-btn" routerLink="/profile/new" type="button">
-            + Nuovo utente
+          + Nuovo utente
         </button>
-    </div>
+      </div>
+    }
   </div>
 
   @if (successMessage()) {
@@ -26,7 +33,6 @@
   }
 
   <div class="profile-grid">
-
     <!-- SCHEDA INFORMAZIONI GENERALI -->
     <div class="panel">
       <div class="panel-header">
@@ -76,17 +82,19 @@
       </div>
 
       <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-        
         <div class="form-group">
           <label for="password">Nuova Password <span class="required">*</span></label>
-          <input 
-            type="password" 
-            id="password" 
-            formControlName="password" 
-            placeholder="Inserisci almeno 6 caratteri">
-          
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Inserisci almeno 6 caratteri"
+          />
+
           @if (passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched) {
-            <small class="error-text">La password è obbligatoria e deve avere almeno 6 caratteri.</small>
+            <small class="error-text"
+              >La password è obbligatoria e deve avere almeno 6 caratteri.</small
+            >
           }
         </div>
 
@@ -95,10 +103,7 @@
             {{ submitting() ? 'Salvataggio...' : 'Aggiorna Password' }}
           </button>
         </div>
-
       </form>
     </div>
-
   </div>
-
 </section>

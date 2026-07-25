@@ -100,18 +100,13 @@
   border: 1px solid #e5ddd8;
   border-radius: 15px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fcfaf9,
-      #f6efeb
-    );
+  background: linear-gradient(145deg, #fcfaf9, #f6efeb);
 }
 
 .overview-kicker {
   color: #9b6a4e;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.4px;
@@ -145,11 +140,7 @@
 .analysis-status {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 13px;
 
@@ -161,8 +152,7 @@
 
   display: grid;
 
-  grid-template-columns:
-    45px 1fr auto;
+  grid-template-columns: 45px 1fr auto;
 
   align-items: center;
 
@@ -173,12 +163,7 @@
   border: 1px solid #e3dbd6;
   border-radius: 11px;
 
-  background: rgba(
-    255,
-    255,
-    255,
-    0.7
-  );
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .status-icon {
@@ -209,9 +194,7 @@
 .status-item.available .status-dot {
   background: #75916f;
 
-  box-shadow:
-    0 0 0 5px
-    rgba(117, 145, 111, 0.1);
+  box-shadow: 0 0 0 5px rgba(117, 145, 111, 0.1);
 }
 
 .status-item.available {
@@ -233,7 +216,7 @@
 
   color: #92867f;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /*
@@ -276,7 +259,7 @@
 
   color: #a1745d;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.3px;
@@ -301,11 +284,7 @@
 .recommendation-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 17px;
 }
@@ -328,24 +307,15 @@
 
   background: white;
 
-  box-shadow:
-    0 4px 15px
-    rgba(61, 47, 39, 0.025);
+  box-shadow: 0 4px 15px rgba(61, 47, 39, 0.025);
 }
 
 .recommendation-card.top-choice {
   border-color: #c1a18f;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fffdfc,
-      #f9f1ec
-    );
+  background: linear-gradient(145deg, #fffdfc, #f9f1ec);
 
-  box-shadow:
-    0 9px 28px
-    rgba(88, 62, 48, 0.07);
+  box-shadow: 0 9px 28px rgba(88, 62, 48, 0.07);
 }
 
 .best-badge {
@@ -361,7 +331,7 @@
   background: #89614c;
   color: white;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 0.7px;
@@ -382,7 +352,7 @@
 
   color: #a17861;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.2px;
@@ -427,7 +397,7 @@
 .score-circle span {
   margin-left: 2px;
 
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .compatibility {
@@ -472,12 +442,7 @@
 
   border-radius: inherit;
 
-  background:
-    linear-gradient(
-      90deg,
-      #b58c74,
-      #79523f
-    );
+  background: linear-gradient(90deg, #b58c74, #79523f);
 }
 
 /*
@@ -515,7 +480,7 @@
 
   color: #a17861;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.2px;
@@ -547,7 +512,7 @@
   background: #edf3eb;
   color: #6f8667;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 900;
 }
 
@@ -574,12 +539,7 @@
   border: 1px solid #e5cdb7;
   border-radius: 15px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fffaf5,
-      #fdf2e8
-    );
+  background: linear-gradient(145deg, #fffaf5, #fdf2e8);
 }
 
 .warning-heading {
@@ -613,7 +573,7 @@
 
   color: #a07352;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.2px;
@@ -652,13 +612,7 @@
 
   border-radius: 10px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.72
-    );
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .warning-item > span {
@@ -765,9 +719,7 @@
 
   background: #9c7159;
 
-  animation:
-    pulse 1.2s
-    infinite ease-in-out;
+  animation: pulse 1.2s infinite ease-in-out;
 }
 
 .analysis-loader span:nth-child(2) {
@@ -779,7 +731,6 @@
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 0.25;
@@ -918,7 +869,6 @@
  */
 
 @media (max-width: 1000px) {
-
   .recommendation-grid {
     grid-template-columns: 1fr;
   }
@@ -929,7 +879,6 @@
 }
 
 @media (max-width: 720px) {
-
   .section-header {
     align-items: flex-start;
     flex-direction: column;
@@ -965,7 +914,6 @@
 }
 
 @media (max-width: 500px) {
-
   .recommendation-header {
     flex-direction: column;
   }

@@ -1,73 +1,37 @@
 <section class="builder-page">
-
   <header class="page-header">
-
     <div>
-
-      <span class="eyebrow">
-        COLOR LAB · FORMULA BUILDER
-      </span>
+      <span class="eyebrow"> COLOR LAB · FORMULA BUILDER </span>
 
       <h1>
-
-        {{
-          isEditMode()
-            ? 'Modifica formula'
-            : 'Nuova formula colore'
-        }}
-
+        {{ isEditMode() ? 'Modifica formula' : 'Nuova formula colore' }}
       </h1>
 
       <p>
-        Componi manualmente una formula,
-        calcola developer e verifica
-        la disponibilità degli ingredienti.
+        Componi manualmente una formula, calcola developer e verifica la disponibilità degli
+        ingredienti.
       </p>
-
     </div>
 
-    <a
-      class="back-button"
-      routerLink="/color-lab/formulas">
-      ← Formule salvate
-    </a>
-
+    <a class="back-button" routerLink="/color-lab/formulas"> ← Formule salvate </a>
   </header>
 
   <div class="formula-provenance">
-
     <div>
       <span>ORIGINE FORMULA</span>
       <strong>
-        {{
-          formulaOriginLabels[
-            formulaOrigin()
-          ]
-        }}
+        {{ formulaOriginLabels[formulaOrigin()] }}
       </strong>
     </div>
 
-    @if (
-      parentFormulaId();
-      as parentId
-    ) {
+    @if (parentFormulaId(); as parentId) {
       <div>
         <span>DERIVA DA</span>
-        <a
-          [routerLink]="[
-            '/color-lab/formulas',
-            parentId
-          ]">
-          Formula #{{ parentId }}
-        </a>
+        <a [routerLink]="['/color-lab/formulas', parentId]"> Formula #{{ parentId }} </a>
       </div>
     }
 
-
-    @if (
-      sourceRecommendationTitle();
-      as recommendationTitle
-    ) {
+    @if (sourceRecommendationTitle(); as recommendationTitle) {
       <div>
         <span>OBIETTIVO HAIRLAB</span>
         <strong>{{ recommendationTitle }}</strong>
@@ -77,9 +41,7 @@
     @if (technicalLineName()) {
       <div>
         <span>PROFILO TECNICO LINEA</span>
-        <strong>
-          {{ technicalLineBrand() }} · {{ technicalLineName() }}
-        </strong>
+        <strong> {{ technicalLineBrand() }} · {{ technicalLineName() }} </strong>
         <small>
           @if (whiteHairCoverageApplied()) {
             Copertura bianchi: base naturale {{ whiteHairNaturalBaseSharePercentage() }}%
@@ -95,806 +57,509 @@
       {{
         formulaOrigin() === 'SMART_FORMULA'
           ? 'La base tecnica proviene da Smart Formula e resta modificabile dal professionista prima dell’utilizzo.'
-          : (
-              formulaOrigin() === 'REVISION'
-                ? 'Questa formula è una nuova revisione: la formula precedente rimane immutata nello storico.'
-                : 'Formula costruita manualmente dal professionista.'
-            )
+          : formulaOrigin() === 'REVISION'
+            ? 'Questa formula è una nuova revisione: la formula precedente rimane immutata nello storico.'
+            : 'Formula costruita manualmente dal professionista.'
       }}
     </p>
-
   </div>
 
-  @if (
-    errorMessage()
-  ) {
+  <app-workflow-stepper
+    [steps]="workflowSteps"
+    [activeStep]="activeWorkflowStep()"
+    [maxAvailableStep]="maxWorkflowStep()"
+    (stepChange)="selectWorkflowStep($event)"
+  />
 
+  @if (errorMessage()) {
     <div class="message error">
       {{ errorMessage() }}
     </div>
-
   }
 
-  @if (
-    loading()
-  ) {
-
-    <div class="state-card">
-      Caricamento Formula Builder...
-    </div>
-
+  @if (loading()) {
+    <div class="state-card">Caricamento Formula Builder...</div>
   } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <aside class="builder-live-summary" aria-label="Riepilogo formula corrente">
+        <div>
+          <span>CLIENTE</span>
+          <strong>{{ getSelectedCustomerName() }}</strong>
+        </div>
+        <div>
+          <span>TARGET</span>
+          <strong>{{ getTargetSummary() }}</strong>
+        </div>
+        <div>
+          <span>COLORE</span>
+          <strong>{{ getTotalColorQuantity() }} g</strong>
+        </div>
+        <div>
+          <span>DEVELOPER</span>
+          <strong>{{ getDeveloperQuantity() }} g</strong>
+        </div>
+        <div>
+          <span>MISCELA</span>
+          <strong>{{ getTotalMixture() }} g</strong>
+        </div>
+        <div [class.summary-warning]="getStockWarningCount() > 0">
+          <span>SCORTE</span>
+          <strong>
+            {{
+              getStockWarningCount() === 0
+                ? 'Verifica positiva'
+                : getStockWarningCount() + ' attenzione/i'
+            }}
+          </strong>
+        </div>
+      </aside>
 
-    <form
-      [formGroup]="form"
-      (ngSubmit)="submit()">
-
-      <!-- =================================================
+      @if (activeWorkflowStep() === 1) {
+        <!-- =================================================
            01 CLIENTE E IDENTITÀ
            ================================================= -->
-      <section class="form-card">
+        <section class="form-card">
+          <div class="section-heading">
+            <span> 01 </span>
 
-        <div class="section-heading">
+            <div>
+              <h2>Cliente e formula</h2>
 
-          <span>
-            01
-          </span>
-
-          <div>
-
-            <h2>
-              Cliente e formula
-            </h2>
-
-            <p>
-              La formula viene salvata
-              direttamente nello storico
-              della cliente selezionata.
-            </p>
-
+              <p>La formula viene salvata direttamente nello storico della cliente selezionata.</p>
+            </div>
           </div>
 
-        </div>
+          <div class="form-grid two">
+            <label>
+              <span> Cliente * </span>
 
-        <div class="form-grid two">
+              <select formControlName="customerId">
+                <option [ngValue]="null">Seleziona cliente</option>
 
-          <label>
+                @for (customer of customers(); track customer.id) {
+                  <option [ngValue]="customer.id">
+                    {{ customer.firstName }}
+                    {{ customer.lastName }}
+                  </option>
+                }
+              </select>
+            </label>
 
-            <span>
-              Cliente *
-            </span>
+            <label>
+              <span> Nome formula * </span>
 
-            <select
-              formControlName="customerId">
+              <input type="text" formControlName="name" placeholder="Es. Chocolate freddo Maria" />
+            </label>
+          </div>
 
-              <option [ngValue]="null">
-                Seleziona cliente
-              </option>
+          <label class="full-field">
+            <span> Obiettivo / risultato desiderato * </span>
 
-              @for (
-                customer of customers();
-                track customer.id
-              ) {
-
-                <option
-                  [ngValue]="customer.id">
-
-                  {{ customer.firstName }}
-                  {{ customer.lastName }}
-
-                </option>
-
-              }
-
-            </select>
-
+            <textarea
+              rows="3"
+              formControlName="targetResult"
+              placeholder="Descrivi il risultato cromatico desiderato..."
+            >
+            </textarea>
           </label>
+        </section>
 
-          <label>
-
-            <span>
-              Nome formula *
-            </span>
-
-            <input
-              type="text"
-              formControlName="name"
-              placeholder="Es. Chocolate freddo Maria">
-
-          </label>
-
-        </div>
-
-        <label class="full-field">
-
-          <span>
-            Obiettivo / risultato desiderato *
-          </span>
-
-          <textarea
-            rows="3"
-            formControlName="targetResult"
-            placeholder="Descrivi il risultato cromatico desiderato...">
-          </textarea>
-
-        </label>
-
-      </section>
-
-      <!-- =================================================
+        <!-- =================================================
            02 TARGET TECNICO
            ================================================= -->
-      <section class="form-card">
+        <section class="form-card">
+          <div class="section-heading">
+            <span> 02 </span>
 
-        <div class="section-heading">
+            <div>
+              <h2>Obiettivo tecnico</h2>
 
-          <span>
-            02
-          </span>
-
-          <div>
-
-            <h2>
-              Obiettivo tecnico
-            </h2>
-
-            <p>
-              Struttura tono, riflesso
-              e area di applicazione.
-            </p>
-
+              <p>Struttura tono, riflesso e area di applicazione.</p>
+            </div>
           </div>
 
-        </div>
+          <div class="form-grid four">
+            <label>
+              <span> Tono target </span>
 
-        <div class="form-grid four">
+              <select formControlName="targetToneLevel">
+                <option [ngValue]="null">Non definito</option>
 
-          <label>
+                @for (tone of toneLevels; track tone) {
+                  <option [ngValue]="tone">
+                    {{ toneLabels[tone] }}
+                  </option>
+                }
+              </select>
+            </label>
 
-            <span>
-              Tono target
-            </span>
+            <label>
+              <span> Riflesso principale </span>
 
-            <select
-              formControlName="targetToneLevel">
+              <select formControlName="targetPrimaryReflection">
+                <option [ngValue]="null">Non definito</option>
 
-              <option [ngValue]="null">
-                Non definito
-              </option>
+                @for (reflection of reflections; track reflection) {
+                  <option [ngValue]="reflection">
+                    {{ reflectionLabels[reflection] }}
+                  </option>
+                }
+              </select>
+            </label>
 
-              @for (
-                tone of toneLevels;
-                track tone
-              ) {
+            <label>
+              <span> Riflesso secondario </span>
 
-                <option [ngValue]="tone">
+              <select formControlName="targetSecondaryReflection">
+                <option [ngValue]="null">Nessuno</option>
 
-                  {{
-                    toneLabels[
-                      tone
-                    ]
-                  }}
+                @for (reflection of reflections; track reflection) {
+                  <option [ngValue]="reflection">
+                    {{ reflectionLabels[reflection] }}
+                  </option>
+                }
+              </select>
+            </label>
 
-                </option>
+            <label>
+              <span> Applicazione * </span>
 
-              }
+              <select formControlName="applicationType">
+                @for (application of applications; track application) {
+                  <option [value]="application">
+                    {{ applicationLabels[application] }}
+                  </option>
+                }
+              </select>
+            </label>
+          </div>
+        </section>
+      }
 
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Riflesso principale
-            </span>
-
-            <select
-              formControlName="targetPrimaryReflection">
-
-              <option [ngValue]="null">
-                Non definito
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
-                <option [ngValue]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Riflesso secondario
-            </span>
-
-            <select
-              formControlName="targetSecondaryReflection">
-
-              <option [ngValue]="null">
-                Nessuno
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
-                <option [ngValue]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Applicazione *
-            </span>
-
-            <select
-              formControlName="applicationType">
-
-              @for (
-                application of applications;
-                track application
-              ) {
-
-                <option [value]="application">
-
-                  {{
-                    applicationLabels[
-                      application
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-        </div>
-
-      </section>
-
-      <!-- =================================================
+      @if (activeWorkflowStep() === 2) {
+        <!-- =================================================
            03 INGREDIENTI
            ================================================= -->
-      <section class="form-card">
+        <section class="form-card">
+          <div class="section-heading">
+            <span> 03 </span>
 
-        <div class="section-heading">
+            <div>
+              <h2>Ingredienti colore</h2>
 
-          <span>
-            03
-          </span>
+              <p>Ogni prodotto viene registrato con la sua grammatura precisa.</p>
+            </div>
 
-          <div>
-
-            <h2>
-              Ingredienti colore
-            </h2>
-
-            <p>
-              Ogni prodotto viene registrato
-              con la sua grammatura precisa.
-            </p>
-
+            <button type="button" class="add-button" (click)="addIngredient()">
+              + Aggiungi ingrediente
+            </button>
           </div>
 
-          <button
-            type="button"
-            class="add-button"
-            (click)="addIngredient()">
-            + Aggiungi ingrediente
-          </button>
+          <div class="ingredient-list" formArrayName="ingredients">
+            @for (ingredient of ingredients.controls; track $index; let index = $index) {
+              <div class="ingredient-row" [formGroupName]="index">
+                <div class="ingredient-number">
+                  {{ index + 1 }}
+                </div>
 
-        </div>
+                <label class="product-field">
+                  <span> Prodotto tecnico * </span>
 
-        <div
-          class="ingredient-list"
-          formArrayName="ingredients">
+                  <select formControlName="hairDyeId">
+                    <option [ngValue]="null">Seleziona prodotto</option>
 
-          @for (
-            ingredient of
-              ingredients.controls;
-            track $index;
-            let index = $index
-          ) {
-
-            <div
-              class="ingredient-row"
-              [formGroupName]="index">
-
-              <div class="ingredient-number">
-                {{
-                  index + 1
-                }}
-              </div>
-
-              <label class="product-field">
-
-                <span>
-                  Prodotto tecnico *
-                </span>
-
-                <select
-                  formControlName="hairDyeId">
-
-                  <option [ngValue]="null">
-                    Seleziona prodotto
-                  </option>
-
-                  @for (
-                    product of
-                      formulaProducts();
-                    track product.id
-                  ) {
-
-                    <option
-                      [ngValue]="product.id">
-
-                      {{ product.brand }}
-                      ·
-                      {{ product.code }}
-                      ·
-                      {{ product.name }}
-
-                    </option>
-
-                  }
-
-                </select>
-
-                @if (
-                  ingredient.controls
-                    .hairDyeId
-                    .value;
-                  as productId
-                ) {
-
-                  @if (
-                    getProductById(
-                      productId
-                    );
-                    as product
-                  ) {
-
-                    <small class="product-meta">
-
-                      {{
-                        productTypeLabels[
-                          product.productType
-                        ]
-                      }}
-
-                      @if (
-                        product.toneLevel
-                      ) {
-
+                    @for (product of formulaProducts(); track product.id) {
+                      <option [ngValue]="product.id">
+                        {{ product.brand }}
                         ·
-                        {{
-                          toneLabels[
-                            product.toneLevel
-                          ]
-                        }}
+                        {{ product.code }}
+                        ·
+                        {{ product.name }}
+                      </option>
+                    }
+                  </select>
 
-                      }
+                  @if (ingredient.controls.hairDyeId.value; as productId) {
+                    @if (getProductById(productId); as product) {
+                      <small class="product-meta">
+                        {{ productTypeLabels[product.productType] }}
 
-                    </small>
-
+                        @if (product.toneLevel) {
+                          ·
+                          {{ toneLabels[product.toneLevel] }}
+                        }
+                      </small>
+                    }
                   }
+                </label>
 
+                <label>
+                  <span> Grammi * </span>
+
+                  <div class="quantity-input">
+                    <input type="number" min="0.01" step="0.1" formControlName="quantity" />
+
+                    <b> g </b>
+                  </div>
+                </label>
+
+                <label>
+                  <span> Nota ingrediente </span>
+
+                  <input type="text" formControlName="notes" placeholder="Opzionale" />
+                </label>
+
+                <div class="stock-info" [attr.data-stock]="getStockState(index)">
+                  <span> MAGAZZINO </span>
+
+                  <strong>
+                    {{ getStockMessage(index) }}
+                  </strong>
+                </div>
+
+                <button
+                  type="button"
+                  class="remove-button"
+                  [disabled]="ingredients.length <= 1"
+                  (click)="removeIngredient(index)"
+                  aria-label="Rimuovi ingrediente"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+
+          @if (hasDuplicateProducts()) {
+            <div class="inline-warning">
+              Lo stesso prodotto è presente più volte. Unisci le quantità in un solo ingrediente.
+            </div>
+          }
+        </section>
+      }
+
+      @if (activeWorkflowStep() === 3) {
+        <!-- =================================================
+           04 DEVELOPER
+           ================================================= -->
+        <section class="form-card">
+          <div class="section-heading">
+            <span> 04 </span>
+
+            <div>
+              <h2>Developer e rapporto</h2>
+
+              <p>HairLab calcola automaticamente la quantità necessaria.</p>
+            </div>
+          </div>
+
+          <div class="form-grid three">
+            <label>
+              <span> Volume * </span>
+
+              <select formControlName="volumeDeveloper">
+                @for (oxygen of oxygens; track oxygen) {
+                  <option [value]="oxygen">
+                    {{ oxygenLabels[oxygen] }}
+                  </option>
                 }
+              </select>
+            </label>
 
-              </label>
+            <label>
+              <span> Rapporto * </span>
 
+              <select formControlName="mixingRatio">
+                @for (ratio of mixingRatios; track ratio) {
+                  <option [value]="ratio">
+                    {{ mixingRatioLabels[ratio] }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            @if (isCustomRatio()) {
               <label>
+                <span> Moltiplicatore custom * </span>
 
-                <span>
-                  Grammi *
-                </span>
-
-                <div class="quantity-input">
+                <div class="custom-ratio-input">
+                  <b> 1 : </b>
 
                   <input
                     type="number"
                     min="0.01"
-                    step="0.1"
-                    formControlName="quantity">
-
-                  <b>
-                    g
-                  </b>
-
+                    step="0.01"
+                    formControlName="customDeveloperRatio"
+                  />
                 </div>
-
               </label>
+            }
+          </div>
 
-              <label>
+          <div class="calculation-grid">
+            <article>
+              <span> COLORE TOTALE </span>
 
-                <span>
-                  Nota ingrediente
-                </span>
+              <strong>
+                {{ getTotalColorQuantity() }}
+                g
+              </strong>
+            </article>
 
-                <input
-                  type="text"
-                  formControlName="notes"
-                  placeholder="Opzionale">
+            <article>
+              <span> DEVELOPER </span>
 
-              </label>
+              <strong>
+                {{ getDeveloperQuantity() }}
+                g
+              </strong>
 
-              <div
-                class="stock-info"
-                [attr.data-stock]="
-                  getStockState(
-                    index
-                  )
-                ">
+              <small>
+                {{ oxygenLabels[form.controls.volumeDeveloper.value!] }}
+              </small>
+            </article>
 
-                <span>
-                  MAGAZZINO
-                </span>
+            <article class="total-card">
+              <span> TOTALE MISCELA </span>
 
-                <strong>
+              <strong>
+                {{ getTotalMixture() }}
+                g
+              </strong>
+            </article>
+          </div>
+        </section>
+      }
 
-                  {{
-                    getStockMessage(
-                      index
-                    )
-                  }}
-
-                </strong>
-
-              </div>
-
-              <button
-                type="button"
-                class="remove-button"
-                [disabled]="
-                  ingredients.length <=
-                  1
-                "
-                (click)="
-                  removeIngredient(
-                    index
-                  )
-                "
-                aria-label="Rimuovi ingrediente">
-                ×
-              </button>
-
+      @if (activeWorkflowStep() === 4) {
+        <section class="form-card compatibility-review">
+          <div class="section-heading">
+            <span>04</span>
+            <div>
+              <h2>Compatibilità e disponibilità</h2>
+              <p>Rivedi quantità, stock e coerenza della miscela prima del salvataggio.</p>
             </div>
-
-          }
-
-        </div>
-
-        @if (
-          hasDuplicateProducts()
-        ) {
-
-          <div class="inline-warning">
-            Lo stesso prodotto è presente più volte.
-            Unisci le quantità in un solo ingrediente.
           </div>
 
-        }
-
-      </section>
-
-      <!-- =================================================
-           04 DEVELOPER
-           ================================================= -->
-      <section class="form-card">
-
-        <div class="section-heading">
-
-          <span>
-            04
-          </span>
-
-          <div>
-
-            <h2>
-              Developer e rapporto
-            </h2>
-
-            <p>
-              HairLab calcola automaticamente
-              la quantità necessaria.
-            </p>
-
+          <div class="compatibility-overview">
+            <article>
+              <span>INGREDIENTI</span>
+              <strong>{{ ingredients.length }}</strong>
+              <small>{{
+                hasDuplicateProducts() ? 'Prodotti duplicati da correggere' : 'Nessun duplicato'
+              }}</small>
+            </article>
+            <article>
+              <span>COLORE TOTALE</span>
+              <strong>{{ getTotalColorQuantity() }} g</strong>
+              <small>Somma delle grammature inserite</small>
+            </article>
+            <article>
+              <span>DEVELOPER</span>
+              <strong>{{ getDeveloperQuantity() }} g</strong>
+              <small>{{ oxygenLabels[form.controls.volumeDeveloper.value!] }}</small>
+            </article>
+            <article>
+              <span>MISCELA TOTALE</span>
+              <strong>{{ getTotalMixture() }} g</strong>
+              <small>{{ mixingRatioLabels[form.controls.mixingRatio.value!] }}</small>
+            </article>
           </div>
 
-        </div>
-
-        <div class="form-grid three">
-
-          <label>
-
-            <span>
-              Volume *
-            </span>
-
-            <select
-              formControlName="volumeDeveloper">
-
-              @for (
-                oxygen of oxygens;
-                track oxygen
-              ) {
-
-                <option [value]="oxygen">
-
-                  {{
-                    oxygenLabels[
-                      oxygen
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Rapporto *
-            </span>
-
-            <select
-              formControlName="mixingRatio">
-
-              @for (
-                ratio of mixingRatios;
-                track ratio
-              ) {
-
-                <option [value]="ratio">
-
-                  {{
-                    mixingRatioLabels[
-                      ratio
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          @if (
-            isCustomRatio()
-          ) {
-
-            <label>
-
-              <span>
-                Moltiplicatore custom *
-              </span>
-
-              <div class="custom-ratio-input">
-
-                <b>
-                  1 :
-                </b>
-
-                <input
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  formControlName="customDeveloperRatio">
-
+          <div class="compatibility-list">
+            @for (ingredient of ingredients.controls; track $index; let index = $index) {
+              <div class="compatibility-row" [attr.data-state]="getStockState(index)">
+                <div>
+                  <strong>Ingrediente {{ index + 1 }}</strong>
+                  <span>{{ getProductName(ingredient.controls.hairDyeId.value) }}</span>
+                </div>
+                <div>
+                  <strong>{{ ingredient.controls.quantity.value }} g</strong>
+                  <span>{{ getStockMessage(index) }}</span>
+                </div>
               </div>
+            }
+          </div>
 
-            </label>
-
+          @if (hasDuplicateProducts()) {
+            <div class="hl-alert hl-alert-warning">
+              Lo stesso prodotto compare più volte. Torna agli ingredienti e unisci le quantità.
+            </div>
           }
 
-        </div>
+          @if (getStockWarningCount() > 0) {
+            <div class="hl-alert hl-alert-warning">
+              {{ getStockWarningCount() }} ingrediente/i richiedono una verifica di magazzino. La
+              formula può essere salvata come bozza, ma lo stock va controllato prima dell’utilizzo.
+            </div>
+          } @else {
+            <div class="hl-alert hl-alert-success">
+              Le quantità inserite risultano compatibili con le giacenze registrate.
+            </div>
+          }
+        </section>
+      }
 
-        <div class="calculation-grid">
-
-          <article>
-
-            <span>
-              COLORE TOTALE
-            </span>
-
-            <strong>
-              {{
-                getTotalColorQuantity()
-              }}
-              g
-            </strong>
-
-          </article>
-
-          <article>
-
-            <span>
-              DEVELOPER
-            </span>
-
-            <strong>
-              {{
-                getDeveloperQuantity()
-              }}
-              g
-            </strong>
-
-            <small>
-
-              {{
-                oxygenLabels[
-                  form.controls
-                    .volumeDeveloper
-                    .value!
-                ]
-              }}
-
-            </small>
-
-          </article>
-
-          <article class="total-card">
-
-            <span>
-              TOTALE MISCELA
-            </span>
-
-            <strong>
-              {{
-                getTotalMixture()
-              }}
-              g
-            </strong>
-
-          </article>
-
-        </div>
-
-      </section>
-
-      <!-- =================================================
+      @if (activeWorkflowStep() === 5) {
+        <!-- =================================================
            05 STATO / NOTE
            ================================================= -->
-      <section class="form-card">
+        <section class="form-card">
+          <div class="section-heading">
+            <span> 05 </span>
 
-        <div class="section-heading">
+            <div>
+              <h2>Salvataggio e note</h2>
 
-          <span>
-            05
-          </span>
-
-          <div>
-
-            <h2>
-              Salvataggio e note
-            </h2>
-
-            <p>
-              Una bozza può essere modificata
-              prima di essere realmente utilizzata.
-            </p>
-
+              <p>Una bozza può essere modificata prima di essere realmente utilizzata.</p>
+            </div>
           </div>
 
-        </div>
+          <div class="form-grid two">
+            <label>
+              <span> Stato * </span>
 
-        <div class="form-grid two">
+              <select formControlName="status">
+                @for (status of statuses; track status) {
+                  <option [value]="status">
+                    {{ statusLabels[status] }}
+                  </option>
+                }
+              </select>
+            </label>
 
-          <label>
+            <label>
+              <span> Note tecniche </span>
 
-            <span>
-              Stato *
-            </span>
+              <input
+                type="text"
+                formControlName="notes"
+                placeholder="Applicazione, tempi, osservazioni..."
+              />
+            </label>
+          </div>
+        </section>
+      }
 
-            <select
-              formControlName="status">
+      <div class="form-actions workflow-actions">
+        @if (activeWorkflowStep() > 1) {
+          <button type="button" class="secondary-button" (click)="previousWorkflowStep()">
+            ← Indietro
+          </button>
+        } @else {
+          <a class="secondary-button" routerLink="/color-lab/formulas">Annulla</a>
+        }
 
-              @for (
-                status of statuses;
-                track status
-              ) {
-
-                <option [value]="status">
-
-                  {{
-                    statusLabels[
-                      status
-                    ]
-                  }}
-
-                </option>
-
-              }
-
-            </select>
-
-          </label>
-
-          <label>
-
-            <span>
-              Note tecniche
-            </span>
-
-            <input
-              type="text"
-              formControlName="notes"
-              placeholder="Applicazione, tempi, osservazioni...">
-
-          </label>
-
-        </div>
-
-      </section>
-
-      <div class="form-actions">
-
-        <a
-          class="secondary-button"
-          routerLink="/color-lab/formulas">
-          Annulla
-        </a>
-
-        <button
-          type="submit"
-          class="primary-button"
-          [disabled]="saving()">
-
-          {{
-            saving()
-              ? 'Salvataggio...'
-              : (
-                  isEditMode()
-                    ? 'Salva modifiche'
-                    : 'Salva formula'
-                )
-          }}
-
-        </button>
-
+        @if (activeWorkflowStep() < 5) {
+          <button type="button" class="primary-button" (click)="nextWorkflowStep()">
+            Continua →
+          </button>
+        } @else {
+          <button type="submit" class="primary-button" [disabled]="saving()">
+            {{ saving() ? 'Salvataggio...' : isEditMode() ? 'Salva modifiche' : 'Salva formula' }}
+          </button>
+        }
       </div>
-
     </form>
-
   }
-
 </section>

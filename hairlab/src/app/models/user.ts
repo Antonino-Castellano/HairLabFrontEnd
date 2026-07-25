@@ -1,20 +1,21 @@
-import { Role } from "./enums/role";
+import { Role } from './enums/role';
 
-export interface User{
+export interface User {
+  id?: number;
 
-    id?: number;
+  firstName: string;
 
-    firstName: string;
+  lastName: string;
 
-    lastName: string;
+  address: string;
 
-    address: string;
+  email: string;
 
-    email: string;
+  password: string;
 
-    password: string;
+  dob: Date;
 
-    dob: Date;
+  role: Role;
 
-    role: Role;
+  customerId?: number | null;
 }

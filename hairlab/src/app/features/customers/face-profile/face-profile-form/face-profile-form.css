@@ -33,7 +33,7 @@
 
 .mini-eyebrow {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .page-header h1 {
@@ -67,8 +67,7 @@ form {
   border: 1px solid #e8e1dd;
   border-radius: 18px;
   background: white;
-  box-shadow:
-    0 8px 28px rgba(60, 45, 37, 0.035);
+  box-shadow: 0 8px 28px rgba(60, 45, 37, 0.035);
 }
 
 .form-section {
@@ -121,14 +120,12 @@ form {
  */
 .visual-grid {
   display: grid;
-  grid-template-columns:
-    repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
 }
 
 .visual-grid.small-grid {
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .visual-option {
@@ -170,28 +167,15 @@ form {
 
   border-color: #bd9c89;
 
-  box-shadow:
-    0 7px 20px rgba(
-      65,
-      47,
-      38,
-      0.05
-    );
+  box-shadow: 0 7px 20px rgba(65, 47, 38, 0.05);
 }
 
 .visual-option.selected {
   border-color: #8f644d;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fbf6f3,
-      #f5ebe5
-    );
+  background: linear-gradient(145deg, #fbf6f3, #f5ebe5);
 
-  box-shadow:
-    0 0 0 3px
-    rgba(143, 100, 77, 0.08);
+  box-shadow: 0 0 0 3px rgba(143, 100, 77, 0.08);
 }
 
 .visual-symbol {
@@ -204,10 +188,7 @@ form {
 
   color: #8e624a;
 
-  font-family:
-    Georgia,
-    'Times New Roman',
-    serif;
+  font-family: Georgia, 'Times New Roman', serif;
 
   font-size: 38px;
   line-height: 1;
@@ -249,7 +230,7 @@ form {
 
   color: #9a8e87;
 
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -328,8 +309,7 @@ form {
  */
 .two-columns {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 34px;
 }
 
@@ -345,12 +325,7 @@ form {
   border: 1px solid #e7ddd7;
   border-radius: 16px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fdfbf9,
-      #faf6f3
-    );
+  background: linear-gradient(145deg, #fdfbf9, #faf6f3);
 }
 
 .color-analysis-heading {
@@ -376,8 +351,7 @@ form {
 .eye-color-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 11px;
 }
@@ -425,21 +399,9 @@ form {
 
   border-radius: 50%;
 
-  border:
-    3px solid rgba(
-      255,
-      255,
-      255,
-      0.9
-    );
+  border: 3px solid rgba(255, 255, 255, 0.9);
 
-  box-shadow:
-    0 0 0 1px rgba(
-      70,
-      50,
-      40,
-      0.13
-    );
+  box-shadow: 0 0 0 1px rgba(70, 50, 40, 0.13);
 }
 
 .eye-color-option strong {
@@ -457,7 +419,7 @@ form {
 
   color: #9a8d85;
 
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.35;
 }
 
@@ -469,8 +431,7 @@ form {
 .reference-color-panel {
   display: grid;
 
-  grid-template-columns:
-    190px 1fr;
+  grid-template-columns: 190px 1fr;
 
   align-items: stretch;
 
@@ -500,9 +461,7 @@ form {
 
   border-radius: 12px;
 
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .reference-data {
@@ -558,9 +517,7 @@ form {
 
   font-size: 15px;
 
-  font-family:
-    'Courier New',
-    monospace;
+  font-family: 'Courier New', monospace;
 }
 
 .notes-input {
@@ -606,9 +563,7 @@ input[type='text']:focus,
 textarea:focus {
   border-color: #9a7159;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(154, 113, 89, 0.09);
+  box-shadow: 0 0 0 3px rgba(154, 113, 89, 0.09);
 }
 
 /*
@@ -706,20 +661,16 @@ textarea:focus {
  * ==========================================================
  */
 @media (max-width: 1200px) {
-
   .visual-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .eye-color-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 850px) {
-
   .page-header {
     align-items: flex-start;
     flex-direction: column;
@@ -732,13 +683,11 @@ textarea:focus {
 
   .visual-grid,
   .visual-grid.small-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .eye-color-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .reference-color-panel {
@@ -755,7 +704,6 @@ textarea:focus {
 }
 
 @media (max-width: 550px) {
-
   .form-section {
     padding: 25px 18px;
   }

@@ -1,0 +1,107 @@
+<section class="customer-services-page hl-page">
+  <header class="hl-page-header services-header">
+    <div>
+      <span class="eyebrow">LISTINO E TEAM</span>
+      <h1>Servizi e professionisti</h1>
+      <p>
+        Scopri i servizi attivi del salone, confronta durata e prezzo base e conosci il team HairLab
+        prima di prenotare.
+      </p>
+    </div>
+    <a class="hl-btn hl-btn-primary" routerLink="/my-appointments">Prenota ora</a>
+  </header>
+
+  @if (loading()) {
+    <div class="hl-card state-card">Caricamento del catalogo...</div>
+  } @else if (errorMessage()) {
+    <div class="hl-card state-card error-state">
+      <strong>Catalogo non disponibile</strong>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="hl-btn hl-btn-primary" (click)="loadCatalog()">Riprova</button>
+    </div>
+  } @else if (area(); as customerArea) {
+    <section class="catalog-section">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">SERVIZI DISPONIBILI</span>
+          <h2>Il listino del salone</h2>
+        </div>
+        <span>{{ customerArea.services.length }} servizi</span>
+      </div>
+
+      <div class="service-grid">
+        @for (service of customerArea.services; track service.id) {
+          <article class="hl-card service-card">
+            <div class="service-icon">HL</div>
+            <div class="service-copy">
+              <h3>{{ service.name }}</h3>
+              <p>{{ service.description || 'Servizio professionale HairLab.' }}</p>
+            </div>
+
+            <div class="service-meta">
+              <span>{{ service.duration }} minuti</span>
+              <strong>
+                {{ service.basePrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}
+              </strong>
+            </div>
+
+            <a
+              class="hl-btn hl-btn-primary"
+              routerLink="/my-appointments"
+              [queryParams]="{ serviceId: service.id }"
+            >
+              Prenota questo servizio
+            </a>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="catalog-section">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">IL TEAM HAIRLAB</span>
+          <h2>I nostri professionisti</h2>
+        </div>
+        <span>{{ customerArea.employees.length }} professionisti</span>
+      </div>
+
+      <div class="employee-grid">
+        @for (employee of customerArea.employees; track employee.id) {
+          <article class="hl-card employee-card">
+            <div class="employee-photo">
+              @if (employee.profileImage) {
+                <img
+                  [src]="employee.profileImage"
+                  [alt]="employee.firstName + ' ' + employee.lastName"
+                />
+              } @else {
+                <span>{{ initials(employee.firstName, employee.lastName) }}</span>
+              }
+            </div>
+
+            <div class="employee-copy">
+              <span class="role-label">{{ jobTitleLabels[employee.jobTitle] }}</span>
+              <h3>{{ employee.firstName }} {{ employee.lastName }}</h3>
+              <p>{{ employee.publicDescription }}</p>
+            </div>
+
+            <div class="specialization-list">
+              @for (specialization of employee.specializations; track specialization) {
+                <span>{{ specializationLabels[specialization] }}</span>
+              }
+            </div>
+
+            <a
+              class="hl-btn hl-btn-secondary"
+              routerLink="/my-appointments"
+              [queryParams]="{ employeeId: employee.id }"
+            >
+              Prenota con {{ employee.firstName }}
+            </a>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</section>

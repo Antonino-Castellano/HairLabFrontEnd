@@ -115,16 +115,9 @@
   border: 1px solid #e7dfda;
   border-radius: 18px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      #fbf8f6
-    );
+  background: linear-gradient(145deg, #ffffff, #fbf8f6);
 
-  box-shadow:
-    0 8px 26px
-    rgba(49, 39, 33, 0.045);
+  box-shadow: 0 8px 26px rgba(49, 39, 33, 0.045);
 }
 
 .customer-identity {
@@ -151,21 +144,14 @@
 
   border-radius: 28px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #f0e4dc,
-      #dfcdc1
-    );
+  background: linear-gradient(145deg, #f0e4dc, #dfcdc1);
 
   color: #705344;
 
   font-size: 38px;
   font-weight: 700;
 
-  box-shadow:
-    0 9px 24px
-    rgba(55, 43, 37, 0.1);
+  box-shadow: 0 9px 24px rgba(55, 43, 37, 0.1);
 }
 
 .large-avatar img {
@@ -281,7 +267,7 @@
 
   color: #9c8f88;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 750;
 
   text-transform: uppercase;
@@ -355,12 +341,7 @@
 }
 
 .profile-tabs button:hover {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.75
-  );
+  background: rgba(255, 255, 255, 0.75);
 
   color: #574941;
 }
@@ -369,9 +350,7 @@
   background: white;
   color: #473b35;
 
-  box-shadow:
-    0 4px 13px
-    rgba(58, 44, 37, 0.07);
+  box-shadow: 0 4px 13px rgba(58, 44, 37, 0.07);
 }
 
 .profile-tabs button.active:hover {
@@ -411,11 +390,7 @@
 .overview-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 20px;
 }
@@ -429,9 +404,7 @@
 
   background: white;
 
-  box-shadow:
-    0 5px 18px
-    rgba(49, 39, 33, 0.03);
+  box-shadow: 0 5px 18px rgba(49, 39, 33, 0.03);
 }
 
 .card-header {
@@ -445,7 +418,7 @@
 
   color: #a06f50;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.4px;
@@ -468,11 +441,7 @@
 .info-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 27px;
 }
@@ -491,7 +460,7 @@
 
   color: #9a8e87;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 750;
 
   text-transform: uppercase;
@@ -516,11 +485,7 @@
 .profile-shortcuts {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 13px;
 }
@@ -561,9 +526,7 @@
 
   background: #faf6f3;
 
-  box-shadow:
-    0 6px 16px
-    rgba(55, 42, 35, 0.04);
+  box-shadow: 0 6px 16px rgba(55, 42, 35, 0.04);
 }
 
 .shortcut-icon {
@@ -614,12 +577,7 @@
 }
 
 .recommendation-shortcut {
-  background:
-    linear-gradient(
-      145deg,
-      #fcf8f5,
-      #f6ece6
-    );
+  background: linear-gradient(145deg, #fcf8f5, #f6ece6);
 }
 
 /*
@@ -655,11 +613,7 @@
 .hairlab-sections {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 14px;
 }
@@ -747,7 +701,6 @@
  */
 
 @media (max-width: 1000px) {
-
   .overview-grid {
     grid-template-columns: 1fr;
   }
@@ -768,7 +721,6 @@
  */
 
 @media (max-width: 680px) {
-
   .page-header {
     align-items: flex-start;
     flex-direction: column;
@@ -882,7 +834,5 @@
   transform: translateY(-2px);
   border-color: #c9ada0;
   background: #faf6f3;
-  box-shadow:
-    0 5px 14px
-    rgba(55, 42, 35, 0.04);
+  box-shadow: 0 5px 14px rgba(55, 42, 35, 0.04);
 }

@@ -18,7 +18,7 @@
 
 .eyebrow {
   color: #9b6d50;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.6px;
 }
@@ -32,7 +32,7 @@
 .page-header p {
   margin: 6px 0 0;
   color: #91847c;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .header-actions {
@@ -48,7 +48,7 @@
   justify-content: center;
   padding: 0 13px;
   border-radius: 8px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
 }
@@ -87,7 +87,7 @@
 
 .filters label span {
   color: #91847c;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -102,19 +102,12 @@
   background: white;
   color: #564942;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .formula-grid {
   display: grid;
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(
-        300px,
-        1fr
-      )
-    );
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 11px;
   margin-top: 13px;
 }
@@ -135,7 +128,7 @@
 
 .customer-name {
   color: #9a6d51;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -151,7 +144,7 @@
   border-radius: 14px;
   background: #f0e9e5;
   color: #775d4e;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -174,7 +167,7 @@
   min-height: 38px;
   margin: 12px 0;
   color: #7f7169;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -182,7 +175,7 @@
   padding-top: 9px;
   border-top: 1px solid #eee7e3;
   color: #9a8e87;
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .card-actions {
@@ -199,7 +192,7 @@
   border: 1px solid #ddd4ce;
   border-radius: 7px;
   color: #68584f;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
 }
@@ -228,18 +221,17 @@
 
 .empty-state p {
   margin: 5px 0 13px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .message.error {
   border: 1px solid #edcfcb;
   background: #fff4f3;
   color: #9d4f48;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 760px) {
-
   .formula-list-page {
     padding: 16px;
   }
@@ -257,11 +249,7 @@
 /* BLOCCO 15 - Formula Center */
 .formula-summary {
   display: grid;
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -280,7 +268,7 @@
 
 .formula-summary span {
   color: #978981;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -305,7 +293,7 @@
   min-height: 22px;
   padding: 0 8px;
   border-radius: 12px;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -321,18 +309,14 @@
 
 .parent-link {
   color: #84624f;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 750;
   text-decoration: none;
 }
 
 .technical-meta {
   display: grid;
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
   margin: 10px 0;
@@ -352,23 +336,19 @@
 
 .technical-meta span {
   color: #9b8e86;
-  font-size: 6px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .technical-meta strong {
   margin-top: 4px;
   color: #5a4c45;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 @media (max-width: 900px) {
   .formula-summary {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -378,7 +358,6 @@
     grid-template-columns: 1fr;
   }
 }
-
 
 .recommendation-source-badge {
   display: inline-flex;
@@ -397,7 +376,7 @@
   border-radius: 999px;
   background: #f4ece7;
   color: #755d50;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -408,7 +387,7 @@
   align-items: center;
   padding: 5px 8px;
   border-radius: 999px;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 

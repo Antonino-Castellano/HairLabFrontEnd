@@ -1,0 +1,29 @@
+.access-denied-page {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+}
+
+.access-denied-card {
+  display: grid;
+  max-width: 520px;
+  justify-items: center;
+  gap: var(--hl-space-3);
+  padding: var(--hl-space-6);
+  text-align: center;
+}
+
+.access-denied-card > span {
+  color: var(--hl-color-primary);
+  font-size: 4rem;
+  font-weight: 900;
+}
+
+.access-denied-card h1,
+.access-denied-card p {
+  margin: 0;
+}
+
+.access-denied-card p {
+  color: var(--hl-color-text-muted);
+}

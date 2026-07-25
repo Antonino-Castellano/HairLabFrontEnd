@@ -177,9 +177,7 @@ svg {
 
   background: white;
 
-  box-shadow:
-    0 5px 18px
-    rgba(56, 41, 34, 0.025);
+  box-shadow: 0 5px 18px rgba(56, 41, 34, 0.025);
 }
 
 .block-heading {
@@ -225,7 +223,7 @@ svg {
 
   color: #9b6a4e;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1.3px;
@@ -267,7 +265,7 @@ svg {
 
   color: #9a8b82;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 
   letter-spacing: 1px;
@@ -282,11 +280,7 @@ svg {
 .tone-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 16px;
 }
@@ -297,12 +291,7 @@ svg {
   border: 1px solid #e3dad5;
   border-radius: 14px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      #fbf8f6
-    );
+  background: linear-gradient(145deg, #ffffff, #fbf8f6);
 }
 
 .tone-card-header {
@@ -346,9 +335,7 @@ svg {
 
   border-radius: 12px;
 
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(0, 0, 0, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.09);
 }
 
 .tone-card > p {
@@ -369,8 +356,7 @@ svg {
 .reflection-card {
   display: grid;
 
-  grid-template-columns:
-    185px 1fr;
+  grid-template-columns: 185px 1fr;
 
   align-items: stretch;
 
@@ -383,12 +369,7 @@ svg {
   border: 1px solid #e3dad5;
   border-radius: 14px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fdfbf9,
-      #f7f0ec
-    );
+  background: linear-gradient(145deg, #fdfbf9, #f7f0ec);
 }
 
 .reflection-preview {
@@ -401,17 +382,9 @@ svg {
 
   border-radius: 12px;
 
-  color:
-    rgba(
-      255,
-      255,
-      255,
-      0.65
-    );
+  color: rgba(255, 255, 255, 0.65);
 
-  box-shadow:
-    inset 0 0 0 1px
-    rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .reflection-data {
@@ -448,11 +421,7 @@ svg {
 .characteristics-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 14px;
 }
@@ -469,12 +438,7 @@ svg {
   border: 1px solid #e4dcd7;
   border-radius: 13px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fdfcfb,
-      #faf7f5
-    );
+  background: linear-gradient(145deg, #fdfcfb, #faf7f5);
 }
 
 .line-icon {
@@ -522,8 +486,7 @@ svg {
 .condition-card {
   display: grid;
 
-  grid-template-columns:
-    95px 1fr;
+  grid-template-columns: 95px 1fr;
 
   align-items: center;
 
@@ -534,12 +497,7 @@ svg {
   border: 1px solid #e3dad5;
   border-radius: 14px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fcfaf9,
-      #f5eeea
-    );
+  background: linear-gradient(145deg, #fcfaf9, #f5eeea);
 }
 
 .condition-icon {
@@ -556,9 +514,7 @@ svg {
   background: white;
   color: #8d624c;
 
-  box-shadow:
-    0 5px 15px
-    rgba(65, 47, 38, 0.05);
+  box-shadow: 0 5px 15px rgba(65, 47, 38, 0.05);
 }
 
 .condition-card h4 {
@@ -692,11 +648,7 @@ svg {
 .contraindication-panel {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 11px;
 }
@@ -714,12 +666,7 @@ svg {
   border: 1px solid #ebcece;
   border-radius: 11px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fffafa,
-      #fff4f4
-    );
+  background: linear-gradient(145deg, #fffafa, #fff4f4);
 }
 
 .contraindication-icon {
@@ -799,8 +746,7 @@ svg {
 
   display: grid;
 
-  grid-template-columns:
-    75px 1fr auto;
+  grid-template-columns: 75px 1fr auto;
 
   align-items: center;
 
@@ -811,12 +757,7 @@ svg {
   border: 1px solid #e7dfdb;
   border-radius: 15px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      #faf6f3
-    );
+  background: linear-gradient(145deg, #ffffff, #faf6f3);
 }
 
 .empty-icon {
@@ -887,10 +828,7 @@ svg {
 
   background: #966b53;
 
-  animation:
-    hair-profile-pulse
-    1.2s
-    infinite ease-in-out;
+  animation: hair-profile-pulse 1.2s infinite ease-in-out;
 }
 
 .state-loader span:nth-child(2) {
@@ -902,7 +840,6 @@ svg {
 }
 
 @keyframes hair-profile-pulse {
-
   0%,
   100% {
     opacity: 0.3;
@@ -989,13 +926,8 @@ svg {
  */
 
 @media (max-width: 1050px) {
-
   .characteristics-grid {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .contraindication-panel {
@@ -1010,7 +942,6 @@ svg {
  */
 
 @media (max-width: 800px) {
-
   .section-header {
     align-items: flex-start;
     flex-direction: column;
@@ -1055,7 +986,6 @@ svg {
  */
 
 @media (max-width: 580px) {
-
   .analysis-block {
     padding: 21px;
   }

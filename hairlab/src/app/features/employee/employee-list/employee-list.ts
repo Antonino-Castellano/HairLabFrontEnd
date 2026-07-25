@@ -3,16 +3,20 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Employee } from '../../../models/employee';
 import { EmployeeService } from '../../../service/employee-service';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
   imports: [RouterLink],
   templateUrl: './employee-list.html',
-  styleUrl: './employee-list.css'
+  styleUrl: './employee-list.css',
 })
 export class EmployeeListComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
 
   protected readonly employees = signal<Employee[]>([]);
   protected readonly loading = signal(false);
@@ -27,10 +31,10 @@ export class EmployeeListComponent implements OnInit {
     const filter = this.selectedFilter();
 
     if (filter === 'ACTIVE') {
-      return list.filter(e => e.active);
+      return list.filter((e) => e.active);
     }
     if (filter === 'INACTIVE') {
-      return list.filter(e => !e.active);
+      return list.filter((e) => !e.active);
     }
     return list;
   });
@@ -61,7 +65,7 @@ export class EmployeeListComponent implements OnInit {
         } else {
           this.errorMessage.set('Impossibile caricare i dipendenti.');
         }
-      }
+      },
     });
   }
 
@@ -76,32 +80,56 @@ export class EmployeeListComponent implements OnInit {
     this.selectedFilter.set(value);
   }
 
-  protected toggleStatus(employee: Employee): void {
+  protected async toggleStatus(employee: Employee): Promise<void> {
     if (!employee.id) return;
 
     const action = employee.active ? 'disattivare' : 'attivare';
-    const confirmed = confirm(`Vuoi ${action} il dipendente ${employee.firstName} ${employee.lastName}?`);
+    const confirmed = await this.confirmDialog.confirm({
+      title: employee.active ? 'Disattivare il dipendente?' : 'Riattivare il dipendente?',
+      message: `${employee.firstName} ${employee.lastName}`,
+      confirmLabel: employee.active ? 'Disattiva' : 'Riattiva',
+      severity: employee.active ? 'warning' : 'default',
+    });
     if (!confirmed) return;
 
-    const request$ = employee.active 
-      ? this.employeeService.deactivate(employee.id) 
+    const request$ = employee.active
+      ? this.employeeService.deactivate(employee.id)
       : this.employeeService.activate(employee.id);
 
     request$.subscribe({
-      next: () => this.loadEmployees(),
-      error: () => this.errorMessage.set(`Impossibile ${action} il dipendente.`)
+      next: () => {
+        this.toastService.success(
+          employee.active ? 'Dipendente disattivato' : 'Dipendente riattivato',
+        );
+        this.loadEmployees();
+      },
+      error: () => {
+        this.errorMessage.set(`Impossibile ${action} il dipendente.`);
+        this.toastService.error('Operazione non riuscita');
+      },
     });
   }
 
-  protected deleteEmployee(employee: Employee): void {
+  protected async deleteEmployee(employee: Employee): Promise<void> {
     if (!employee.id) return;
 
-    const confirmed = confirm(`Vuoi eliminare ${employee.firstName} ${employee.lastName}?`);
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Eliminare il dipendente?',
+      message: `${employee.firstName} ${employee.lastName}. Lo storico potrebbe impedire l’eliminazione definitiva.`,
+      confirmLabel: 'Elimina',
+      severity: 'danger',
+    });
     if (!confirmed) return;
 
     this.employeeService.delete(employee.id).subscribe({
-      next: () => this.loadEmployees(),
-      error: () => this.errorMessage.set('Impossibile eliminare il dipendente.')
+      next: () => {
+        this.toastService.success('Dipendente eliminato');
+        this.loadEmployees();
+      },
+      error: () => {
+        this.errorMessage.set('Impossibile eliminare il dipendente.');
+        this.toastService.error('Eliminazione non riuscita');
+      },
     });
   }
 }

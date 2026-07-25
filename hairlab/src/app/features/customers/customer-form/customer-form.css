@@ -25,7 +25,7 @@
 
 .eyebrow {
   color: #a06f50;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1.6px;
 }
@@ -59,8 +59,7 @@
   border: 1px solid #ebe5e1;
   border-radius: 13px;
   background: white;
-  box-shadow:
-    0 3px 14px rgba(49, 39, 33, 0.035);
+  box-shadow: 0 3px 14px rgba(49, 39, 33, 0.035);
 }
 
 .form-section {
@@ -108,18 +107,12 @@
   place-items: center;
   border: 1px solid #dfd5cf;
   border-radius: 22px;
-  background:
-    linear-gradient(
-      145deg,
-      #f4ece7,
-      #e9ddd5
-    );
+  background: linear-gradient(145deg, #f4ece7, #e9ddd5);
   color: #765846;
   font-size: 35px;
   font-weight: 700;
   letter-spacing: 1px;
-  box-shadow:
-    0 7px 22px rgba(55, 43, 37, 0.07);
+  box-shadow: 0 7px 22px rgba(55, 43, 37, 0.07);
 }
 
 /*
@@ -172,7 +165,7 @@
   border-radius: 8px;
   background: #fff6f6;
   color: #a44242;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -184,8 +177,7 @@
  */
 .form-grid {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -221,13 +213,12 @@
 
 .form-group input:focus {
   border-color: #9a6e52;
-  box-shadow:
-    0 0 0 3px rgba(154, 110, 82, 0.11);
+  box-shadow: 0 0 0 3px rgba(154, 110, 82, 0.11);
 }
 
 .field-error {
   color: #ad4545;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 /*
@@ -255,8 +246,7 @@
   flex: 0 0 42px;
   border-radius: 20px;
   background: #cec5c0;
-  transition:
-    background 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .switch::after {
@@ -267,11 +257,9 @@
   height: 17px;
   border-radius: 50%;
   background: white;
-  box-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   content: '';
-  transition:
-    transform 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .switch-row input:checked + .switch {
@@ -279,8 +267,7 @@
 }
 
 .switch-row input:checked + .switch::after {
-  transform:
-    translateX(19px);
+  transform: translateX(19px);
 }
 
 /*

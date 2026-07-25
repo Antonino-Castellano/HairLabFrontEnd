@@ -10,7 +10,7 @@ import { LoginRequest } from '../../models/login-request';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrl: './login.css',
 })
 export class LoginComponent {
   // Servizi necessari al componente.
@@ -26,7 +26,7 @@ export class LoginComponent {
   // Form reattivo con validazione di email e password.
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   });
 
   /**
@@ -64,7 +64,7 @@ export class LoginComponent {
         const role = this.authService.getRoleFromToken();
 
         if (role === 'CUSTOMER') {
-          this.router.navigate(['/appointments']);
+          this.router.navigate(['/my-dashboard']);
         } else {
           this.router.navigate(['/dashboard']);
         }
@@ -85,7 +85,7 @@ export class LoginComponent {
         } else {
           this.errorMessage = 'Errore durante il login';
         }
-      }
+      },
     });
   }
 }

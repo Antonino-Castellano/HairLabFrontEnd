@@ -1,5 +1,4 @@
 <div class="app-shell">
-
   <!-- Zona invisibile sul bordo sinistro per apertura sidebar -->
   <div class="sidebar-trigger" (mouseenter)="openSidebar()"></div>
 
@@ -8,15 +7,11 @@
     [class.open]="sidebarOpen()"
     [class.pinned]="sidebarPinned()"
     (mouseenter)="openSidebar()"
-    (mouseleave)="closeSidebar()">
-
+    (mouseleave)="closeSidebar()"
+  >
     <!-- LOGO -->
     <div class="sidebar-header">
-      <a
-        class="brand"
-        routerLink="/dashboard"
-        (click)="closeSidebarAfterNavigation()">
-
+      <a class="brand" [routerLink]="getHomeRoute()" (click)="closeSidebarAfterNavigation()">
         <div class="brand-mark">HL</div>
 
         <div class="brand-text">
@@ -30,8 +25,8 @@
         type="button"
         (click)="toggleSidebarPin()"
         [attr.aria-label]="sidebarPinned() ? 'Sblocca menu' : 'Blocca menu aperto'"
-        [title]="sidebarPinned() ? 'Sblocca menu' : 'Mantieni menu aperto'">
-
+        [title]="sidebarPinned() ? 'Sblocca menu' : 'Mantieni menu aperto'"
+      >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6z"></path>
         </svg>
@@ -39,7 +34,6 @@
     </div>
 
     <nav class="sidebar-nav">
-
       <!-- DASHBOARD -->
       @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
@@ -47,8 +41,8 @@
           routerLink="/dashboard"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"></path>
@@ -59,14 +53,90 @@
         </a>
       }
 
+      <!-- NAVIGAZIONE CUSTOMER -->
+      @if (hasAnyRole(['CUSTOMER'])) {
+        <a
+          class="nav-item"
+          routerLink="/my-dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"></path>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+
+        <a
+          class="nav-item"
+          routerLink="/my-profile"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
+            </svg>
+          </span>
+          <span>Il mio HairLab</span>
+        </a>
+
+        <a
+          class="nav-item"
+          routerLink="/my-appointments"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"
+              ></path>
+            </svg>
+          </span>
+          <span>Appuntamenti</span>
+        </a>
+
+        <a
+          class="nav-item"
+          routerLink="/my-services"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
+            </svg>
+          </span>
+          <span>Servizi disponibili</span>
+        </a>
+
+        <a
+          class="nav-item"
+          routerLink="/my-account"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6"></path>
+            </svg>
+          </span>
+          <span>La mia area</span>
+        </a>
+      }
+
       <!-- CLIENTI -->
       @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
           class="nav-item"
           routerLink="/customers"
           routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8c0-4 3-6 7-6s7 2 7 6"></path>
@@ -78,16 +148,18 @@
       }
 
       <!-- AGENDA -->
-      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'])) {
+      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
           class="nav-item"
           routerLink="/appointments"
           routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"></path>
+              <path
+                d="M5 4h14 a2 2 0 0 1 2 2 v14H3V6 a2 2 0 0 1 2-2 zm2-2v4 m10-4v4 M3 9h18"
+              ></path>
             </svg>
           </span>
 
@@ -101,11 +173,13 @@
           class="nav-item"
           routerLink="/employees"
           routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"></path>
+              <path
+                d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"
+              ></path>
             </svg>
           </span>
 
@@ -114,13 +188,13 @@
       }
 
       <!-- SERVIZI -->
-      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'])) {
+      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
           class="nav-item"
           routerLink="/services"
           routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
@@ -132,13 +206,13 @@
       }
 
       <!-- CONSULENZE -->
-      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST', 'CUSTOMER'])) {
+      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
           class="nav-item"
           routerLink="/consultations"
           routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()">
-
+          (click)="closeSidebarAfterNavigation()"
+        >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
@@ -151,15 +225,8 @@
 
       <!-- COLOR LAB -->
       @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
-        <div
-          class="nav-group"
-          [class.expanded]="colorLabMenuOpen()">
-
-          <button
-            class="nav-item nav-group-toggle"
-            type="button"
-            (click)="toggleColorLabMenu()">
-
+        <div class="nav-group" [class.expanded]="colorLabMenuOpen()">
+          <button class="nav-item nav-group-toggle" type="button" (click)="toggleColorLabMenu()">
             <span class="nav-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M9 3h6m-5 0v5l-5 10a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3L14 8V3M8 15h8"></path>
@@ -172,40 +239,44 @@
 
           @if (colorLabMenuOpen()) {
             <div class="nav-submenu">
-
               <a
                 routerLink="/color-lab"
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Panoramica
               </a>
 
               <a
                 routerLink="/color-lab/smart-formula"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Smart Formula
               </a>
 
               <a
                 routerLink="/color-lab/formulas"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Formula Center
               </a>
 
               <a
                 routerLink="/color-lab"
                 [queryParams]="{ tab: 'library' }"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Libreria prodotti
               </a>
 
               <a
                 routerLink="/color-lab"
                 [queryParams]="{ tab: 'inventory' }"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Magazzino
               </a>
 
@@ -213,11 +284,11 @@
                 <a
                   routerLink="/color-lab/lines"
                   routerLinkActive="active"
-                  (click)="closeSidebarAfterNavigation()">
+                  (click)="closeSidebarAfterNavigation()"
+                >
                   Linee tecniche
                 </a>
               }
-
             </div>
           }
         </div>
@@ -225,15 +296,8 @@
 
       <!-- MAGAZZINO & ACQUISTI -->
       @if (hasAnyRole(['ADMIN', 'SUPERADMIN'])) {
-        <div
-          class="nav-group"
-          [class.expanded]="stockMenuOpen()">
-
-          <button
-            class="nav-item nav-group-toggle"
-            type="button"
-            (click)="toggleStockMenu()">
-
+        <div class="nav-group" [class.expanded]="stockMenuOpen()">
+          <button class="nav-item nav-group-toggle" type="button" (click)="toggleStockMenu()">
             <span class="nav-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4 9-4V7M12 11v10"></path>
@@ -246,66 +310,57 @@
 
           @if (stockMenuOpen()) {
             <div class="nav-submenu">
-
               <a
                 routerLink="/color-lab/movements"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Movimenti magazzino
               </a>
 
               <a
                 routerLink="/color-lab/reorder"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Riordino
               </a>
 
               <a
                 routerLink="/color-lab/orders"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Ordini fornitori
               </a>
 
               <a
                 routerLink="/color-lab/suppliers"
                 routerLinkActive="active"
-                (click)="closeSidebarAfterNavigation()">
+                (click)="closeSidebarAfterNavigation()"
+              >
                 Fornitori
               </a>
-
             </div>
           }
         </div>
       }
-
     </nav>
 
     <!-- FOOTER SIDEBAR -->
-    <div
-      class="sidebar-footer"
-      style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-
-      <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
-
+    <div class="sidebar-footer">
+      <div class="sidebar-user-summary">
         <div class="sidebar-user-avatar">
           {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
         </div>
 
-        <div class="sidebar-user-info" style="overflow: hidden;">
+        <div class="sidebar-user-info">
           <strong>{{ user?.username || 'Utente' }}</strong>
           <span>{{ user?.role || 'USER' }}</span>
         </div>
       </div>
 
-      <button
-        type="button"
-        (click)="logout()"
-        title="Esci"
-        class="sidebar-logout-btn"
-        style="background: transparent; border: none; color: #a0a0a0; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-
+      <button type="button" (click)="logout()" title="Esci" class="sidebar-logout-btn">
         <svg
           viewBox="0 0 24 24"
           width="18"
@@ -314,36 +369,23 @@
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
-          stroke-linejoin="round">
-
+          stroke-linejoin="round"
+        >
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
           <line x1="21" y1="12" x2="9" y2="12"></line>
         </svg>
       </button>
     </div>
-
   </aside>
 
   @if (sidebarOpen() && !sidebarPinned()) {
-    <div
-      class="sidebar-overlay"
-      (click)="closeSidebar()">
-    </div>
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
   }
 
-  <div
-    class="main-area"
-    [class.sidebar-pinned]="sidebarPinned()">
-
+  <div class="main-area" [class.sidebar-pinned]="sidebarPinned()">
     <header class="topbar">
-
-      <button
-        class="menu-button"
-        type="button"
-        (click)="toggleSidebar()"
-        aria-label="Apri menu">
-
+      <button class="menu-button" type="button" (click)="toggleSidebar()" aria-label="Apri menu">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
@@ -351,12 +393,7 @@
 
       <div class="topbar-spacer"></div>
 
-      <div
-        class="topbar-user"
-        routerLink="/profile"
-        style="cursor: pointer;"
-        title="Vai al profilo">
-
+      <div class="topbar-user" [routerLink]="getProfileRoute()" title="Vai alla tua area">
         <div class="topbar-avatar">
           {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
         </div>
@@ -371,6 +408,5 @@
     <main class="page-content">
       <router-outlet></router-outlet>
     </main>
-
   </div>
 </div>

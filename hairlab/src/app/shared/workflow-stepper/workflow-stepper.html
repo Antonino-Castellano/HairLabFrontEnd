@@ -1,0 +1,33 @@
+<nav class="workflow-stepper" aria-label="Avanzamento procedura">
+  @for (step of steps; track step.id; let index = $index) {
+    <button
+      type="button"
+      class="workflow-step"
+      [class.active]="step.id === activeStep"
+      [class.completed]="step.id < activeStep"
+      [class.locked]="step.id > maxAvailableStep"
+      [disabled]="step.id > maxAvailableStep"
+      [attr.aria-current]="step.id === activeStep ? 'step' : null"
+      (click)="selectStep(step.id)"
+    >
+      <span class="workflow-step-index">
+        @if (step.id < activeStep) {
+          ✓
+        } @else {
+          {{ step.id }}
+        }
+      </span>
+
+      <span class="workflow-step-copy">
+        <strong>{{ step.label }}</strong>
+        @if (step.description) {
+          <small>{{ step.description }}</small>
+        }
+      </span>
+    </button>
+
+    @if (index < steps.length - 1) {
+      <span class="workflow-connector" [class.completed]="step.id < activeStep"></span>
+    }
+  }
+</nav>

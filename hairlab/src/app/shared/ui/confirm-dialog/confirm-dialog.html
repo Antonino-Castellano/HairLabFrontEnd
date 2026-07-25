@@ -1,0 +1,48 @@
+@if (dialogService.state(); as dialog) {
+  <div class="dialog-backdrop" role="presentation" (click)="dialogService.resolve(false)">
+    <section
+      class="dialog-panel"
+      [class.dialog-warning]="dialog.severity === 'warning'"
+      [class.dialog-danger]="dialog.severity === 'danger'"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="hairlab-confirm-title"
+      aria-describedby="hairlab-confirm-message"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="dialog-icon" aria-hidden="true">
+        @if (dialog.severity === 'danger') {
+          !
+        } @else if (dialog.severity === 'warning') {
+          !
+        } @else {
+          ?
+        }
+      </div>
+
+      <div class="dialog-content">
+        <h2 id="hairlab-confirm-title">{{ dialog.title }}</h2>
+        <p id="hairlab-confirm-message">{{ dialog.message }}</p>
+      </div>
+
+      <div class="dialog-actions">
+        <button
+          type="button"
+          class="dialog-button dialog-cancel"
+          (click)="dialogService.resolve(false)"
+        >
+          {{ dialog.cancelLabel }}
+        </button>
+
+        <button
+          type="button"
+          class="dialog-button dialog-confirm"
+          [class.dialog-confirm-danger]="dialog.severity === 'danger'"
+          (click)="dialogService.resolve(true)"
+        >
+          {{ dialog.confirmLabel }}
+        </button>
+      </div>
+    </section>
+  </div>
+}

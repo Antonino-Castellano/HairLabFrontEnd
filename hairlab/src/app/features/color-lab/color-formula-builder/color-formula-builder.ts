@@ -1,14 +1,6 @@
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 
 import {
   FormArray,
@@ -16,113 +8,71 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import {
-  forkJoin
-} from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 import {
   ColorFormulaDetail,
-  ColorFormulaManagementRequest
+  ColorFormulaManagementRequest,
 } from '../../../models/color-formula-management';
 
-import {
-  Customer
-} from '../../../models/customer';
+import { Customer } from '../../../models/customer';
 
-import {
-  HairDye
-} from '../../../models/hair-dye';
+import { HairDye } from '../../../models/hair-dye';
 
-import {
-  HairDyeInventory
-} from '../../../models/hair-dye-inventory';
+import { HairDyeInventory } from '../../../models/hair-dye-inventory';
 
-import {
-  ColorApplicationType
-} from '../../../models/enums/color-application-type';
+import { ColorApplicationType } from '../../../models/enums/color-application-type';
 
-import {
-  ColorFormulaStatus
-} from '../../../models/enums/color-formula-status';
+import { ColorFormulaStatus } from '../../../models/enums/color-formula-status';
 
-import {
-  ColorFormulaOrigin
-} from '../../../models/enums/color-formula-origin';
+import { ColorFormulaOrigin } from '../../../models/enums/color-formula-origin';
 
-import {
-  InventoryUnit
-} from '../../../models/enums/inventory-unit';
+import { InventoryUnit } from '../../../models/enums/inventory-unit';
 
-import {
-  MixingRatio
-} from '../../../models/enums/mixing-ratio';
+import { MixingRatio } from '../../../models/enums/mixing-ratio';
 
-import {
-  Oxygen
-} from '../../../models/enums/oxygen';
+import { Oxygen } from '../../../models/enums/oxygen';
 
-import {
-  ProductType
-} from '../../../models/enums/product-type';
+import { ProductType } from '../../../models/enums/product-type';
 
-import {
-  Reflection
-} from '../../../models/enums/reflection';
+import { Reflection } from '../../../models/enums/reflection';
 
-import {
-  ToneLevel
-} from '../../../models/enums/tone-level';
+import { ToneLevel } from '../../../models/enums/tone-level';
 
-import {
-  ColorFormulaManagementService
-} from '../../../service/color-formula-management-service';
+import { ColorFormulaManagementService } from '../../../service/color-formula-management-service';
 
-import {
-  CustomerService
-} from '../../../service/customer-service';
+import { CustomerService } from '../../../service/customer-service';
 
-import {
-  HairDyeInventoryService
-} from '../../../service/hair-dye-inventory-service';
+import { HairDyeInventoryService } from '../../../service/hair-dye-inventory-service';
 
-import {
-  HairDyeService
-} from '../../../service/hair-dye-service';
+import { HairDyeService } from '../../../service/hair-dye-service';
 
 import {
   COLOR_APPLICATION_LABELS,
   COLOR_FORMULA_STATUS_LABELS,
   MIXING_RATIO_LABELS,
-  OXYGEN_LABELS
+  OXYGEN_LABELS,
 } from '../color-formula-display';
 
+import { PRODUCT_TYPE_LABELS, REFLECTION_LABELS, TONE_LEVEL_LABELS } from '../color-lab-display';
+
 import {
-  PRODUCT_TYPE_LABELS,
-  REFLECTION_LABELS,
-  TONE_LEVEL_LABELS
-} from '../color-lab-display';
+  WorkflowStep,
+  WorkflowStepperComponent,
+} from '../../../shared/workflow-stepper/workflow-stepper';
 
-type IngredientForm =
-  FormGroup<{
+type IngredientForm = FormGroup<{
+  hairDyeId: FormControl<number | null>;
 
-    hairDyeId:
-      FormControl<number | null>;
+  quantity: FormControl<number>;
 
-    quantity:
-      FormControl<number>;
-
-    notes:
-      FormControl<string>;
-  }>;
+  notes: FormControl<string>;
+}>;
 
 /**
  * Formula Builder manuale.
@@ -132,187 +82,113 @@ type IngredientForm =
  * dallo Smart Formula Engine.
  */
 @Component({
-  selector:
-    'app-color-formula-builder',
+  selector: 'app-color-formula-builder',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink
-  ],
-  templateUrl:
-    './color-formula-builder.html',
-  styleUrl:
-    './color-formula-builder.css'
+  imports: [ReactiveFormsModule, RouterLink, WorkflowStepperComponent],
+  templateUrl: './color-formula-builder.html',
+  styleUrl: './color-formula-builder.css',
 })
-export class ColorFormulaBuilderComponent
-  implements OnInit {
+export class ColorFormulaBuilderComponent implements OnInit {
+  private readonly formBuilder = inject(FormBuilder);
 
-  private readonly formBuilder =
-    inject(
-      FormBuilder
-    );
+  private readonly customerService = inject(CustomerService);
 
-  private readonly customerService =
-    inject(
-      CustomerService
-    );
+  private readonly hairDyeService = inject(HairDyeService);
 
-  private readonly hairDyeService =
-    inject(
-      HairDyeService
-    );
+  private readonly inventoryService = inject(HairDyeInventoryService);
 
-  private readonly inventoryService =
-    inject(
-      HairDyeInventoryService
-    );
+  private readonly managementService = inject(ColorFormulaManagementService);
 
-  private readonly managementService =
-    inject(
-      ColorFormulaManagementService
-    );
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  private readonly activatedRoute =
-    inject(
-      ActivatedRoute
-    );
+  private readonly router = inject(Router);
 
-  private readonly router =
-    inject(
-      Router
-    );
+  protected readonly customers = signal<Customer[]>([]);
 
-  protected readonly customers =
-    signal<Customer[]>([]);
+  protected readonly products = signal<HairDye[]>([]);
 
-  protected readonly products =
-    signal<HairDye[]>([]);
+  protected readonly inventories = signal<HairDyeInventory[]>([]);
 
-  protected readonly inventories =
-    signal<HairDyeInventory[]>([]);
+  protected readonly loading = signal(false);
 
-  protected readonly loading =
-    signal(false);
+  protected readonly saving = signal(false);
 
-  protected readonly saving =
-    signal(false);
+  protected readonly errorMessage = signal('');
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly activeWorkflowStep = signal(1);
+  protected readonly maxWorkflowStep = signal(1);
 
-  protected readonly isEditMode =
-    signal(false);
+  protected readonly workflowSteps: WorkflowStep[] = [
+    { id: 1, label: 'Informazioni', description: 'Cliente e obiettivo' },
+    { id: 2, label: 'Ingredienti', description: 'Prodotti e grammature' },
+    { id: 3, label: 'Developer', description: 'Volume e rapporto' },
+    { id: 4, label: 'Compatibilità', description: 'Stock e controlli' },
+    { id: 5, label: 'Salvataggio', description: 'Stato e note finali' },
+  ];
 
-  protected formulaId?:
-    number;
+  protected readonly isEditMode = signal(false);
 
-  protected readonly toneLevels =
-    Object.values(
-      ToneLevel
-    );
+  protected formulaId?: number;
 
-  protected readonly reflections =
-    Object.values(
-      Reflection
-    );
+  protected readonly toneLevels = Object.values(ToneLevel);
 
-  protected readonly applications =
-    Object.values(
-      ColorApplicationType
-    );
+  protected readonly reflections = Object.values(Reflection);
 
-  protected readonly oxygens =
-    Object.values(
-      Oxygen
-    );
+  protected readonly applications = Object.values(ColorApplicationType);
 
-  protected readonly mixingRatios =
-    Object.values(
-      MixingRatio
-    );
+  protected readonly oxygens = Object.values(Oxygen);
+
+  protected readonly mixingRatios = Object.values(MixingRatio);
 
   /**
    * USED viene impostato esclusivamente dal workflow
    * "Utilizza formula" e non è più selezionabile manualmente.
    */
-  protected readonly formulaOrigin =
-    signal<ColorFormulaOrigin>(
-      ColorFormulaOrigin.MANUAL
-    );
+  protected readonly formulaOrigin = signal<ColorFormulaOrigin>(ColorFormulaOrigin.MANUAL);
 
-  protected readonly parentFormulaId =
-    signal<number | null>(
-      null
-    );
+  protected readonly parentFormulaId = signal<number | null>(null);
 
-  protected readonly referenceSourceFormulaId =
-    signal<number | null>(
-      null
-    );
+  protected readonly referenceSourceFormulaId = signal<number | null>(null);
 
+  protected readonly sourceRecommendationCode = signal<string | null>(null);
 
-  protected readonly sourceRecommendationCode =
-    signal<string | null>(null);
+  protected readonly sourceRecommendationTitle = signal<string | null>(null);
 
-  protected readonly sourceRecommendationTitle =
-    signal<string | null>(null);
+  protected readonly technicalLineBrand = signal<string | null>(null);
 
-  protected readonly technicalLineBrand =
-    signal<string | null>(null);
+  protected readonly technicalLineName = signal<string | null>(null);
 
-  protected readonly technicalLineName =
-    signal<string | null>(null);
+  protected readonly whiteHairCoverageApplied = signal(false);
 
-  protected readonly whiteHairCoverageApplied =
-    signal(false);
+  protected readonly whiteHairNaturalBaseSharePercentage = signal<number | null>(null);
 
-  protected readonly whiteHairNaturalBaseSharePercentage =
-    signal<number | null>(null);
+  protected readonly recommendedProcessingTimeMinutes = signal<number | null>(null);
 
-  protected readonly recommendedProcessingTimeMinutes =
-    signal<number | null>(null);
+  protected readonly formulaOriginLabels: Record<ColorFormulaOrigin, string> = {
+    [ColorFormulaOrigin.MANUAL]: 'Manuale',
 
-  protected readonly formulaOriginLabels:
-    Record<ColorFormulaOrigin, string> = {
+    [ColorFormulaOrigin.SMART_FORMULA]: 'Smart Formula',
 
-      [ColorFormulaOrigin.MANUAL]:
-        'Manuale',
+    [ColorFormulaOrigin.REVISION]: 'Revisione',
 
-      [ColorFormulaOrigin.SMART_FORMULA]:
-        'Smart Formula',
+    [ColorFormulaOrigin.RECURRING]: 'Ricorrente',
+  };
 
-      [ColorFormulaOrigin.REVISION]:
-        'Revisione',
+  protected readonly statuses = [ColorFormulaStatus.DRAFT, ColorFormulaStatus.PROPOSED];
 
-      [ColorFormulaOrigin.RECURRING]:
-        'Ricorrente'
-    };
+  protected readonly toneLabels = TONE_LEVEL_LABELS;
 
-  protected readonly statuses = [
-    ColorFormulaStatus.DRAFT,
-    ColorFormulaStatus.PROPOSED
-  ];
+  protected readonly reflectionLabels = REFLECTION_LABELS;
 
-  protected readonly toneLabels =
-    TONE_LEVEL_LABELS;
+  protected readonly applicationLabels = COLOR_APPLICATION_LABELS;
 
-  protected readonly reflectionLabels =
-    REFLECTION_LABELS;
+  protected readonly oxygenLabels = OXYGEN_LABELS;
 
-  protected readonly applicationLabels =
-    COLOR_APPLICATION_LABELS;
+  protected readonly mixingRatioLabels = MIXING_RATIO_LABELS;
 
-  protected readonly oxygenLabels =
-    OXYGEN_LABELS;
+  protected readonly statusLabels = COLOR_FORMULA_STATUS_LABELS;
 
-  protected readonly mixingRatioLabels =
-    MIXING_RATIO_LABELS;
-
-  protected readonly statusLabels =
-    COLOR_FORMULA_STATUS_LABELS;
-
-  protected readonly productTypeLabels =
-    PRODUCT_TYPE_LABELS;
+  protected readonly productTypeLabels = PRODUCT_TYPE_LABELS;
 
   /**
    * Prodotti ammessi come ingredienti colore.
@@ -322,299 +198,242 @@ export class ColorFormulaBuilderComponent
    *
    * Treatment non appartiene alla miscela colore.
    */
-  protected readonly formulaProducts =
-    computed(
-      () =>
-        this.products()
-          .filter(
-            product =>
-              product.active
-              &&
-              product.productType !==
-                ProductType.DEVELOPER
-              &&
-              product.productType !==
-                ProductType.TREATMENT
-          )
-          .sort(
-            (
-              first,
-              second
-            ) =>
-              first.brand.localeCompare(
-                second.brand,
-                'it'
-              )
-              ||
-              first.code.localeCompare(
-                second.code,
-                'it',
-                {
-                  numeric: true
-                }
-              )
-          )
-    );
+  protected readonly formulaProducts = computed(() =>
+    this.products()
+      .filter(
+        (product) =>
+          product.active &&
+          product.productType !== ProductType.DEVELOPER &&
+          product.productType !== ProductType.TREATMENT,
+      )
+      .sort(
+        (first, second) =>
+          first.brand.localeCompare(second.brand, 'it') ||
+          first.code.localeCompare(second.code, 'it', {
+            numeric: true,
+          }),
+      ),
+  );
 
-  protected readonly form =
-    this.formBuilder.group({
+  protected readonly form = this.formBuilder.group({
+    customerId: [null as number | null, Validators.required],
 
-      customerId: [
-        null as
-          number |
-          null,
-        Validators.required
-      ],
+    /**
+     * Contesto opzionale della consulenza
+     * da cui nasce la formula.
+     */
+    consultationId: [null as number | null],
 
-      /**
-       * Contesto opzionale della consulenza
-       * da cui nasce la formula.
-       */
-      consultationId: [
-        null as
-          number |
-          null
-      ],
+    /**
+     * Servizio specifico dell'appuntamento
+     * al quale la formula è collegata.
+     */
+    appointmentItemId: [null as number | null],
 
-      /**
-       * Servizio specifico dell'appuntamento
-       * al quale la formula è collegata.
-       */
-      appointmentItemId: [
-        null as
-          number |
-          null
-      ],
+    name: ['', [Validators.required, Validators.maxLength(150)]],
 
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(
-            150
-          )
-        ]
-      ],
+    targetResult: ['', Validators.required],
 
-      targetResult: [
-        '',
-        Validators.required
-      ],
+    targetToneLevel: [null as ToneLevel | null],
 
-      targetToneLevel: [
-        null as
-          ToneLevel |
-          null
-      ],
+    targetPrimaryReflection: [null as Reflection | null],
 
-      targetPrimaryReflection: [
-        null as
-          Reflection |
-          null
-      ],
+    targetSecondaryReflection: [null as Reflection | null],
 
-      targetSecondaryReflection: [
-        null as
-          Reflection |
-          null
-      ],
+    applicationType: [ColorApplicationType.FULL_HEAD, Validators.required],
 
-      applicationType: [
-        ColorApplicationType.FULL_HEAD,
-        Validators.required
-      ],
+    volumeDeveloper: [Oxygen.VOL_10, Validators.required],
 
-      volumeDeveloper: [
-        Oxygen.VOL_10,
-        Validators.required
-      ],
+    mixingRatio: [MixingRatio.RATIO_1_TO_1_5, Validators.required],
 
-      mixingRatio: [
-        MixingRatio.RATIO_1_TO_1_5,
-        Validators.required
-      ],
+    customDeveloperRatio: [1.5, [Validators.min(0.01)]],
 
-      customDeveloperRatio: [
-        1.5,
-        [
-          Validators.min(
-            0.01
-          )
-        ]
-      ],
+    status: [ColorFormulaStatus.DRAFT, Validators.required],
 
-      status: [
-        ColorFormulaStatus.DRAFT,
-        Validators.required
-      ],
+    notes: [''],
 
-      notes: [
-        ''
-      ],
+    ingredients: this.formBuilder.array<IngredientForm>([]),
+  });
 
-      ingredients:
-        this.formBuilder.array<
-          IngredientForm
-        >([])
-    });
+  protected get ingredients(): FormArray<IngredientForm> {
+    return this.form.controls.ingredients;
+  }
 
-  protected get ingredients():
-    FormArray<IngredientForm> {
+  protected selectWorkflowStep(step: number): void {
+    if (step <= this.maxWorkflowStep()) {
+      this.activeWorkflowStep.set(step);
+    }
+  }
 
-    return this.form.controls
-      .ingredients;
+  protected previousWorkflowStep(): void {
+    this.activeWorkflowStep.update((step) => Math.max(1, step - 1));
+  }
+
+  protected nextWorkflowStep(): void {
+    const currentStep = this.activeWorkflowStep();
+
+    if (!this.validateWorkflowStep(currentStep)) {
+      return;
+    }
+
+    const nextStep = Math.min(5, currentStep + 1);
+    this.maxWorkflowStep.update((max) => Math.max(max, nextStep));
+    this.activeWorkflowStep.set(nextStep);
+  }
+
+  private validateWorkflowStep(step: number): boolean {
+    this.errorMessage.set('');
+
+    if (step === 1) {
+      const controls = [
+        this.form.controls.customerId,
+        this.form.controls.name,
+        this.form.controls.targetResult,
+        this.form.controls.applicationType,
+      ];
+
+      controls.forEach((control) => control.markAsTouched());
+
+      if (controls.some((control) => control.invalid)) {
+        this.errorMessage.set(
+          'Completa cliente, nome formula, obiettivo e applicazione prima di continuare.',
+        );
+        return false;
+      }
+    }
+
+    if (step === 2) {
+      this.ingredients.markAllAsTouched();
+
+      if (this.ingredients.invalid || this.ingredients.length === 0) {
+        this.errorMessage.set('Aggiungi almeno un ingrediente con prodotto e grammatura validi.');
+        return false;
+      }
+
+      if (this.hasDuplicateProducts()) {
+        this.errorMessage.set('Lo stesso prodotto tecnico non può comparire due volte.');
+        return false;
+      }
+    }
+
+    if (step === 3 && this.isCustomRatio() && this.getDeveloperRatio() <= 0) {
+      this.form.controls.customDeveloperRatio.markAsTouched();
+      this.errorMessage.set('Inserisci un rapporto developer personalizzato maggiore di zero.');
+      return false;
+    }
+
+    return true;
+  }
+
+  protected getSelectedCustomerName(): string {
+    const customerId = this.form.controls.customerId.value;
+    const customer = this.customers().find((item) => item.id === customerId);
+
+    return customer ? `${customer.firstName} ${customer.lastName}` : 'Cliente non selezionato';
+  }
+
+  protected getTargetSummary(): string {
+    const tone = this.form.controls.targetToneLevel.value;
+    const reflection = this.form.controls.targetPrimaryReflection.value;
+
+    if (!tone && !reflection) {
+      return 'Target da definire';
+    }
+
+    return [
+      tone ? this.toneLabels[tone] : null,
+      reflection ? this.reflectionLabels[reflection] : null,
+    ]
+      .filter((value): value is string => value != null)
+      .join(' · ');
+  }
+
+  protected getProductName(productId: number | null): string {
+    if (productId == null) {
+      return 'Prodotto non selezionato';
+    }
+
+    const product = this.products().find((item) => item.id === productId);
+
+    return product
+      ? `${product.brand} · ${product.code} ${product.name}`
+      : `Prodotto #${productId}`;
+  }
+
+  protected getStockWarningCount(): number {
+    return this.ingredients.controls.filter((_, index) => this.getStockState(index) === 'WARNING')
+      .length;
   }
 
   ngOnInit(): void {
+    const idParam = this.activatedRoute.snapshot.paramMap.get('id');
 
-    const idParam =
-      this.activatedRoute
-        .snapshot
-        .paramMap
-        .get(
-          'id'
-        );
+    if (idParam) {
+      const id = Number(idParam);
 
-    if (
-      idParam
-    ) {
+      if (!Number.isNaN(id) && id > 0) {
+        this.formulaId = id;
 
-      const id =
-        Number(
-          idParam
-        );
-
-      if (
-        !Number.isNaN(
-          id
-        )
-        &&
-        id >
-        0
-      ) {
-
-        this.formulaId =
-          id;
-
-        this.isEditMode.set(
-          true
-        );
+        this.isEditMode.set(true);
       }
     }
 
     this.loadData();
   }
 
-  private loadData():
-    void {
+  private loadData(): void {
+    this.loading.set(true);
 
-    this.loading.set(
-      true
-    );
-
-    this.errorMessage.set(
-      ''
-    );
+    this.errorMessage.set('');
 
     forkJoin({
+      customers: this.customerService.getActive(),
 
-      customers:
-        this.customerService
-          .getActive(),
+      products: this.hairDyeService.getActive(),
 
-      products:
-        this.hairDyeService
-          .getActive(),
-
-      inventories:
-        this.inventoryService
-          .getAll()
-
+      inventories: this.inventoryService.getAll(),
     }).subscribe({
+      next: (result) => {
+        this.customers.set(result.customers ?? []);
 
-      next: result => {
+        this.products.set(result.products ?? []);
 
-        this.customers.set(
-          result.customers ??
-          []
-        );
+        this.inventories.set(result.inventories ?? []);
 
-        this.products.set(
-          result.products ??
-          []
-        );
-
-        this.inventories.set(
-          result.inventories ??
-          []
-        );
-
-        if (
-          this.isEditMode()
-          &&
-          this.formulaId
-        ) {
-
-          this.loadFormula(
-            this.formulaId
-          );
-
+        if (this.isEditMode() && this.formulaId) {
+          this.loadFormula(this.formulaId);
         } else {
-
           this.applySmartDiagnosisPreset();
 
-          const suggestedIngredients =
-            this.getSuggestedIngredientsFromQuery();
+          const suggestedIngredients = this.getSuggestedIngredientsFromQuery();
 
-          if (
-            suggestedIngredients.length >
-            0
-          ) {
-
-            for (
-              const suggested of
-                suggestedIngredients
-            ) {
-
+          if (suggestedIngredients.length > 0) {
+            for (const suggested of suggestedIngredients) {
               this.ingredients.push(
                 this.createIngredientGroup(
                   suggested.hairDyeId,
                   suggested.quantity,
-                  suggested.quantity >
-                    0
+                  suggested.quantity > 0
                     ? 'Grammatura suggerita da Smart Formula'
-                    : 'Dosaggio da completare manualmente'
-                )
+                    : 'Dosaggio da completare manualmente',
+                ),
               );
             }
-
           } else {
-
             this.addIngredient();
           }
 
-          this.loading.set(
-            false
-          );
+          this.loading.set(false);
         }
       },
 
-      error: (
-        error:
-          HttpErrorResponse
-      ) => {
-
-        this.loading.set(
-          false
-        );
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
 
         this.errorMessage.set(
-          this.getErrorMessage(
-            error,
-            'Impossibile inizializzare il Formula Builder.'
-          )
+          this.getErrorMessage(error, 'Impossibile inizializzare il Formula Builder.'),
         );
-      }
+      },
     });
   }
 
@@ -629,113 +448,54 @@ export class ColorFormulaBuilderComponent
    * &targetToneLevel=LEVEL_7_MEDIUM_BLONDE
    * &targetPrimaryReflection=ASH
    */
-  private applySmartDiagnosisPreset():
-    void {
+  private applySmartDiagnosisPreset(): void {
+    const params = this.activatedRoute.snapshot.queryParamMap;
 
-    const params =
-      this.activatedRoute
-        .snapshot
-        .queryParamMap;
+    const originParam = params.get('origin') as ColorFormulaOrigin | null;
 
-    const originParam =
-      params.get(
-        'origin'
-      ) as
-        ColorFormulaOrigin |
-        null;
-
-    if (
-      originParam
-      &&
-      Object.values(
-        ColorFormulaOrigin
-      ).includes(
-        originParam
-      )
-    ) {
-
-      this.formulaOrigin.set(
-        originParam
-      );
+    if (originParam && Object.values(ColorFormulaOrigin).includes(originParam)) {
+      this.formulaOrigin.set(originParam);
     }
 
+    this.sourceRecommendationCode.set(params.get('sourceRecommendationCode'));
 
-    this.sourceRecommendationCode.set(
-      params.get('sourceRecommendationCode')
-    );
+    this.sourceRecommendationTitle.set(params.get('sourceRecommendationTitle'));
 
-    this.sourceRecommendationTitle.set(
-      params.get('sourceRecommendationTitle')
-    );
+    this.technicalLineBrand.set(params.get('technicalLineBrand'));
 
-    this.technicalLineBrand.set(
-      params.get('technicalLineBrand')
-    );
+    this.technicalLineName.set(params.get('technicalLineName'));
 
-    this.technicalLineName.set(
-      params.get('technicalLineName')
-    );
+    this.whiteHairCoverageApplied.set(params.get('whiteHairCoverageApplied') === 'true');
 
-    this.whiteHairCoverageApplied.set(
-      params.get('whiteHairCoverageApplied') === 'true'
-    );
-
-    const whiteHairShareParam =
-      params.get('whiteHairNaturalBaseSharePercentage');
+    const whiteHairShareParam = params.get('whiteHairNaturalBaseSharePercentage');
 
     this.whiteHairNaturalBaseSharePercentage.set(
       whiteHairShareParam != null && whiteHairShareParam !== ''
         ? Number(whiteHairShareParam)
-        : null
+        : null,
     );
 
-    const processingTimeParam =
-      params.get('recommendedProcessingTimeMinutes');
+    const processingTimeParam = params.get('recommendedProcessingTimeMinutes');
 
     this.recommendedProcessingTimeMinutes.set(
       processingTimeParam != null && processingTimeParam !== ''
         ? Number(processingTimeParam)
-        : null
+        : null,
     );
 
-    const customerIdParam =
-      params.get(
-        'customerId'
-      );
+    const customerIdParam = params.get('customerId');
 
-    if (
-      customerIdParam
-    ) {
+    if (customerIdParam) {
+      const customerId = Number(customerIdParam);
 
-      const customerId =
-        Number(
-          customerIdParam
-        );
+      const exists = this.customers().some((customer) => customer.id === customerId);
 
-      const exists =
-        this.customers()
-          .some(
-            customer =>
-              customer.id ===
-              customerId
-          );
-
-      if (
-        exists
-      ) {
-
-        this.form.controls
-          .customerId
-          .setValue(
-            customerId
-          );
+      if (exists) {
+        this.form.controls.customerId.setValue(customerId);
       }
     }
 
-    const consultationIdParam =
-      params.get(
-        'consultationId'
-      );
+    const consultationIdParam = params.get('consultationId');
 
     if (consultationIdParam) {
       const consultationId = Number(consultationIdParam);
@@ -745,10 +505,7 @@ export class ColorFormulaBuilderComponent
       }
     }
 
-    const appointmentItemIdParam =
-      params.get(
-        'appointmentItemId'
-      );
+    const appointmentItemIdParam = params.get('appointmentItemId');
 
     if (appointmentItemIdParam) {
       const appointmentItemId = Number(appointmentItemIdParam);
@@ -758,197 +515,55 @@ export class ColorFormulaBuilderComponent
       }
     }
 
-    const targetTone =
-      params.get(
-        'targetToneLevel'
-      ) as
-        ToneLevel |
-        null;
+    const targetTone = params.get('targetToneLevel') as ToneLevel | null;
 
-    if (
-      targetTone
-      &&
-      Object.values(
-        ToneLevel
-      ).includes(
-        targetTone
-      )
-    ) {
-
-      this.form.controls
-        .targetToneLevel
-        .setValue(
-          targetTone
-        );
+    if (targetTone && Object.values(ToneLevel).includes(targetTone)) {
+      this.form.controls.targetToneLevel.setValue(targetTone);
     }
 
-    const primaryReflection =
-      params.get(
-        'targetPrimaryReflection'
-      ) as
-        Reflection |
-        null;
+    const primaryReflection = params.get('targetPrimaryReflection') as Reflection | null;
 
-    if (
-      primaryReflection
-      &&
-      Object.values(
-        Reflection
-      ).includes(
-        primaryReflection
-      )
-    ) {
-
-      this.form.controls
-        .targetPrimaryReflection
-        .setValue(
-          primaryReflection
-        );
+    if (primaryReflection && Object.values(Reflection).includes(primaryReflection)) {
+      this.form.controls.targetPrimaryReflection.setValue(primaryReflection);
     }
 
-    const secondaryReflection =
-      params.get(
-        'targetSecondaryReflection'
-      ) as
-        Reflection |
-        null;
+    const secondaryReflection = params.get('targetSecondaryReflection') as Reflection | null;
 
-    if (
-      secondaryReflection
-      &&
-      Object.values(
-        Reflection
-      ).includes(
-        secondaryReflection
-      )
-    ) {
-
-      this.form.controls
-        .targetSecondaryReflection
-        .setValue(
-          secondaryReflection
-        );
+    if (secondaryReflection && Object.values(Reflection).includes(secondaryReflection)) {
+      this.form.controls.targetSecondaryReflection.setValue(secondaryReflection);
     }
 
-    const applicationType =
-      params.get(
-        'applicationType'
-      ) as
-        ColorApplicationType |
-        null;
+    const applicationType = params.get('applicationType') as ColorApplicationType | null;
 
-    if (
-      applicationType
-      &&
-      Object.values(
-        ColorApplicationType
-      ).includes(
-        applicationType
-      )
-    ) {
-
-      this.form.controls
-        .applicationType
-        .setValue(
-          applicationType
-        );
+    if (applicationType && Object.values(ColorApplicationType).includes(applicationType)) {
+      this.form.controls.applicationType.setValue(applicationType);
     }
 
-    const targetResult =
-      params.get(
-        'targetResult'
-      );
+    const targetResult = params.get('targetResult');
 
-    if (
-      targetResult
-    ) {
-
-      this.form.controls
-        .targetResult
-        .setValue(
-          targetResult
-        );
+    if (targetResult) {
+      this.form.controls.targetResult.setValue(targetResult);
     }
 
-    const volumeDeveloper =
-      params.get(
-        'volumeDeveloper'
-      ) as
-        Oxygen |
-        null;
+    const volumeDeveloper = params.get('volumeDeveloper') as Oxygen | null;
 
-    if (
-      volumeDeveloper
-      &&
-      Object.values(
-        Oxygen
-      ).includes(
-        volumeDeveloper
-      )
-    ) {
-
-      this.form.controls
-        .volumeDeveloper
-        .setValue(
-          volumeDeveloper
-        );
+    if (volumeDeveloper && Object.values(Oxygen).includes(volumeDeveloper)) {
+      this.form.controls.volumeDeveloper.setValue(volumeDeveloper);
     }
 
-    const mixingRatio =
-      params.get(
-        'mixingRatio'
-      ) as
-        MixingRatio |
-        null;
+    const mixingRatio = params.get('mixingRatio') as MixingRatio | null;
 
-    if (
-      mixingRatio
-      &&
-      Object.values(
-        MixingRatio
-      ).includes(
-        mixingRatio
-      )
-    ) {
-
-      this.form.controls
-        .mixingRatio
-        .setValue(
-          mixingRatio
-        );
+    if (mixingRatio && Object.values(MixingRatio).includes(mixingRatio)) {
+      this.form.controls.mixingRatio.setValue(mixingRatio);
     }
 
-    const customDeveloperRatioParam =
-      params.get(
-        'customDeveloperRatio'
-      );
+    const customDeveloperRatioParam = params.get('customDeveloperRatio');
 
-    if (
-      mixingRatio ===
-        MixingRatio.CUSTOM
-      &&
-      customDeveloperRatioParam
-    ) {
+    if (mixingRatio === MixingRatio.CUSTOM && customDeveloperRatioParam) {
+      const customDeveloperRatio = Number(customDeveloperRatioParam);
 
-      const customDeveloperRatio =
-        Number(
-          customDeveloperRatioParam
-        );
-
-      if (
-        Number.isFinite(
-          customDeveloperRatio
-        )
-        &&
-        customDeveloperRatio >
-        0
-      ) {
-
-        this.form.controls
-          .customDeveloperRatio
-          .setValue(
-            customDeveloperRatio
-          );
+      if (Number.isFinite(customDeveloperRatio) && customDeveloperRatio > 0) {
+        this.form.controls.customDeveloperRatio.setValue(customDeveloperRatio);
       }
     }
   }
@@ -965,391 +580,181 @@ export class ColorFormulaBuilderComponent
    * componente selezionato,
    * ma dosaggio da completare manualmente.
    */
-  private getSuggestedIngredientsFromQuery():
-    Array<{
-      hairDyeId: number;
-      quantity: number;
-    }> {
+  private getSuggestedIngredientsFromQuery(): Array<{
+    hairDyeId: number;
+    quantity: number;
+  }> {
+    const raw = this.activatedRoute.snapshot.queryParamMap.get('ingredientPlan');
 
-    const raw =
-      this.activatedRoute
-        .snapshot
-        .queryParamMap
-        .get(
-          'ingredientPlan'
-        );
-
-    if (
-      !raw
-    ) {
-
+    if (!raw) {
       return [];
     }
 
-    const validProductIds =
-      new Set(
-        this.formulaProducts()
-          .map(
-            product =>
-              product.id
-          )
-          .filter(
-            (
-              id
-            ): id is number =>
-              id != null
-          )
-      );
+    const validProductIds = new Set(
+      this.formulaProducts()
+        .map((product) => product.id)
+        .filter((id): id is number => id != null),
+    );
 
-    const result:
-      Array<{
-        hairDyeId: number;
-        quantity: number;
-      }> = [];
+    const result: Array<{
+      hairDyeId: number;
+      quantity: number;
+    }> = [];
 
-    const alreadyAdded =
-      new Set<number>();
+    const alreadyAdded = new Set<number>();
 
-    for (
-      const token of
-        raw.split(
-          '|'
-        )
-    ) {
+    for (const token of raw.split('|')) {
+      const [idText, quantityText] = token.split(':');
 
-      const [
-        idText,
-        quantityText
-      ] =
-        token.split(
-          ':'
-        );
+      const hairDyeId = Number(idText);
 
-      const hairDyeId =
-        Number(
-          idText
-        );
-
-      const quantity =
-        Number(
-          quantityText
-        );
+      const quantity = Number(quantityText);
 
       if (
-        !Number.isInteger(
-          hairDyeId
-        )
-        ||
-        hairDyeId <=
-        0
-        ||
-        !validProductIds.has(
-          hairDyeId
-        )
-        ||
-        alreadyAdded.has(
-          hairDyeId
-        )
+        !Number.isInteger(hairDyeId) ||
+        hairDyeId <= 0 ||
+        !validProductIds.has(hairDyeId) ||
+        alreadyAdded.has(hairDyeId)
       ) {
-
         continue;
       }
 
-      alreadyAdded.add(
-        hairDyeId
-      );
+      alreadyAdded.add(hairDyeId);
 
       result.push({
-
         hairDyeId,
 
-        quantity:
-          Number.isFinite(
-            quantity
-          )
-          &&
-          quantity >
-          0
-
-            ? quantity
-
-            : 0
+        quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 0,
       });
     }
 
     return result;
   }
 
+  private loadFormula(id: number): void {
+    this.managementService.getById(id).subscribe({
+      next: (detail) => {
+        const formula = detail.formula;
 
-  private loadFormula(
-    id:
-      number
-  ): void {
+        this.formulaOrigin.set(formula.origin ?? ColorFormulaOrigin.MANUAL);
 
-    this.managementService
-      .getById(
-        id
-      )
-      .subscribe({
+        this.parentFormulaId.set(formula.parentFormulaId ?? null);
 
-        next: detail => {
+        this.referenceSourceFormulaId.set(formula.referenceSourceFormulaId ?? null);
 
-          const formula =
-            detail.formula;
+        this.sourceRecommendationCode.set(formula.sourceRecommendationCode ?? null);
 
-          this.formulaOrigin.set(
-            formula.origin ??
-            ColorFormulaOrigin.MANUAL
-          );
+        this.sourceRecommendationTitle.set(formula.sourceRecommendationTitle ?? null);
 
-          this.parentFormulaId.set(
-            formula.parentFormulaId ??
-            null
-          );
+        this.technicalLineBrand.set(formula.technicalLineBrand ?? null);
 
-          this.referenceSourceFormulaId.set(
-            formula.referenceSourceFormulaId ??
-            null
-          );
+        this.technicalLineName.set(formula.technicalLineName ?? null);
 
+        this.whiteHairCoverageApplied.set(formula.whiteHairCoverageApplied ?? false);
 
-          this.sourceRecommendationCode.set(
-            formula.sourceRecommendationCode ?? null
-          );
+        this.whiteHairNaturalBaseSharePercentage.set(
+          formula.whiteHairNaturalBaseSharePercentage ?? null,
+        );
 
-          this.sourceRecommendationTitle.set(
-            formula.sourceRecommendationTitle ?? null
-          );
+        this.recommendedProcessingTimeMinutes.set(formula.recommendedProcessingTimeMinutes ?? null);
 
-          this.technicalLineBrand.set(
-            formula.technicalLineBrand ?? null
-          );
+        this.form.patchValue({
+          customerId: formula.customerId ?? null,
 
-          this.technicalLineName.set(
-            formula.technicalLineName ?? null
-          );
+          consultationId: formula.consultationId ?? null,
 
-          this.whiteHairCoverageApplied.set(
-            formula.whiteHairCoverageApplied ?? false
-          );
+          appointmentItemId: formula.appointmentItemId ?? null,
 
-          this.whiteHairNaturalBaseSharePercentage.set(
-            formula.whiteHairNaturalBaseSharePercentage ?? null
-          );
+          name: formula.name,
 
-          this.recommendedProcessingTimeMinutes.set(
-            formula.recommendedProcessingTimeMinutes ?? null
-          );
+          targetResult: formula.targetResult,
 
-          this.form.patchValue({
+          targetToneLevel: formula.targetToneLevel ?? null,
 
-            customerId:
-              formula.customerId ??
-              null,
+          targetPrimaryReflection: formula.targetPrimaryReflection ?? null,
 
-            consultationId:
-              formula.consultationId ??
-              null,
+          targetSecondaryReflection: formula.targetSecondaryReflection ?? null,
 
-            appointmentItemId:
-              formula.appointmentItemId ??
-              null,
+          applicationType: formula.applicationType ?? ColorApplicationType.FULL_HEAD,
 
-            name:
-              formula.name,
+          volumeDeveloper: formula.volumeDeveloper,
 
-            targetResult:
-              formula.targetResult,
+          mixingRatio: formula.mixingRatio,
 
-            targetToneLevel:
-              formula.targetToneLevel ??
-              null,
+          customDeveloperRatio: formula.customDeveloperRatio ?? 1.5,
 
-            targetPrimaryReflection:
-              formula.targetPrimaryReflection ??
-              null,
+          status: formula.status,
 
-            targetSecondaryReflection:
-              formula.targetSecondaryReflection ??
-              null,
+          notes: formula.notes ?? '',
+        });
 
-            applicationType:
-              formula.applicationType ??
-              ColorApplicationType.FULL_HEAD,
+        this.ingredients.clear();
 
-            volumeDeveloper:
-              formula.volumeDeveloper,
-
-            mixingRatio:
-              formula.mixingRatio,
-
-            customDeveloperRatio:
-              formula.customDeveloperRatio ??
-              1.5,
-
-            status:
-              formula.status,
-
-            notes:
-              formula.notes ??
-              ''
-          });
-
-          this.ingredients.clear();
-
-          for (
-            const item of
-              detail.ingredients
-          ) {
-
-            this.ingredients.push(
-              this.createIngredientGroup(
-                item.hairDyeId,
-                item.quantity,
-                item.notes ??
-                ''
-              )
-            );
-          }
-
-          if (
-            this.ingredients.length ===
-            0
-          ) {
-
-            this.addIngredient();
-          }
-
-          this.loading.set(
-            false
-          );
-        },
-
-        error: (
-          error:
-            HttpErrorResponse
-        ) => {
-
-          this.loading.set(
-            false
-          );
-
-          this.errorMessage.set(
-            this.getErrorMessage(
-              error,
-              'Impossibile caricare la formula.'
-            )
+        for (const item of detail.ingredients) {
+          this.ingredients.push(
+            this.createIngredientGroup(item.hairDyeId, item.quantity, item.notes ?? ''),
           );
         }
-      });
+
+        if (this.ingredients.length === 0) {
+          this.addIngredient();
+        }
+
+        this.loading.set(false);
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
+
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile caricare la formula.'));
+      },
+    });
   }
 
-  protected addIngredient():
-    void {
-
-    this.ingredients.push(
-      this.createIngredientGroup()
-    );
+  protected addIngredient(): void {
+    this.ingredients.push(this.createIngredientGroup());
   }
 
-  protected removeIngredient(
-    index:
-      number
-  ): void {
-
-    if (
-      this.ingredients.length <=
-      1
-    ) {
-
+  protected removeIngredient(index: number): void {
+    if (this.ingredients.length <= 1) {
       return;
     }
 
-    this.ingredients.removeAt(
-      index
-    );
+    this.ingredients.removeAt(index);
   }
 
   private createIngredientGroup(
-    hairDyeId:
-      number |
-      null =
-        null,
-    quantity =
-      0,
-    notes =
-      ''
+    hairDyeId: number | null = null,
+    quantity = 0,
+    notes = '',
   ): IngredientForm {
-
     return this.formBuilder.group({
+      hairDyeId: this.formBuilder.control<number | null>(hairDyeId, {
+        validators: [Validators.required],
+      }),
 
-      hairDyeId:
-        this.formBuilder.control<
-          number |
-          null
-        >(
-          hairDyeId,
-          {
-            validators: [
-              Validators.required
-            ]
-          }
-        ),
+      quantity: this.formBuilder.nonNullable.control(quantity, {
+        validators: [Validators.required, Validators.min(0.01)],
+      }),
 
-      quantity:
-        this.formBuilder.nonNullable.control(
-          quantity,
-          {
-            validators: [
-              Validators.required,
-              Validators.min(
-                0.01
-              )
-            ]
-          }
-        ),
-
-      notes:
-        this.formBuilder.nonNullable.control(
-          notes
-        )
+      notes: this.formBuilder.nonNullable.control(notes),
     });
   }
 
   /**
    * Totale ingredienti pesati.
    */
-  protected getTotalColorQuantity():
-    number {
-
+  protected getTotalColorQuantity(): number {
     return this.round2(
-      this.ingredients.controls
-        .reduce(
-          (
-            total,
-            group
-          ) =>
-            total +
-            Number(
-              group.controls
-                .quantity
-                .value ||
-              0
-            ),
-          0
-        )
+      this.ingredients.controls.reduce(
+        (total, group) => total + Number(group.controls.quantity.value || 0),
+        0,
+      ),
     );
   }
 
-  protected getDeveloperRatio():
-    number {
-
-    switch (
-      this.form.controls
-        .mixingRatio
-        .value
-    ) {
-
+  protected getDeveloperRatio(): number {
+    switch (this.form.controls.mixingRatio.value) {
       case MixingRatio.RATIO_1_TO_1:
         return 1;
 
@@ -1363,530 +768,224 @@ export class ColorFormulaBuilderComponent
         return 3;
 
       case MixingRatio.CUSTOM:
-        return Math.max(
-          0,
-          Number(
-            this.form.controls
-              .customDeveloperRatio
-              .value ||
-            0
-          )
-        );
+        return Math.max(0, Number(this.form.controls.customDeveloperRatio.value || 0));
 
       default:
         return 0;
     }
   }
 
-  protected getDeveloperQuantity():
-    number {
-
-    return this.round2(
-      this.getTotalColorQuantity()
-      *
-      this.getDeveloperRatio()
-    );
+  protected getDeveloperQuantity(): number {
+    return this.round2(this.getTotalColorQuantity() * this.getDeveloperRatio());
   }
 
-  protected getTotalMixture():
-    number {
-
-    return this.round2(
-      this.getTotalColorQuantity()
-      +
-      this.getDeveloperQuantity()
-    );
+  protected getTotalMixture(): number {
+    return this.round2(this.getTotalColorQuantity() + this.getDeveloperQuantity());
   }
 
-  protected isCustomRatio():
-    boolean {
-
-    return (
-      this.form.controls
-        .mixingRatio
-        .value ===
-      MixingRatio.CUSTOM
-    );
+  protected isCustomRatio(): boolean {
+    return this.form.controls.mixingRatio.value === MixingRatio.CUSTOM;
   }
 
-  protected getProductById(
-    id:
-      number |
-      null
-  ):
-    HairDye |
-    undefined {
-
-    if (
-      id == null
-    ) {
-
+  protected getProductById(id: number | null): HairDye | undefined {
+    if (id == null) {
       return undefined;
     }
 
-    return this.products()
-      .find(
-        product =>
-          product.id ===
-          Number(
-            id
-          )
-      );
+    return this.products().find((product) => product.id === Number(id));
   }
 
-  protected getInventoryByProductId(
-    id:
-      number |
-      null
-  ):
-    HairDyeInventory |
-    undefined {
-
-    if (
-      id == null
-    ) {
-
+  protected getInventoryByProductId(id: number | null): HairDyeInventory | undefined {
+    if (id == null) {
       return undefined;
     }
 
-    return this.inventories()
-      .find(
-        inventory =>
-          inventory.hairDyeId ===
-          Number(
-            id
-          )
-      );
+    return this.inventories().find((inventory) => inventory.hairDyeId === Number(id));
   }
 
-  protected getStockMessage(
-    index:
-      number
-  ): string {
+  protected getStockMessage(index: number): string {
+    const group = this.ingredients.at(index);
 
-    const group =
-      this.ingredients.at(
-        index
-      );
+    const productId = group.controls.hairDyeId.value;
 
-    const productId =
-      group.controls
-        .hairDyeId
-        .value;
+    const quantity = Number(group.controls.quantity.value || 0);
 
-    const quantity =
-      Number(
-        group.controls
-          .quantity
-          .value ||
-        0
-      );
-
-    if (
-      !productId
-    ) {
-
+    if (!productId) {
       return 'Seleziona un prodotto';
     }
 
-    const inventory =
-      this.getInventoryByProductId(
-        productId
-      );
+    const inventory = this.getInventoryByProductId(productId);
 
-    if (
-      !inventory
-    ) {
-
+    if (!inventory) {
       return 'Giacenza non configurata';
     }
 
-    if (
-      inventory.unit !==
-      InventoryUnit.GRAM
-    ) {
-
-      return (
-        `Stock registrato in ${inventory.unit}; verifica manualmente`
-      );
+    if (inventory.unit !== InventoryUnit.GRAM) {
+      return `Stock registrato in ${inventory.unit}; verifica manualmente`;
     }
 
-    if (
-      inventory.quantityAvailable <
-      quantity
-    ) {
-
-      return (
-        `Insufficiente · disponibili ${inventory.quantityAvailable} g`
-      );
+    if (inventory.quantityAvailable < quantity) {
+      return `Insufficiente · disponibili ${inventory.quantityAvailable} g`;
     }
 
-    return (
-      `Disponibili ${inventory.quantityAvailable} g`
-    );
+    return `Disponibili ${inventory.quantityAvailable} g`;
   }
 
-  protected getStockState(
-    index:
-      number
-  ):
-    'OK' |
-    'WARNING' |
-    'NONE' {
+  protected getStockState(index: number): 'OK' | 'WARNING' | 'NONE' {
+    const group = this.ingredients.at(index);
 
-    const group =
-      this.ingredients.at(
-        index
-      );
+    const productId = group.controls.hairDyeId.value;
 
-    const productId =
-      group.controls
-        .hairDyeId
-        .value;
-
-    if (
-      !productId
-    ) {
-
+    if (!productId) {
       return 'NONE';
     }
 
-    const inventory =
-      this.getInventoryByProductId(
-        productId
-      );
+    const inventory = this.getInventoryByProductId(productId);
 
-    if (
-      !inventory
-      ||
-      inventory.unit !==
-        InventoryUnit.GRAM
-    ) {
-
+    if (!inventory || inventory.unit !== InventoryUnit.GRAM) {
       return 'WARNING';
     }
 
-    return (
-      inventory.quantityAvailable >=
-      Number(
-        group.controls
-          .quantity
-          .value ||
-        0
-      )
-    )
+    return inventory.quantityAvailable >= Number(group.controls.quantity.value || 0)
       ? 'OK'
       : 'WARNING';
   }
 
-  protected hasDuplicateProducts():
-    boolean {
+  protected hasDuplicateProducts(): boolean {
+    const ids = this.ingredients.controls
+      .map((group) => group.controls.hairDyeId.value)
+      .filter((value): value is number => value != null);
 
-    const ids =
-      this.ingredients.controls
-        .map(
-          group =>
-            group.controls
-              .hairDyeId
-              .value
-        )
-        .filter(
-          (
-            value
-          ): value is number =>
-            value != null
-        );
-
-    return (
-      new Set(
-        ids
-      ).size !==
-      ids.length
-    );
+    return new Set(ids).size !== ids.length;
   }
 
-  protected submit():
-    void {
+  protected submit(): void {
+    this.errorMessage.set('');
 
-    this.errorMessage.set(
-      ''
-    );
-
-    if (
-      this.form.invalid
-      ||
-      this.ingredients.invalid
-    ) {
-
+    if (this.form.invalid || this.ingredients.invalid) {
       this.form.markAllAsTouched();
 
-      this.errorMessage.set(
-        'Completa tutti i campi obbligatori della formula.'
-      );
+      const identityInvalid =
+        this.form.controls.customerId.invalid ||
+        this.form.controls.name.invalid ||
+        this.form.controls.targetResult.invalid ||
+        this.form.controls.applicationType.invalid;
+
+      this.activeWorkflowStep.set(identityInvalid ? 1 : 2);
+
+      this.errorMessage.set('Completa tutti i campi obbligatori della formula.');
 
       return;
     }
 
-    if (
-      this.hasDuplicateProducts()
-    ) {
+    if (this.hasDuplicateProducts()) {
+      this.activeWorkflowStep.set(2);
 
-      this.errorMessage.set(
-        'Lo stesso prodotto tecnico non può comparire due volte.'
-      );
+      this.errorMessage.set('Lo stesso prodotto tecnico non può comparire due volte.');
 
       return;
     }
 
-    if (
-      this.isCustomRatio()
-      &&
-      this.getDeveloperRatio() <=
-      0
-    ) {
+    if (this.isCustomRatio() && this.getDeveloperRatio() <= 0) {
+      this.activeWorkflowStep.set(3);
 
-      this.errorMessage.set(
-        'Inserisci un rapporto developer personalizzato maggiore di zero.'
-      );
+      this.errorMessage.set('Inserisci un rapporto developer personalizzato maggiore di zero.');
 
       return;
     }
 
-    const value =
-      this.form.getRawValue();
+    const value = this.form.getRawValue();
 
-    const request:
-      ColorFormulaManagementRequest = {
+    const request: ColorFormulaManagementRequest = {
+      customerId: Number(value.customerId),
 
-      customerId:
-        Number(
-          value.customerId
-        ),
-
-      consultationId:
-        value.consultationId !=
-          null
-
-          ? Number(
-              value.consultationId
-            )
-
-          : undefined,
+      consultationId: value.consultationId != null ? Number(value.consultationId) : undefined,
 
       appointmentItemId:
-        value.appointmentItemId !=
-          null
+        value.appointmentItemId != null ? Number(value.appointmentItemId) : undefined,
 
-          ? Number(
-              value.appointmentItemId
-            )
+      origin: this.formulaOrigin(),
 
-          : undefined,
+      parentFormulaId: this.parentFormulaId() ?? undefined,
 
-      origin:
-        this.formulaOrigin(),
+      referenceSourceFormulaId: this.referenceSourceFormulaId() ?? undefined,
 
-      parentFormulaId:
-        this.parentFormulaId() ??
-        undefined,
+      sourceRecommendationCode: this.sourceRecommendationCode() ?? undefined,
 
-      referenceSourceFormulaId:
-        this.referenceSourceFormulaId() ??
-        undefined,
+      sourceRecommendationTitle: this.sourceRecommendationTitle() ?? undefined,
 
-      sourceRecommendationCode:
-        this.sourceRecommendationCode() ??
-        undefined,
+      technicalLineBrand: this.technicalLineBrand() ?? undefined,
 
-      sourceRecommendationTitle:
-        this.sourceRecommendationTitle() ??
-        undefined,
+      technicalLineName: this.technicalLineName() ?? undefined,
 
-      technicalLineBrand:
-        this.technicalLineBrand() ??
-        undefined,
+      whiteHairCoverageApplied: this.whiteHairCoverageApplied(),
 
-      technicalLineName:
-        this.technicalLineName() ??
-        undefined,
+      whiteHairNaturalBaseSharePercentage: this.whiteHairNaturalBaseSharePercentage() ?? undefined,
 
-      whiteHairCoverageApplied:
-        this.whiteHairCoverageApplied(),
+      recommendedProcessingTimeMinutes: this.recommendedProcessingTimeMinutes() ?? undefined,
 
-      whiteHairNaturalBaseSharePercentage:
-        this.whiteHairNaturalBaseSharePercentage() ??
-        undefined,
+      name: value.name?.trim() ?? '',
 
-      recommendedProcessingTimeMinutes:
-        this.recommendedProcessingTimeMinutes() ??
-        undefined,
+      targetResult: value.targetResult?.trim() ?? '',
 
-      name:
-        value.name?.trim() ??
-        '',
+      targetToneLevel: value.targetToneLevel ?? null,
 
-      targetResult:
-        value.targetResult?.trim() ??
-        '',
+      targetPrimaryReflection: value.targetPrimaryReflection ?? null,
 
-      targetToneLevel:
-        value.targetToneLevel ??
-        null,
+      targetSecondaryReflection: value.targetSecondaryReflection ?? null,
 
-      targetPrimaryReflection:
-        value.targetPrimaryReflection ??
-        null,
+      applicationType: value.applicationType ?? ColorApplicationType.FULL_HEAD,
 
-      targetSecondaryReflection:
-        value.targetSecondaryReflection ??
-        null,
+      volumeDeveloper: value.volumeDeveloper ?? Oxygen.VOL_10,
 
-      applicationType:
-        value.applicationType ??
-        ColorApplicationType.FULL_HEAD,
+      mixingRatio: value.mixingRatio ?? MixingRatio.RATIO_1_TO_1_5,
 
-      volumeDeveloper:
-        value.volumeDeveloper ??
-        Oxygen.VOL_10,
+      customDeveloperRatio: this.isCustomRatio() ? this.getDeveloperRatio() : null,
 
-      mixingRatio:
-        value.mixingRatio ??
-        MixingRatio.RATIO_1_TO_1_5,
+      status: value.status ?? ColorFormulaStatus.DRAFT,
 
-      customDeveloperRatio:
-        this.isCustomRatio()
-          ? this.getDeveloperRatio()
-          : null,
+      notes: value.notes?.trim() ?? '',
 
-      status:
-        value.status ??
-        ColorFormulaStatus.DRAFT,
+      ingredients: this.ingredients.controls.map((group) => ({
+        hairDyeId: Number(group.controls.hairDyeId.value),
 
-      notes:
-        value.notes?.trim() ??
-        '',
+        quantity: Number(group.controls.quantity.value),
 
-      ingredients:
-        this.ingredients.controls
-          .map(
-            group => ({
+        unit: InventoryUnit.GRAM,
 
-              hairDyeId:
-                Number(
-                  group.controls
-                    .hairDyeId
-                    .value
-                ),
-
-              quantity:
-                Number(
-                  group.controls
-                    .quantity
-                    .value
-                ),
-
-              unit:
-                InventoryUnit.GRAM,
-
-              notes:
-                group.controls
-                  .notes
-                  .value
-                  .trim()
-            })
-          )
+        notes: group.controls.notes.value.trim(),
+      })),
     };
 
-    this.saving.set(
-      true
-    );
+    this.saving.set(true);
 
     const request$ =
-      this.isEditMode()
-      &&
-      this.formulaId
-
-        ? this.managementService
-            .update(
-              this.formulaId,
-              request
-            )
-
-        : this.managementService
-            .create(
-              request
-            );
+      this.isEditMode() && this.formulaId
+        ? this.managementService.update(this.formulaId, request)
+        : this.managementService.create(request);
 
     request$.subscribe({
+      next: (detail) => {
+        this.saving.set(false);
 
-      next: detail => {
-
-        this.saving.set(
-          false
-        );
-
-        this.router.navigate(
-          [
-            '/color-lab/formulas',
-            detail.formula.id
-          ]
-        );
+        this.router.navigate(['/color-lab/formulas', detail.formula.id]);
       },
 
-      error: (
-        error:
-          HttpErrorResponse
-      ) => {
+      error: (error: HttpErrorResponse) => {
+        this.saving.set(false);
 
-        this.saving.set(
-          false
-        );
-
-        this.errorMessage.set(
-          this.getErrorMessage(
-            error,
-            'Impossibile salvare la formula.'
-          )
-        );
-      }
+        this.errorMessage.set(this.getErrorMessage(error, 'Impossibile salvare la formula.'));
+      },
     });
   }
 
-  private round2(
-    value:
-      number
-  ): number {
-
-    return (
-      Math.round(
-        (
-          value +
-          Number.EPSILON
-        ) *
-        100
-      )
-      /
-      100
-    );
+  private round2(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
   }
 
-  private getErrorMessage(
-    error:
-      HttpErrorResponse,
-    fallback:
-      string
-  ): string {
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    const message = error.error?.message;
 
-    const message =
-      error.error?.message;
-
-    return (
-      typeof message ===
-        'string'
-      &&
-      message.trim()
-    )
-      ? message
-      : fallback;
+    return typeof message === 'string' && message.trim() ? message : fallback;
   }
 }

@@ -5,17 +5,23 @@ import { User } from '../../../models/user';
 import { UserService } from '../../../service/user-service';
 import { ChangePassword } from '../../../models/change-password';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth-service';
+import { ToastService } from '../../../shared/ui/toast.service';
 
 @Component({
   selector: 'app-profile-view',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './profile-view.html',
-  styleUrl: './profile-view.css'
+  styleUrl: './profile-view.css',
 })
 export class ProfileViewComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
+
+  protected readonly isCustomer = this.authService.getRoleFromToken() === 'CUSTOMER';
 
   currentUser = signal<User | null>(null);
   loading = signal<boolean>(true);
@@ -24,7 +30,7 @@ export class ProfileViewComponent implements OnInit {
   errorMessage = signal<string | null>(null);
 
   passwordForm: FormGroup = this.fb.group({
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   ngOnInit(): void {
@@ -41,7 +47,7 @@ export class ProfileViewComponent implements OnInit {
       error: () => {
         this.errorMessage.set('Impossibile caricare i dati del profilo.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -60,13 +66,15 @@ export class ProfileViewComponent implements OnInit {
     this.userService.changePassword(dto).subscribe({
       next: () => {
         this.successMessage.set('Password modificata con successo!');
+        this.toastService.success('Password aggiornata correttamente');
         this.passwordForm.reset();
         this.submitting.set(false);
       },
       error: (err) => {
         this.errorMessage.set(err.error?.message || 'Errore durante la modifica della password.');
+        this.toastService.error('Impossibile aggiornare la password');
         this.submitting.set(false);
-      }
+      },
     });
   }
 }
