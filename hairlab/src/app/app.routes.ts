@@ -403,7 +403,7 @@ export const routes: Routes = [
         component: ColorLabComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+          roles: ['ADMIN', 'SUPERADMIN'],
         },
       },
       {
@@ -411,7 +411,7 @@ export const routes: Routes = [
         component: ColorSmartDiagnosisComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+          roles: ['ADMIN', 'SUPERADMIN'],
         },
       },
 
@@ -527,7 +527,7 @@ export const routes: Routes = [
         component: HairDyeInventoryMovementListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -535,7 +535,7 @@ export const routes: Routes = [
         component: ColorReorderCenterComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -543,7 +543,7 @@ export const routes: Routes = [
         component: ColorSupplierListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -551,7 +551,7 @@ export const routes: Routes = [
         component: ColorSupplierFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -559,7 +559,7 @@ export const routes: Routes = [
         component: ColorSupplierFormComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -567,7 +567,7 @@ export const routes: Routes = [
         component: ColorSupplierOrderListComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
       {
@@ -575,7 +575,7 @@ export const routes: Routes = [
         component: ColorSupplierOrderDetailComponent,
         canActivate: [roleGuard],
         data: {
-          roles: ['ADMIN', 'SUPERADMIN'],
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
 
