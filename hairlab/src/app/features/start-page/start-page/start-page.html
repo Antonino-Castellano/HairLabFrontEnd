@@ -1,8 +1,11 @@
 <div class="landing-container">
   <div class="landing-content-wrapper">
-    <!-- Intestazione con numero 1 e Nome Azienda -->
+    
     <header class="landing-header">
-      <h1 class="company-title">EUTE TECH</h1>
+     <div class="logo-title-container">
+       <img src="assets/LOGO/LOGO-EUTE-2024-SENZA-SCRITTA-A-COLORI.png" alt="EUTE Tech Logo" class="company-logo" />
+       <h1 class="company-title">EUTE TECH</h1>
+     </div>
     </header>
 
     <!-- Sezione Chi Siamo -->
@@ -23,6 +26,7 @@
         <!-- Card HairLab (Attiva con bottone) -->
         <div class="app-card highlight">
           <h3>HairLab</h3>
+          <img src="assets/SCREENSHOTPROGRAMMI/SCREEN-HAIRLAB.png" alt="Anteprima di HairLab - Gestionale per saloni" class="app-screenshot" />
           <p>Il gestionale definitivo per professionisti del settore beauty.</p>
           <button (click)="navigateToHairLab()" class="btn btn-custom btn-custom-primary px-4 py-2">
             <span>Scopri di più</span>
@@ -39,7 +43,27 @@
       </div>
     </section>
 
-    <!-- Linea orizzontale di separazione come richiesto dal wireframe -->
+    <!-- Linea orizzontale di separazione -->
     <hr class="section-divider" />
+
+    <!-- Sezione Contatti e Dove Siamo (Sotto la riga gialla) -->
+    <section class="footer-section">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Contatti</h3>
+          <p>Email: info@eute-tech.com</p>
+          <p>Telefono: +39 081 1234567</p>
+        </div>
+        <div class="footer-col">
+          <h3>Dove Siamo</h3>
+          <p>Via Roma, 100</p>
+          <p>80100 Napoli (NA), Italia</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 EUTE Tech. Tutti i diritti riservati.</p>
+      </div>
+    </section>
+
   </div>
 </div>

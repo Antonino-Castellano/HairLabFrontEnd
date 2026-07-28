@@ -17,40 +17,52 @@
   padding: 40px 20px;
 }
 
+/* Header centrato */
 .landing-header {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 45px;
 }
 
-.step-badge {
-  background-color: #d4af37;
-  color: #0b0b0b;
-  width: 35px;
-  height: 35px;
+/* Blocco che unisce logo e titolo in modo centrato */
+.logo-title-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  border-radius: 50%;
-  font-size: 1.1rem;
+  gap: 28px;
+  flex-wrap: wrap;
 }
 
+/* Logo ingrandito */
+.company-logo {
+  max-height: 130px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Titolo ingrandito */
 .company-title {
-  font-size: 2rem;
-  letter-spacing: 2px;
+  font-size: 5.2rem;
+  letter-spacing: 5px;
   margin: 0;
   color: #d4af37;
+  font-weight: 800;
+  line-height: 1;
 }
 
+/* Sezione Chi Siamo */
 .about-section {
   background: #141414;
-  padding: 30px;
-  border-radius: 8px;
-  margin-bottom: 40px;
+  padding: 40px;
+  border-radius: 12px;
+  margin: 0 auto 40px auto;
+  max-width: 1050px;
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid #333333;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: left;
 }
 
 .about-section h2, .applications-section h2 {
@@ -58,31 +70,49 @@
   margin-bottom: 15px;
 }
 
+.about-section h2 {
+  text-align: left;
+  font-size: 2.2rem;
+}
+
 .about-text {
-  line-height: 1.6;
-  font-size: 1.05rem;
+  line-height: 1.8;
+  font-size: 1.2rem;
   color: #cccccc;
+  text-align: left;
+  margin: 0;
 }
 
 .applications-section h2 {
   margin-bottom: 25px;
+  max-width: 1050px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
 }
 
+/* Griglia impostata a 1 colonna */
 .apps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 30px;
   margin-bottom: 40px;
 }
 
+/* Card standard */
 .app-card {
   border: 1px solid #333333;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 1050px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  text-align: center;
   background: #141414;
+  box-sizing: border-box;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -92,63 +122,90 @@
   box-shadow: 0 6px 15px rgba(212, 175, 55, 0.15);
 }
 
-.app-card.highlight {
-  border-color: #d4af37;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
-}
-
 .app-card h3 {
   margin-top: 0;
   color: #ffffff;
+  font-size: 2.2rem;
 }
 
 .app-card p {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: #aaaaaa;
   flex-grow: 1;
-}
-
-.btn-discover {
-  background-color: #d4af37;
-  color: #0b0b0b;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  margin-top: 15px;
-}
-
-.btn-discover:hover {
-  background-color: #f1c40f;
-  box-shadow: 0 0 10px rgba(241, 196, 15, 0.4);
+  line-height: 1.5;
 }
 
 .coming-soon {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #777777;
   font-style: italic;
   margin-top: 15px;
 }
 
+/* Linea orizzontale di separazione */
 .section-divider {
   border: none;
   height: 2px;
   background-color: #d4af37;
-  margin: 50px 0 20px 0;
+  margin: 50px auto 30px auto;
+  max-width: 1050px;
   width: 100%;
 }
 
-/* Stili personalizzati per i bottoni */
+/* Sezione Contatti e Dove Siamo (Sotto la riga gialla) */
+.footer-section {
+  background: #141414;
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 1050px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border: 1px solid #333333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-col h3 {
+  color: #d4af37;
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.footer-col p {
+  color: #cccccc;
+  font-size: 1.05rem;
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333333;
+  padding-top: 20px;
+  text-align: center;
+  color: #777777;
+  font-size: 0.95rem;
+}
+
+/* Bottoni */
 .btn-custom {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
   transition: all 0.2s ease-in-out;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .btn-custom-primary {
@@ -166,16 +223,14 @@
   box-shadow: 0 6px 15px rgba(241, 196, 15, 0.3);
 }
 
-.btn-custom-outline {
-  background-color: transparent;
-  border: 1.5px solid #333333;
-  color: #cccccc;
-}
-
-.btn-custom-outline:hover {
-  background-color: #141414;
-  border-color: #d4af37;
-  color: #d4af37;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+/* Immagine dello screenshot ingrandita */
+.app-screenshot {
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  margin: 2rem auto;
+  display: block;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
 }

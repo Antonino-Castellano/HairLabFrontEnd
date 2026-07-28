@@ -6,7 +6,7 @@
       <p>
         {{
           isCustomer
-            ? 'Consulta i dati associati al tuo accesso e gestisci in sicurezza la password.'
+            ? 'Consulta i dati associati al tuo accesso e gestisci in sicurezza la password e l\'immagine del profilo.'
             : 'Visualizza i dettagli del tuo account e gestisci le credenziali di accesso.'
         }}
       </p>
@@ -33,6 +33,49 @@
   }
 
   <div class="profile-grid">
+    
+    <!-- SCHEDA GESTIONE FOTO PROFILO -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Immagine Profilo</h2>
+        <p>Personalizza la tua foto profilo</p>
+      </div>
+
+      <div class="profile-image-section" style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; margin-top: 1.5rem;">
+        <p style="font-size: 0.9rem; color: #666;">
+          L'immagine caricata sostituirà l'iniziale nel cerchietto in alto a destra della barra di navigazione.
+        </p>
+
+        <div class="file-input-wrapper" style="width: 100%;">
+          <input 
+            type="file" 
+            id="profileImageInput" 
+            accept="image/*" 
+            (change)="onFileSelected($event)" 
+            style="display: none;"
+          >
+          <label for="profileImageInput" class="secondary-button file-upload-label" style="width: 100%; text-align: center; cursor: pointer;">
+            Scegli Immagine
+          </label>
+        </div>
+
+        @if (selectedFile) {
+          <div style="font-size: 0.85rem; color: #333; font-weight: 500;">
+            File selezionato: {{ selectedFile.name }}
+          </div>
+          <button 
+            type="button" 
+            class="primary-button" 
+            [disabled]="uploadingImage()" 
+            (click)="onUpdateProfileImage()"
+            style="width: 100%;"
+          >
+            {{ uploadingImage() ? 'Caricamento in corso...' : 'Salva Nuova Immagine' }}
+          </button>
+        }
+      </div>
+    </div>
+
     <!-- SCHEDA INFORMAZIONI GENERALI -->
     <div class="panel">
       <div class="panel-header">
@@ -92,9 +135,7 @@
           />
 
           @if (passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched) {
-            <small class="error-text"
-              >La password è obbligatoria e deve avere almeno 6 caratteri.</small
-            >
+            <small class="error-text">La password è obbligatoria e deve avere almeno 6 caratteri.</small>
           }
         </div>
 

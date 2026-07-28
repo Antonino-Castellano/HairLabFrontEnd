@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
 
 import { AuthService } from '../../core/auth/auth-service';
 import { UserService } from '../../service/user-service';
@@ -13,48 +14,79 @@ import { HairLabTechnicalLabelPipe } from '../ui/hairlab-technical-label.pipe';
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   public readonly router = inject(Router);
   public readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
 
-  /**
-   * Utente ricavato dal JWT.
-   * Manteniamo un fallback per evitare errori nel template
-   * durante logout/scadenza token.
-   */
-  user = this.authService.getUserFromToken() || {
+  private routerSub?: Subscription;
+  private userSub?: Subscription;
+
+  user = signal<any>({
     username: 'Utente',
     email: '',
     role: 'USER',
     profileImage: null,
-  };
+  });
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (currentUser) => {
-        const fullName = `${currentUser.firstName ?? ''} ${currentUser.lastName ?? ''}`.trim();
-        this.user = {
-          username: fullName || currentUser.email?.split('@')[0] || 'Utente',
-          email: currentUser.email || this.user.email,
-          role: String(currentUser.role || this.user.role),
-          profileImage: currentUser.profileImage || this.user.profileImage,
-        };
-      },
-      error: () => {
-        // Il layout conserva i dati già disponibili nel JWT.
-      },
+    // 1. Carica subito i dati dal token locale (evita qualsiasi errore 401 all'avvio)
+    this.loadUserDataFromToken();
+
+    // 2. Ascolta in tempo reale i cambi utente/immagine provenienti dal UserService (es. quando aggiorni il profilo)
+    this.userSub = this.userService.currentUser$.subscribe((updatedUser) => {
+      if (updatedUser) {
+        this.updateUserState(updatedUser);
+      }
     });
+
+    // 3. Aggiorna lo stato ad ogni navigazione se necessario
+    this.routerSub = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.loadUserDataFromToken();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
+    this.userSub?.unsubscribe();
+  }
+
+  private formatImageUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    let fullUrl = url;
+    if (!url.startsWith('http') && !url.startsWith('data:')) {
+      fullUrl = `http://localhost:8080${url}`;
+    }
+    const separator = fullUrl.includes('?') ? '&' : '?';
+    return `${fullUrl}${separator}_t=${new Date().getTime()}`;
+  }
+
+  private updateUserState(userData: any): void {
+    let imageUrl = userData.profileImage;
+    if (imageUrl) {
+      imageUrl = this.formatImageUrl(imageUrl);
+    }
+
+    this.user.set({
+      username: userData.username || userData.firstName || 'Utente',
+      email: userData.email || '',
+      role: userData.role || this.authService.getRoleFromToken() || 'USER',
+      profileImage: imageUrl,
+    });
+  }
+
+  loadUserDataFromToken(): void {
+    const tokenUser = this.authService.getUserFromToken();
+    if (tokenUser) {
+      this.updateUserState(tokenUser);
+    }
   }
 
   sidebarOpen = signal<boolean>(false);
   sidebarPinned = signal<boolean>(false);
 
-  /**
-   * Le funzioni operative di scorte/acquisti conservano le route
-   * /color-lab/... per compatibilità, ma sono visualizzate in una
-   * sezione autonoma della sidebar.
-   */
   private readonly stockManagementRoutes = [
     '/color-lab/movements',
     '/color-lab/reorder',
@@ -68,10 +100,6 @@ export class LayoutComponent implements OnInit {
 
   stockMenuOpen = signal<boolean>(this.isStockManagementRoute(this.router.url));
 
-  /**
-   * Helper centralizzato per la visibilità delle voci di menu.
-   * Evita di ripetere direttamente la logica JWT nel template.
-   */
   hasAnyRole(roles: string[]): boolean {
     const role = this.authService.getRoleFromToken();
     return role != null && roles.includes(role);

@@ -30,42 +30,18 @@
   text-transform: uppercase;
 }
 
+.project-description {
+  color: #aaaaaa;
+  font-size: 1.05rem;
+  max-width: 700px;
+  margin: 15px auto 10px auto;
+  line-height: 1.5;
+}
+
 .header-section .description {
   color: #cccccc;
   font-size: 1.1rem;
   letter-spacing: 1px;
-}
-
-.superadmin-section {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 40px;
-  padding-right: 10px;
-}
-
-.superadmin-text {
-  color: #aaaaaa;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.login-button {
-  background: transparent;
-  color: #d4af37;
-  border: 1px solid #d4af37;
-  padding: 8px 20px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.login-button:hover {
-  background-color: #d4af37;
-  color: #0b0b0b;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
 }
 
 .plans-grid {
@@ -112,11 +88,21 @@
   letter-spacing: 1px;
 }
 
+.plan-price-container {
+  margin-bottom: 25px;
+}
+
 .plan-price {
   font-size: 2rem;
   font-weight: bold;
   color: #d4af37;
-  margin-bottom: 25px;
+  margin-bottom: 2px;
+}
+
+.plan-subtitle {
+  font-size: 0.85rem;
+  color: #888888;
+  font-style: italic;
 }
 
 .plan-features {
@@ -161,6 +147,40 @@
 .plan-button:hover {
   background-color: #f1c40f;
   box-shadow: 0 0 12px rgba(241, 196, 15, 0.4);
+}
+
+/* Sezione SuperAdmin spostata in fondo */
+.superadmin-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid #222222;
+}
+
+.superadmin-text {
+  color: #aaaaaa;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.login-button {
+  background: transparent;
+  color: #d4af37;
+  border: 1px solid #d4af37;
+  padding: 8px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #d4af37;
+  color: #0b0b0b;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
 }
 
 @media (max-width: 900px) {

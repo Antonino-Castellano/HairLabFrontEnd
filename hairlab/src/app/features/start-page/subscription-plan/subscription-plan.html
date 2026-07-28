@@ -1,20 +1,24 @@
 <div class="subscription-container">
   <div class="subscription-content-wrapper">
     
+    <!-- Header con descrizione progetto e sottotitolo -->
     <header class="header-section">
       <h1>PIANI DI ABBONAMENTO HAIRLAB</h1>
-      <p class="description">SCEGLI IL PIANO PERFETTO PER TE E SCOPRI TUTTI I VANTAGGI DI HAIRLAB.</p>
+      <p class="project-description">
+        HairLab è il gestionale definitivo progettato specificamente per semplificare, digitalizzare 
+        e far crescere i saloni e i professionisti del settore beauty.
+      </p>
+      <p class="description">SCEGLI IL PIANO PERFETTO PER TE E SCOPRI TUTTI I VANTAGGI.</p>
     </header>
 
-    <div class="superadmin-section">
-      <p class="superadmin-text">Hai già un'account SuperAdmin?</p>
-      <button type="button" class="login-button" (click)="onLogin()">Accedi</button>
-    </div>
-
+    <!-- Griglia Piani Alti -->
     <div class="plans-grid top-grid">
       <div class="plan-card" *ngFor="let plan of topPlans">
         <h3 class="plan-title">{{ plan.title }}</h3>
-        <div class="plan-price">{{ plan.price }}</div>
+        <div class="plan-price-container">
+          <div class="plan-price">{{ plan.price }}</div>
+          <div class="plan-subtitle" *ngIf="plan.subtitle">{{ plan.subtitle }}</div>
+        </div>
         
         <ul class="plan-features">
           <li *ngFor="let feature of plan.features">
@@ -28,10 +32,14 @@
       </div>
     </div>
 
+    <!-- Griglia Piani Bassi -->
     <div class="plans-grid bottom-grid">
       <div class="plan-card" *ngFor="let plan of bottomPlans">
         <h3 class="plan-title">{{ plan.title }}</h3>
-        <div class="plan-price">{{ plan.price }}</div>
+        <div class="plan-price-container">
+          <div class="plan-price">{{ plan.price }}</div>
+          <div class="plan-subtitle" *ngIf="plan.subtitle">{{ plan.subtitle }}</div>
+        </div>
         
         <ul class="plan-features">
           <li *ngFor="let feature of plan.features">
@@ -43,6 +51,12 @@
           {{ plan.buttonText }}
         </button>
       </div>
+    </div>
+
+    <!-- Sezione SuperAdmin spostata in basso -->
+    <div class="superadmin-section">
+      <p class="superadmin-text">Hai già un account SuperAdmin?</p>
+      <button type="button" class="login-button" (click)="onLogin()">Accedi</button>
     </div>
 
   </div>

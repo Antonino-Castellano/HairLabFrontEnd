@@ -10,8 +10,9 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./start-page.css']
 })
 export class StartPageComponent {
-
   constructor(private router: Router) {}
+
+  logoPath = '/LOGO/EUTE-LOGO-2024-COMPLETO.png';
 
   webApps = [
     { name: 'HairLab', description: 'Gestione avanzata per saloni di acconciatura, formule colore e magazzino.', active: true },

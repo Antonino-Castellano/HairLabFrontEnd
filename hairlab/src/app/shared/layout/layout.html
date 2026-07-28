@@ -351,16 +351,16 @@
     <div class="sidebar-footer">
       <div class="sidebar-user-summary">
         <div class="sidebar-user-avatar">
-          @if (user?.profileImage) {
-            <img [src]="user.profileImage" [alt]="user?.username || 'Utente'" />
+          @if (user()?.profileImage) {
+            <img [src]="user()?.profileImage" [alt]="user()?.username || 'Utente'" />
           } @else {
-            {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+            {{ user()?.username ? user()?.username?.charAt(0)?.toUpperCase() : 'U' }}
           }
         </div>
 
         <div class="sidebar-user-info">
-          <strong>{{ user?.username || 'Utente' }}</strong>
-          <span>{{ user?.role || 'USER' | hairLabLabel }}</span>
+          <strong>{{ user()?.username || 'Utente' }}</strong>
+          <span>{{ user()?.role || 'USER' | hairLabLabel }}</span>
         </div>
       </div>
 
@@ -406,16 +406,16 @@
 
       <div class="topbar-user" [routerLink]="getProfileRoute()" title="Vai alla tua area">
         <div class="topbar-avatar">
-          @if (user?.profileImage) {
-            <img [src]="user.profileImage" [alt]="user?.username || 'Utente'" />
+          @if (user()?.profileImage) {
+            <img [src]="user()?.profileImage" [alt]="user()?.username || 'Utente'" />
           } @else {
-            {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+            {{ user()?.username ? user()?.username?.charAt(0)?.toUpperCase() : 'U' }}
           }
         </div>
 
         <div class="topbar-user-info">
-          <strong>{{ user?.username || 'Utente' }}</strong>
-          <span>{{ user?.role || 'USER' | hairLabLabel }}</span>
+          <strong>{{ user()?.username || 'Utente' }}</strong>
+          <span>{{ user()?.role || 'USER' | hairLabLabel }}</span>
         </div>
       </div>
     </header>

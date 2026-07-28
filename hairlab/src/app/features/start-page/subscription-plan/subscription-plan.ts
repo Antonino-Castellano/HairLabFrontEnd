@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 interface Plan {
   title: string;
   price: string;
+  subtitle?: string;
   features: string[];
   buttonText: string;
 }
@@ -21,19 +22,22 @@ export class SubscriptionPlanComponent {
   topPlans: Plan[] = [
     {
       title: '1 MESE',
-      price: '€49 /mese',
+      price: '€49',
+      subtitle: '/mese',
       features: ['Accesso completo', 'Supporto base', 'Disdetta flessibile'],
       buttonText: 'REGISTRATI'
     },
     {
       title: '3 MESI',
       price: '€135',
+      subtitle: '€45 al mese',
       features: ['Accesso completo', 'Supporto prioritario', 'Risparmio sul mensile'],
       buttonText: 'REGISTRATI'
     },
     {
       title: '6 MESI',
       price: '€250',
+      subtitle: '€42 al mese',
       features: ['Accesso completo', 'Supporto dedicato', 'Vantaggi esclusivi'],
       buttonText: 'REGISTRATI'
     }
@@ -42,13 +46,15 @@ export class SubscriptionPlanComponent {
   bottomPlans: Plan[] = [
     {
       title: '1 ANNO',
-      price: '€490 /anno',
+      price: '€490',
+      subtitle: '€41 al mese',
       features: ['Accesso illimitato', 'Tutti i servizi inclusi', 'Massimo risparmio'],
       buttonText: 'REGISTRATI'
     },
     {
       title: 'UNA TANTUM',
       price: '€1.500',
+      subtitle: 'Licenza a vita',
       features: ['Licenza perpetua', 'Nessun rinnovo automatico', 'Accesso a vita ai contenuti'],
       buttonText: 'ACQUISTA'
     }

@@ -1,55 +1,86 @@
-<div class="register-page-container">
-<div class="register-content-wrapper">
-<div class="register-container">
- <h2>REGISTRAZIONE SALONE - HAIRLAB</h2>
- 
- <div class="plan-summary">
- <p>Piano scelto: <strong>{{ selectedPlan }}</strong></p>
- <p>Prezzo: <strong>€ {{ selectedPrice }}</strong></p>
+<div class="salon-form-container">
+  <h2>Registrazione Salone - Piano: {{ selectedPlan }}</h2>
+  <p>Prezzo: €{{ selectedPrice }} / mese</p>
+
+  @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Nome <span class="required">*</span></label>
+      <input type="text" formControlName="firstName" placeholder="Nome titolare" />
+    </div>
+
+    <div class="form-group">
+      <label>Cognome <span class="required">*</span></label>
+      <input type="text" formControlName="lastName" placeholder="Cognome titolare" />
+    </div>
+
+    <div class="form-group">
+      <label>Data di Nascita <span class="required">*</span></label>
+      <input type="date" formControlName="dob" />
+    </div>
+
+    <div class="form-group">
+      <label>Telefono <span class="required">*</span></label>
+      <input type="text" formControlName="phoneNumber" placeholder="Numero di telefono" />
+    </div>
+
+    <div class="form-group">
+      <label>Email <span class="required">*</span></label>
+      <input type="email" formControlName="email" placeholder="Email di accesso" />
+    </div>
+
+    <div class="form-group">
+      <label>Password <span class="required">*</span></label>
+      <input type="password" formControlName="password" placeholder="Minimo 6 caratteri" />
+    </div>
+
+    <div class="form-group">
+      <label>Metodo di Pagamento <span class="required">*</span></label>
+      <select formControlName="paymentType">
+        <option value="">Seleziona pagamento</option>
+        @for (type of paymentTypes; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Campi Carta di Credito -->
+    @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.CREDIT_CARD) {
+      <div class="payment-fields">
+        <div class="form-group">
+          <label>Numero Carta <span class="required">*</span></label>
+          <input type="text" formControlName="cardNumber" placeholder="16 cifre" maxlength="16" />
+        </div>
+        <div class="form-group">
+          <label>Titolare Carta <span class="required">*</span></label>
+          <input type="text" formControlName="cardHolder" placeholder="Nome e Cognome" />
+        </div>
+        <div class="form-group">
+          <label>Scadenza (MM/YY) <span class="required">*</span></label>
+          <input type="text" formControlName="cardExpDate" placeholder="MM/YY" />
+        </div>
+        <div class="form-group">
+          <label>CVV <span class="required">*</span></label>
+          <input type="password" formControlName="cardCvv" placeholder="CVV" maxlength="4" />
+        </div>
+      </div>
+    }
+
+    <!-- Campi PayPal -->
+    @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.PAYPAL) {
+      <div class="payment-fields">
+        <div class="form-group">
+          <label>Email PayPal <span class="required">*</span></label>
+          <input type="email" formControlName="paypalEmail" placeholder="tua-email@paypal.com" />
+        </div>
+      </div>
+    }
+
+    <div class="form-actions">
+      <button type="submit" class="primary-button">Completa Registrazione</button>
+    </div>
+  </form>
 </div>
-
-<div *ngIf="errorMessage" class="error-alert">
-  {{ errorMessage }}
-</div>
-
- <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
- 
- <div class="form-group">
- <label>Nome</label>
- <input type="text" formControlName="firstName" placeholder="Inserisci il nome">
- </div>
-
- <div class="form-group">
- <label>Cognome</label>
- <input type="text" formControlName="lastName" placeholder="Inserisci il cognome">
- </div>
-
- <div class="form-group">
- <label>Numero di Telefono</label>
- <input type="text" formControlName="phoneNumber" placeholder="Inserisci il telefono">
- </div>
- <div class="form-group">
-<label>Email</label>
-<input type="email" formControlName="email" placeholder="Inserisci l'email">
- </div>
-
- <div class="form-group">
-<label>Password</label>
-<input type="password" formControlName="password" placeholder="Inserisci la password">
- </div>
-
- <div class="form-group">
- <label>Metodo di Pagamento</label>
-  <select formControlName="paymentType">
- <option value="" disabled>Seleziona metodo</option>
- <option *ngFor="let type of paymentTypes" [value]="type">
- {{ type === 'PAYPAL' ? 'PayPal' : 'Carta di Credito' }}
- </option>
-  </select>
- </div>
-
-<button type="submit" class="submit-btn">COMPLETA REGISTRAZIONE</button>
-</form>
-</div>
- </div>
-</div> 
