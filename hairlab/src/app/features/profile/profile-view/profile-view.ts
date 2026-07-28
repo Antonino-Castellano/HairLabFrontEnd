@@ -42,13 +42,18 @@ export class ProfileViewComponent implements OnInit {
     this.loadProfile();
   }
 
-  // Converte il percorso relativo del backend in un URL assoluto con timestamp anti-cache
+  // Converte il percorso relativo del backend o gestisce gli asset locali del frontend
   private formatImageUrl(url: string | null | undefined): string | null {
     if (!url) return null;
     let fullUrl = url;
-    if (!url.startsWith('http') && !url.startsWith('data:')) {
+
+    // Se è un asset locale del frontend, non aggiungere http://localhost:8080
+    if (url.startsWith('/assets/')) {
+      fullUrl = url;
+    } else if (!url.startsWith('http') && !url.startsWith('data:')) {
       fullUrl = `http://localhost:8080${url}`;
     }
+
     const separator = fullUrl.includes('?') ? '&' : '?';
     return `${fullUrl}${separator}_t=${new Date().getTime()}`;
   }

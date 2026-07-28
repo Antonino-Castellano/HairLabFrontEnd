@@ -53,12 +53,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.userSub?.unsubscribe();
   }
 
+  // Corretto per gestire sia gli assets locali del frontend che i file salvati nel backend
   private formatImageUrl(url: string | null | undefined): string | null {
     if (!url) return null;
     let fullUrl = url;
-    if (!url.startsWith('http') && !url.startsWith('data:')) {
+
+    if (url.startsWith('/assets/')) {
+      fullUrl = url;
+    } else if (!url.startsWith('http') && !url.startsWith('data:')) {
       fullUrl = `http://localhost:8080${url}`;
     }
+
     const separator = fullUrl.includes('?') ? '&' : '?';
     return `${fullUrl}${separator}_t=${new Date().getTime()}`;
   }
