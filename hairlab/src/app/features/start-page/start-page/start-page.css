@@ -1,0 +1,181 @@
+/* Sfondo a tutto schermo */
+:host, .landing-container {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0b0b0b;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenitore interno che centra i contenuti e mantiene il limite di 1200px */
+.landing-content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.landing-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.step-badge {
+  background-color: #d4af37;
+  color: #0b0b0b;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+
+.company-title {
+  font-size: 2rem;
+  letter-spacing: 2px;
+  margin: 0;
+  color: #d4af37;
+}
+
+.about-section {
+  background: #141414;
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 40px;
+  border: 1px solid #333333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.about-section h2, .applications-section h2 {
+  color: #d4af37;
+  margin-bottom: 15px;
+}
+
+.about-text {
+  line-height: 1.6;
+  font-size: 1.05rem;
+  color: #cccccc;
+}
+
+.applications-section h2 {
+  margin-bottom: 25px;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.app-card {
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #141414;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.app-card:hover {
+  transform: translateY(-3px);
+  border-color: #d4af37;
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.15);
+}
+
+.app-card.highlight {
+  border-color: #d4af37;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+}
+
+.app-card h3 {
+  margin-top: 0;
+  color: #ffffff;
+}
+
+.app-card p {
+  font-size: 0.95rem;
+  color: #aaaaaa;
+  flex-grow: 1;
+}
+
+.btn-discover {
+  background-color: #d4af37;
+  color: #0b0b0b;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-top: 15px;
+}
+
+.btn-discover:hover {
+  background-color: #f1c40f;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.4);
+}
+
+.coming-soon {
+  font-size: 0.85rem;
+  color: #777777;
+  font-style: italic;
+  margin-top: 15px;
+}
+
+.section-divider {
+  border: none;
+  height: 2px;
+  background-color: #d4af37;
+  margin: 50px 0 20px 0;
+  width: 100%;
+}
+
+/* Stili personalizzati per i bottoni */
+.btn-custom {
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-custom-primary {
+  background-color: #d4af37;
+  border: 1.5px solid #d4af37;
+  color: #0b0b0b;
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+}
+
+.btn-custom-primary:hover {
+  background-color: #f1c40f; 
+  border-color: #f1c40f;
+  color: #0b0b0b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(241, 196, 15, 0.3);
+}
+
+.btn-custom-outline {
+  background-color: transparent;
+  border: 1.5px solid #333333;
+  color: #cccccc;
+}
+
+.btn-custom-outline:hover {
+  background-color: #141414;
+  border-color: #d4af37;
+  color: #d4af37;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}

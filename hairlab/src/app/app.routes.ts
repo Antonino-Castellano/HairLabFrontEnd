@@ -65,6 +65,23 @@ import { SubscriptionPlanComponent } from './features/start-page/subscription-pl
 import { StartPageComponent } from './features/start-page/start-page/start-page';
 
 export const routes: Routes = [
+
+  {
+    path: '',
+    component: StartPageComponent,
+    pathMatch: 'full'
+  },
+
+  {
+    path: 'salon/hairlab',
+    component: SubscriptionPlanComponent
+  },
+
+  {
+    path: 'salon-form',
+    component: SalonFormComponent
+  },
+
   {
     path: '',
     component: StartPageComponent,
@@ -202,6 +219,7 @@ export const routes: Routes = [
           roles: ['ADMIN', 'SUPERADMIN'],
         },
       },
+
       {
         path: 'customers/:customerId/beard-profile/new',
         component: BeardProfileFormComponent,

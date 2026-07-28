@@ -1,0 +1,45 @@
+<div class="landing-container">
+  <div class="landing-content-wrapper">
+    <!-- Intestazione con numero 1 e Nome Azienda -->
+    <header class="landing-header">
+      <h1 class="company-title">EUTE TECH</h1>
+    </header>
+
+    <!-- Sezione Chi Siamo -->
+    <section class="about-section">
+      <h2>Chi Siamo</h2>
+      <p class="about-text">
+        In <strong>EUTE Tech</strong> sviluppiamo ecosistemi software innovativi pensati per semplificare 
+        e digitalizzare i processi aziendali in molteplici settori. La nostra missione è unire potenza tecnologica 
+        e semplicità d'uso per offrire soluzioni verticali ad alte performance.
+      </p>
+    </section>
+
+    <!-- Sezione Le Nostre Web Application -->
+    <section class="applications-section">
+      <h2>Le Nostre Web-Application</h2>
+      
+      <div class="apps-grid">
+        <!-- Card HairLab (Attiva con bottone) -->
+        <div class="app-card highlight">
+          <h3>HairLab</h3>
+          <p>Il gestionale definitivo per professionisti del settore beauty.</p>
+          <button (click)="navigateToHairLab()" class="btn btn-custom btn-custom-primary px-4 py-2">
+            <span>Scopri di più</span>
+            <i class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </div>
+
+        <!-- Altre Web Application fittizie dal wireframe -->
+        <div class="app-card" *ngFor="let app of webApps.slice(1)">
+          <h3>{{ app.name }}</h3>
+          <p>{{ app.description }}</p>
+          <span class="coming-soon">Prossimamente</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Linea orizzontale di separazione come richiesto dal wireframe -->
+    <hr class="section-divider" />
+  </div>
+</div>
