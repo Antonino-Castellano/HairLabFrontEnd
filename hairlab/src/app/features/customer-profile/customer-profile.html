@@ -4,8 +4,9 @@
       <span class="eyebrow">PROFILO PERSONALE IN SOLA LETTURA</span>
       <h1>Il mio HairLab</h1>
       <p>
-        Qui trovi le informazioni professionali registrate dal salone su capelli, viso, armocromia,
-        consulenze e storico. Questi dati possono essere modificati soltanto dal team.
+        Qui trovi le informazioni professionali registrate dal salone su capelli, viso, barba quando
+        presente, armocromia, consulenze e storico. Questi dati possono essere modificati soltanto
+        dal team.
       </p>
     </div>
     <a class="hl-btn hl-btn-secondary" routerLink="/my-account">Gestisci account</a>
@@ -35,6 +36,15 @@
       >
         Viso
       </button>
+      @if (customerArea.customer.gender === 'MALE') {
+        <button
+          type="button"
+          [class.active]="activeSection() === 'beard'"
+          (click)="selectSection('beard')"
+        >
+          Barba
+        </button>
+      }
       <button
         type="button"
         [class.active]="activeSection() === 'color'"
@@ -244,6 +254,90 @@
         <div class="hl-empty-state">
           Il profilo del viso non è ancora stato compilato dal salone.
         </div>
+      }
+    }
+
+    @if (activeSection() === 'beard') {
+      @if (customerArea.analysis.beardProfile; as beard) {
+        <section class="profile-section-grid">
+          <article class="hl-card profile-card wide-card">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">PROFILO BARBA</span>
+                <h2>Barba e baffi</h2>
+              </div>
+              <span class="read-only-badge">Sola lettura</span>
+            </div>
+            <div class="technical-grid">
+              <div>
+                <span>Stile attuale</span><strong>{{ profileLabel(beard.currentStyle) }}</strong>
+              </div>
+              <div>
+                <span>Stile desiderato</span><strong>{{ profileLabel(beard.desiredStyle) }}</strong>
+              </div>
+              <div>
+                <span>Lunghezza</span><strong>{{ profileLabel(beard.beardLength) }}</strong>
+              </div>
+              <div>
+                <span>Misura</span><strong>{{ beard.approximateLengthMm ?? 0 }} mm</strong>
+              </div>
+              <div>
+                <span>Densità</span><strong>{{ profileLabel(beard.density) }}</strong>
+              </div>
+              <div>
+                <span>Crescita</span><strong>{{ profileLabel(beard.growthPattern) }}</strong>
+              </div>
+              <div>
+                <span>Baffi</span
+                ><strong>{{
+                  beard.moustachePresent ? profileLabel(beard.moustacheStyle) : 'Non presenti'
+                }}</strong>
+              </div>
+              <div>
+                <span>Collegamento baffi</span
+                ><strong>{{ profileLabel(beard.moustacheConnection) }}</strong>
+              </div>
+              <div>
+                <span>Linea guance</span><strong>{{ profileLabel(beard.cheekLine) }}</strong>
+              </div>
+              <div>
+                <span>Linea collo</span><strong>{{ profileLabel(beard.neckline) }}</strong>
+              </div>
+              <div>
+                <span>Bianchi</span><strong>{{ beard.grayPercentage ?? 0 }}%</strong>
+              </div>
+              <div>
+                <span>Obiettivo colore</span
+                ><strong>{{ profileLabel(beard.beardColorGoal) }}</strong>
+              </div>
+            </div>
+          </article>
+          <article class="hl-card profile-card">
+            <span class="eyebrow">CUTE</span>
+            <h2>Sensibilità e cautele</h2>
+            <p>
+              Sensibilità: <strong>{{ profileLabel(beard.skinSensitivity) }}</strong>
+            </p>
+            <p>
+              Irritazione:
+              <strong>{{ beard.irritationPresent ? 'Presente' : 'Non rilevata' }}</strong>
+            </p>
+            <p>
+              Peli incarniti:
+              <strong>{{ beard.ingrownHairPresent ? 'Presenti' : 'Non rilevati' }}</strong>
+            </p>
+          </article>
+          <article class="hl-card profile-card">
+            <span class="eyebrow">NOTE PROFESSIONALI</span>
+            <h2>Indicazioni del team</h2>
+            <p>{{ beard.notes || 'Nessuna nota registrata.' }}</p>
+            @if (beard.contraindications) {
+              <p><strong>Controindicazioni:</strong> {{ beard.contraindications }}</p>
+            }
+          </article>
+        </section>
+      } @else {
+        <div class="hl-empty-state">Il Profilo barba non è ancora stato compilato dal salone.</div>
       }
     }
 

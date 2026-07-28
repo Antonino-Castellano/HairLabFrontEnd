@@ -1,0 +1,70 @@
+.beard-detail {
+  display: grid;
+  gap: var(--hl-space-5);
+}
+.section-heading,
+.card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--hl-space-4);
+}
+.section-heading h2,
+.profile-grid h3 {
+  margin: 4px 0 8px;
+}
+.section-heading p,
+.profile-grid p {
+  color: var(--hl-color-text-muted);
+}
+.eyebrow {
+  color: var(--hl-color-primary);
+  font-size: var(--hl-font-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--hl-space-4);
+}
+.summary-card,
+.notes-card {
+  grid-column: 1 / -1;
+}
+.technical-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--hl-space-3);
+  margin-top: var(--hl-space-4);
+}
+.technical-grid div {
+  padding: 12px;
+  border-radius: var(--hl-radius-sm);
+  background: var(--hl-color-surface-alt);
+}
+.technical-grid span,
+.technical-grid strong {
+  display: block;
+}
+.technical-grid span {
+  color: var(--hl-color-text-muted);
+  font-size: var(--hl-font-xs);
+}
+.technical-grid strong {
+  margin-top: 5px;
+}
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .technical-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .profile-grid,
+  .technical-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,122 +1,67 @@
 <section class="detail-page">
-
   <!-- =====================================================
        STATO DI CARICAMENTO
        ===================================================== -->
   @if (loading()) {
-
-    <div class="state-message">
-      Caricamento cliente...
-    </div>
-
+    <div class="state-message">Caricamento cliente...</div>
   } @else if (errorMessage()) {
-
     <!-- ===================================================
          ERRORE
          =================================================== -->
     <div class="error-message">
       {{ errorMessage() }}
     </div>
-
-  } @else if (
-    customer();
-    as selectedCustomer
-  ) {
-
+  } @else if (customer(); as selectedCustomer) {
     <!-- ===================================================
          HEADER DELLA PAGINA
          =================================================== -->
     <div class="page-header">
-
       <div>
-
-        <span class="eyebrow">
-          CLIENTE HAIRLAB
-        </span>
+        <span class="eyebrow"> CLIENTE HAIRLAB </span>
 
         <h1>
           {{ selectedCustomer.firstName }}
           {{ selectedCustomer.lastName }}
         </h1>
 
-        <p>
-          Profilo cliente, analisi tecniche
-          e consulenza professionale HairLab.
-        </p>
-
+        <p>Profilo cliente, analisi tecniche e consulenza professionale HairLab.</p>
       </div>
 
       <div class="header-actions">
+        <a class="secondary-button" routerLink="/customers"> ← Clienti </a>
 
-        <a
-          class="secondary-button"
-          routerLink="/customers">
-
-          ← Clienti
-
-        </a>
-
-        <a
-          class="primary-button"
-          [routerLink]="[
-            '/customers',
-            selectedCustomer.id,
-            'edit'
-          ]">
-
+        <a class="primary-button" [routerLink]="['/customers', selectedCustomer.id, 'edit']">
           Modifica cliente
-
         </a>
-
       </div>
-
     </div>
 
     <!-- ===================================================
          HERO CLIENTE
          =================================================== -->
     <section class="customer-hero">
-
       <div class="customer-identity">
-
         <!-- ===============================================
              FOTO / AVATAR
              =============================================== -->
         <div class="large-avatar">
-
-          @if (
-            selectedCustomer.profileImage
-          ) {
-
+          @if (selectedCustomer.profileImage) {
             <img
               [src]="selectedCustomer.profileImage"
-              [alt]="
-                selectedCustomer.firstName +
-                ' ' +
-                selectedCustomer.lastName
-              ">
-
+              [alt]="selectedCustomer.firstName + ' ' + selectedCustomer.lastName"
+            />
           } @else {
-
             <span>
-              {{
-                getCustomerInitials(
-                  selectedCustomer
-                )
-              }}
+              {{ getCustomerInitials(selectedCustomer) }}
             </span>
-
           }
-
         </div>
 
         <!-- ===============================================
              DATI PRINCIPALI
              =============================================== -->
         <div class="customer-summary">
-
           <div class="name-row">
-
             <h2>
               {{ selectedCustomer.firstName }}
               {{ selectedCustomer.lastName }}
@@ -124,752 +69,455 @@
 
             <span
               class="status"
-              [class.active]="
-                selectedCustomer.active
-              "
-              [class.inactive]="
-                !selectedCustomer.active
-              ">
-
+              [class.active]="selectedCustomer.active"
+              [class.inactive]="!selectedCustomer.active"
+            >
               <span class="status-dot"></span>
 
-              {{
-                selectedCustomer.active
-                  ? 'Cliente attivo'
-                  : 'Cliente non attivo'
-              }}
-
+              {{ selectedCustomer.active ? 'Cliente attivo' : 'Cliente non attivo' }}
             </span>
-
           </div>
 
           <!-- CONTATTI -->
           <div class="contact-row">
-
             <span>
               {{ selectedCustomer.email }}
             </span>
 
-            <span class="separator">
-              •
-            </span>
+            <span class="separator"> • </span>
 
             <span>
               {{ selectedCustomer.phoneNumber }}
             </span>
-
           </div>
 
           <!-- META -->
           <div class="customer-meta">
-
             <span>
-
               ID CLIENTE
 
-              <strong>
-                #{{ selectedCustomer.id }}
-              </strong>
-
+              <strong> #{{ selectedCustomer.id }} </strong>
             </span>
 
             <span>
-
               DATA DI NASCITA
 
               <strong>
-                {{
-                  selectedCustomer.dob ||
-                  'Non specificata'
-                }}
+                {{ selectedCustomer.dob || 'Non specificata' }}
               </strong>
-
             </span>
 
             <span>
+              SESSO
 
+              <strong>
+                {{ selectedCustomer.gender === 'MALE' ? 'Maschio' : 'Femmina' }}
+              </strong>
+            </span>
+
+            <span>
               STATO
 
               <strong>
-
-                {{
-                  selectedCustomer.active
-                    ? 'Attivo'
-                    : 'Non attivo'
-                }}
-
+                {{ selectedCustomer.active ? 'Attivo' : 'Non attivo' }}
               </strong>
-
             </span>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
 
     <!-- ===================================================
          NAVIGAZIONE PROFILO CLIENTE
          =================================================== -->
-    <nav
-      class="profile-tabs"
-      aria-label="Sezioni profilo cliente">
-
+    <nav class="profile-tabs" aria-label="Sezioni profilo cliente">
       <!-- PANORAMICA -->
       <button
         type="button"
-        [class.active]="
-          isSectionActive('overview')
-        "
-        (click)="
-          selectSection('overview')
-        ">
-
-        <span class="tab-icon">
-          ⌂
-        </span>
+        [class.active]="isSectionActive('overview')"
+        (click)="selectSection('overview')"
+      >
+        <span class="tab-icon"> ⌂ </span>
 
         Panoramica
-
       </button>
 
       <!-- APPUNTAMENTI -->
       <button
         type="button"
-        [class.active]="
-          isSectionActive('appointments')
-        "
-        (click)="
-          selectSection('appointments')
-        ">
-
+        [class.active]="isSectionActive('appointments')"
+        (click)="selectSection('appointments')"
+      >
         <span class="tab-icon">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect
-              x="4"
-              y="5"
-              width="16"
-              height="15"
-              rx="2">
-            </rect>
+            <rect x="4" y="5" width="16" height="15" rx="2"></rect>
 
             <path
               d="
                 M8 3v4
                 M16 3v4
                 M4 10h16
-              ">
-            </path>
+              "
+            ></path>
           </svg>
         </span>
 
         Appuntamenti
-
       </button>
 
       <!-- CAPELLI -->
       <button
         type="button"
-        [class.active]="
-          isSectionActive('hair')
-        "
-        (click)="
-          selectSection('hair')
-        ">
-
-        <span class="tab-icon">
-          ≋
-        </span>
+        [class.active]="isSectionActive('hair')"
+        (click)="selectSection('hair')"
+      >
+        <span class="tab-icon"> ≋ </span>
 
         Capelli
-
       </button>
 
       <!-- VISO -->
       <button
         type="button"
-        [class.active]="
-          isSectionActive('face')
-        "
-        (click)="
-          selectSection('face')
-        ">
-
-        <span class="tab-icon">
-          ◯
-        </span>
+        [class.active]="isSectionActive('face')"
+        (click)="selectSection('face')"
+      >
+        <span class="tab-icon"> ◯ </span>
 
         Viso
-
       </button>
+
+      @if (selectedCustomer.gender === 'MALE') {
+        <button
+          type="button"
+          [class.active]="isSectionActive('beard')"
+          (click)="selectSection('beard')"
+        >
+          <span class="tab-icon">⌁</span>
+          Barba
+        </button>
+      }
 
       <!-- ARMOCROMIA -->
       <button
         type="button"
-        [class.active]="
-          isSectionActive('color')
-        "
-        (click)="
-          selectSection('color')
-        ">
-
-        <span class="tab-icon">
-          ◐
-        </span>
+        [class.active]="isSectionActive('color')"
+        (click)="selectSection('color')"
+      >
+        <span class="tab-icon"> ◐ </span>
 
         Armocromia
-
       </button>
       <!-- SUGGERIMENTI -->
       <button
         type="button"
         class="suggestion-tab"
-        [class.active]="
-          isSectionActive(
-            'recommendations'
-          )
-        "
-        (click)="
-          selectSection(
-            'recommendations'
-          )
-        ">
-
-        <span class="tab-icon">
-          ✦
-        </span>
+        [class.active]="isSectionActive('recommendations')"
+        (click)="selectSection('recommendations')"
+      >
+        <span class="tab-icon"> ✦ </span>
 
         Suggerimenti
-
       </button>
 
       <!-- CARTELLA COLORE -->
       <button
         type="button"
         [class.active]="isSectionActive('color-record')"
-        (click)="selectSection('color-record')">
+        (click)="selectSection('color-record')"
+      >
         <span class="tab-icon">▤</span>
         Cartella colore
       </button>
-
     </nav>
 
     <!-- ===================================================
          CONTENUTO DELLE TAB
          =================================================== -->
     <div class="tab-content">
-
       @switch (activeSection()) {
-
         <!-- =================================================
              PANORAMICA
              ================================================= -->
         @case ('overview') {
-
           <section class="module-panel">
-
             <div class="overview-grid">
-
               <!-- =========================================
                    DATI PERSONALI
                    ========================================= -->
               <article class="overview-card">
-
                 <div class="card-header">
+                  <span class="card-eyebrow"> ANAGRAFICA </span>
 
-                  <span class="card-eyebrow">
-                    ANAGRAFICA
-                  </span>
-
-                  <h3>
-                    Informazioni personali
-                  </h3>
-
+                  <h3>Informazioni personali</h3>
                 </div>
 
                 <div class="info-grid">
-
                   <div>
-
-                    <span>
-                      Nome
-                    </span>
+                    <span> Nome </span>
 
                     <strong>
-                      {{
-                        selectedCustomer.firstName
-                      }}
+                      {{ selectedCustomer.firstName }}
                     </strong>
-
                   </div>
 
                   <div>
-
-                    <span>
-                      Cognome
-                    </span>
+                    <span> Cognome </span>
 
                     <strong>
-                      {{
-                        selectedCustomer.lastName
-                      }}
+                      {{ selectedCustomer.lastName }}
                     </strong>
-
                   </div>
 
                   <div>
-
-                    <span>
-                      Email
-                    </span>
+                    <span> Email </span>
 
                     <strong>
-                      {{
-                        selectedCustomer.email
-                      }}
+                      {{ selectedCustomer.email }}
                     </strong>
-
                   </div>
 
                   <div>
-
-                    <span>
-                      Telefono
-                    </span>
+                    <span> Telefono </span>
 
                     <strong>
-                      {{
-                        selectedCustomer.phoneNumber
-                      }}
+                      {{ selectedCustomer.phoneNumber }}
                     </strong>
-
                   </div>
 
                   <div>
-
-                    <span>
-                      Data di nascita
-                    </span>
+                    <span> Data di nascita </span>
 
                     <strong>
-
-                      {{
-                        selectedCustomer.dob ||
-                        'Non specificata'
-                      }}
-
+                      {{ selectedCustomer.dob || 'Non specificata' }}
                     </strong>
-
                   </div>
 
                   <div>
+                    <span> ID cliente </span>
 
-                    <span>
-                      ID cliente
-                    </span>
-
-                    <strong>
-                      #{{ selectedCustomer.id }}
-                    </strong>
-
+                    <strong> #{{ selectedCustomer.id }} </strong>
                   </div>
-
                 </div>
-
               </article>
 
               <!-- =========================================
                    ACCESSI RAPIDI
                    ========================================= -->
               <article class="overview-card">
-
                 <div class="card-header">
+                  <span class="card-eyebrow"> CUSTOMER ANALYSIS </span>
 
-                  <span class="card-eyebrow">
-                    CUSTOMER ANALYSIS
-                  </span>
-
-                  <h3>
-                    Profili professionali
-                  </h3>
-
+                  <h3>Profili professionali</h3>
                 </div>
 
                 <div class="profile-shortcuts">
-
                   <!-- CAPELLI -->
-                  <button
-                    type="button"
-                    class="shortcut-card"
-                    (click)="
-                      selectSection('hair')
-                    ">
-
-                    <span class="shortcut-icon">
-                      ≋
-                    </span>
+                  <button type="button" class="shortcut-card" (click)="selectSection('hair')">
+                    <span class="shortcut-icon"> ≋ </span>
 
                     <div>
+                      <strong> Profilo capelli </strong>
 
-                      <strong>
-                        Profilo capelli
-                      </strong>
-
-                      <small>
-                        Tono, riflesso,
-                        struttura e storico tecnico.
-                      </small>
-
+                      <small> Tono, riflesso, struttura e storico tecnico. </small>
                     </div>
 
-                    <span class="shortcut-arrow">
-                      →
-                    </span>
-
+                    <span class="shortcut-arrow"> → </span>
                   </button>
 
                   <!-- VISO -->
-                  <button
-                    type="button"
-                    class="shortcut-card"
-                    (click)="
-                      selectSection('face')
-                    ">
-
-                    <span class="shortcut-icon">
-                      ◯
-                    </span>
+                  <button type="button" class="shortcut-card" (click)="selectSection('face')">
+                    <span class="shortcut-icon"> ◯ </span>
 
                     <div>
+                      <strong> Profilo viso </strong>
 
-                      <strong>
-                        Profilo viso
-                      </strong>
-
-                      <small>
-                        Morfologia, proporzioni
-                        e caratteristiche del volto.
-                      </small>
-
+                      <small> Morfologia, proporzioni e caratteristiche del volto. </small>
                     </div>
 
-                    <span class="shortcut-arrow">
-                      →
-                    </span>
-
+                    <span class="shortcut-arrow"> → </span>
                   </button>
 
-                  <!-- ARMOCROMIA -->
-                  <button
-                    type="button"
-                    class="shortcut-card"
-                    (click)="
-                      selectSection('color')
-                    ">
+                  @if (selectedCustomer.gender === 'MALE') {
+                    <button type="button" class="shortcut-card" (click)="selectSection('beard')">
+                      <span class="shortcut-icon">⌁</span>
+                      <div>
+                        <strong>Profilo barba</strong>
+                        <small>Densità, crescita, baffi, contorni, cute e colore.</small>
+                      </div>
+                      <span class="shortcut-arrow">→</span>
+                    </button>
+                  }
 
-                    <span class="shortcut-icon">
-                      ◐
-                    </span>
+                  <!-- ARMOCROMIA -->
+                  <button type="button" class="shortcut-card" (click)="selectSection('color')">
+                    <span class="shortcut-icon"> ◐ </span>
 
                     <div>
+                      <strong> Armocromia </strong>
 
-                      <strong>
-                        Armocromia
-                      </strong>
-
-                      <small>
-                        Pelle, stagione,
-                        palette e metalli.
-                      </small>
-
+                      <small> Pelle, stagione, palette e metalli. </small>
                     </div>
 
-                    <span class="shortcut-arrow">
-                      →
-                    </span>
-
+                    <span class="shortcut-arrow"> → </span>
                   </button>
 
                   <!-- SUGGERIMENTI -->
                   <button
                     type="button"
-                    class="
-                      shortcut-card
-                      recommendation-shortcut
-                    "
-                    (click)="
-                      selectSection(
-                        'recommendations'
-                      )
-                    ">
-
-                    <span class="shortcut-icon">
-                      ✦
-                    </span>
+                    class="shortcut-card recommendation-shortcut"
+                    (click)="selectSection('recommendations')"
+                  >
+                    <span class="shortcut-icon"> ✦ </span>
 
                     <div>
+                      <strong> Suggerimenti HairLab </strong>
 
-                      <strong>
-                        Suggerimenti HairLab
-                      </strong>
-
-                      <small>
-                        Tagli, colore,
-                        styling e cautele.
-                      </small>
-
+                      <small> Tagli, colore, styling e cautele. </small>
                     </div>
 
-                    <span class="shortcut-arrow">
-                      →
-                    </span>
-
+                    <span class="shortcut-arrow"> → </span>
                   </button>
-
                 </div>
-
               </article>
-
             </div>
 
             <!-- ===========================================
                  STORICO HAIRLAB
                  =========================================== -->
             <section class="history-card">
-
               <div class="section-title">
+                <span class="card-eyebrow"> STORICO HAIRLAB </span>
 
-                <span class="card-eyebrow">
-                  STORICO HAIRLAB
-                </span>
+                <h2>Attività della cliente</h2>
 
-                <h2>
-                  Attività della cliente
-                </h2>
-
-                <p>
-                  Appuntamenti, consulenze
-                  e formule tecniche collegate.
-                </p>
-
+                <p>Appuntamenti, consulenze e formule tecniche collegate.</p>
               </div>
 
               <div class="hairlab-sections">
-
                 <!-- APPUNTAMENTI -->
                 <button
                   type="button"
-                  class="
-                    placeholder-box
-                    history-link-box
-                  "
-                  (click)="
-                    selectSection('appointments')
-                  ">
-
+                  class="placeholder-box history-link-box"
+                  (click)="selectSection('appointments')"
+                >
                   <span class="placeholder-icon">
-
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <rect
-                        x="4"
-                        y="5"
-                        width="16"
-                        height="15"
-                        rx="2">
-                      </rect>
+                      <rect x="4" y="5" width="16" height="15" rx="2"></rect>
 
                       <path
                         d="
                           M8 3v4
                           M16 3v4
                           M4 10h16
-                        ">
-                      </path>
+                        "
+                      ></path>
                     </svg>
-
                   </span>
 
                   <div>
-
-                    <strong>
-                      Appuntamenti
-                    </strong>
+                    <strong> Appuntamenti </strong>
 
                     <p>
-                      Consulta lo storico completo,
-                      i prossimi appuntamenti
-                      e crea una nuova prenotazione.
+                      Consulta lo storico completo, i prossimi appuntamenti e crea una nuova
+                      prenotazione.
                     </p>
-
                   </div>
-
                 </button>
 
                 <!-- CONSULENZE -->
                 <div class="placeholder-box">
-
-                  <span class="placeholder-icon">
-                    ◇
-                  </span>
+                  <span class="placeholder-icon"> ◇ </span>
 
                   <div>
+                    <strong> Consulenze </strong>
 
-                    <strong>
-                      Consulenze
-                    </strong>
-
-                    <p>
-                      Diagnosi, obiettivi,
-                      valutazioni tecniche
-                      e proposte professionali.
-                    </p>
-
+                    <p>Diagnosi, obiettivi, valutazioni tecniche e proposte professionali.</p>
                   </div>
-
                 </div>
 
                 <!-- FORMULE -->
                 <a
-                  class="
-                    placeholder-box
-                    history-link-box
-                  "
-                  [routerLink]="[
-                    '/customers',
-                    selectedCustomer.id,
-                    'color-formulas'
-                  ]">
-
-                  <span class="placeholder-icon">
-                    ✦
-                  </span>
+                  class="placeholder-box history-link-box"
+                  [routerLink]="['/customers', selectedCustomer.id, 'color-formulas']"
+                >
+                  <span class="placeholder-icon"> ✦ </span>
 
                   <div>
-
-                    <strong>
-                      Formule colore
-                    </strong>
+                    <strong> Formule colore </strong>
 
                     <p>
-                      Storico completo delle formule,
-                      utilizzi reali, composizioni
-                      e riutilizzo come nuova bozza.
+                      Storico completo delle formule, utilizzi reali, composizioni e riutilizzo come
+                      nuova bozza.
                     </p>
-
                   </div>
-
                 </a>
-
               </div>
-
             </section>
-
           </section>
-
         }
 
         <!-- =================================================
              APPUNTAMENTI
              ================================================= -->
         @case ('appointments') {
-
           <section class="module-panel">
-
-            <app-customer-appointment-history
-              [customerId]="
-                selectedCustomer.id!
-              ">
+            <app-customer-appointment-history [customerId]="selectedCustomer.id!">
             </app-customer-appointment-history>
-
           </section>
-
         }
 
         <!-- =================================================
              CAPELLI
              ================================================= -->
         @case ('hair') {
-
           <section class="module-panel">
-
-            <app-hair-profile-detail
-              [customerId]="
-                selectedCustomer.id!
-              ">
-            </app-hair-profile-detail>
-
+            <app-hair-profile-detail [customerId]="selectedCustomer.id!"> </app-hair-profile-detail>
           </section>
-
         }
 
         <!-- =================================================
              VISO
              ================================================= -->
         @case ('face') {
-
           <section class="module-panel">
-
-            <app-face-profile-detail
-              [customerId]="
-                selectedCustomer.id!
-              ">
-            </app-face-profile-detail>
-
+            <app-face-profile-detail [customerId]="selectedCustomer.id!"> </app-face-profile-detail>
           </section>
+        }
 
+        @case ('beard') {
+          <section class="module-panel">
+            <app-beard-profile-detail [customerId]="selectedCustomer.id!">
+            </app-beard-profile-detail>
+          </section>
         }
 
         <!-- =================================================
              ARMOCROMIA
              ================================================= -->
         @case ('color') {
-
           <section class="module-panel">
-
-            <app-color-analysis-detail
-              [customerId]="
-                selectedCustomer.id!
-              ">
+            <app-color-analysis-detail [customerId]="selectedCustomer.id!">
             </app-color-analysis-detail>
-
           </section>
-
         }
         <!-- =================================================
              SUGGERIMENTI
              ================================================= -->
         @case ('recommendations') {
-
           <section class="module-panel">
-
-            <app-style-recommendation-detail
-              [customerId]="
-                selectedCustomer.id!
-              ">
+            <app-style-recommendation-detail [customerId]="selectedCustomer.id!">
             </app-style-recommendation-detail>
-
           </section>
-
         }
 
         @case ('color-record') {
-
           <section class="module-panel">
-
-            <app-customer-color-technical-record
-              [customerId]="selectedCustomer.id!">
+            <app-customer-color-technical-record [customerId]="selectedCustomer.id!">
             </app-customer-color-technical-record>
-
           </section>
-
         }
-
       }
-
     </div>
-
   }
-
 </section>

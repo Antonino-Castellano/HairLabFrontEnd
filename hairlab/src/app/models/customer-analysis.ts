@@ -1,22 +1,13 @@
-import {
-  ColorAnalysis
-} from './color-analysis';
+import { BeardProfile } from './beard-profile';
+import { ColorAnalysis } from './color-analysis';
 
-import {
-  Customer
-} from './customer';
+import { Customer } from './customer';
 
-import {
-  FaceProfile
-} from './face-profile';
+import { FaceProfile } from './face-profile';
 
-import {
-  HairProfile
-} from './hair-profile';
+import { HairProfile } from './hair-profile';
 
-import {
-  StyleRecommendation
-} from './style-recommendation';
+import { StyleRecommendation } from './style-recommendation';
 
 /**
  * Scheda tecnica completa
@@ -26,7 +17,6 @@ import {
  * aggregato del backend.
  */
 export interface CustomerAnalysis {
-
   /**
    * Dati anagrafici.
    */
@@ -37,26 +27,25 @@ export interface CustomerAnalysis {
    *
    * Può non essere ancora presente.
    */
-  hairProfile:
-    HairProfile | null;
+  hairProfile: HairProfile | null;
 
   /**
    * Profilo del viso.
    */
-  faceProfile:
-    FaceProfile | null;
+  faceProfile: FaceProfile | null;
 
   /**
    * Analisi cromatica.
    */
-  colorAnalysis:
-    ColorAnalysis | null;
+  colorAnalysis: ColorAnalysis | null;
+
+  /** Profilo barba disponibile per i clienti maschi. */
+  beardProfile: BeardProfile | null;
 
   /**
    * Suggerimenti dinamici.
    */
-  recommendations:
-    StyleRecommendation;
+  recommendations: StyleRecommendation;
 
   /**
    * true quando tutti i profili

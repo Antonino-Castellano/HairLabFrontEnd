@@ -1,5 +1,4 @@
 <section class="detail-page">
-
   @if (errorMessage()) {
     <div class="message error">{{ errorMessage() }}</div>
   }
@@ -11,7 +10,6 @@
   @if (loading()) {
     <div class="state-card">Caricamento formula...</div>
   } @else if (detail(); as current) {
-
     <header class="page-header">
       <div>
         <span class="eyebrow">COLOR LAB · FORMULA</span>
@@ -25,20 +23,20 @@
         @if (current.formula.id) {
           <a
             class="secondary-button"
-            [routerLink]="['/color-lab/formulas', current.formula.id, 'evolution']">
+            [routerLink]="['/color-lab/formulas', current.formula.id, 'evolution']"
+          >
             Evoluzione
           </a>
           <a
             class="secondary-button"
-            [routerLink]="['/color-lab/formulas', current.formula.id, 'protocol']">
+            [routerLink]="['/color-lab/formulas', current.formula.id, 'protocol']"
+          >
             Protocollo tecnico
           </a>
         }
 
         @if (current.formula.id && canEditFormula()) {
-          <a
-            class="primary-button"
-            routerLink="/color-lab/formulas/{{ current.formula.id }}/edit">
+          <a class="primary-button" routerLink="/color-lab/formulas/{{ current.formula.id }}/edit">
             Modifica formula
           </a>
         }
@@ -48,12 +46,9 @@
             type="button"
             class="revision-button"
             [disabled]="creatingRevision()"
-            (click)="createRevision()">
-            {{
-              creatingRevision()
-                ? 'Creazione revisione...'
-                : 'Crea nuova revisione'
-            }}
+            (click)="createRevision()"
+          >
+            {{ creatingRevision() ? 'Creazione revisione...' : 'Crea nuova revisione' }}
           </button>
         }
 
@@ -62,7 +57,8 @@
             type="button"
             class="secondary-button"
             [disabled]="referenceAction()"
-            (click)="clearReferenceFormula()">
+            (click)="clearReferenceFormula()"
+          >
             {{ referenceAction() ? 'Aggiornamento...' : 'Rimuovi riferimento' }}
           </button>
         } @else if (canSetReferenceFormula()) {
@@ -70,7 +66,8 @@
             type="button"
             class="reference-button"
             [disabled]="referenceAction()"
-            (click)="setAsReferenceFormula()">
+            (click)="setAsReferenceFormula()"
+          >
             {{ referenceAction() ? 'Impostazione...' : 'Imposta come riferimento' }}
           </button>
         }
@@ -78,9 +75,7 @@
     </header>
 
     <div class="status-line">
-      <span
-        class="status-badge"
-        [attr.data-status]="current.formula.status">
+      <span class="status-badge" [attr.data-status]="current.formula.status">
         {{ statusLabels[current.formula.status] }}
       </span>
 
@@ -88,18 +83,14 @@
         {{ getOriginLabel(current.formula.origin) }}
       </span>
 
-      <span class="revision-badge">
-        Rev. {{ current.formula.revisionNumber ?? 1 }}
-      </span>
+      <span class="revision-badge"> Rev. {{ current.formula.revisionNumber ?? 1 }} </span>
 
       @if (current.formula.referenceFormula) {
         <span class="reference-formula-badge">★ Formula di riferimento</span>
       }
 
       @if (current.formula.referenceSourceFormulaId; as sourceId) {
-        <a
-          class="parent-formula-link"
-          [routerLink]="['/color-lab/formulas', sourceId]">
+        <a class="parent-formula-link" [routerLink]="['/color-lab/formulas', sourceId]">
           ↻ Nuovo servizio da riferimento #{{ sourceId }}
         </a>
       }
@@ -123,12 +114,7 @@
       }
 
       @if (current.formula.parentFormulaId; as parentId) {
-        <a
-          class="parent-formula-link"
-          [routerLink]="[
-            '/color-lab/formulas',
-            parentId
-          ]">
+        <a class="parent-formula-link" [routerLink]="['/color-lab/formulas', parentId]">
           ← Formula precedente #{{ parentId }}
         </a>
       }
@@ -195,7 +181,7 @@
           <div class="grand-total">
             <span>TOTALE TECNICO</span>
             <strong>{{ current.totalMixtureQuantity }}</strong>
-            <small>g colore + ml developer</small>
+            <small>g colore + ml di ossidante</small>
           </div>
         </div>
       </section>
@@ -224,7 +210,8 @@
             <strong
               class="stock-state"
               [class.ok]="isIngredientStockSufficient(item.hairDyeId, item.quantity)"
-              [class.warning]="!isIngredientStockSufficient(item.hairDyeId, item.quantity)">
+              [class.warning]="!isIngredientStockSufficient(item.hairDyeId, item.quantity)"
+            >
               {{
                 isIngredientStockSufficient(item.hairDyeId, item.quantity)
                   ? 'Sufficiente'
@@ -249,7 +236,7 @@
         <div class="usage-summary">
           <div>
             <span>DATA UTILIZZO</span>
-            <strong>{{ used.usedAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+            <strong>{{ used.usedAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
           </div>
           @if (used.multiZone && (used.developerUsages?.length ?? 0) > 0) {
             <div>
@@ -260,9 +247,7 @@
           } @else {
             <div>
               <span>DEVELOPER</span>
-              <strong>
-                {{ used.developerBrand }} · {{ used.developerCode }}
-              </strong>
+              <strong> {{ used.developerBrand }} · {{ used.developerCode }} </strong>
               @if (used.developerVolume) {
                 <small>{{ oxygenLabels[used.developerVolume] }}</small>
               }
@@ -287,9 +272,7 @@
           @for (movement of used.movements; track movement.id) {
             <div class="movement-row">
               <div>
-                <strong>
-                  {{ movement.brand }} · {{ movement.code }} · {{ movement.name }}
-                </strong>
+                <strong> {{ movement.brand }} · {{ movement.code }} · {{ movement.name }} </strong>
                 <small>{{ movement.movementType }}</small>
               </div>
               <span class="movement-out">
@@ -309,19 +292,18 @@
               <div>
                 <strong>{{ zoneUse.zoneName }}</strong>
                 <span>
-                  {{ zoneUse.colorQuantity }} g colore +
-                  {{ zoneUse.developerQuantity }} ml
+                  {{ zoneUse.colorQuantity }} g colore + {{ zoneUse.developerQuantity }} ml
                   {{ oxygenLabels[zoneUse.developerVolume] }}
                 </span>
                 <small>
-                  {{ zoneUse.developerBrand }} · {{ zoneUse.developerLineName ?? 'Linea n/d' }} · {{ zoneUse.developerCode }}
+                  {{ zoneUse.developerBrand }} · {{ zoneUse.developerLineName ?? 'Linea n/d' }} ·
+                  {{ zoneUse.developerCode }}
                 </small>
               </div>
             }
           </div>
         }
       </section>
-
     } @else if (canEditFormula()) {
       <section class="panel usage-panel">
         <div class="usage-title">
@@ -329,16 +311,16 @@
             <span class="panel-eyebrow">UTILIZZO REALE</span>
             <h2>Utilizza formula e scarica magazzino</h2>
             <p>
-              L'operazione è atomica: HairLab verifica tutte le giacenze,
-              scarica ingredienti e developer e imposta la formula come utilizzata.
+              L'operazione è atomica: HairLab verifica tutte le giacenze, scarica ingredienti e
+              developer e imposta la formula come utilizzata.
             </p>
           </div>
         </div>
 
         @if (hasMultiZoneProtocol()) {
           <div class="usage-warning protocol-ready">
-            Questa formula usa un protocollo multi-zona. Ogni zona viene scaricata
-            con il proprio developer e rapporto; l'operazione resta atomica.
+            Questa formula usa un protocollo multi-zona. Ogni zona viene scaricata con il proprio
+            developer e rapporto; l'operazione resta atomica.
           </div>
 
           <div class="zone-developer-grid">
@@ -350,19 +332,21 @@
                   <small>
                     {{ getZoneColorQuantity(zone) }} g colore ·
                     {{ oxygenLabels[zone.developerVolume] }} ·
-                    {{ getZoneDeveloperQuantity(zone) }} ml developer
+                    {{ getZoneDeveloperQuantity(zone) }} ml di ossidante
                   </small>
                 </div>
 
                 <label>
-                  <span>Developer fisico *</span>
+                  <span>Ossidante fisico *</span>
                   <select
                     [value]="getZoneDeveloperSelection(zone.id) ?? ''"
-                    (change)="onZoneDeveloperChange(zone.id, $event)">
+                    (change)="onZoneDeveloperChange(zone.id, $event)"
+                  >
                     <option value="">Seleziona developer</option>
                     @for (developer of getZoneDeveloperCandidates(zone); track developer.id) {
                       <option [value]="developer.id">
-                        {{ developer.brand }} · {{ developer.lineName ?? 'Linea n/d' }} · {{ developer.code }}
+                        {{ developer.brand }} · {{ developer.lineName ?? 'Linea n/d' }} ·
+                        {{ developer.code }}
                       </option>
                     }
                   </select>
@@ -372,7 +356,10 @@
                   @if (getInventory(developerId); as inventory) {
                     <div class="developer-check">
                       <span>DISPONIBILI</span>
-                      <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
+                      <strong
+                        >{{ inventory.quantityAvailable }}
+                        {{ getUnitLabel(inventory.unit) }}</strong
+                      >
                     </div>
                   }
                 }
@@ -382,17 +369,15 @@
 
           @if (!protocol()?.compatibility?.valid) {
             <div class="usage-warning">
-              Il report di compatibilità contiene errori bloccanti.
-              Apri “Protocollo tecnico” e correggili prima dell'utilizzo.
+              Il report di compatibilità contiene errori bloccanti. Apri “Protocollo tecnico” e
+              correggili prima dell'utilizzo.
             </div>
           }
         } @else {
           <div class="developer-selection">
             <label>
-              <span>Developer {{ oxygenLabels[current.formula.volumeDeveloper] }} *</span>
-              <select
-                [value]="selectedDeveloperId() ?? ''"
-                (change)="onDeveloperChange($event)">
+              <span>Ossidante {{ oxygenLabels[current.formula.volumeDeveloper] }} *</span>
+              <select [value]="selectedDeveloperId() ?? ''" (change)="onDeveloperChange($event)">
                 <option value="">Seleziona developer</option>
                 @for (developer of developerCandidates(); track developer.id) {
                   <option [value]="developer.id">
@@ -408,7 +393,9 @@
                   <span>RICHIESTI</span>
                   <strong>{{ current.developerQuantity }} ml</strong>
                   <span>DISPONIBILI</span>
-                  <strong>{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong>
+                  <strong
+                    >{{ inventory.quantityAvailable }} {{ getUnitLabel(inventory.unit) }}</strong
+                  >
                 </div>
               }
             }
@@ -417,16 +404,16 @@
           @if (developerCandidates().length === 0) {
             <div class="usage-warning">
               Nessun developer attivo con volume
-              {{ oxygenLabels[current.formula.volumeDeveloper] }} configurato.
-              Crea o modifica un prodotto DEVELOPER nella Libreria Color Lab.
+              {{ oxygenLabels[current.formula.volumeDeveloper] }} configurato. Crea o modifica un
+              prodotto DEVELOPER nella Libreria Color Lab.
             </div>
           }
         }
 
         @if (!areIngredientStocksSufficient()) {
           <div class="usage-warning">
-            Uno o più ingredienti colore non hanno stock sufficiente.
-            L'utilizzo è bloccato fino al reintegro del magazzino.
+            Uno o più ingredienti colore non hanno stock sufficiente. L'utilizzo è bloccato fino al
+            reintegro del magazzino.
           </div>
         }
 
@@ -435,388 +422,195 @@
             type="button"
             class="use-button"
             [disabled]="!canUseFormula()"
-            (click)="useFormula()">
+            (click)="useFormula()"
+          >
             {{ usingFormula() ? 'Scarico in corso...' : 'Utilizza formula' }}
           </button>
         </div>
       </section>
     }
 
-
-    @if (
-      usage();
-      as usedFormula
-    ) {
-
+    @if (usage(); as usedFormula) {
       <section class="panel result-panel">
-
         <div class="result-title">
-
           <div>
+            <span class="panel-eyebrow"> RISULTATO POST-SERVIZIO </span>
 
-            <span class="panel-eyebrow">
-              RISULTATO POST-SERVIZIO
-            </span>
-
-            <h2>
-              Esito tecnico reale
-            </h2>
+            <h2>Esito tecnico reale</h2>
 
             <p>
-              Registra ciò che è stato realmente ottenuto
-              per confrontarlo con l'obiettivo della formula.
+              Registra ciò che è stato realmente ottenuto per confrontarlo con l'obiettivo della
+              formula.
             </p>
-
           </div>
 
-          @if (
-            formulaResult();
-            as savedResult
-          ) {
-
+          @if (formulaResult(); as savedResult) {
             <div class="result-saved-meta">
-
-              <span>
-                AGGIORNATO
-              </span>
+              <span> AGGIORNATO </span>
 
               <strong>
-
-                {{
-                  savedResult.updatedAt
-                    |
-                    date:
-                      'dd/MM/yyyy HH:mm'
-                }}
-
+                {{ savedResult.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
               </strong>
-
             </div>
-
           }
-
         </div>
 
         <div class="target-result-compare">
-
           <div>
-
-            <span>
-              OBIETTIVO
-            </span>
+            <span> OBIETTIVO </span>
 
             <strong>
-
               {{
                 current.formula.targetToneLevel
-                  ? toneLabels[
-                      current.formula.targetToneLevel
-                    ]
+                  ? toneLabels[current.formula.targetToneLevel]
                   : 'Tono non definito'
               }}
-
             </strong>
 
             <small>
-
               {{
                 current.formula.targetPrimaryReflection
-                  ? reflectionLabels[
-                      current.formula.targetPrimaryReflection
-                    ]
+                  ? reflectionLabels[current.formula.targetPrimaryReflection]
                   : 'Riflesso non definito'
               }}
-
             </small>
-
           </div>
 
           <div>
-
-            <span>
-              RISULTATO OTTENUTO
-            </span>
+            <span> RISULTATO OTTENUTO </span>
 
             <strong>
-
-              {{
-                achievedToneLevel()
-                  ? toneLabels[
-                      achievedToneLevel()!
-                    ]
-                  : 'Da registrare'
-              }}
-
+              {{ achievedToneLevel() ? toneLabels[achievedToneLevel()!] : 'Da registrare' }}
             </strong>
 
             <small>
-
               {{
                 achievedPrimaryReflection()
-                  ? reflectionLabels[
-                      achievedPrimaryReflection()!
-                    ]
+                  ? reflectionLabels[achievedPrimaryReflection()!]
                   : 'Riflesso da registrare'
               }}
-
             </small>
-
           </div>
-
         </div>
 
         <div class="result-form-grid">
-
           <label>
+            <span> Tono ottenuto </span>
 
-            <span>
-              Tono ottenuto
-            </span>
+            <select [value]="achievedToneLevel() ?? ''" (change)="onAchievedToneChange($event)">
+              <option value="">Non registrato</option>
 
-            <select
-              [value]="
-                achievedToneLevel() ??
-                ''
-              "
-              (change)="
-                onAchievedToneChange(
-                  $event
-                )
-              ">
-
-              <option value="">
-                Non registrato
-              </option>
-
-              @for (
-                tone of toneLevels;
-                track tone
-              ) {
-
+              @for (tone of toneLevels; track tone) {
                 <option [value]="tone">
-
-                  {{
-                    toneLabels[
-                      tone
-                    ]
-                  }}
-
+                  {{ toneLabels[tone] }}
                 </option>
-
               }
-
             </select>
-
           </label>
 
           <label>
-
-            <span>
-              Riflesso principale
-            </span>
+            <span> Riflesso principale </span>
 
             <select
-              [value]="
-                achievedPrimaryReflection() ??
-                ''
-              "
-              (change)="
-                onPrimaryReflectionChange(
-                  $event
-                )
-              ">
+              [value]="achievedPrimaryReflection() ?? ''"
+              (change)="onPrimaryReflectionChange($event)"
+            >
+              <option value="">Non registrato</option>
 
-              <option value="">
-                Non registrato
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
+              @for (reflection of reflections; track reflection) {
                 <option [value]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
+                  {{ reflectionLabels[reflection] }}
                 </option>
-
               }
-
             </select>
-
           </label>
 
           <label>
-
-            <span>
-              Secondo riflesso
-            </span>
+            <span> Secondo riflesso </span>
 
             <select
-              [value]="
-                achievedSecondaryReflection() ??
-                ''
-              "
-              (change)="
-                onSecondaryReflectionChange(
-                  $event
-                )
-              ">
+              [value]="achievedSecondaryReflection() ?? ''"
+              (change)="onSecondaryReflectionChange($event)"
+            >
+              <option value="">Nessuno</option>
 
-              <option value="">
-                Nessuno
-              </option>
-
-              @for (
-                reflection of reflections;
-                track reflection
-              ) {
-
+              @for (reflection of reflections; track reflection) {
                 <option [value]="reflection">
-
-                  {{
-                    reflectionLabels[
-                      reflection
-                    ]
-                  }}
-
+                  {{ reflectionLabels[reflection] }}
                 </option>
-
               }
-
             </select>
-
           </label>
 
           <label>
+            <span> Valutazione * </span>
 
-            <span>
-              Valutazione *
-            </span>
-
-            <select
-              [value]="resultAssessment()"
-              (change)="
-                onAssessmentChange(
-                  $event
-                )
-              ">
-
-              @for (
-                assessment of resultAssessments;
-                track assessment
-              ) {
-
+            <select [value]="resultAssessment()" (change)="onAssessmentChange($event)">
+              @for (assessment of resultAssessments; track assessment) {
                 <option [value]="assessment">
-
-                  {{
-                    resultAssessmentLabels[
-                      assessment
-                    ]
-                  }}
-
+                  {{ resultAssessmentLabels[assessment] }}
                 </option>
-
               }
-
             </select>
-
           </label>
-
         </div>
 
         <div class="result-notes-grid">
-
           <label>
-
-            <span>
-              Note tecniche post-servizio
-            </span>
+            <span> Note tecniche post-servizio </span>
 
             <textarea
               rows="4"
               [value]="technicalResultNotes()"
-              (input)="
-                onTechnicalNotesChange(
-                  $event
-                )
-              "
-              placeholder="Uniformità, copertura, luminosità, risposta delle lunghezze...">
+              (input)="onTechnicalNotesChange($event)"
+              placeholder="Uniformità, copertura, luminosità, risposta delle lunghezze..."
+            >
             </textarea>
-
           </label>
 
           <label>
-
-            <span>
-              Correzioni / indicazioni future
-            </span>
+            <span> Correzioni / indicazioni future </span>
 
             <textarea
               rows="4"
               [value]="correctionResultNotes()"
-              (input)="
-                onCorrectionNotesChange(
-                  $event
-                )
-              "
-              placeholder="Correzioni eseguite o indicazioni per il prossimo servizio...">
+              (input)="onCorrectionNotesChange($event)"
+              placeholder="Correzioni eseguite o indicazioni per il prossimo servizio..."
+            >
             </textarea>
-
           </label>
 
           <label class="full-width">
-
-            <span>
-              Feedback cliente
-            </span>
+            <span> Feedback cliente </span>
 
             <textarea
               rows="3"
               [value]="clientFeedback()"
-              (input)="
-                onClientFeedbackChange(
-                  $event
-                )
-              "
-              placeholder="Feedback sintetico della cliente sul risultato...">
+              (input)="onClientFeedbackChange($event)"
+              placeholder="Feedback sintetico della cliente sul risultato..."
+            >
             </textarea>
-
           </label>
-
         </div>
 
         <div class="result-actions">
-
           <button
             type="button"
             class="save-result-button"
             [disabled]="savingResult()"
-            (click)="saveFormulaResult()">
-
+            (click)="saveFormulaResult()"
+          >
             {{
               savingResult()
                 ? 'Salvataggio...'
-                : (
-                    formulaResult()
-                      ? 'Aggiorna risultato'
-                      : 'Salva risultato'
-                  )
+                : formulaResult()
+                  ? 'Aggiorna risultato'
+                  : 'Salva risultato'
             }}
-
           </button>
-
         </div>
-
       </section>
-
     }
-
 
     @if (simulation(); as sim) {
       <section class="panel simulation-panel">
@@ -824,7 +618,10 @@
           <div>
             <span class="panel-eyebrow">SIMULATORE TECNICO · BLOCCO 23</span>
             <h2>Previsione spiegabile</h2>
-            <p>Valuta coerenza dei dati, distanza dal target e fattori di rischio. Non è una promessa fotografica del risultato.</p>
+            <p>
+              Valuta coerenza dei dati, distanza dal target e fattori di rischio. Non è una promessa
+              fotografica del risultato.
+            </p>
           </div>
 
           <div class="confidence-card" [class]="getConfidenceClass(sim.confidencePercent)">
@@ -837,11 +634,15 @@
         <div class="simulation-metrics">
           <div>
             <span>Base attuale</span>
-            <strong>{{ sim.currentToneLevel ? toneLabels[sim.currentToneLevel] : 'Non disponibile' }}</strong>
+            <strong>{{
+              sim.currentToneLevel ? toneLabels[sim.currentToneLevel] : 'Non disponibile'
+            }}</strong>
           </div>
           <div>
             <span>Target</span>
-            <strong>{{ sim.targetToneLevel ? toneLabels[sim.targetToneLevel] : 'Non strutturato' }}</strong>
+            <strong>{{
+              sim.targetToneLevel ? toneLabels[sim.targetToneLevel] : 'Non strutturato'
+            }}</strong>
           </div>
           <div>
             <span>Scarto livelli</span>
@@ -896,6 +697,5 @@
         <p>{{ current.formula.notes }}</p>
       </section>
     }
-
   }
 </section>

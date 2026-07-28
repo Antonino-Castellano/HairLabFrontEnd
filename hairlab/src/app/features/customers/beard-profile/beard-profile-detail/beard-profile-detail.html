@@ -1,0 +1,110 @@
+<section class="beard-detail">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">PROFILO BARBA</span>
+      <h2>Barba, baffi e colore</h2>
+      <p>Analisi tecnica della crescita e delle caratteristiche utili al Total Look.</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="hl-empty-state">Caricamento Profilo barba...</div>
+  } @else if (errorMessage()) {
+    <div class="hl-alert hl-alert-danger">{{ errorMessage() }}</div>
+  } @else if (profile(); as beard) {
+    <div class="profile-grid">
+      <article class="hl-card summary-card">
+        <div class="card-title-row">
+          <div>
+            <span class="eyebrow">CONFIGURAZIONE ATTUALE</span>
+            <h3>{{ label(beard.currentStyle) }}</h3>
+          </div>
+          <a
+            class="hl-btn hl-btn-secondary"
+            [routerLink]="['/customers', customerId, 'beard-profile', beard.id, 'edit']"
+            >Modifica</a
+          >
+        </div>
+        <div class="technical-grid">
+          <div>
+            <span>Presenza barba</span><strong>{{ beard.beardPresent ? 'Sì' : 'No' }}</strong>
+          </div>
+          <div>
+            <span>Stile desiderato</span><strong>{{ label(beard.desiredStyle) }}</strong>
+          </div>
+          <div>
+            <span>Lunghezza</span><strong>{{ label(beard.beardLength) }}</strong>
+          </div>
+          <div>
+            <span>Misura</span><strong>{{ beard.approximateLengthMm ?? 0 }} mm</strong>
+          </div>
+          <div>
+            <span>Densità</span><strong>{{ label(beard.density) }}</strong>
+          </div>
+          <div>
+            <span>Crescita</span><strong>{{ label(beard.growthPattern) }}</strong>
+          </div>
+          <div>
+            <span>Linea guance</span><strong>{{ label(beard.cheekLine) }}</strong>
+          </div>
+          <div>
+            <span>Linea collo</span><strong>{{ label(beard.neckline) }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="hl-card">
+        <span class="eyebrow">BAFFI</span>
+        <h3>{{ beard.moustachePresent ? label(beard.moustacheStyle) : 'Non presenti' }}</h3>
+        <p>
+          Collegamento: <strong>{{ label(beard.moustacheConnection) }}</strong>
+        </p>
+      </article>
+
+      <article class="hl-card">
+        <span class="eyebrow">COLORE BARBA</span>
+        <h3>{{ label(beard.beardColorGoal) }}</h3>
+        <p>
+          Bianchi: <strong>{{ beard.grayPercentage ?? 0 }}%</strong>
+        </p>
+        <p>
+          Tono naturale: <strong>{{ label(beard.naturalTone) }}</strong>
+        </p>
+      </article>
+
+      <article class="hl-card">
+        <span class="eyebrow">CUTE E CAUTELE</span>
+        <h3>Sensibilità {{ label(beard.skinSensitivity) }}</h3>
+        <p>Irritazione: {{ beard.irritationPresent ? 'Presente' : 'Non rilevata' }}</p>
+        <p>Peli incarniti: {{ beard.ingrownHairPresent ? 'Presenti' : 'Non rilevati' }}</p>
+        <p>Desquamazione: {{ beard.dandruffPresent ? 'Presente' : 'Non rilevata' }}</p>
+      </article>
+
+      @if (beard.notes || beard.contraindications || beard.beardColorHistory) {
+        <article class="hl-card notes-card">
+          <span class="eyebrow">NOTE PROFESSIONALI</span>
+          @if (beard.beardColorHistory) {
+            <p><strong>Storico colore:</strong> {{ beard.beardColorHistory }}</p>
+          }
+          @if (beard.contraindications) {
+            <p><strong>Controindicazioni:</strong> {{ beard.contraindications }}</p>
+          }
+          @if (beard.notes) {
+            <p>{{ beard.notes }}</p>
+          }
+        </article>
+      }
+    </div>
+  } @else if (notFound()) {
+    <div class="hl-empty-state">
+      <h3>Profilo barba non ancora compilato</h3>
+      <p>Aggiungi densità, crescita, baffi, lunghezza, cute e obiettivo colore.</p>
+      <a
+        class="hl-btn hl-btn-primary"
+        [routerLink]="['/customers', customerId, 'beard-profile', 'new']"
+      >
+        Crea Profilo barba
+      </a>
+    </div>
+  }
+</section>

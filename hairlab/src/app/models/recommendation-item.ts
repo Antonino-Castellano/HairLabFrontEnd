@@ -1,42 +1,24 @@
 import { ColorRecommendationTarget } from './color-recommendation-target';
+import { FutureSimulationSpec } from './future-simulation-spec';
+import { RecommendationComponent } from './recommendation-component';
+import { RecommendationCategory } from './recommendation-category';
 
-/**
- * Singolo suggerimento generato
- * dal motore HairLab.
- */
+/** Singola proposta prodotta dal motore HairLab. */
 export interface RecommendationItem {
-
-  /** Codice stabile, utile per collegare il suggerimento ad altri moduli. */
   code?: string | null;
-
-  /** Target tecnico opzionale utilizzabile da Smart Formula. */
+  category: RecommendationCategory;
   technicalColorTarget?: ColorRecommendationTarget | null;
-
-  /**
-   * Titolo.
-   *
-   * Esempio:
-   * Long bob alla clavicola.
-   */
   title: string;
-
-  /**
-   * Spiegazione sintetica.
-   */
   description: string;
-
-  /**
-   * Compatibilità HairLab.
-   *
-   * Range 0 - 100.
-   *
-   * Non rappresenta una probabilità scientifica.
-   */
+  referenceImageUrl?: string | null;
   compatibilityScore: number;
-
-  /**
-   * Motivazioni che hanno portato
-   * al suggerimento.
-   */
   reasons: string[];
+  components: RecommendationComponent[];
+  technicalDetails: Record<string, string>;
+  componentAverageScore?: number | null;
+  compatibilityAdjustment?: number | null;
+  combinationValidated?: boolean;
+  compatibilityRules?: string[];
+  compatibilityWarnings?: string[];
+  futureSimulation?: FutureSimulationSpec | null;
 }

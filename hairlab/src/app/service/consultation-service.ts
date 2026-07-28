@@ -3,6 +3,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { hairLabApi } from '../core/config/api.config';
 import { Consultation } from '../models/consultation';
+import {
+  ConsultationRecommendation,
+  SaveConsultationRecommendationRequest,
+  UpdateConsultationRecommendationDecisionRequest,
+} from '../models/consultation-recommendation';
 
 /**
  * Service Angular dedicato alle consulenze.
@@ -11,10 +16,9 @@ import { Consultation } from '../models/consultation';
  * la vecchia copia errata del CustomerService.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConsultationService {
-
   private readonly http = inject(HttpClient);
   private readonly apiUrl = hairLabApi('consultation');
 
@@ -40,5 +44,36 @@ export class ConsultationService {
 
   delete(id: number): Observable<unknown> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getRecommendations(consultationId: number): Observable<ConsultationRecommendation[]> {
+    return this.http.get<ConsultationRecommendation[]>(
+      `${this.apiUrl}/${consultationId}/recommendations`,
+    );
+  }
+
+  saveRecommendation(
+    consultationId: number,
+    request: SaveConsultationRecommendationRequest,
+  ): Observable<ConsultationRecommendation> {
+    return this.http.post<ConsultationRecommendation>(
+      `${this.apiUrl}/${consultationId}/recommendations`,
+      request,
+    );
+  }
+
+  updateRecommendationDecision(
+    consultationId: number,
+    recommendationId: number,
+    request: UpdateConsultationRecommendationDecisionRequest,
+  ): Observable<ConsultationRecommendation> {
+    return this.http.patch<ConsultationRecommendation>(
+      `${this.apiUrl}/${consultationId}/recommendations/${recommendationId}`,
+      request,
+    );
+  }
+
+  deleteRecommendation(consultationId: number, recommendationId: number): Observable<unknown> {
+    return this.http.delete(`${this.apiUrl}/${consultationId}/recommendations/${recommendationId}`);
   }
 }

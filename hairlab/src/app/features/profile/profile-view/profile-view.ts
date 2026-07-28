@@ -7,11 +7,12 @@ import { ChangePassword } from '../../../models/change-password';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth-service';
 import { ToastService } from '../../../shared/ui/toast.service';
+import { HairLabTechnicalLabelPipe } from '../../../shared/ui/hairlab-technical-label.pipe';
 
 @Component({
   selector: 'app-profile-view',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HairLabTechnicalLabelPipe],
   templateUrl: './profile-view.html',
   styleUrl: './profile-view.css',
 })
@@ -44,8 +45,8 @@ export class ProfileViewComponent implements OnInit {
         this.currentUser.set(user);
         this.loading.set(false);
       },
-      error: () => {
-        this.errorMessage.set('Impossibile caricare i dati del profilo.');
+      error: (error) => {
+        this.errorMessage.set(error?.error?.message || 'Impossibile caricare i dati del profilo.');
         this.loading.set(false);
       },
     });

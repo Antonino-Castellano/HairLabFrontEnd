@@ -1,6 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Input,
+  OnChanges,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 
@@ -13,6 +21,7 @@ import { CustomerAnalysisService } from '../../../service/customer-analysis-serv
 import { AppointmentService } from '../../../service/appointment-service';
 import { ColorFormulaHistoryService } from '../../../service/color-formula-history-service';
 import { ColorLearningInsightService } from '../../../service/color-learning-insight-service';
+import { HairLabTechnicalLabelPipe } from '../../../shared/ui/hairlab-technical-label.pipe';
 import { TONE_LEVEL_LABELS, REFLECTION_LABELS } from '../../color-lab/color-lab-display';
 import { COLOR_FORMULA_STATUS_LABELS } from '../../color-lab/color-formula-display';
 import { APPOINTMENT_STATUS_LABELS } from '../../appointments/appointment-display';
@@ -30,12 +39,11 @@ interface TechnicalTimelineItem {
 @Component({
   selector: 'app-customer-color-technical-record',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, HairLabTechnicalLabelPipe],
   templateUrl: './customer-color-technical-record.html',
-  styleUrl: './customer-color-technical-record.css'
+  styleUrl: './customer-color-technical-record.css',
 })
 export class CustomerColorTechnicalRecordComponent implements OnChanges {
-
   @Input({ required: true }) customerId!: number;
 
   private readonly customerAnalysisService = inject(CustomerAnalysisService);
@@ -53,22 +61,24 @@ export class CustomerColorTechnicalRecordComponent implements OnChanges {
   protected readonly toneLabels = TONE_LEVEL_LABELS;
   protected readonly reflectionLabels = REFLECTION_LABELS;
 
-  protected readonly completedAppointments = computed(() =>
-    this.appointments().filter(item => item.status === AppointmentStatus.COMPLETED).length
+  protected readonly completedAppointments = computed(
+    () => this.appointments().filter((item) => item.status === AppointmentStatus.COMPLETED).length,
   );
 
-  protected readonly upcomingAppointments = computed(() =>
-    this.appointments().filter(item =>
-      item.status === AppointmentStatus.BOOKED ||
-      item.status === AppointmentStatus.CONFIRMED ||
-      item.status === AppointmentStatus.IN_PROGRESS
-    ).length
+  protected readonly upcomingAppointments = computed(
+    () =>
+      this.appointments().filter(
+        (item) =>
+          item.status === AppointmentStatus.BOOKED ||
+          item.status === AppointmentStatus.CONFIRMED ||
+          item.status === AppointmentStatus.IN_PROGRESS,
+      ).length,
   );
 
   protected readonly referenceFormula = computed(() => {
     const history = this.formulaHistory();
     if (!history?.referenceFormulaId) return null;
-    return history.items.find(item => item.formula.id === history.referenceFormulaId) ?? null;
+    return history.items.find((item) => item.formula.id === history.referenceFormulaId) ?? null;
   });
 
   protected readonly timeline = computed<TechnicalTimelineItem[]>(() => {
@@ -83,13 +93,11 @@ export class CustomerColorTechnicalRecordComponent implements OnChanges {
         kind: 'FORMULA',
         date,
         title: formula.name,
-        subtitle: entry.result
-          ? `Risultato: ${entry.result.assessment}`
-          : formula.targetResult,
+        subtitle: entry.result ? `Risultato: ${entry.result.assessment}` : formula.targetResult,
         status: formula.referenceFormula
           ? 'Formula di riferimento'
           : COLOR_FORMULA_STATUS_LABELS[formula.status],
-        formulaId: formula.id
+        formulaId: formula.id,
       });
     }
 
@@ -101,7 +109,7 @@ export class CustomerColorTechnicalRecordComponent implements OnChanges {
         title: 'Appuntamento salone',
         subtitle: appointment.notes || 'Nessuna nota appuntamento',
         status: APPOINTMENT_STATUS_LABELS[appointment.status],
-        appointmentId: appointment.id
+        appointmentId: appointment.id,
       });
     }
 
@@ -124,11 +132,11 @@ export class CustomerColorTechnicalRecordComponent implements OnChanges {
       analysis: this.customerAnalysisService.getByCustomerId(this.customerId),
       formulas: this.formulaHistoryService.getByCustomerId(this.customerId),
       appointments: this.appointmentService.getByCustomerId(this.customerId),
-      learning: this.learningService.getByCustomerId(this.customerId).pipe(
-        catchError(() => of(null))
-      )
+      learning: this.learningService
+        .getByCustomerId(this.customerId)
+        .pipe(catchError(() => of(null))),
     }).subscribe({
-      next: result => {
+      next: (result) => {
         this.analysis.set(result.analysis);
         this.formulaHistory.set(result.formulas);
         this.appointments.set(result.appointments ?? []);
@@ -138,9 +146,9 @@ export class CustomerColorTechnicalRecordComponent implements OnChanges {
       error: (error: HttpErrorResponse) => {
         this.loading.set(false);
         this.errorMessage.set(
-          error.error?.message ?? 'Impossibile caricare la cartella tecnica colore.'
+          error.error?.message ?? 'Impossibile caricare la cartella tecnica colore.',
         );
-      }
+      },
     });
   }
 }

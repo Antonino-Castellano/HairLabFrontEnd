@@ -1,51 +1,26 @@
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
-import {
-  ActivatedRoute,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import {
-  Customer
-} from '../../../models/customer';
+import { Customer } from '../../../models/customer';
 
-import {
-  CustomerService
-} from '../../../service/customer-service';
+import { CustomerService } from '../../../service/customer-service';
 
-import {
-  ColorAnalysisDetailComponent
-} from '../color-analysis/color-analysis-detail/color-analysis-detail';
+import { BeardProfileDetailComponent } from '../beard-profile/beard-profile-detail/beard-profile-detail';
 
-import {
-  FaceProfileDetailComponent
-} from '../face-profile/face-profile-detail/face-profile-detail';
+import { ColorAnalysisDetailComponent } from '../color-analysis/color-analysis-detail/color-analysis-detail';
 
-import {
-  HairProfileDetailComponent
-} from '../hair-profile/hair-profile-detail/hair-profile-detail';
+import { FaceProfileDetailComponent } from '../face-profile/face-profile-detail/face-profile-detail';
 
-import {
-  StyleRecommendationDetailComponent
-} from '../style-recommendation/style-recommendation-detail/style-recommendation-detail';
+import { HairProfileDetailComponent } from '../hair-profile/hair-profile-detail/hair-profile-detail';
 
-import {
-  CustomerAppointmentHistoryComponent
-} from '../customer-appointment-history/customer-appointment-history';
+import { StyleRecommendationDetailComponent } from '../style-recommendation/style-recommendation-detail/style-recommendation-detail';
 
-import {
-  CustomerColorTechnicalRecordComponent
-} from '../customer-color-technical-record/customer-color-technical-record';
+import { CustomerAppointmentHistoryComponent } from '../customer-appointment-history/customer-appointment-history';
 
+import { CustomerColorTechnicalRecordComponent } from '../customer-color-technical-record/customer-color-technical-record';
 
 /**
  * Identifica le sezioni disponibili
@@ -60,6 +35,7 @@ type CustomerDetailSection =
   | 'appointments'
   | 'hair'
   | 'face'
+  | 'beard'
   | 'color'
   | 'recommendations'
   | 'color-record';
@@ -85,18 +61,17 @@ type CustomerDetailSection =
     RouterLink,
     HairProfileDetailComponent,
     FaceProfileDetailComponent,
+    BeardProfileDetailComponent,
     ColorAnalysisDetailComponent,
     StyleRecommendationDetailComponent,
     CustomerAppointmentHistoryComponent,
-    CustomerColorTechnicalRecordComponent
+    CustomerColorTechnicalRecordComponent,
   ],
 
   templateUrl: './customer-detail.html',
-  styleUrl: './customer-detail.css'
+  styleUrl: './customer-detail.css',
 })
-export class CustomerDetailComponent
-    implements OnInit {
-
+export class CustomerDetailComponent implements OnInit {
   /**
    * Route corrente.
    *
@@ -104,14 +79,12 @@ export class CustomerDetailComponent
    *
    * /customers/:id
    */
-  private readonly activatedRoute =
-    inject(ActivatedRoute);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   /**
    * Service del cliente.
    */
-  private readonly customerService =
-    inject(CustomerService);
+  private readonly customerService = inject(CustomerService);
 
   /**
    * Cliente recuperato dal backend.
@@ -119,38 +92,29 @@ export class CustomerDetailComponent
    * All'inizio è null perché la richiesta HTTP
    * non è ancora stata completata.
    */
-  protected readonly customer =
-    signal<Customer | null>(
-      null
-    );
+  protected readonly customer = signal<Customer | null>(null);
 
   /**
    * Tab attualmente visibile.
    *
    * La pagina apre sempre la Panoramica.
    */
-  protected readonly activeSection =
-    signal<CustomerDetailSection>(
-      'overview'
-    );
+  protected readonly activeSection = signal<CustomerDetailSection>('overview');
 
   /**
    * Stato caricamento cliente.
    */
-  protected readonly loading =
-    signal(false);
+  protected readonly loading = signal(false);
 
   /**
    * Eventuale messaggio di errore.
    */
-  protected readonly errorMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
   /**
    * Inizializzazione.
    */
   ngOnInit(): void {
-
     /**
      * La route del dettaglio cliente è:
      *
@@ -158,118 +122,62 @@ export class CustomerDetailComponent
      *
      * quindi recuperiamo il parametro "id".
      */
-    const idParam =
-      this.activatedRoute.snapshot
-        .paramMap
-        .get('id');
+    const idParam = this.activatedRoute.snapshot.paramMap.get('id');
 
     if (!idParam) {
-
-      this.errorMessage.set(
-        'ID cliente non presente.'
-      );
+      this.errorMessage.set('ID cliente non presente.');
 
       return;
     }
 
-    const id =
-      Number(idParam);
+    const id = Number(idParam);
 
-    if (
-      Number.isNaN(id) ||
-      id <= 0
-    ) {
-
-      this.errorMessage.set(
-        'ID cliente non valido.'
-      );
+    if (Number.isNaN(id) || id <= 0) {
+      this.errorMessage.set('ID cliente non valido.');
 
       return;
     }
 
-    this.loadCustomer(
-      id
-    );
+    this.loadCustomer(id);
   }
 
   /**
    * Recupera dal backend il cliente.
    */
-  private loadCustomer(
-    id: number
-  ): void {
-
+  private loadCustomer(id: number): void {
     this.loading.set(true);
 
     this.errorMessage.set('');
 
-    this.customerService
-      .getById(id)
-      .subscribe({
+    this.customerService.getById(id).subscribe({
+      next: (customer: Customer) => {
+        /**
+         * Salviamo il cliente nel Signal.
+         *
+         * Angular aggiorna automaticamente
+         * il template.
+         */
+        this.customer.set(customer);
 
-        next: (
-          customer: Customer
-        ) => {
+        this.loading.set(false);
+      },
 
-          /**
-           * Salviamo il cliente nel Signal.
-           *
-           * Angular aggiorna automaticamente
-           * il template.
-           */
-          this.customer.set(
-            customer
-          );
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
 
-          this.loading.set(false);
-        },
-
-        error: (
-          error: HttpErrorResponse
-        ) => {
-
-          this.loading.set(false);
-
-          if (
-            error.status === 401
-          ) {
-
-            this.errorMessage.set(
-              'Sessione scaduta o autenticazione non valida.'
-            );
-
-          } else if (
-            error.status === 403
-          ) {
-
-            this.errorMessage.set(
-              'Non hai i permessi per visualizzare questo cliente.'
-            );
-
-          } else if (
-            error.status === 404
-          ) {
-
-            this.errorMessage.set(
-              'Cliente non trovato.'
-            );
-
-          } else if (
-            error.status === 0
-          ) {
-
-            this.errorMessage.set(
-              'Impossibile comunicare con il backend.'
-            );
-
-          } else {
-
-            this.errorMessage.set(
-              'Impossibile caricare il cliente.'
-            );
-          }
+        if (error.status === 401) {
+          this.errorMessage.set('Sessione scaduta o autenticazione non valida.');
+        } else if (error.status === 403) {
+          this.errorMessage.set('Non hai i permessi per visualizzare questo cliente.');
+        } else if (error.status === 404) {
+          this.errorMessage.set('Cliente non trovato.');
+        } else if (error.status === 0) {
+          this.errorMessage.set('Impossibile comunicare con il backend.');
+        } else {
+          this.errorMessage.set('Impossibile caricare il cliente.');
         }
-      });
+      },
+    });
   }
 
   /**
@@ -281,13 +189,8 @@ export class CustomerDetailComponent
    *
    * /customers/{id}
    */
-  protected selectSection(
-    section: CustomerDetailSection
-  ): void {
-
-    this.activeSection.set(
-      section
-    );
+  protected selectSection(section: CustomerDetailSection): void {
+    this.activeSection.set(section);
   }
 
   /**
@@ -297,14 +200,8 @@ export class CustomerDetailComponent
    * È utile soprattutto nel template
    * per applicare la classe CSS "active".
    */
-  protected isSectionActive(
-    section: CustomerDetailSection
-  ): boolean {
-
-    return (
-      this.activeSection() ===
-      section
-    );
+  protected isSectionActive(section: CustomerDetailSection): boolean {
+    return this.activeSection() === section;
   }
 
   /**
@@ -317,27 +214,11 @@ export class CustomerDetailComponent
    * ->
    * ME
    */
-  protected getCustomerInitials(
-    customer: Customer
-  ): string {
+  protected getCustomerInitials(customer: Customer): string {
+    const firstNameInitial = customer.firstName ? customer.firstName.charAt(0).toUpperCase() : '';
 
-    const firstNameInitial =
-      customer.firstName
-        ? customer.firstName
-            .charAt(0)
-            .toUpperCase()
-        : '';
+    const lastNameInitial = customer.lastName ? customer.lastName.charAt(0).toUpperCase() : '';
 
-    const lastNameInitial =
-      customer.lastName
-        ? customer.lastName
-            .charAt(0)
-            .toUpperCase()
-        : '';
-
-    return (
-      `${firstNameInitial}${lastNameInitial}` ||
-      '?'
-    );
+    return `${firstNameInitial}${lastNameInitial}` || '?';
   }
 }

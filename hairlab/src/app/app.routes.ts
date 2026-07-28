@@ -18,6 +18,8 @@ import { HairProfileFormComponent } from './features/customers/hair-profile/hair
 import { FaceProfileFormComponent } from './features/customers/face-profile/face-profile-form/face-profile-form';
 import { ColorAnalysisFormComponent } from './features/customers/color-analysis/color-analysis-form/color-analysis-form';
 import { CustomerColorFormulaHistoryPageComponent } from './features/customers/customer-color-formula-history-page/customer-color-formula-history-page';
+import { BeardProfileFormComponent } from './features/customers/beard-profile/beard-profile-form/beard-profile-form';
+import { StyleCatalogPageComponent } from './features/style-catalog/style-catalog-page/style-catalog-page';
 
 import { AppointmentListComponent } from './features/appointments/appointment-list/appointment-list';
 import { AppointmentFormComponent } from './features/appointments/appointment-form/appointment-form';
@@ -58,8 +60,24 @@ import { ColorSupplierListComponent } from './features/color-lab/color-supplier-
 import { ColorSupplierFormComponent } from './features/color-lab/color-supplier-form/color-supplier-form';
 import { ColorSupplierOrderListComponent } from './features/color-lab/color-supplier-order-list/color-supplier-order-list';
 import { ColorSupplierOrderDetailComponent } from './features/color-lab/color-supplier-order-detail/color-supplier-order-detail';
+import { SalonFormComponent } from './features/start-page/salon-form/salon-form';
+import { SubscriptionPlanComponent } from './features/start-page/subscription-plan/subscription-plan';
+import { StartPageComponent } from './features/start-page/start-page/start-page';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: StartPageComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'salon/hairlab',
+    component: SubscriptionPlanComponent,
+  },
+  {
+    path: 'salon-form',
+    component: SalonFormComponent,
+  },
   {
     path: 'login',
     component: LoginComponent,
@@ -185,6 +203,22 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'customers/:customerId/beard-profile/new',
+        component: BeardProfileFormComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
+      },
+      {
+        path: 'customers/:customerId/beard-profile/:profileId/edit',
+        component: BeardProfileFormComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN', 'SUPERADMIN'],
+        },
+      },
+      {
         path: 'customers/:customerId/color-analysis/new',
         component: ColorAnalysisFormComponent,
         canActivate: [roleGuard],
@@ -219,6 +253,19 @@ export const routes: Routes = [
       {
         path: 'customers/:id',
         component: CustomerDetailComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
+      },
+
+      // ====================================================
+      // CATALOGO TECNICO
+      // ====================================================
+
+      {
+        path: 'style-catalog',
+        component: StyleCatalogPageComponent,
         canActivate: [roleGuard],
         data: {
           roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],

@@ -1,3 +1,5 @@
+import { Gender } from './gender';
+
 /**
  * Rappresenta un cliente del gestionale HairLab.
  *
@@ -30,6 +32,9 @@ export interface Customer {
    * YYYY-MM-DD
    */
   dob: string;
+
+  /** Sesso anagrafico: determina cataloghi taglio e profilo barba. */
+  gender: Gender;
 
   /**
    * Indica se il cliente è attivo.

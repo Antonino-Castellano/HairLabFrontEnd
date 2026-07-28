@@ -18,4 +18,6 @@ export interface User {
   role: Role;
 
   customerId?: number | null;
+
+  profileImage?: string | null;
 }

@@ -5,11 +5,12 @@ import { UserService } from '../../../service/user-service';
 import { User } from '../../../models/user';
 import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog.service';
 import { ToastService } from '../../../shared/ui/toast.service';
+import { HairLabTechnicalLabelPipe } from '../../../shared/ui/hairlab-technical-label.pipe';
 
 @Component({
   selector: 'app-profile-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HairLabTechnicalLabelPipe],
   templateUrl: './profile-list.html',
   styleUrl: './profile-list.css',
 })

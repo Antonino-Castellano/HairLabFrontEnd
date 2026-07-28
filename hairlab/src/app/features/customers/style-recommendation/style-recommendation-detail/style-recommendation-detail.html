@@ -1,1059 +1,464 @@
 <section class="recommendation-section">
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-  <div class="section-header">
-
+  <header class="section-header">
     <div>
-
-      <span class="eyebrow">
-        ✦ HAIRLAB ANALYSIS
-      </span>
-
-      <h2>
-        Suggerimenti HairLab
-      </h2>
-
-      <p>
-        Raccomandazioni generate combinando
-        morfologia del viso, profilo capelli
-        e analisi cromatica della cliente.
-      </p>
-
+      <span class="eyebrow">ANALISI HAIRLAB</span>
+      <h2>Suggerimenti HairLab</h2>
+      <p>Proposte visive ordinate per compatibilità con il profilo tecnico del cliente.</p>
     </div>
-
-    @if (recommendations()) {
-
-      <button
-        type="button"
-        class="regenerate-button"
-        [disabled]="loading()"
-        (click)="loadRecommendations()">
-
-        {{
-          loading()
-            ? 'Analisi in corso...'
-            : '↻ Rigenera analisi'
-        }}
-
-      </button>
-
-    }
-
-  </div>
-
-  <!-- =====================================================
-       LOADING
-       ===================================================== -->
-  @if (
-    loading() &&
-    !recommendations()
-  ) {
-
-    <div class="loading-card">
-
-      <div class="analysis-loader">
-
-        <span></span>
-        <span></span>
-        <span></span>
-
-      </div>
-
-      <strong>
-        HairLab sta analizzando il profilo
-      </strong>
-
-      <p>
-        Stiamo combinando le informazioni
-        tecniche disponibili della cliente.
-      </p>
-
+    <div class="header-actions">
+      <a
+        class="catalog-button"
+        routerLink="/style-catalog"
+        [queryParams]="{ customerId: customerId }"
+      >
+        Libreria tagli e stili
+      </a>
+      @if (recommendations()) {
+        <button
+          class="regenerate-button"
+          type="button"
+          [disabled]="loading()"
+          (click)="loadRecommendations()"
+        >
+          {{ loading() ? 'Analisi in corso...' : '↻ Rigenera' }}
+        </button>
+      }
     </div>
+  </header>
 
+  @if (loading() && !recommendations()) {
+    <div class="state-card">
+      <strong>HairLab sta analizzando il profilo</strong>
+      <p>Selezione delle reference e costruzione delle proposte più compatibili.</p>
+    </div>
   } @else if (errorMessage()) {
-
-    <!-- ===================================================
-         ERRORE
-         =================================================== -->
-    <div class="error-card">
-
+    <div class="state-card error-card">
       <div>
-
-        <strong>
-          Analisi non disponibile
-        </strong>
-
-        <p>
-          {{ errorMessage() }}
-        </p>
-
+        <strong>Analisi non disponibile</strong>
+        <p>{{ errorMessage() }}</p>
       </div>
-
-      <button
-        type="button"
-        (click)="loadRecommendations()">
-
-        Riprova
-
-      </button>
-
+      <button type="button" (click)="loadRecommendations()">Riprova</button>
     </div>
-
-  } @else if (
-    recommendations();
-    as data
-  ) {
-
-    <!-- ===================================================
-         INTRO ANALISI
-         =================================================== -->
-    <section class="analysis-overview">
-
-      <div>
-
-        <span class="overview-kicker">
-          PROFILI UTILIZZATI
-        </span>
-
-        <h3>
-          Base dell'analisi
-        </h3>
-
-        <p>
-          Maggiore è il numero di profili completi,
-          più articolati possono essere
-          i suggerimenti generati.
-        </p>
-
+  } @else if (recommendations(); as data) {
+    <section class="analysis-toolbar">
+      <div class="analysis-summary">
+        <div>
+          <span class="overview-kicker">ANALISI ATTIVA</span>
+          <strong>Catalogo {{ isMale(data) ? 'uomo' : 'donna' }}</strong>
+        </div>
+        <div class="analysis-status" aria-label="Profili utilizzati">
+          <span [class.available]="data.hairProfileAvailable">Capelli</span>
+          <span [class.available]="data.faceProfileAvailable">Viso</span>
+          <span [class.available]="data.colorAnalysisAvailable">Armocromia</span>
+          @if (isMale(data)) {
+            <span [class.available]="data.beardProfileAvailable">Barba</span>
+          }
+        </div>
       </div>
 
-      <!-- =================================================
-           STATO PROFILI
-           ================================================= -->
-      <div class="analysis-status">
-
-        <!-- CAPELLI -->
-        <article
-          class="status-item"
-          [class.available]="
-            data.hairProfileAvailable
-          ">
-
-          <span class="status-icon">
-            ≋
-          </span>
-
-          <div>
-
-            <strong>
-              Profilo capelli
-            </strong>
-
-            <small>
-              {{
-                data.hairProfileAvailable
-                  ? 'Disponibile e utilizzato'
-                  : 'Non disponibile'
-              }}
-            </small>
-
-          </div>
-
-          <span class="status-dot"></span>
-
-        </article>
-
-        <!-- VISO -->
-        <article
-          class="status-item"
-          [class.available]="
-            data.faceProfileAvailable
-          ">
-
-          <span class="status-icon">
-            ◯
-          </span>
-
-          <div>
-
-            <strong>
-              Profilo viso
-            </strong>
-
-            <small>
-              {{
-                data.faceProfileAvailable
-                  ? 'Disponibile e utilizzato'
-                  : 'Non disponibile'
-              }}
-            </small>
-
-          </div>
-
-          <span class="status-dot"></span>
-
-        </article>
-
-        <!-- ARMOCROMIA -->
-        <article
-          class="status-item"
-          [class.available]="
-            data.colorAnalysisAvailable
-          ">
-
-          <span class="status-icon">
-            ◐
-          </span>
-
-          <div>
-
-            <strong>
-              Armocromia
-            </strong>
-
-            <small>
-              {{
-                data.colorAnalysisAvailable
-                  ? 'Disponibile e utilizzata'
-                  : 'Non disponibile'
-              }}
-            </small>
-
-          </div>
-
-          <span class="status-dot"></span>
-
-        </article>
-
+      <div class="consultation-selector">
+        <select
+          aria-label="Consulenza di destinazione"
+          [value]="selectedConsultationId() ?? ''"
+          [disabled]="loadingConsultations() || !consultations().length"
+          (change)="selectConsultation($event)"
+        >
+          <option value="">
+            {{ loadingConsultations() ? 'Caricamento...' : 'Salva in una consulenza' }}
+          </option>
+          @for (consultation of consultations(); track consultation.id) {
+            <option [value]="consultation.id">
+              {{ consultation.consultationDate | date: 'dd/MM/yyyy HH:mm' }} ·
+              {{ consultation.objective }}
+            </option>
+          }
+        </select>
+        <a
+          class="new-consultation-link"
+          routerLink="/consultations/new"
+          [queryParams]="{ customerId: customerId }"
+        >
+          + Nuova consulenza
+        </a>
       </div>
-
     </section>
 
-    <!-- ===================================================
-         DATI INSUFFICIENTI
-         =================================================== -->
-    @if (!hasRecommendations(data)) {
-
-      <div class="empty-analysis">
-
-        <div class="empty-symbol">
-          ✦
-        </div>
-
-        <div>
-
-          <h3>
-            Dati insufficienti
-          </h3>
-
-          <p>
-            Completa almeno il profilo del viso
-            o l'analisi cromatica per ottenere
-            suggerimenti più dettagliati.
-          </p>
-
-        </div>
-
-      </div>
-
-    }
-
-    <!-- ===================================================
-         TAGLI
-         =================================================== -->
-    @if (
-      data.haircutRecommendations.length > 0
-    ) {
-
-      <section class="recommendation-group">
-
-        <div class="group-heading">
-
-          <div class="group-icon">
-            ✂
-          </div>
-
-          <div>
-
-            <span>
-              HAIRCUT ANALYSIS
-            </span>
-
-            <h3>
-              Tagli consigliati
-            </h3>
-
-            <p>
-              Proposte costruite sulla morfologia
-              e sulle caratteristiche dei capelli.
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="recommendation-grid">
-
-          @for (
-            item of data.haircutRecommendations;
-            track item.title
-          ) {
-
-            <article
-              class="recommendation-card"
-              [class.top-choice]="
-                isTopRecommendation(
-                  item,
-                  data.haircutRecommendations
-                )
-              ">
-
-              @if (
-                isTopRecommendation(
-                  item,
-                  data.haircutRecommendations
-                )
-              ) {
-
-                <span class="best-badge">
-                  ✦ PRIMA SCELTA
-                </span>
-
-              }
-
-              <div class="recommendation-header">
-
-                <div>
-
-                  <span class="recommendation-type">
-                    TAGLIO
-                  </span>
-
-                  <h4>
-                    {{ item.title }}
-                  </h4>
-
-                </div>
-
-                <div class="score-circle">
-
-                  <strong>
-                    {{ item.compatibilityScore }}
-                  </strong>
-
-                  <span>
-                    %
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div class="compatibility">
-
-                <div class="compatibility-header">
-
-                  <span>
-                    {{
-                      scoreLabel(
-                        item.compatibilityScore
-                      )
-                    }}
-                  </span>
-
-                  <strong>
-                    {{
-                      item.compatibilityScore
-                    }}/100
-                  </strong>
-
-                </div>
-
-                <div class="score-track">
-
-                  <span
-                    [style.width]="
-                      scoreWidth(
-                        item.compatibilityScore
-                      )
-                    ">
-                  </span>
-
-                </div>
-
-              </div>
-
-              <p class="description">
-                {{ item.description }}
-              </p>
-
-              @if (
-                item.reasons.length > 0
-              ) {
-
-                <div class="reasons">
-
-                  <span class="reasons-title">
-                    PERCHÉ HAIRLAB LO CONSIGLIA
-                  </span>
-
-                  @for (
-                    reason of item.reasons;
-                    track reason
-                  ) {
-
-                    <div class="reason">
-
-                      <span class="check">
-                        ✓
-                      </span>
-
-                      <p>
-                        {{ reason }}
-                      </p>
-
-                    </div>
-
-                  }
-
-                </div>
-
-              }
-
-            </article>
-
+    @if (data.technicalWarnings.length) {
+      <details class="warning-panel">
+        <summary>
+          <span>Cautele tecniche</span>
+          <small>{{ data.technicalWarnings.length }} indicazioni</small>
+        </summary>
+        <div class="warning-content">
+          @for (warning of data.technicalWarnings; track warning) {
+            <p>{{ displayText(warning) }}</p>
           }
-
         </div>
-
-      </section>
-
+      </details>
     }
 
-    <!-- ===================================================
-         FRANGE
-         =================================================== -->
-    @if (
-      data.fringeRecommendations.length > 0
-    ) {
+    <nav class="recommendation-tabs" aria-label="Categorie suggerimenti">
+      <button
+        type="button"
+        [class.active]="activeTab() === 'haircut'"
+        (click)="selectTab('haircut')"
+      >
+        Taglio
+      </button>
+      @if (isMale(data)) {
+        <button type="button" [class.active]="activeTab() === 'beard'" (click)="selectTab('beard')">
+          Barba e baffi
+        </button>
+      } @else {
+        <button
+          type="button"
+          [class.active]="activeTab() === 'fringe'"
+          (click)="selectTab('fringe')"
+        >
+          Frangia
+        </button>
+      }
+      <button type="button" [class.active]="activeTab() === 'color'" (click)="selectTab('color')">
+        Colore
+      </button>
+      <button
+        class="total-look-tab"
+        type="button"
+        [class.active]="activeTab() === 'total-look'"
+        (click)="selectTab('total-look')"
+      >
+        Total Look
+      </button>
+    </nav>
 
-      <section class="recommendation-group">
-
-        <div class="group-heading">
-
-          <div class="group-icon">
-            ≋
-          </div>
-
-          <div>
-
-            <span>
-              FRINGE ANALYSIS
-            </span>
-
-            <h3>
-              Frange e ciuffi
-            </h3>
-
-            <p>
-              Soluzioni pensate per riequilibrare
-              proporzioni e direzioni del volto.
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="recommendation-grid">
-
-          @for (
-            item of data.fringeRecommendations;
-            track item.title
-          ) {
-
-            <article
-              class="recommendation-card"
-              [class.top-choice]="
-                isTopRecommendation(
-                  item,
-                  data.fringeRecommendations
-                )
-              ">
-
-              @if (
-                isTopRecommendation(
-                  item,
-                  data.fringeRecommendations
-                )
-              ) {
-
-                <span class="best-badge">
-                  ✦ PRIMA SCELTA
-                </span>
-
-              }
-
-              <div class="recommendation-header">
-
-                <div>
-
-                  <span class="recommendation-type">
-                    FRANGIA / CIUFFO
-                  </span>
-
-                  <h4>
-                    {{ item.title }}
-                  </h4>
-
-                </div>
-
-                <div class="score-circle">
-
-                  <strong>
-                    {{ item.compatibilityScore }}
-                  </strong>
-
-                  <span>
-                    %
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div class="compatibility">
-
-                <div class="compatibility-header">
-
-                  <span>
-                    {{
-                      scoreLabel(
-                        item.compatibilityScore
-                      )
-                    }}
-                  </span>
-
-                  <strong>
-                    {{
-                      item.compatibilityScore
-                    }}/100
-                  </strong>
-
-                </div>
-
-                <div class="score-track">
-
-                  <span
-                    [style.width]="
-                      scoreWidth(
-                        item.compatibilityScore
-                      )
-                    ">
-                  </span>
-
-                </div>
-
-              </div>
-
-              <p class="description">
-                {{ item.description }}
-              </p>
-
-              @if (
-                item.reasons.length > 0
-              ) {
-
-                <div class="reasons">
-
-                  <span class="reasons-title">
-                    PERCHÉ HAIRLAB LO CONSIGLIA
-                  </span>
-
+    @if (itemsForActiveTab(data); as items) {
+      @if (items.length) {
+        @if (activeTab() === 'total-look') {
+          <div class="total-look-grid">
+            @for (item of items; track item.code ?? item.title) {
+              <article class="total-look-card" [class.top-card]="isTopRecommendation(item, items)">
+                <div class="total-look-visuals">
                   @for (
-                    reason of item.reasons;
-                    track reason
+                    component of item.components;
+                    track component.category + (component.code ?? component.title)
                   ) {
-
-                    <div class="reason">
-
-                      <span class="check">
-                        ✓
-                      </span>
-
-                      <p>
-                        {{ reason }}
-                      </p>
-
+                    <div class="component-visual">
+                      @if (componentImage(component); as image) {
+                        <img
+                          [src]="image"
+                          [alt]="'Reference ' + displayTitle(component.title)"
+                          loading="lazy"
+                        />
+                      } @else if (component.category === 'COLOR') {
+                        <div
+                          class="color-reference"
+                          [style.background]="colorPreviewBackground(item)"
+                        ></div>
+                      } @else {
+                        <div class="visual-placeholder compact-placeholder">
+                          <span>{{ componentSymbol(component) }}</span>
+                        </div>
+                      }
+                      <span>{{ categoryLabel(component.category) }}</span>
                     </div>
-
                   }
-
                 </div>
 
-              }
-
-            </article>
-
-          }
-
-        </div>
-
-      </section>
-
-    }
-
-    <!-- ===================================================
-         COLORI CAPELLI
-         =================================================== -->
-    @if (
-      data.colorRecommendations.length > 0
-    ) {
-
-      <section class="recommendation-group color-group">
-
-        <div class="group-heading">
-
-          <div class="group-icon">
-            ◐
-          </div>
-
-          <div>
-
-            <span>
-              COLOR ANALYSIS
-            </span>
-
-            <h3>
-              Colori capelli consigliati
-            </h3>
-
-            <p>
-              Direzioni cromatiche coerenti
-              con stagione e sottostagione.
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="recommendation-grid">
-
-          @for (
-            item of data.colorRecommendations;
-            track item.title
-          ) {
-
-            <article
-              class="recommendation-card"
-              [class.top-choice]="
-                isTopRecommendation(
-                  item,
-                  data.colorRecommendations
-                )
-              ">
-
-              @if (
-                isTopRecommendation(
-                  item,
-                  data.colorRecommendations
-                )
-              ) {
-
-                <span class="best-badge">
-                  ✦ PRIMA SCELTA
-                </span>
-
-              }
-
-              <div class="recommendation-header">
-
-                <div>
-
-                  <span class="recommendation-type">
-                    COLORE
-                  </span>
-
-                  <h4>
-                    {{ item.title }}
-                  </h4>
-
-                </div>
-
-                <div class="score-circle">
-
-                  <strong>
-                    {{ item.compatibilityScore }}
-                  </strong>
-
-                  <span>
-                    %
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div class="compatibility">
-
-                <div class="compatibility-header">
-
-                  <span>
-                    {{
-                      scoreLabel(
-                        item.compatibilityScore
-                      )
-                    }}
-                  </span>
-
-                  <strong>
-                    {{
-                      item.compatibilityScore
-                    }}/100
-                  </strong>
-
-                </div>
-
-                <div class="score-track">
-
-                  <span
-                    [style.width]="
-                      scoreWidth(
-                        item.compatibilityScore
-                      )
-                    ">
-                  </span>
-
-                </div>
-
-              </div>
-
-              <p class="description">
-                {{ item.description }}
-              </p>
-
-              @if (
-                item.reasons.length > 0
-              ) {
-
-                <div class="reasons">
-
-                  <span class="reasons-title">
-                    PERCHÉ HAIRLAB LO CONSIGLIA
-                  </span>
-
-                  @for (
-                    reason of item.reasons;
-                    track reason
-                  ) {
-
-                    <div class="reason">
-
-                      <span class="check">
-                        ✓
-                      </span>
-
-                      <p>
-                        {{ reason }}
-                      </p>
-
+                <div class="total-look-content">
+                  <header class="total-look-header">
+                    <div>
+                      <div class="label-row">
+                        <span class="category-label">TOTAL LOOK</span>
+                        @if (isTopRecommendation(item, items)) {
+                          <span class="top-badge">Prima scelta</span>
+                        }
+                      </div>
+                      <h3>{{ displayTitle(item.title) }}</h3>
+                      <p>{{ displayText(item.description) }}</p>
                     </div>
+                    <div class="score-badge large-score">
+                      <strong>{{ item.compatibilityScore }}%</strong>
+                      <span>{{ scoreLabel(item.compatibilityScore) }}</span>
+                    </div>
+                  </header>
 
-                  }
-
-                </div>
-
-              }
-
-              @if (
-                item.technicalColorTarget?.smartFormulaEligible
-              ) {
-
-                <div class="smart-formula-bridge">
-
-                  <div>
-                    <span>DAL CONSIGLIO ALLA FORMULA</span>
-                    <p>
-                      HairLab userà questo colore come obiettivo e lo adatterà
-                      alla base reale, al profilo tecnico e allo storico del cliente.
-                    </p>
+                  <div class="score-track">
+                    <span [style.width]="scoreWidth(item.compatibilityScore)"></span>
                   </div>
 
-                  <a
-                    class="smart-formula-button"
-                    routerLink="/color-lab/smart-formula"
-                    [queryParams]="smartFormulaQueryParams(item)">
-                    Crea Smart Formula personalizzata
-                  </a>
-
-                </div>
-
-              }
-
-            </article>
-
-          }
-
-        </div>
-
-      </section>
-
-    }
-
-    <!-- ===================================================
-         STYLING
-         =================================================== -->
-    @if (
-      data.stylingRecommendations.length > 0
-    ) {
-
-      <section class="recommendation-group">
-
-        <div class="group-heading">
-
-          <div class="group-icon">
-            ~
-          </div>
-
-          <div>
-
-            <span>
-              STYLING ANALYSIS
-            </span>
-
-            <h3>
-              Styling consigliato
-            </h3>
-
-            <p>
-              Indicazioni per valorizzare texture,
-              volumi e proporzioni.
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="recommendation-grid">
-
-          @for (
-            item of data.stylingRecommendations;
-            track item.title
-          ) {
-
-            <article class="recommendation-card">
-
-              <div class="recommendation-header">
-
-                <div>
-
-                  <span class="recommendation-type">
-                    STYLING
-                  </span>
-
-                  <h4>
-                    {{ item.title }}
-                  </h4>
-
-                </div>
-
-                <div class="score-circle">
-
-                  <strong>
-                    {{ item.compatibilityScore }}
-                  </strong>
-
-                  <span>
-                    %
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div class="compatibility">
-
-                <div class="compatibility-header">
-
-                  <span>
-                    {{
-                      scoreLabel(
-                        item.compatibilityScore
-                      )
-                    }}
-                  </span>
-
-                  <strong>
-                    {{
-                      item.compatibilityScore
-                    }}/100
-                  </strong>
-
-                </div>
-
-                <div class="score-track">
-
-                  <span
-                    [style.width]="
-                      scoreWidth(
-                        item.compatibilityScore
-                      )
-                    ">
-                  </span>
-
-                </div>
-
-              </div>
-
-              <p class="description">
-                {{ item.description }}
-              </p>
-
-              @if (
-                item.reasons.length > 0
-              ) {
-
-                <div class="reasons">
-
-                  <span class="reasons-title">
-                    MOTIVAZIONI
-                  </span>
-
-                  @for (
-                    reason of item.reasons;
-                    track reason
-                  ) {
-
-                    <div class="reason">
-
-                      <span class="check">
-                        ✓
-                      </span>
-
-                      <p>
-                        {{ reason }}
-                      </p>
-
+                  @if (item.components.length) {
+                    <div class="look-components">
+                      @for (
+                        component of item.components;
+                        track component.category + (component.code ?? component.title)
+                      ) {
+                        <div>
+                          <span>{{ categoryLabel(component.category) }}</span>
+                          <strong>{{ displayTitle(component.title) }}</strong>
+                          @if (component.description) {
+                            <small>{{ displayText(component.description) }}</small>
+                          }
+                        </div>
+                      }
                     </div>
-
                   }
 
+                  @if (item.combinationValidated) {
+                    <section class="cross-compatibility-panel">
+                      <header>
+                        <div>
+                          <span>COMPATIBILITÀ TRA GLI ELEMENTI</span>
+                          <strong>Combinazione verificata</strong>
+                        </div>
+                        <div
+                          class="adjustment-value"
+                          [class.negative]="(item.compatibilityAdjustment ?? 0) < 0"
+                        >
+                          {{ adjustmentLabel(item.compatibilityAdjustment) }} punti
+                        </div>
+                      </header>
+                      <div class="compatibility-metrics">
+                        <span
+                          >Media elementi <b>{{ item.componentAverageScore ?? 0 }}%</b></span
+                        >
+                        <span
+                          >Punteggio finale <b>{{ item.compatibilityScore }}%</b></span
+                        >
+                      </div>
+                      @if (item.compatibilityRules?.length) {
+                        <ul class="compatibility-rules">
+                          @for (rule of item.compatibilityRules ?? []; track rule) {
+                            <li>{{ displayText(rule) }}</li>
+                          }
+                        </ul>
+                      }
+                      @if (item.compatibilityWarnings?.length) {
+                        <div class="compatibility-warnings">
+                          @for (warning of item.compatibilityWarnings ?? []; track warning) {
+                            <p>{{ displayText(warning) }}</p>
+                          }
+                        </div>
+                      }
+                    </section>
+                  }
+
+                  @if (details(item).length || item.reasons.length) {
+                    <details class="expanded-details">
+                      <summary>Vedi scheda tecnica</summary>
+                      <div class="expanded-content">
+                        @if (details(item).length) {
+                          <dl class="technical-details">
+                            @for (detail of details(item); track detail[0] + detail[1]) {
+                              <div>
+                                <dt>{{ detail[0] }}</dt>
+                                <dd>{{ detail[1] }}</dd>
+                              </div>
+                            }
+                          </dl>
+                        }
+                        @if (item.reasons.length) {
+                          <div class="reasons">
+                            <strong>Perché è adatto</strong>
+                            <ul>
+                              @for (reason of item.reasons; track reason) {
+                                <li>{{ displayText(reason) }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                      </div>
+                    </details>
+                  }
+
+                  <footer class="card-actions">
+                    @if (hasColorAction(item)) {
+                      <a
+                        class="primary-action"
+                        routerLink="/color-lab/smart-formula"
+                        [queryParams]="smartFormulaQueryParams(item)"
+                      >
+                        Apri nel Color Lab
+                      </a>
+                    }
+                    <button
+                      class="secondary-action"
+                      type="button"
+                      [class.saved]="isSaved(item)"
+                      [disabled]="
+                        !selectedConsultationId() ||
+                        !item.code ||
+                        savingRecommendationCode() === item.code
+                      "
+                      (click)="saveToConsultation(item)"
+                    >
+                      @if (savingRecommendationCode() === item.code) {
+                        Salvataggio...
+                      } @else if (isSaved(item)) {
+                        ✓ Salvato
+                      } @else {
+                        Salva nella consulenza
+                      }
+                    </button>
+                    @if (item.futureSimulation) {
+                      <span class="simulation-ready"
+                        >Dati simulazione predisposti · IA non attiva</span
+                      >
+                    }
+                  </footer>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="suggestion-grid">
+            @for (item of items; track item.code ?? item.title) {
+              <article class="suggestion-card" [class.top-card]="isTopRecommendation(item, items)">
+                <div class="suggestion-media">
+                  @if (itemImage(item); as image) {
+                    <img
+                      [src]="image"
+                      [alt]="'Reference ' + displayTitle(item.title)"
+                      loading="lazy"
+                    />
+                  } @else if (item.category === 'COLOR') {
+                    <div class="color-reference" [style.background]="colorPreviewBackground(item)">
+                      <span>Anteprima cromatica</span>
+                    </div>
+                  } @else {
+                    <div class="visual-placeholder">
+                      <span>{{ visualSymbol(item) }}</span>
+                      <small>Reference da aggiungere nel catalogo</small>
+                    </div>
+                  }
+
+                  <div class="media-badges">
+                    <span>{{ categoryLabel(item.category) }}</span>
+                    @if (isTopRecommendation(item, items)) {
+                      <span>Prima scelta</span>
+                    }
+                  </div>
+
+                  <div class="media-score">
+                    <strong>{{ item.compatibilityScore }}%</strong>
+                    <span>{{ scoreLabel(item.compatibilityScore) }}</span>
+                  </div>
                 </div>
 
-              }
+                <div class="suggestion-body">
+                  <header>
+                    <h3>{{ displayTitle(item.title) }}</h3>
+                    <p>{{ displayText(item.description) }}</p>
+                  </header>
 
-            </article>
+                  <div class="score-track">
+                    <span [style.width]="scoreWidth(item.compatibilityScore)"></span>
+                  </div>
 
-          }
+                  @if (primaryMetrics(item).length) {
+                    <div class="quick-metrics">
+                      @for (detail of primaryMetrics(item); track detail[0] + detail[1]) {
+                        <div>
+                          <span>{{ detail[0] }}</span>
+                          <strong>{{ detail[1] }}</strong>
+                        </div>
+                      }
+                    </div>
+                  }
 
-        </div>
+                  @if (item.reasons.length) {
+                    <div class="compatibility-line">
+                      <span>Perché è consigliato</span>
+                      <strong>{{ displayText(item.reasons[0]) }}</strong>
+                    </div>
+                  }
 
-      </section>
+                  @if (
+                    details(item).length > 3 || item.reasons.length > 1 || item.futureSimulation
+                  ) {
+                    <details class="expanded-details">
+                      <summary>Vedi scheda tecnica</summary>
+                      <div class="expanded-content">
+                        @if (details(item).length) {
+                          <dl class="technical-details single-column">
+                            @for (detail of details(item); track detail[0] + detail[1]) {
+                              <div>
+                                <dt>{{ detail[0] }}</dt>
+                                <dd>{{ detail[1] }}</dd>
+                              </div>
+                            }
+                          </dl>
+                        }
+                        @if (item.reasons.length > 1) {
+                          <div class="reasons">
+                            <strong>Motivazioni tecniche</strong>
+                            <ul>
+                              @for (reason of item.reasons; track reason) {
+                                <li>{{ displayText(reason) }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+                        @if (item.futureSimulation) {
+                          <span class="simulation-ready"
+                            >Dati simulazione predisposti · IA non attiva</span
+                          >
+                        }
+                      </div>
+                    </details>
+                  }
+                </div>
 
-    }
-
-    <!-- ===================================================
-         CAUTELE TECNICHE
-         =================================================== -->
-    @if (
-      data.technicalWarnings.length > 0
-    ) {
-
-      <section class="warning-section">
-
-        <div class="warning-heading">
-
-          <span class="warning-icon">
-            !
-          </span>
-
-          <div>
-
-            <span>
-              ATTENZIONE TECNICA
-            </span>
-
-            <h3>
-              Cautele prima del servizio
-            </h3>
-
-            <p>
-              Informazioni da verificare
-              prima di procedere con trasformazioni tecniche.
-            </p>
-
+                <footer class="card-actions compact-actions">
+                  @if (hasColorAction(item)) {
+                    <a
+                      class="primary-action"
+                      routerLink="/color-lab/smart-formula"
+                      [queryParams]="smartFormulaQueryParams(item)"
+                    >
+                      Color Lab
+                    </a>
+                  }
+                  <button
+                    class="secondary-action"
+                    type="button"
+                    [class.saved]="isSaved(item)"
+                    [disabled]="
+                      !selectedConsultationId() ||
+                      !item.code ||
+                      savingRecommendationCode() === item.code
+                    "
+                    (click)="saveToConsultation(item)"
+                  >
+                    @if (savingRecommendationCode() === item.code) {
+                      Salvataggio...
+                    } @else if (isSaved(item)) {
+                      ✓ Salvato
+                    } @else {
+                      Salva
+                    }
+                  </button>
+                </footer>
+              </article>
+            }
           </div>
-
+        }
+      } @else {
+        <div class="state-card empty-state">
+          <strong>Profilo tecnico da completare</strong>
+          <p>Completa i dati necessari per visualizzare suggerimenti in questa categoria.</p>
         </div>
-
-        <div class="warning-list">
-
-          @for (
-            warning of data.technicalWarnings;
-            track warning
-          ) {
-
-            <div class="warning-item">
-
-              <span>
-                ⚠
-              </span>
-
-              <p>
-                {{ warning }}
-              </p>
-
-            </div>
-
-          }
-
-        </div>
-
-      </section>
-
+      }
     }
 
-    <!-- ===================================================
-         NOTE GENERALI
-         =================================================== -->
-    @if (
-      data.generalNotes.length > 0
-    ) {
-
-      <section class="general-notes">
-
+    @if (data.generalNotes.length) {
+      <details class="notes-panel">
+        <summary>Note dell’analisi</summary>
         <div>
-
-          <span class="note-symbol">
-            i
-          </span>
-
-        </div>
-
-        <div>
-
-          <strong>
-            Note sull'analisi
-          </strong>
-
-          @for (
-            note of data.generalNotes;
-            track note
-          ) {
-
-            <p>
-              {{ note }}
-            </p>
-
+          @for (note of data.generalNotes; track note) {
+            <p>{{ displayText(note) }}</p>
           }
-
         </div>
-
-      </section>
-
+      </details>
     }
-
   }
-
 </section>

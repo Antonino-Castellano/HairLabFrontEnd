@@ -1,0 +1,4 @@
+HairLab assets root. Test URLs:
+/assets/LOGO/HAIRLAB_LOGO_WORDMARK.png
+/assets/UTENTI/ADMIN.png
+/assets/CLIENTI/MARIA_ESPOSITO.png

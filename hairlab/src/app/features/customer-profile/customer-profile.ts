@@ -7,7 +7,7 @@ import { ColorPalette } from '../../models/color-analysis';
 import { CustomerArea } from '../../models/customer-area';
 import { AppointmentStatus } from '../../models/enums/appointment-status';
 import { ConsultationType } from '../../models/enums/consultation-type';
-import { getProfileEnumLabel } from '../../models/enums/profile-enum-labels';
+import { hairLabTechnicalLabel } from '../../shared/ui/hairlab-technical-labels';
 import { CustomerAreaService } from '../../service/customer-area-service';
 import {
   HAIR_CONDITION_LABELS,
@@ -32,7 +32,9 @@ export class CustomerProfileComponent implements OnInit {
   protected readonly area = signal<CustomerArea | null>(null);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal('');
-  protected readonly activeSection = signal<'hair' | 'face' | 'color' | 'history'>('hair');
+  protected readonly activeSection = signal<'hair' | 'face' | 'beard' | 'color' | 'history'>(
+    'hair',
+  );
 
   protected readonly toneLabels = TONE_LEVEL_LABELS;
   protected readonly reflectionLabels = REFLECTION_LABELS;
@@ -85,12 +87,12 @@ export class CustomerProfileComponent implements OnInit {
     });
   }
 
-  protected selectSection(section: 'hair' | 'face' | 'color' | 'history'): void {
+  protected selectSection(section: 'hair' | 'face' | 'beard' | 'color' | 'history'): void {
     this.activeSection.set(section);
   }
 
   protected profileLabel(value: string | null | undefined): string {
-    return getProfileEnumLabel(value);
+    return hairLabTechnicalLabel(value);
   }
 
   protected paletteEntries(palette: ColorPalette | null | undefined): [string, string][] {

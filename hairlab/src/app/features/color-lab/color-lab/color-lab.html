@@ -1,28 +1,19 @@
 <section class="color-lab-page">
-
   <header class="page-header">
     <div>
       <span class="eyebrow">LABORATORIO TECNICO</span>
       <h1>Color Lab</h1>
       <p>
-        Libreria tecnica, Formula Center e Smart Formula:
-        il ciclo colore completo dalla progettazione al risultato reale.
+        Libreria tecnica, Centro formule e Smart Formula: il ciclo colore completo dalla
+        progettazione al risultato reale.
       </p>
     </div>
 
     <div class="header-actions">
-      <a class="secondary-button" routerLink="/color-lab/smart-formula">
-        ✦ Smart Formula
-      </a>
-      <a class="primary-button" routerLink="/color-lab/formulas">
-        Formula Center
-      </a>
-      <a class="secondary-button" routerLink="/color-lab/lines">
-        Linee tecniche
-      </a>
-      <a class="secondary-button" routerLink="/color-lab/products/new">
-        + Nuovo prodotto
-      </a>
+      <a class="secondary-button" routerLink="/color-lab/smart-formula"> ✦ Smart Formula </a>
+      <a class="primary-button" routerLink="/color-lab/formulas"> Centro formule </a>
+      <a class="secondary-button" routerLink="/color-lab/lines"> Linee tecniche </a>
+      <a class="secondary-button" routerLink="/color-lab/products/new"> + Nuovo prodotto </a>
     </div>
   </header>
 
@@ -39,7 +30,6 @@
   @if (loading()) {
     <div class="state-card">Caricamento Color Lab...</div>
   } @else {
-
     @if (selectedTab() === 'OVERVIEW') {
       <section class="overview-section">
         <div class="kpi-grid">
@@ -114,7 +104,10 @@
                 @for (line of stats.topLines; track line.brand + line.lineName) {
                   <div>
                     <span>{{ line.brand }} · {{ line.lineName }}</span>
-                    <small>{{ line.usedFormulas }} utilizzi · {{ line.successRatePercent }}% esiti positivi registrati</small>
+                    <small
+                      >{{ line.usedFormulas }} utilizzi · {{ line.successRatePercent }}% esiti
+                      positivi registrati</small
+                    >
                   </div>
                 }
               </div>
@@ -167,7 +160,7 @@
               <div class="flow-step next">
                 <span class="flow-number">04</span>
                 <div>
-                  <strong>Formula Center</strong>
+                  <strong>Centro formule</strong>
                   <p>Builder, formule Smart, revisioni, utilizzi e risultati post-servizio.</p>
                 </div>
                 <span class="flow-status">PRONTO</span>
@@ -175,7 +168,7 @@
               <div class="flow-step future">
                 <span class="flow-number">05</span>
                 <div>
-                  <strong>Smart Formula Engine</strong>
+                  <strong>Motore della formula guidata</strong>
                   <p>Base + obiettivo + stock + grammatura automatica.</p>
                 </div>
                 <span class="flow-status">PRONTO</span>
@@ -211,7 +204,9 @@
               <span class="quick-icon">≡</span>
               <div>
                 <strong>Controlla scorte</strong>
-                <small>{{ lowStockCount() + outOfStockCount() }} prodotti richiedono attenzione</small>
+                <small
+                  >{{ lowStockCount() + outOfStockCount() }} prodotti richiedono attenzione</small
+                >
               </div>
             </button>
 
@@ -226,7 +221,7 @@
             <a class="quick-action" routerLink="/color-lab/formulas">
               <span class="quick-icon">ƒ</span>
               <div>
-                <strong>Formula Center</strong>
+                <strong>Centro formule</strong>
                 <small>Bozze, Smart Formula, revisioni, utilizzi e risultati</small>
               </div>
             </a>
@@ -243,8 +238,8 @@
               <div class="attention-note">
                 <strong>{{ untrackedProductsCount() }} prodotti senza giacenza</strong>
                 <p>
-                  Configurali nel Magazzino per renderli utilizzabili
-                  da Smart Formula e dal workflow di utilizzo reale.
+                  Configurali nel Magazzino per renderli utilizzabili dalla Smart Formula e dal
+                  workflow di utilizzo reale.
                 </p>
               </div>
             }
@@ -260,8 +255,8 @@
             <span class="panel-eyebrow">CATALOGO TECNICO</span>
             <h2>Libreria prodotti colore</h2>
             <p>
-              Il catalogo descrive i prodotti. Le quantità vengono
-              gestite separatamente nel Magazzino.
+              Il catalogo descrive i prodotti. Le quantità vengono gestite separatamente nel
+              Magazzino.
             </p>
           </div>
           <a class="primary-button" routerLink="/color-lab/products/new">+ Aggiungi prodotto</a>
@@ -270,7 +265,12 @@
         <div class="filters-card">
           <label class="search-field">
             <span>Cerca</span>
-            <input type="search" placeholder="Marca, nome o codice..." [value]="searchTerm()" (input)="onSearchChange($event)">
+            <input
+              type="search"
+              placeholder="Marca, nome o codice..."
+              [value]="searchTerm()"
+              (input)="onSearchChange($event)"
+            />
           </label>
 
           <label>
@@ -295,9 +295,7 @@
 
           <label>
             <span>Linea</span>
-            <select
-              [value]="lineFilter()"
-              (change)="onLineFilterChange($event)">
+            <select [value]="lineFilter()" (change)="onLineFilterChange($event)">
               <option value="ALL">Tutte</option>
               @for (line of lines(); track line) {
                 <option [value]="line">{{ line }}</option>
@@ -337,7 +335,9 @@
           <button type="button" class="reset-button" (click)="resetLibraryFilters()">Reset</button>
         </div>
 
-        <div class="result-line"><strong>{{ filteredProducts().length }}</strong> prodotti trovati</div>
+        <div class="result-line">
+          <strong>{{ filteredProducts().length }}</strong> prodotti trovati
+        </div>
 
         @if (filteredProducts().length === 0) {
           <div class="state-card">Nessun prodotto corrisponde ai filtri.</div>
@@ -346,7 +346,10 @@
             @for (product of filteredProducts(); track product.code) {
               <article class="product-card" [class.inactive]="!product.active">
                 <div class="product-top">
-                  <span class="product-swatch" [style.background]="getProductSwatch(product)"></span>
+                  <span
+                    class="product-swatch"
+                    [style.background]="getProductSwatch(product)"
+                  ></span>
                   <div class="product-main">
                     <span class="product-brand">
                       {{ product.brand }}
@@ -354,7 +357,9 @@
                         · {{ product.lineName }}
                       }
                     </span>
-                    <h3>{{ product.code }} <small>{{ product.name }}</small></h3>
+                    <h3>
+                      {{ product.code }} <small>{{ product.name }}</small>
+                    </h3>
                   </div>
                   <span class="status-dot" [class.off]="!product.active">
                     {{ product.active ? 'Attivo' : 'Non attivo' }}
@@ -362,19 +367,23 @@
                 </div>
 
                 <div class="technical-grid">
-                  <div><span>TIPO</span><strong>{{ productTypeLabels[product.productType] }}</strong></div>
-                  <div><span>{{ getToneFieldLabel(product) }}</span><strong>{{ getToneLabel(product) }}</strong></div>
-                  <div><span>RIFLESSO</span><strong>{{ getReflectionLabel(product) }}</strong></div>
+                  <div>
+                    <span>TIPO</span><strong>{{ productTypeLabels[product.productType] }}</strong>
+                  </div>
+                  <div>
+                    <span>{{ getToneFieldLabel(product) }}</span
+                    ><strong>{{ getToneLabel(product) }}</strong>
+                  </div>
+                  <div>
+                    <span>RIFLESSO</span><strong>{{ getReflectionLabel(product) }}</strong>
+                  </div>
                   <div>
                     <span>MAGAZZINO</span>
-                    <strong [attr.data-stock]="getStockState(product)">{{ getStockStateLabel(product) }}</strong>
+                    <strong [attr.data-stock]="getStockState(product)">{{
+                      getStockStateLabel(product)
+                    }}</strong>
                   </div>
-                  @if (
-                    supportsTechnicalRulesForProduct(
-                      product
-                    )
-                  ) {
-
+                  @if (supportsTechnicalRulesForProduct(product)) {
                     <div>
                       <span>MISCELAZIONE</span>
                       <strong>
@@ -400,27 +409,38 @@
                       <span>REGOLE</span>
                       <strong>
                         {{
-                          hasConfiguredTechnicalRulesForProduct(
-                            product
-                          )
+                          hasConfiguredTechnicalRulesForProduct(product)
                             ? 'Prodotto-specifiche'
                             : 'Generiche'
                         }}
                       </strong>
                     </div>
-
                   }
                 </div>
 
                 <div class="product-actions">
                   @if (product.id) {
-                    <a class="small-button" [routerLink]="['/color-lab/products', product.id, 'edit']">Modifica</a>
-                    <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Scorta</a>
+                    <a
+                      class="small-button"
+                      [routerLink]="['/color-lab/products', product.id, 'edit']"
+                      >Modifica</a
+                    >
+                    <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]"
+                      >Scorta</a
+                    >
                   }
                   @if (product.active) {
-                    <button type="button" class="small-button danger-text" (click)="deactivateProduct(product)">Disattiva</button>
+                    <button
+                      type="button"
+                      class="small-button danger-text"
+                      (click)="deactivateProduct(product)"
+                    >
+                      Disattiva
+                    </button>
                   } @else {
-                    <button type="button" class="small-button" (click)="activateProduct(product)">Riattiva</button>
+                    <button type="button" class="small-button" (click)="activateProduct(product)">
+                      Riattiva
+                    </button>
                   }
                 </div>
               </article>
@@ -437,24 +457,25 @@
             <span class="panel-eyebrow">GIACENZE COLOR LAB</span>
             <h2>Magazzino prodotti tecnici</h2>
             <p>
-              Le quantità registrate sono il vincolo reale
-              di Smart Formula e degli utilizzi professionali.
+              Le quantità registrate sono il vincolo reale di Smart Formula e degli utilizzi
+              professionali.
             </p>
           </div>
         </div>
 
         <div class="inventory-section-actions">
-          <a
-            class="secondary-button"
-            routerLink="/color-lab/movements">
-            Storico movimenti
-          </a>
+          <a class="secondary-button" routerLink="/color-lab/movements"> Storico movimenti </a>
         </div>
 
         <div class="inventory-tools">
           <label class="search-field">
             <span>Cerca prodotto</span>
-            <input type="search" placeholder="Marca, nome o codice..." [value]="stockSearchTerm()" (input)="onStockSearchChange($event)">
+            <input
+              type="search"
+              placeholder="Marca, nome o codice..."
+              [value]="stockSearchTerm()"
+              (input)="onStockSearchChange($event)"
+            />
           </label>
           <label>
             <span>Stato scorta</span>
@@ -476,7 +497,9 @@
                   <span class="small-swatch" [style.background]="getProductSwatch(product)"></span>
                   <div>
                     <span>{{ product.brand }}</span>
-                    <strong>{{ product.code }} <small>{{ product.name }}</small></strong>
+                    <strong
+                      >{{ product.code }} <small>{{ product.name }}</small></strong
+                    >
                   </div>
                 </div>
 
@@ -501,7 +524,9 @@
                 </span>
 
                 @if (product.id) {
-                  <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]">Gestisci giacenza</a>
+                  <a class="small-button" [routerLink]="['/color-lab/inventory', product.id]"
+                    >Gestisci giacenza</a
+                  >
                 }
               </article>
             } @else {
@@ -510,7 +535,9 @@
                   <span class="small-swatch" [style.background]="getProductSwatch(product)"></span>
                   <div>
                     <span>{{ product.brand }}</span>
-                    <strong>{{ product.code }} <small>{{ product.name }}</small></strong>
+                    <strong
+                      >{{ product.code }} <small>{{ product.name }}</small></strong
+                    >
                   </div>
                 </div>
 
@@ -522,7 +549,11 @@
                 <span class="stock-badge" data-stock="UNTRACKED">Da configurare</span>
 
                 @if (product.id) {
-                  <a class="primary-small-button" [routerLink]="['/color-lab/inventory', product.id]">Configura</a>
+                  <a
+                    class="primary-small-button"
+                    [routerLink]="['/color-lab/inventory', product.id]"
+                    >Configura</a
+                  >
                 }
               </article>
             }

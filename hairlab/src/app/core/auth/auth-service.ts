@@ -13,11 +13,13 @@ interface JwtPayload {
   ROLE?: string | string[];
   roles?: string | string[];
   authorities?: string | string[];
+  PROFILE_IMAGE?: string;
+  profileImage?: string;
   exp?: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -27,11 +29,11 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => {
+      tap((response) => {
         if (response?.token) {
           localStorage.setItem(this.TOKEN_KEY, response.token);
         }
-      })
+      }),
     );
   }
 
@@ -81,7 +83,13 @@ export class AuthService {
 
   isCustomer(): boolean {
     const role = this.getRoleFromToken();
-    return this.isReceptionist() || role === 'CUSTOMER' || role === 'ROLE_CUSTOMER' || role === 'USER' || role === 'ROLE_USER';
+    return (
+      this.isReceptionist() ||
+      role === 'CUSTOMER' ||
+      role === 'ROLE_CUSTOMER' ||
+      role === 'USER' ||
+      role === 'ROLE_USER'
+    );
   }
 
   /**
@@ -110,11 +118,16 @@ export class AuthService {
 
   changePassword(newPassword: string): Observable<unknown> {
     return this.http.patch(`${this.apiUrl}/changepassword`, {
-      password: newPassword
+      password: newPassword,
     });
   }
 
-  getUserFromToken(): { username: string; email: string; role: string } | null {
+  getUserFromToken(): {
+    username: string;
+    email: string;
+    role: string;
+    profileImage: string | null;
+  } | null {
     const payload = this.decodeToken();
     if (!payload) {
       return null;
@@ -126,7 +139,8 @@ export class AuthService {
     return {
       username,
       email,
-      role: this.getRoleFromToken() || 'N/D'
+      role: this.getRoleFromToken() || 'N/D',
+      profileImage: payload.PROFILE_IMAGE || payload.profileImage || null,
     };
   }
 
@@ -142,17 +156,12 @@ export class AuthService {
         return null;
       }
 
-      const base64 = payloadBase64Url
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
+      const base64 = payloadBase64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-      const paddedBase64 = base64.padEnd(
-        base64.length + (4 - base64.length % 4) % 4,
-        '='
-      );
+      const paddedBase64 = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
 
       const decoded = atob(paddedBase64);
-      const bytes = Uint8Array.from(decoded, char => char.charCodeAt(0));
+      const bytes = Uint8Array.from(decoded, (char) => char.charCodeAt(0));
       const json = new TextDecoder().decode(bytes);
 
       return JSON.parse(json) as JwtPayload;

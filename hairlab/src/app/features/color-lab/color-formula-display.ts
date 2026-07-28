@@ -1,121 +1,74 @@
-import {
-  ColorApplicationType
-} from '../../models/enums/color-application-type';
+import { ColorApplicationType } from '../../models/enums/color-application-type';
 
-import {
-  ColorFormulaStatus
-} from '../../models/enums/color-formula-status';
+import { ColorFormulaStatus } from '../../models/enums/color-formula-status';
 
-import {
-  ColorFormulaOrigin
-} from '../../models/enums/color-formula-origin';
+import { ColorFormulaOrigin } from '../../models/enums/color-formula-origin';
 
-import {
-  MixingRatio
-} from '../../models/enums/mixing-ratio';
+import { MixingRatio } from '../../models/enums/mixing-ratio';
 
-import {
-  Oxygen
-} from '../../models/enums/oxygen';
+import { Oxygen } from '../../models/enums/oxygen';
 
 /**
  * Traduzioni visuali del Formula Builder.
  */
-export const COLOR_APPLICATION_LABELS:
-  Record<ColorApplicationType, string> = {
+export const COLOR_APPLICATION_LABELS: Record<ColorApplicationType, string> = {
+  [ColorApplicationType.ROOT_REGROWTH]: 'Ricrescita',
 
-  [ColorApplicationType.ROOT_REGROWTH]:
-    'Ricrescita',
+  [ColorApplicationType.FULL_HEAD]: 'Testa completa',
 
-  [ColorApplicationType.FULL_HEAD]:
-    'Testa completa',
+  [ColorApplicationType.LENGTHS_AND_ENDS]: 'Lunghezze e punte',
 
-  [ColorApplicationType.LENGTHS_AND_ENDS]:
-    'Lunghezze e punte',
+  [ColorApplicationType.TONING]: 'Tonalizzazione / lucidatura',
 
-  [ColorApplicationType.TONING]:
-    'Tonalizzazione / Gloss',
+  [ColorApplicationType.PARTIAL]: 'Applicazione parziale',
 
-  [ColorApplicationType.PARTIAL]:
-    'Applicazione parziale',
-
-  [ColorApplicationType.HIGHLIGHTS]:
-    'Schiariture / Highlights'
+  [ColorApplicationType.HIGHLIGHTS]: 'Highlights',
 };
 
-export const OXYGEN_LABELS:
-  Record<Oxygen, string> = {
+export const OXYGEN_LABELS: Record<Oxygen, string> = {
+  [Oxygen.VOL_6]: '6 vol',
 
-  [Oxygen.VOL_6]:
-    '6 vol',
+  [Oxygen.VOL_9]: '9 vol',
 
-  [Oxygen.VOL_9]:
-    '9 vol',
+  [Oxygen.VOL_10]: '10 vol',
 
-  [Oxygen.VOL_10]:
-    '10 vol',
+  [Oxygen.VOL_12]: '12 vol',
 
-  [Oxygen.VOL_12]:
-    '12 vol',
+  [Oxygen.VOL_20]: '20 vol',
 
-  [Oxygen.VOL_20]:
-    '20 vol',
+  [Oxygen.VOL_30]: '30 vol',
 
-  [Oxygen.VOL_30]:
-    '30 vol',
-
-  [Oxygen.VOL_40]:
-    '40 vol'
+  [Oxygen.VOL_40]: '40 vol',
 };
 
-export const MIXING_RATIO_LABELS:
-  Record<MixingRatio, string> = {
+export const MIXING_RATIO_LABELS: Record<MixingRatio, string> = {
+  [MixingRatio.RATIO_1_TO_1]: '1 : 1',
 
-  [MixingRatio.RATIO_1_TO_1]:
-    '1 : 1',
+  [MixingRatio.RATIO_1_TO_1_5]: '1 : 1.5',
 
-  [MixingRatio.RATIO_1_TO_1_5]:
-    '1 : 1.5',
+  [MixingRatio.RATIO_1_TO_2]: '1 : 2',
 
-  [MixingRatio.RATIO_1_TO_2]:
-    '1 : 2',
+  [MixingRatio.RATIO_1_TO_3]: '1 : 3',
 
-  [MixingRatio.RATIO_1_TO_3]:
-    '1 : 3',
-
-  [MixingRatio.CUSTOM]:
-    'Personalizzato'
+  [MixingRatio.CUSTOM]: 'Personalizzato',
 };
 
-export const COLOR_FORMULA_STATUS_LABELS:
-  Record<ColorFormulaStatus, string> = {
+export const COLOR_FORMULA_STATUS_LABELS: Record<ColorFormulaStatus, string> = {
+  [ColorFormulaStatus.DRAFT]: 'Bozza',
 
-  [ColorFormulaStatus.DRAFT]:
-    'Bozza',
+  [ColorFormulaStatus.PROPOSED]: 'Proposta',
 
-  [ColorFormulaStatus.PROPOSED]:
-    'Proposta',
+  [ColorFormulaStatus.USED]: 'Utilizzata',
 
-  [ColorFormulaStatus.USED]:
-    'Utilizzata',
-
-  [ColorFormulaStatus.ARCHIVED]:
-    'Archiviata'
+  [ColorFormulaStatus.ARCHIVED]: 'Archiviata',
 };
 
+export const COLOR_FORMULA_ORIGIN_LABELS: Record<ColorFormulaOrigin, string> = {
+  [ColorFormulaOrigin.MANUAL]: 'Manuale',
 
-export const COLOR_FORMULA_ORIGIN_LABELS:
-  Record<ColorFormulaOrigin, string> = {
+  [ColorFormulaOrigin.SMART_FORMULA]: 'Smart Formula',
 
-  [ColorFormulaOrigin.MANUAL]:
-    'Manuale',
+  [ColorFormulaOrigin.REVISION]: 'Revisione',
 
-  [ColorFormulaOrigin.SMART_FORMULA]:
-    'Smart Formula',
-
-  [ColorFormulaOrigin.REVISION]:
-    'Revisione',
-
-  [ColorFormulaOrigin.RECURRING]:
-    'Ricorrente'
+  [ColorFormulaOrigin.RECURRING]: 'Ricorrente',
 };

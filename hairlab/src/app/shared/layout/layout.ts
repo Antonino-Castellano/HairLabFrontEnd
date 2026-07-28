@@ -1,19 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth-service';
+import { UserService } from '../../service/user-service';
+import { HairLabTechnicalLabelPipe } from '../ui/hairlab-technical-label.pipe';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, HairLabTechnicalLabelPipe],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   public readonly router = inject(Router);
   public readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
 
   /**
    * Utente ricavato dal JWT.
@@ -24,7 +27,25 @@ export class LayoutComponent {
     username: 'Utente',
     email: '',
     role: 'USER',
+    profileImage: null,
   };
+
+  ngOnInit(): void {
+    this.userService.getCurrentUser().subscribe({
+      next: (currentUser) => {
+        const fullName = `${currentUser.firstName ?? ''} ${currentUser.lastName ?? ''}`.trim();
+        this.user = {
+          username: fullName || currentUser.email?.split('@')[0] || 'Utente',
+          email: currentUser.email || this.user.email,
+          role: String(currentUser.role || this.user.role),
+          profileImage: currentUser.profileImage || this.user.profileImage,
+        };
+      },
+      error: () => {
+        // Il layout conserva i dati già disponibili nel JWT.
+      },
+    });
+  }
 
   sidebarOpen = signal<boolean>(false);
   sidebarPinned = signal<boolean>(false);

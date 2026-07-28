@@ -96,6 +96,16 @@
   letter-spacing: 1px;
 }
 
+.brand-logo-mark {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+}
+
 .brand-text {
   min-width: 0;
   display: flex;
@@ -255,6 +265,14 @@ a.nav-item:hover {
   font-size: 12px;
 }
 
+.sidebar-user-avatar img,
+.topbar-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
 .sidebar-user-info {
   display: flex;
   flex-direction: column;
@@ -297,7 +315,9 @@ a.nav-item:hover {
  */
 .topbar {
   min-height: 67px;
-  display: flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
   align-items: center;
   gap: 14px;
   padding: 0 27px;
@@ -306,6 +326,8 @@ a.nav-item:hover {
 }
 
 .menu-button {
+  grid-column: 1;
+  justify-self: start;
   width: 38px;
   height: 38px;
   display: grid;
@@ -326,11 +348,31 @@ a.nav-item:hover {
   stroke-linecap: round;
 }
 
-.topbar-spacer {
-  flex: 1;
+.topbar-logo {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.topbar-logo-wordmark {
+  width: clamp(150px, 18vw, 230px);
+  height: 48px;
+  object-fit: contain;
+}
+
+.topbar-logo-mark {
+  display: none;
+  width: 39px;
+  height: 39px;
+  object-fit: contain;
 }
 
 .topbar-user {
+  grid-column: 3;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -425,6 +467,14 @@ a.nav-item:hover {
 
   .topbar-user-info {
     display: none;
+  }
+
+  .topbar-logo-wordmark {
+    display: none;
+  }
+
+  .topbar-logo-mark {
+    display: block;
   }
 
   .sidebar {

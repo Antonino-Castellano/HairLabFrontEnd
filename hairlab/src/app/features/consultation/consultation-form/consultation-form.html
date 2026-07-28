@@ -1,5 +1,4 @@
 <section class="consultations-page">
-
   <div class="page-header">
     <div>
       <span class="eyebrow">CONSULENZE</span>
@@ -21,20 +20,20 @@
       <div class="state-message">Caricamento dati in corso...</div>
     } @else {
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
         <!-- SEZIONE INFO GENERALI -->
         <fieldset class="form-section">
           <legend>Informazioni Generali</legend>
 
           <div class="form-grid">
-            
             <!-- Cliente -->
             <div class="form-group">
               <label for="customerId">Cliente <span class="required">*</span></label>
               <select id="customerId" formControlName="customerId">
                 <option value="" disabled>Seleziona cliente...</option>
                 @for (customer of customers(); track customer.id) {
-                  <option [value]="customer.id">{{ customer.firstName }} {{ customer.lastName }}</option>
+                  <option [ngValue]="customer.id">
+                    {{ customer.firstName }} {{ customer.lastName }}
+                  </option>
                 }
               </select>
               @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
@@ -48,7 +47,9 @@
               <select id="employeeId" formControlName="employeeId">
                 <option value="" disabled>Seleziona operatore...</option>
                 @for (employee of employees(); track employee.id) {
-                  <option [value]="employee.id">{{ employee.firstName }} {{ employee.lastName }}</option>
+                  <option [ngValue]="employee.id">
+                    {{ employee.firstName }} {{ employee.lastName }}
+                  </option>
                 }
               </select>
               @if (form.get('employeeId')?.invalid && form.get('employeeId')?.touched) {
@@ -63,15 +64,23 @@
               <select id="appointmentId" formControlName="appointmentId">
                 <option [ngValue]="null">Nessun appuntamento</option>
                 @for (app of appointments(); track app.id) {
-                  <option [value]="app.id">ID: {{ app.id }} - {{ app.startDateTime | date:'dd/MM/yyyy HH:mm' }}</option>
+                  <option [ngValue]="app.id">
+                    ID: {{ app.id }} - {{ app.startDateTime | date: 'dd/MM/yyyy HH:mm' }}
+                  </option>
                 }
               </select>
             </div>
 
             <!-- Data e Ora -->
             <div class="form-group">
-              <label for="consultationDate">Data e Ora Consulenza <span class="required">*</span></label>
-              <input type="datetime-local" id="consultationDate" formControlName="consultationDate">
+              <label for="consultationDate"
+                >Data e Ora Consulenza <span class="required">*</span></label
+              >
+              <input
+                type="datetime-local"
+                id="consultationDate"
+                formControlName="consultationDate"
+              />
               @if (form.get('consultationDate')?.invalid && form.get('consultationDate')?.touched) {
                 <small class="error-text">La data e l'ora sono obbligatorie.</small>
               }
@@ -91,7 +100,6 @@
                 <small class="error-text">La tipologia è obbligatoria.</small>
               }
             </div>
-
           </div>
         </fieldset>
 
@@ -100,11 +108,17 @@
           <legend>Diagnosi e Obiettivo</legend>
 
           <div class="form-grid">
-
             <!-- Obiettivo -->
             <div class="form-group full-width">
-              <label for="objective">Obiettivo espresso dal cliente <span class="required">*</span></label>
-              <textarea id="objective" rows="2" formControlName="objective" placeholder="Es. Vorrei passare da castano scuro a rame chiaro..."></textarea>
+              <label for="objective"
+                >Obiettivo espresso dal cliente <span class="required">*</span></label
+              >
+              <textarea
+                id="objective"
+                rows="2"
+                formControlName="objective"
+                placeholder="Es. Vorrei passare da castano scuro a rame chiaro..."
+              ></textarea>
               @if (form.get('objective')?.invalid && form.get('objective')?.touched) {
                 <small class="error-text">L'obiettivo è obbligatorio.</small>
               }
@@ -112,8 +126,15 @@
 
             <!-- Diagnosi Iniziale -->
             <div class="form-group full-width">
-              <label for="initialDiagnosis">Diagnosi tecnica iniziale <span class="required">*</span></label>
-              <textarea id="initialDiagnosis" rows="2" formControlName="initialDiagnosis" placeholder="Stato del capello, colore presente, danni, precedenti trattamenti..."></textarea>
+              <label for="initialDiagnosis"
+                >Diagnosi tecnica iniziale <span class="required">*</span></label
+              >
+              <textarea
+                id="initialDiagnosis"
+                rows="2"
+                formControlName="initialDiagnosis"
+                placeholder="Stato del capello, colore presente, danni, precedenti trattamenti..."
+              ></textarea>
               @if (form.get('initialDiagnosis')?.invalid && form.get('initialDiagnosis')?.touched) {
                 <small class="error-text">La diagnosi iniziale è obbligatoria.</small>
               }
@@ -121,13 +142,19 @@
 
             <!-- Condizione Attuale -->
             <div class="form-group full-width">
-              <label for="currentCondition">Condizione attuale del capello <span class="required">*</span></label>
-              <textarea id="currentCondition" rows="2" formControlName="currentCondition" placeholder="Descrizione sintetica dello stato rilevato..."></textarea>
+              <label for="currentCondition"
+                >Condizione attuale del capello <span class="required">*</span></label
+              >
+              <textarea
+                id="currentCondition"
+                rows="2"
+                formControlName="currentCondition"
+                placeholder="Descrizione sintetica dello stato rilevato..."
+              ></textarea>
               @if (form.get('currentCondition')?.invalid && form.get('currentCondition')?.touched) {
                 <small class="error-text">La condizione attuale è obbligatoria.</small>
               }
             </div>
-
           </div>
         </fieldset>
 
@@ -136,7 +163,6 @@
           <legend>Valutazione e Procedura Tecnica</legend>
 
           <div class="form-grid">
-
             <!-- Fattibilità -->
             <div class="form-group">
               <label for="feasibility">Fattibilità</label>
@@ -151,27 +177,47 @@
             <!-- Rischi -->
             <div class="form-group full-width">
               <label for="risks">Rischi individuati</label>
-              <textarea id="risks" rows="2" formControlName="risks" placeholder="Es. Possibile sensibilizzazione della fibra, rischio rottura..."></textarea>
+              <textarea
+                id="risks"
+                rows="2"
+                formControlName="risks"
+                placeholder="Es. Possibile sensibilizzazione della fibra, rischio rottura..."
+              ></textarea>
             </div>
 
             <!-- Procedura Proposta -->
             <div class="form-group full-width">
-              <label for="proposedProcedure">Procedura proposta <span class="required">*</span></label>
-              <textarea id="proposedProcedure" rows="2" formControlName="proposedProcedure" placeholder="Es. Decapaggio leggero, tonalizzazione e trattamento ricostruttivo..."></textarea>
-              @if (form.get('proposedProcedure')?.invalid && form.get('proposedProcedure')?.touched) {
+              <label for="proposedProcedure"
+                >Procedura proposta <span class="required">*</span></label
+              >
+              <textarea
+                id="proposedProcedure"
+                rows="2"
+                formControlName="proposedProcedure"
+                placeholder="Es. Decapaggio leggero, tonalizzazione e trattamento ricostruttivo..."
+              ></textarea>
+              @if (
+                form.get('proposedProcedure')?.invalid && form.get('proposedProcedure')?.touched
+              ) {
                 <small class="error-text">La procedura proposta è obbligatoria.</small>
               }
             </div>
 
             <!-- Note Tecniche -->
             <div class="form-group full-width">
-              <label for="technicalNotes">Note tecniche aggiuntive <span class="required">*</span></label>
-              <textarea id="technicalNotes" rows="2" formControlName="technicalNotes" placeholder="Note di servizio o indicazioni specifiche..."></textarea>
+              <label for="technicalNotes"
+                >Note tecniche aggiuntive <span class="required">*</span></label
+              >
+              <textarea
+                id="technicalNotes"
+                rows="2"
+                formControlName="technicalNotes"
+                placeholder="Note di servizio o indicazioni specifiche..."
+              ></textarea>
               @if (form.get('technicalNotes')?.invalid && form.get('technicalNotes')?.touched) {
                 <small class="error-text">Le note tecniche sono obbligatorie.</small>
               }
             </div>
-
           </div>
         </fieldset>
 
@@ -179,12 +225,148 @@
         <div class="form-actions">
           <a class="secondary-button" routerLink="/consultations">Annulla</a>
           <button type="submit" class="primary-button" [disabled]="submitting()">
-            {{ submitting() ? 'Salvataggio in corso...' : (isEditMode() ? 'Salva modifiche' : 'Crea consulenza') }}
+            {{
+              submitting()
+                ? 'Salvataggio in corso...'
+                : isEditMode()
+                  ? 'Salva modifiche'
+                  : 'Crea consulenza'
+            }}
           </button>
         </div>
-
       </form>
+
+      @if (isEditMode()) {
+        <section class="saved-recommendations-section">
+          <header>
+            <div>
+              <span class="eyebrow">SUGGERIMENTI COLLEGATI</span>
+              <h2>Decisioni della consulenza</h2>
+              <p>
+                Gli snapshot restano storicizzati anche se il profilo cliente o il catalogo cambiano
+                in seguito.
+              </p>
+            </div>
+            <span class="recommendation-count">{{ savedRecommendations().length }}</span>
+          </header>
+
+          @if (savedRecommendations().length) {
+            <div class="saved-recommendations-grid">
+              @for (recommendation of savedRecommendations(); track recommendation.id) {
+                <article class="saved-recommendation-card">
+                  <header>
+                    <div>
+                      <span>{{ recommendation.category | hairLabLabel }}</span>
+                      <h3>{{ recommendation.title | hairLabLabel: 'name' }}</h3>
+                    </div>
+                    <span
+                      class="decision-status"
+                      [class]="'decision-status ' + statusClass(recommendation.decisionStatus)"
+                    >
+                      {{ statusLabel(recommendation.decisionStatus) }}
+                    </span>
+                  </header>
+
+                  <div class="saved-score">
+                    <strong>{{ recommendation.compatibilityScore }}%</strong>
+                    <span>compatibilità al momento del salvataggio</span>
+                  </div>
+
+                  @if (recommendation.recommendationSnapshot?.components?.length) {
+                    <div class="saved-components">
+                      @for (
+                        component of recommendation.recommendationSnapshot?.components ?? [];
+                        track component.category + component.code
+                      ) {
+                        <span>
+                          <small>{{ component.category | hairLabLabel }}</small>
+                          <b>{{ component.title | hairLabLabel: 'name' }}</b>
+                        </span>
+                      }
+                    </div>
+                  }
+
+                  @if (recommendation.recommendationSnapshot?.compatibilityWarnings?.length) {
+                    <div class="saved-warnings">
+                      @for (
+                        warning of recommendation.recommendationSnapshot?.compatibilityWarnings ??
+                          [];
+                        track warning
+                      ) {
+                        <p>{{ warning | hairLabLabel: 'text' }}</p>
+                      }
+                    </div>
+                  }
+
+                  @if (recommendation.decisionNotes) {
+                    <p class="decision-note">
+                      <strong>Nota:</strong> {{ recommendation.decisionNotes }}
+                    </p>
+                  }
+
+                  <label class="decision-note-field">
+                    <span>Nota decisione</span>
+                    <input #decisionNote [value]="recommendation.decisionNotes ?? ''" />
+                  </label>
+
+                  <div class="decision-actions">
+                    <button
+                      type="button"
+                      [disabled]="updatingRecommendationId() === recommendation.id"
+                      (click)="
+                        updateRecommendationDecision(recommendation, 'PROPOSED', decisionNote.value)
+                      "
+                    >
+                      In valutazione
+                    </button>
+                    <button
+                      class="accept-button"
+                      type="button"
+                      [disabled]="updatingRecommendationId() === recommendation.id"
+                      (click)="
+                        updateRecommendationDecision(recommendation, 'ACCEPTED', decisionNote.value)
+                      "
+                    >
+                      Accetta
+                    </button>
+                    <button
+                      class="modify-button"
+                      type="button"
+                      [disabled]="updatingRecommendationId() === recommendation.id"
+                      (click)="
+                        updateRecommendationDecision(recommendation, 'MODIFIED', decisionNote.value)
+                      "
+                    >
+                      Accetta con modifiche
+                    </button>
+                    <button
+                      class="reject-button"
+                      type="button"
+                      [disabled]="updatingRecommendationId() === recommendation.id"
+                      (click)="
+                        updateRecommendationDecision(recommendation, 'REJECTED', decisionNote.value)
+                      "
+                    >
+                      Rifiuta
+                    </button>
+                    <button
+                      class="remove-button"
+                      type="button"
+                      (click)="deleteRecommendation(recommendation)"
+                    >
+                      Rimuovi
+                    </button>
+                  </div>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="empty-recommendations">
+              Nessun suggerimento è ancora stato salvato in questa consulenza.
+            </div>
+          }
+        </section>
+      }
     }
   </div>
-
 </section>

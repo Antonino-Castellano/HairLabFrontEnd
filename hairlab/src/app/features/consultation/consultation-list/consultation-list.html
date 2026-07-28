@@ -1,5 +1,4 @@
 <section class="consultations-page">
-
   <div class="page-header">
     <div>
       <span class="eyebrow">CONSULENZE</span>
@@ -17,11 +16,8 @@
   }
 
   <div class="consultation-card">
-
     @if (loading()) {
-      <div class="state-message">
-        Caricamento storico consulenze...
-      </div>
+      <div class="state-message">Caricamento storico consulenze...</div>
     } @else if (consultations().length === 0) {
       <div class="empty-state">
         <div class="empty-icon">📋</div>
@@ -30,16 +26,16 @@
         <a class="primary-button" routerLink="/consultations/new">+ Nuova consulenza</a>
       </div>
     } @else {
-
       <!-- BARRA DI FILTRAGGIO -->
       <div class="filter-bar">
-
         <div class="filter-group">
           <label for="customerFilter">Cliente:</label>
           <select id="customerFilter" (change)="onCustomerFilterChange($event)">
             <option value="ALL">Tutti i clienti</option>
             @for (customer of customers(); track customer.id) {
-              <option [value]="customer.id">{{ customer.firstName }} {{ customer.lastName }}</option>
+              <option [value]="customer.id">
+                {{ customer.firstName }} {{ customer.lastName }}
+              </option>
             }
           </select>
         </div>
@@ -54,7 +50,6 @@
             <option value="HAIR_ANALYSIS">Analisi Capello</option>
           </select>
         </div>
-
       </div>
 
       <div class="table-wrapper">
@@ -67,6 +62,7 @@
               <th>Tipo</th>
               <th>Obiettivo</th>
               <th>Fattibilità</th>
+              <th>Suggerimenti</th>
               <th>Azioni</th>
             </tr>
           </thead>
@@ -74,9 +70,10 @@
           <tbody>
             @for (consultation of filteredConsultations(); track consultation.id) {
               <tr>
-
                 <td>
-                  <span class="date">{{ consultation.consultationDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                  <span class="date">{{
+                    consultation.consultationDate | date: 'dd/MM/yyyy HH:mm'
+                  }}</span>
                 </td>
 
                 <td>
@@ -88,7 +85,7 @@
                 </td>
 
                 <td>
-                  <span class="category-badge">{{ consultation.type }}</span>
+                  <span class="category-badge">{{ consultation.type | hairLabLabel }}</span>
                 </td>
 
                 <td>
@@ -100,7 +97,7 @@
                 <td>
                   @if (consultation.feasibility) {
                     <span class="status" [class.active]="consultation.feasibility === 'FEASIBLE'">
-                      {{ consultation.feasibility }}
+                      {{ consultation.feasibility | hairLabLabel }}
                     </span>
                   } @else {
                     <span>-</span>
@@ -108,44 +105,47 @@
                 </td>
 
                 <td>
-                  <div class="actions">
+                  <span class="category-badge">
+                    {{ consultation.recommendations?.length ?? 0 }} salvati
+                  </span>
+                </td>
 
-                    @if (
-                      consultation.type === 'HAIR_COLOR'
-                      &&
-                      consultation.id
-                    ) {
+                <td>
+                  <div class="actions">
+                    @if (consultation.type === 'HAIR_COLOR' && consultation.id) {
                       <a
                         class="action-button color-lab-button"
                         routerLink="/color-lab/smart-formula"
                         [queryParams]="{
                           customerId: consultation.customerId,
-                          consultationId: consultation.id
-                        }">
+                          consultationId: consultation.id,
+                        }"
+                      >
                         Smart Formula
                       </a>
                     }
 
-<a class="action-button" [routerLink]="['/consultations', consultation.id, 'edit']">
+                    <a
+                      class="action-button"
+                      [routerLink]="['/consultations', consultation.id, 'edit']"
+                    >
                       Modifica
                     </a>
 
                     <button
                       class="action-button delete-button"
                       type="button"
-                      (click)="deleteConsultation(consultation)">
+                      (click)="deleteConsultation(consultation)"
+                    >
                       Elimina
                     </button>
                   </div>
                 </td>
-
               </tr>
             }
           </tbody>
         </table>
       </div>
     }
-
   </div>
-
 </section>

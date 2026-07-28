@@ -1,0 +1,812 @@
+<section class="catalog-page">
+  <header class="page-header">
+    <div class="header-copy">
+      <button class="back-button" type="button" (click)="goBack()">← Torna indietro</button>
+      <span class="eyebrow">LIBRERIA VISIVA HAIRLAB</span>
+      <h1>Catalogo tecnico</h1>
+      <p>
+        Reference rapide per capire forma, lunghezza e compatibilità. Gli elementi attivi alimentano
+        direttamente i suggerimenti HairLab.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <span class="role-note">
+        {{ canManage ? 'Gestione completa' : 'Consultazione' }}
+      </span>
+      @if (canManage) {
+        <button class="primary-button" type="button" (click)="openCreate()">
+          + Inserisci {{ itemTypeLabel() }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (summary(); as data) {
+    <div class="catalog-overview" aria-label="Riepilogo catalogo">
+      <span
+        ><b>{{ data.totalHaircuts }}</b> tagli</span
+      >
+      <span
+        ><b>{{ data.fringes }}</b> frange</span
+      >
+      <span
+        ><b>{{ data.beardStyles }}</b> barbe</span
+      >
+      <span
+        ><b>{{ data.femaleHaircuts }}</b> donna</span
+      >
+      <span
+        ><b>{{ data.maleHaircuts }}</b> uomo</span
+      >
+    </div>
+  }
+
+  <div class="catalog-toolbar">
+    <nav class="catalog-tabs" aria-label="Tipologie catalogo">
+      <button
+        type="button"
+        [class.active]="activeTab() === 'haircuts'"
+        (click)="selectTab('haircuts')"
+      >
+        Tagli
+      </button>
+      <button
+        type="button"
+        [class.active]="activeTab() === 'fringes'"
+        (click)="selectTab('fringes')"
+      >
+        Frange
+      </button>
+      <button type="button" [class.active]="activeTab() === 'beards'" (click)="selectTab('beards')">
+        Barba e baffi
+      </button>
+    </nav>
+
+    <div class="toolbar-actions">
+      <span class="result-count">{{ countLabel() }}</span>
+      <button class="filter-toggle" type="button" (click)="toggleFilters()">
+        {{ showFilters() ? 'Nascondi filtri' : 'Filtra risultati' }}
+      </button>
+    </div>
+  </div>
+
+  @if (showFilters()) {
+    <section class="filter-panel">
+      @if (activeTab() === 'haircuts') {
+        <div class="filter-grid">
+          <label class="wide-field">
+            <span>Cerca</span>
+            <input
+              [(ngModel)]="haircutFilters.query"
+              placeholder="Es. pixie morbido, bob, crop..."
+              (keyup.enter)="applyFilters()"
+            />
+          </label>
+          <label>
+            <span>Persona</span>
+            <select [(ngModel)]="haircutFilters.gender">
+              <option value="">Tutti</option>
+              @for (value of genders; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Famiglia</span>
+            <select [(ngModel)]="haircutFilters.family">
+              <option value="">Tutte</option>
+              @for (value of haircutFamilies; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Lunghezza</span>
+            <select [(ngModel)]="haircutFilters.lengthCategory">
+              <option value="">Tutte</option>
+              @for (value of lengthCategories; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Tipo capello</span>
+            <select [(ngModel)]="haircutFilters.hairType">
+              <option value="">Tutti</option>
+              @for (value of hairTypes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Forma viso</span>
+            <select [(ngModel)]="haircutFilters.faceShape">
+              <option value="">Tutte</option>
+              @for (value of faceShapes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Densità</span>
+            <select [(ngModel)]="haircutFilters.density">
+              <option value="">Tutte</option>
+              @for (value of densities; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Rasatura inferiore</span>
+            <select [(ngModel)]="haircutFilters.undercutPresent">
+              <option value="">Tutti</option>
+              <option value="true">Presente</option>
+              <option value="false">Assente</option>
+            </select>
+          </label>
+        </div>
+      }
+
+      @if (activeTab() === 'fringes') {
+        <div class="filter-grid compact-grid">
+          <label class="wide-field">
+            <span>Cerca</span>
+            <input
+              [(ngModel)]="fringeFilters.query"
+              placeholder="Es. tendina, laterale, micro..."
+              (keyup.enter)="applyFilters()"
+            />
+          </label>
+          <label>
+            <span>Persona</span>
+            <select [(ngModel)]="fringeFilters.gender">
+              <option value="">Tutti</option>
+              @for (value of genders; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Tipo</span>
+            <select [(ngModel)]="fringeFilters.fringeType">
+              <option value="">Tutti</option>
+              @for (value of fringeTypes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Forma viso</span>
+            <select [(ngModel)]="fringeFilters.faceShape">
+              <option value="">Tutte</option>
+              @for (value of faceShapes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Tipo capello</span>
+            <select [(ngModel)]="fringeFilters.hairType">
+              <option value="">Tutti</option>
+              @for (value of hairTypes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+        </div>
+      }
+
+      @if (activeTab() === 'beards') {
+        <div class="filter-grid compact-grid">
+          <label class="wide-field">
+            <span>Cerca</span>
+            <input
+              [(ngModel)]="beardFilters.query"
+              placeholder="Es. pizzetto, barba corta, Van Dyke..."
+              (keyup.enter)="applyFilters()"
+            />
+          </label>
+          <label>
+            <span>Modello</span>
+            <select [(ngModel)]="beardFilters.style">
+              <option value="">Tutti</option>
+              @for (value of beardStyles; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Lunghezza</span>
+            <select [(ngModel)]="beardFilters.length">
+              <option value="">Tutte</option>
+              @for (value of beardLengths; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Forma viso</span>
+            <select [(ngModel)]="beardFilters.faceShape">
+              <option value="">Tutte</option>
+              @for (value of faceShapes; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Densità</span>
+            <select [(ngModel)]="beardFilters.density">
+              <option value="">Tutte</option>
+              @for (value of beardDensities; track value) {
+                <option [value]="value">{{ label(value) }}</option>
+              }
+            </select>
+          </label>
+        </div>
+      }
+
+      <div class="filter-actions">
+        <button class="ghost-button" type="button" (click)="resetFilters()">Azzera</button>
+        <button class="primary-button" type="button" (click)="applyFilters()">
+          Mostra risultati
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (errorMessage()) {
+    <div class="state-card error-state">
+      <strong>Catalogo non disponibile</strong>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" (click)="applyFilters()">Riprova</button>
+    </div>
+  } @else if (loading()) {
+    <div class="state-card">
+      <strong>Caricamento catalogo</strong>
+      <p>Preparazione delle reference visive e dei dati tecnici.</p>
+    </div>
+  } @else if (!items().length) {
+    <div class="state-card empty-state">
+      <strong>Nessun risultato</strong>
+      <p>Modifica i filtri oppure inserisci un nuovo elemento.</p>
+    </div>
+  } @else {
+    <section class="catalog-grid">
+      @for (item of items(); track item.id ?? item.code) {
+        <article class="catalog-card" [class.inactive-card]="!item.active">
+          <div class="reference-media">
+            @if (imageUrl(item.referenceImageUrl); as image) {
+              <img [src]="image" [alt]="imageAlt(item)" loading="lazy" />
+            } @else {
+              <div class="image-placeholder" aria-label="Immagine non ancora caricata">
+                @if (activeTab() === 'haircuts') {
+                  <span>✂</span>
+                } @else if (activeTab() === 'fringes') {
+                  <span>⌁</span>
+                } @else {
+                  <span>♢</span>
+                }
+                <small>Reference da aggiungere</small>
+              </div>
+            }
+            <div class="media-badges">
+              @if (isHaircut(item) || isFringe(item)) {
+                <span>{{ label(item.gender) }}</span>
+              }
+              <span>{{ item.active ? 'Attivo' : 'Disattivato' }}</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <header class="card-title">
+              <div>
+                <span class="family-label">
+                  @if (isHaircut(item)) {
+                    {{ label(item.family) }}
+                  } @else if (isFringe(item)) {
+                    {{ label(item.fringeType) }}
+                  } @else {
+                    {{ label(item.style) }}
+                  }
+                </span>
+                <h2>{{ displayName(item.name) }}</h2>
+              </div>
+            </header>
+
+            <p class="technical-summary">{{ simpleDescription(item) }}</p>
+
+            <div class="quick-metrics">
+              @for (metric of primaryMetrics(item); track metric[0]) {
+                <div>
+                  <span>{{ metric[0] }}</span>
+                  <strong>{{ metric[1] }}</strong>
+                </div>
+              }
+            </div>
+
+            <div class="compatibility-line">
+              <span>Visi consigliati</span>
+              <strong>{{ compatibilityText(item) }}</strong>
+            </div>
+
+            <details class="card-details">
+              <summary>Vedi scheda tecnica</summary>
+              <dl>
+                @for (row of detailRows(item); track row[0] + row[1]) {
+                  <div>
+                    <dt>{{ row[0] }}</dt>
+                    <dd>{{ row[1] }}</dd>
+                  </div>
+                }
+              </dl>
+              @if (item.futureSimulationReady) {
+                <p class="future-note">Predisposizione dati futura pronta · IA non attiva</p>
+              }
+            </details>
+          </div>
+
+          @if (canManage) {
+            <footer class="card-actions">
+              <button class="edit-button" type="button" (click)="openEdit(item)">Modifica</button>
+              <button class="delete-button" type="button" (click)="deleteItem(item)">
+                Elimina
+              </button>
+            </footer>
+          }
+        </article>
+      }
+    </section>
+  }
+</section>
+
+@if (formOpen()) {
+  <div class="form-backdrop" (click)="closeForm()"></div>
+  <aside class="catalog-drawer" aria-label="Gestione catalogo">
+    <header class="drawer-header">
+      <div>
+        <span>{{ editing() ? 'MODIFICA' : 'NUOVO ELEMENTO' }}</span>
+        <h2>{{ editing() ? displayName(formModel.name) : 'Inserisci ' + itemTypeLabel() }}</h2>
+      </div>
+      <button type="button" aria-label="Chiudi" (click)="closeForm()">×</button>
+    </header>
+
+    <div class="drawer-content">
+      <section class="image-editor">
+        @if (imagePreview(); as preview) {
+          <img [src]="preview" alt="Anteprima reference" />
+        } @else {
+          <div class="image-editor-placeholder">
+            <span>Immagine reference</span>
+            <small>JPG, PNG o WEBP · massimo 6 MB</small>
+          </div>
+        }
+        <div class="image-editor-actions">
+          <label class="upload-button">
+            {{ imagePreview() ? 'Cambia immagine' : 'Carica immagine' }}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onImageSelected($event)"
+            />
+          </label>
+          @if (imagePreview()) {
+            <button type="button" (click)="clearImage()">Rimuovi</button>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <header>
+          <h3>Informazioni principali</h3>
+          <p>Queste informazioni sono quelle che l’utente vede subito nella scheda.</p>
+        </header>
+        <div class="form-grid">
+          <label>
+            <span>Nome in italiano *</span>
+            <input [(ngModel)]="formModel.name" placeholder="Es. Pixie morbido" />
+          </label>
+          <label>
+            <span>Codice tecnico *</span>
+            <input [(ngModel)]="formModel.code" placeholder="Es. PIXIE_SOFT" />
+          </label>
+          @if (activeTab() !== 'beards') {
+            <label>
+              <span>Persona</span>
+              <select [(ngModel)]="formModel.gender">
+                @for (value of genders; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+          }
+          <label class="switch-field">
+            <input type="checkbox" [(ngModel)]="formModel.active" />
+            <span>Disponibile nel motore suggerimenti</span>
+          </label>
+          <label class="full-field">
+            <span>Spiegazione semplice *</span>
+            <textarea
+              rows="3"
+              [(ngModel)]="formModel.technicalDescription"
+              placeholder="Descrivi forma, effetto visivo e manutenzione con parole chiare."
+            ></textarea>
+          </label>
+        </div>
+      </section>
+
+      @if (activeTab() === 'haircuts') {
+        <section class="form-section">
+          <header>
+            <h3>Struttura del taglio</h3>
+            <p>Serve al motore per confrontare il taglio con viso e capelli.</p>
+          </header>
+          <div class="form-grid three-columns">
+            <label>
+              <span>Famiglia</span>
+              <select [(ngModel)]="formModel.family">
+                @for (value of haircutFamilies; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Lunghezza</span>
+              <select [(ngModel)]="formModel.lengthCategory">
+                @for (value of lengthCategories; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Silhouette</span>
+              <select [(ngModel)]="formModel.silhouette">
+                @for (value of silhouettes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Scalatura</span>
+              <select [(ngModel)]="formModel.layerStructure">
+                @for (value of layerStructures; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Perimetro</span>
+              <select [(ngModel)]="formModel.perimeterShape">
+                @for (value of perimeterShapes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Frangia prevista</span>
+              <select [(ngModel)]="formModel.defaultFringeType">
+                @for (value of fringeTypes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Nuca</span>
+              <select [(ngModel)]="formModel.napeShape">
+                @for (value of napeShapes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Sfumatura</span>
+              <select [(ngModel)]="formModel.fadeType">
+                @for (value of fadeTypes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Orecchie</span>
+              <select [(ngModel)]="formModel.earExposure">
+                @for (value of earExposures; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+          </div>
+          <div class="boolean-row">
+            <label
+              ><input type="checkbox" [(ngModel)]="formModel.undercutPresent" /> Rasatura
+              inferiore</label
+            >
+            <label
+              ><input type="checkbox" [(ngModel)]="formModel.asymmetrical" /> Asimmetrico</label
+            >
+            <label
+              ><input type="checkbox" [(ngModel)]="formModel.disconnected" /> Disconnesso</label
+            >
+            <label
+              ><input type="checkbox" [(ngModel)]="formModel.faceFramingPresent" /> Incornicia il
+              viso</label
+            >
+          </div>
+        </section>
+
+        <details class="advanced-form-section">
+          <summary>Lunghezze per zona</summary>
+          <div class="measurement-grid">
+            <label
+              ><span>Sommità min.</span
+              ><input type="number" [(ngModel)]="formModel.crownLengthMinMm"
+            /></label>
+            <label
+              ><span>Sommità max.</span
+              ><input type="number" [(ngModel)]="formModel.crownLengthMaxMm"
+            /></label>
+            <label
+              ><span>Frangia min.</span
+              ><input type="number" [(ngModel)]="formModel.fringeLengthMinMm"
+            /></label>
+            <label
+              ><span>Frangia max.</span
+              ><input type="number" [(ngModel)]="formModel.fringeLengthMaxMm"
+            /></label>
+            <label
+              ><span>Laterali min.</span
+              ><input type="number" [(ngModel)]="formModel.sideLengthMinMm"
+            /></label>
+            <label
+              ><span>Laterali max.</span
+              ><input type="number" [(ngModel)]="formModel.sideLengthMaxMm"
+            /></label>
+            <label
+              ><span>Nuca min.</span><input type="number" [(ngModel)]="formModel.napeLengthMinMm"
+            /></label>
+            <label
+              ><span>Nuca max.</span><input type="number" [(ngModel)]="formModel.napeLengthMaxMm"
+            /></label>
+          </div>
+        </details>
+      }
+
+      @if (activeTab() === 'fringes') {
+        <section class="form-section">
+          <header>
+            <h3>Forma della frangia</h3>
+            <p>Definisci il disegno e le lunghezze principali.</p>
+          </header>
+          <div class="form-grid three-columns">
+            <label>
+              <span>Tipo</span>
+              <select [(ngModel)]="formModel.fringeType">
+                @for (value of fringeTypes; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label
+              ><span>Centro min. mm</span
+              ><input type="number" [(ngModel)]="formModel.centerLengthMinMm"
+            /></label>
+            <label
+              ><span>Centro max. mm</span
+              ><input type="number" [(ngModel)]="formModel.centerLengthMaxMm"
+            /></label>
+            <label
+              ><span>Lati min. mm</span
+              ><input type="number" [(ngModel)]="formModel.sideLengthMinMm"
+            /></label>
+            <label
+              ><span>Lati max. mm</span
+              ><input type="number" [(ngModel)]="formModel.sideLengthMaxMm"
+            /></label>
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'beards') {
+        <section class="form-section">
+          <header>
+            <h3>Forma di barba e baffi</h3>
+            <p>Le linee aiutano il motore a bilanciare le proporzioni del viso.</p>
+          </header>
+          <div class="form-grid three-columns">
+            <label>
+              <span>Modello</span>
+              <select [(ngModel)]="formModel.style">
+                @for (value of beardStyles; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Lunghezza</span>
+              <select [(ngModel)]="formModel.suggestedLength">
+                @for (value of beardLengths; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Tipo baffo</span>
+              <select [(ngModel)]="formModel.moustacheStyle">
+                @for (value of moustacheStyles; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Collegamento baffi</span>
+              <select [(ngModel)]="formModel.moustacheConnection">
+                @for (value of moustacheConnections; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Linea guance</span>
+              <select [(ngModel)]="formModel.cheekLine">
+                @for (value of beardLines; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>Linea collo</span>
+              <select [(ngModel)]="formModel.neckline">
+                @for (value of beardLines; track value) {
+                  <option [value]="value">{{ label(value) }}</option>
+                }
+              </select>
+            </label>
+            <label
+              ><span>Lunghezza min. mm</span
+              ><input type="number" [(ngModel)]="formModel.minLengthMm"
+            /></label>
+            <label
+              ><span>Lunghezza max. mm</span
+              ><input type="number" [(ngModel)]="formModel.maxLengthMm"
+            /></label>
+          </div>
+        </section>
+      }
+
+      <details class="advanced-form-section" open>
+        <summary>Compatibilità</summary>
+        <div class="compatibility-editor">
+          <fieldset>
+            <legend>Forme del viso</legend>
+            <div class="choice-chips">
+              @for (value of faceShapes; track value) {
+                <label [class.selected]="selected('compatibleFaceShapes', value)">
+                  <input
+                    type="checkbox"
+                    [checked]="selected('compatibleFaceShapes', value)"
+                    (change)="toggleSelection('compatibleFaceShapes', value)"
+                  />
+                  {{ label(value) }}
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          @if (activeTab() !== 'beards') {
+            <fieldset>
+              <legend>Tipo di capello</legend>
+              <div class="choice-chips">
+                @for (value of hairTypes; track value) {
+                  <label [class.selected]="selected('compatibleHairTypes', value)">
+                    <input
+                      type="checkbox"
+                      [checked]="selected('compatibleHairTypes', value)"
+                      (change)="toggleSelection('compatibleHairTypes', value)"
+                    />
+                    {{ label(value) }}
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+
+          <fieldset>
+            <legend>Densità</legend>
+            <div class="choice-chips">
+              @for (value of activeTab() === 'beards' ? beardDensities : densities; track value) {
+                <label [class.selected]="selected('compatibleDensities', value)">
+                  <input
+                    type="checkbox"
+                    [checked]="selected('compatibleDensities', value)"
+                    (change)="toggleSelection('compatibleDensities', value)"
+                  />
+                  {{ label(value) }}
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          @if (activeTab() === 'haircuts') {
+            <fieldset>
+              <legend>Lunghezza attuale</legend>
+              <div class="choice-chips">
+                @for (value of currentHairLengths; track value) {
+                  <label [class.selected]="selected('compatibleCurrentLengths', value)">
+                    <input
+                      type="checkbox"
+                      [checked]="selected('compatibleCurrentLengths', value)"
+                      (change)="toggleSelection('compatibleCurrentLengths', value)"
+                    />
+                    {{ label(value) }}
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+
+          @if (activeTab() === 'fringes') {
+            <fieldset>
+              <legend>Altezza fronte</legend>
+              <div class="choice-chips">
+                @for (value of foreheadLevels; track value) {
+                  <label [class.selected]="selected('compatibleForeheadLevels', value)">
+                    <input
+                      type="checkbox"
+                      [checked]="selected('compatibleForeheadLevels', value)"
+                      (change)="toggleSelection('compatibleForeheadLevels', value)"
+                    />
+                    {{ label(value) }}
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+
+          @if (activeTab() === 'beards') {
+            <fieldset>
+              <legend>Pattern di crescita</legend>
+              <div class="choice-chips">
+                @for (value of growthPatterns; track value) {
+                  <label [class.selected]="selected('compatibleGrowthPatterns', value)">
+                    <input
+                      type="checkbox"
+                      [checked]="selected('compatibleGrowthPatterns', value)"
+                      (change)="toggleSelection('compatibleGrowthPatterns', value)"
+                    />
+                    {{ label(value) }}
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+        </div>
+      </details>
+
+      <details class="advanced-form-section">
+        <summary>Predisposizione futura simulazione</summary>
+        <div class="future-form">
+          <label class="switch-field">
+            <input type="checkbox" [(ngModel)]="formModel.futureSimulationReady" />
+            <span>Dati tecnici pronti per una futura simulazione</span>
+          </label>
+          <label>
+            <span>Descrittore strutturato</span>
+            <textarea
+              rows="4"
+              [(ngModel)]="formModel.futureSimulationDescriptor"
+              placeholder="Nessuna IA viene attivata: questo campo conserva soltanto dati tecnici futuri."
+            ></textarea>
+          </label>
+        </div>
+      </details>
+    </div>
+
+    <footer class="drawer-footer">
+      <button class="ghost-button" type="button" [disabled]="saving()" (click)="closeForm()">
+        Annulla
+      </button>
+      <button class="primary-button" type="button" [disabled]="saving()" (click)="save()">
+        {{ saving() ? 'Salvataggio...' : editing() ? 'Salva modifiche' : 'Inserisci nel catalogo' }}
+      </button>
+    </footer>
+  </aside>
+}

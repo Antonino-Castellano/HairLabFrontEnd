@@ -1,259 +1,132 @@
 <section class="customers-page">
-
   <!-- =====================================================
        HEADER
        ===================================================== -->
   <div class="page-header">
-
     <div>
+      <span class="eyebrow"> CLIENTI </span>
 
-      <span class="eyebrow">
-        CLIENTI
-      </span>
+      <h1>Gestione clienti</h1>
 
-      <h1>
-        Gestione clienti
-      </h1>
-
-      <p>
-        Consulta, modifica, disattiva,
-        riattiva o elimina definitivamente
-        le anagrafiche.
-      </p>
-
+      <p>Consulta, modifica, disattiva, riattiva o elimina definitivamente le anagrafiche.</p>
     </div>
 
-    <a
-      class="primary-button"
-      routerLink="/customers/new">
-      + Nuovo cliente
-    </a>
-
+    <a class="primary-button" routerLink="/customers/new"> + Nuovo cliente </a>
   </div>
 
   <!-- =====================================================
        FILTRO STATO
        ===================================================== -->
   <div class="list-toolbar">
-
     <div class="filter-group">
-
-      <label
-        for="customer-status-filter">
-        Mostra
-      </label>
+      <label for="customer-status-filter"> Mostra </label>
 
       <select
         id="customer-status-filter"
         class="status-filter"
         [value]="selectedFilter()"
-        (change)="onFilterChange($event)">
+        (change)="onFilterChange($event)"
+      >
+        <option value="ACTIVE">Clienti attivi</option>
 
-        <option value="ACTIVE">
-          Clienti attivi
-        </option>
+        <option value="INACTIVE">Clienti disattivati</option>
 
-        <option value="INACTIVE">
-          Clienti disattivati
-        </option>
-
-        <option value="ALL">
-          Tutti i clienti
-        </option>
-
+        <option value="ALL">Tutti i clienti</option>
       </select>
-
     </div>
 
     <span class="result-count">
+      {{ customers().length }}
 
-      {{
-        customers().length
-      }}
-
-      {{
-        customers().length === 1
-          ? 'cliente'
-          : 'clienti'
-      }}
-
+      {{ customers().length === 1 ? 'cliente' : 'clienti' }}
     </span>
-
   </div>
 
   <!-- =====================================================
        MESSAGGI
        ===================================================== -->
-  @if (
-    successMessage()
-  ) {
-
+  @if (successMessage()) {
     <div class="success-message">
       {{ successMessage() }}
     </div>
-
   }
 
-  @if (
-    errorMessage()
-  ) {
-
+  @if (errorMessage()) {
     <div class="error-message">
       {{ errorMessage() }}
     </div>
-
   }
 
   <!-- =====================================================
        LISTA
        ===================================================== -->
   <div class="customer-card">
-
-    @if (
-      loading()
-    ) {
-
-      <div class="state-message">
-        Caricamento clienti...
-      </div>
-
-    } @else if (
-      customers().length === 0
-    ) {
-
+    @if (loading()) {
+      <div class="state-message">Caricamento clienti...</div>
+    } @else if (customers().length === 0) {
       <div class="empty-state">
+        <div class="empty-icon">+</div>
 
-        <div class="empty-icon">
-          +
-        </div>
-
-        <h2>
-          Nessun cliente
-        </h2>
+        <h2>Nessun cliente</h2>
 
         <p>
           {{ getEmptyMessage() }}
         </p>
 
-        @if (
-          selectedFilter() !== 'INACTIVE'
-        ) {
-
-          <a
-            class="primary-button"
-            routerLink="/customers/new">
-            + Nuovo cliente
-          </a>
-
+        @if (selectedFilter() !== 'INACTIVE') {
+          <a class="primary-button" routerLink="/customers/new"> + Nuovo cliente </a>
         }
-
       </div>
-
     } @else {
-
       <div class="table-wrapper">
-
         <table>
-
           <thead>
-
             <tr>
+              <th>Cliente</th>
 
-              <th>
-                Cliente
-              </th>
+              <th>Email</th>
 
-              <th>
-                Email
-              </th>
+              <th>Telefono</th>
 
-              <th>
-                Telefono
-              </th>
+              <th>Data di nascita</th>
 
-              <th>
-                Data di nascita
-              </th>
+              <th>Stato</th>
 
-              <th>
-                Stato
-              </th>
-
-              <th>
-                Azioni
-              </th>
-
+              <th>Azioni</th>
             </tr>
-
           </thead>
 
           <tbody>
-
-            @for (
-              customer of customers();
-              track customer.id
-            ) {
-
-              <tr
-                [class.inactive-row]="
-                  !customer.active
-                ">
-
+            @for (customer of customers(); track customer.id) {
+              <tr [class.inactive-row]="!customer.active">
                 <!-- CLIENTE -->
                 <td>
-
                   <div class="customer-name">
-
                     <div class="customer-avatar">
-
-                      @if (
-                        customer.profileImage
-                      ) {
-
+                      @if (customer.profileImage) {
                         <img
-                          [src]="
-                            customer.profileImage
-                          "
-                          [alt]="
-                            'Foto di ' +
-                            customer.firstName +
-                            ' ' +
-                            customer.lastName
-                          ">
-
+                          [src]="customer.profileImage"
+                          [alt]="'Foto di ' + customer.firstName + ' ' + customer.lastName"
+                        />
                       } @else {
-
                         <span>
-
-                          {{
-                            getCustomerInitials(
-                              customer
-                            )
-                          }}
-
+                          {{ getCustomerInitials(customer) }}
                         </span>
-
                       }
-
                     </div>
 
                     <div class="customer-identity">
-
                       <strong>
-
                         {{ customer.firstName }}
                         {{ customer.lastName }}
-
                       </strong>
 
                       <span>
-                        ID #{{ customer.id }}
+                        ID #{{ customer.id }} ·
+                        {{ customer.gender === 'MALE' ? 'Maschio' : 'Femmina' }}
                       </span>
-
                     </div>
-
                   </div>
-
                 </td>
 
                 <!-- EMAIL -->
@@ -273,84 +146,42 @@
 
                 <!-- STATO -->
                 <td>
-
                   <span
                     class="status"
-                    [class.active]="
-                      customer.active
-                    "
-                    [class.inactive]="
-                      !customer.active
-                    ">
-
-                    {{
-                      customer.active
-                        ? 'Attivo'
-                        : 'Disattivato'
-                    }}
-
+                    [class.active]="customer.active"
+                    [class.inactive]="!customer.active"
+                  >
+                    {{ customer.active ? 'Attivo' : 'Disattivato' }}
                   </span>
-
                 </td>
 
                 <!-- AZIONI -->
                 <td>
-
                   <div class="actions">
-
-                    <a
-                      class="action-button"
-                      [routerLink]="[
-                        '/customers',
-                        customer.id
-                      ]">
+                    <a class="action-button" [routerLink]="['/customers', customer.id]">
                       Dettagli
                     </a>
 
-                    <a
-                      class="action-button"
-                      [routerLink]="[
-                        '/customers',
-                        customer.id,
-                        'edit'
-                      ]">
+                    <a class="action-button" [routerLink]="['/customers', customer.id, 'edit']">
                       Modifica
                     </a>
 
-                    @if (
-                      customer.active
-                    ) {
-
+                    @if (customer.active) {
                       <button
-                        class="
-                          action-button
-                          deactivate
-                        "
+                        class="action-button deactivate"
                         type="button"
-                        (click)="
-                          deactivateCustomer(
-                            customer
-                          )
-                        ">
+                        (click)="deactivateCustomer(customer)"
+                      >
                         Disattiva
                       </button>
-
                     } @else {
-
                       <button
-                        class="
-                          action-button
-                          activate
-                        "
+                        class="action-button activate"
                         type="button"
-                        (click)="
-                          activateCustomer(
-                            customer
-                          )
-                        ">
+                        (click)="activateCustomer(customer)"
+                      >
                         Riattiva
                       </button>
-
                     }
 
                     <!--
@@ -364,35 +195,19 @@
                       se esiste storico collegato.
                     -->
                     <button
-                      class="
-                        action-button
-                        delete
-                      "
+                      class="action-button delete"
                       type="button"
-                      (click)="
-                        deleteCustomer(
-                          customer
-                        )
-                      ">
+                      (click)="deleteCustomer(customer)"
+                    >
                       Elimina
                     </button>
-
                   </div>
-
                 </td>
-
               </tr>
-
             }
-
           </tbody>
-
         </table>
-
       </div>
-
     }
-
   </div>
-
 </section>

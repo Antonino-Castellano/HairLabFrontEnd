@@ -1,0 +1,197 @@
+<section class="form-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">HAIRLAB GROOMING</span>
+      <h1>{{ isEditMode() ? 'Modifica Profilo barba' : 'Nuovo Profilo barba' }}</h1>
+      <p>Registra crescita, densità, baffi, contorni, cute e obiettivo colore.</p>
+    </div>
+    <a class="hl-btn hl-btn-secondary" [routerLink]="['/customers', customerId]"
+      >Torna al cliente</a
+    >
+  </header>
+
+  @if (errorMessage()) {
+    <div class="hl-alert hl-alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <section class="hl-card form-section">
+      <div class="section-title">
+        <span class="eyebrow">BARBA</span>
+        <h2>Struttura e crescita</h2>
+      </div>
+      <div class="form-grid">
+        <label class="check-row"
+          ><input type="checkbox" formControlName="beardPresent" /> Barba presente</label
+        >
+        <div>
+          <label>Stile attuale</label
+          ><select formControlName="currentStyle">
+            @for (value of styles; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Stile desiderato</label
+          ><select formControlName="desiredStyle">
+            @for (value of styles; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Lunghezza</label
+          ><select formControlName="beardLength">
+            @for (value of lengths; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Misura indicativa (mm)</label
+          ><input type="number" formControlName="approximateLengthMm" min="0" max="500" />
+        </div>
+        <div>
+          <label>Densità</label
+          ><select formControlName="density">
+            @for (value of densities; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Pattern di crescita</label
+          ><select formControlName="growthPattern">
+            @for (value of growthPatterns; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Linea guance</label
+          ><select formControlName="cheekLine">
+            @for (value of lines; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Linea collo</label
+          ><select formControlName="neckline">
+            @for (value of lines; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="hl-card form-section">
+      <div class="section-title">
+        <span class="eyebrow">BAFFI</span>
+        <h2>Forma e collegamento</h2>
+      </div>
+      <div class="form-grid">
+        <label class="check-row"
+          ><input type="checkbox" formControlName="moustachePresent" /> Baffi presenti</label
+        >
+        <div>
+          <label>Modello baffi</label
+          ><select formControlName="moustacheStyle">
+            @for (value of moustacheStyles; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Collegamento barba-baffi</label
+          ><select formControlName="moustacheConnection">
+            @for (value of connections; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="hl-card form-section">
+      <div class="section-title">
+        <span class="eyebrow">CUTE E COLORE</span>
+        <h2>Cautele e obiettivo cromatico</h2>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label>Sensibilità</label
+          ><select formControlName="skinSensitivity">
+            @for (value of sensitivities; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <label class="check-row"
+          ><input type="checkbox" formControlName="irritationPresent" /> Irritazione presente</label
+        >
+        <label class="check-row"
+          ><input type="checkbox" formControlName="ingrownHairPresent" /> Peli incarniti</label
+        >
+        <label class="check-row"
+          ><input type="checkbox" formControlName="dandruffPresent" /> Desquamazione</label
+        >
+        <div>
+          <label>Tono naturale</label
+          ><select formControlName="naturalTone">
+            @for (
+              level of [
+                'LEVEL_1_BLACK',
+                'LEVEL_2_VERY_DARK_BROWN',
+                'LEVEL_3_DARK_BROWN',
+                'LEVEL_4_MEDIUM_BROWN',
+                'LEVEL_5_LIGHT_BROWN',
+                'LEVEL_6_DARK_BLONDE',
+                'LEVEL_7_MEDIUM_BLONDE',
+              ];
+              track level
+            ) {
+              <option [value]="level">{{ label(level) }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label>Percentuale bianchi</label
+          ><input type="number" formControlName="grayPercentage" min="0" max="100" />
+        </div>
+        <label class="check-row"
+          ><input type="checkbox" formControlName="beardColoringPresent" /> Barba già
+          colorata</label
+        >
+        <div>
+          <label>Obiettivo colore</label
+          ><select formControlName="beardColorGoal">
+            @for (value of colorGoals; track value) {
+              <option [value]="value">{{ label(value) }}</option>
+            }
+          </select>
+        </div>
+        <div class="wide">
+          <label>Storico colore barba</label
+          ><textarea formControlName="beardColorHistory" rows="3"></textarea>
+        </div>
+        <div class="wide">
+          <label>Controindicazioni</label
+          ><textarea formControlName="contraindications" rows="3"></textarea>
+        </div>
+        <div class="wide">
+          <label>Note professionali</label><textarea formControlName="notes" rows="4"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <footer class="form-actions">
+      <a class="hl-btn hl-btn-secondary" [routerLink]="['/customers', customerId]">Annulla</a>
+      <button class="hl-btn hl-btn-primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Salvataggio...' : 'Salva Profilo barba' }}
+      </button>
+    </footer>
+  </form>
+</section>

@@ -1,23 +1,10 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  inject,
-  signal
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
 
-import {
-  RouterLink
-} from '@angular/router';
+import { RouterLink } from '@angular/router';
 
-import {
-  FaceProfile
-} from '../../../../models/face-profile';
+import { FaceProfile } from '../../../../models/face-profile';
 
-import {
-  getProfileEnumLabel
-} from '../../../../models/enums/profile-enum-labels';
+import { hairLabTechnicalLabel } from '../../../../shared/ui/hairlab-technical-labels';
 
 import {
   CHIN_SHAPE_VISUALS,
@@ -30,16 +17,12 @@ import {
   LIP_SHAPE_VISUALS,
   NOSE_PROFILE_VISUALS,
   ProfileVisualReference,
-  getVisualReference
+  getVisualReference,
 } from '../../../../models/enums/profile-visual-references';
 
-import {
-  FaceProfileService
-} from '../../../../service/face-profile-service';
+import { FaceProfileService } from '../../../../service/face-profile-service';
 
-import {
-  ProfileVisualIconComponent
-} from '../../../../shared/profile-visual/profile-visual-icon';
+import { ProfileVisualIconComponent } from '../../../../shared/profile-visual/profile-visual-icon';
 
 /**
  * Visualizza il profilo morfologico
@@ -51,180 +34,98 @@ import {
 @Component({
   selector: 'app-face-profile-detail',
   standalone: true,
-  imports: [
-    RouterLink,
-    ProfileVisualIconComponent
-  ],
+  imports: [RouterLink, ProfileVisualIconComponent],
   templateUrl: './face-profile-detail.html',
-  styleUrl: './face-profile-detail.css'
+  styleUrl: './face-profile-detail.css',
 })
-export class FaceProfileDetailComponent
-    implements OnChanges {
-
-  private readonly faceProfileService =
-    inject(FaceProfileService);
+export class FaceProfileDetailComponent implements OnChanges {
+  private readonly faceProfileService = inject(FaceProfileService);
 
   @Input({
-    required: true
+    required: true,
   })
   customerId!: number;
 
-  protected readonly faceProfile =
-    signal<FaceProfile | null>(
-      null
-    );
+  protected readonly faceProfile = signal<FaceProfile | null>(null);
 
-  protected readonly loading =
-    signal(false);
+  protected readonly loading = signal(false);
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
-  protected readonly profileNotFound =
-    signal(false);
+  protected readonly profileNotFound = signal(false);
 
-  protected readonly faceShapeVisuals =
-    FACE_SHAPE_VISUALS;
+  protected readonly faceShapeVisuals = FACE_SHAPE_VISUALS;
 
-  protected readonly eyeShapeVisuals =
-    EYE_SHAPE_VISUALS;
+  protected readonly eyeShapeVisuals = EYE_SHAPE_VISUALS;
 
-  protected readonly eyeOrientationVisuals =
-    EYE_ORIENTATION_VISUALS;
+  protected readonly eyeOrientationVisuals = EYE_ORIENTATION_VISUALS;
 
-  protected readonly eyeColorVisuals =
-    EYE_COLOR_VISUALS;
+  protected readonly eyeColorVisuals = EYE_COLOR_VISUALS;
 
-  protected readonly eyebrowShapeVisuals =
-    EYEBROW_SHAPE_VISUALS;
+  protected readonly eyebrowShapeVisuals = EYEBROW_SHAPE_VISUALS;
 
-  protected readonly noseProfileVisuals =
-    NOSE_PROFILE_VISUALS;
+  protected readonly noseProfileVisuals = NOSE_PROFILE_VISUALS;
 
-  protected readonly jawShapeVisuals =
-    JAW_SHAPE_VISUALS;
+  protected readonly jawShapeVisuals = JAW_SHAPE_VISUALS;
 
-  protected readonly chinShapeVisuals =
-    CHIN_SHAPE_VISUALS;
+  protected readonly chinShapeVisuals = CHIN_SHAPE_VISUALS;
 
-  protected readonly lipShapeVisuals =
-    LIP_SHAPE_VISUALS;
+  protected readonly lipShapeVisuals = LIP_SHAPE_VISUALS;
 
-  ngOnChanges(
-    changes: SimpleChanges
-  ): void {
-
-    if (
-      changes['customerId'] &&
-      this.customerId > 0
-    ) {
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['customerId'] && this.customerId > 0) {
       this.loadFaceProfile();
     }
   }
 
   protected loadFaceProfile(): void {
-
     this.loading.set(true);
 
     this.errorMessage.set('');
 
     this.profileNotFound.set(false);
 
-    this.faceProfileService
-      .getByCustomerId(
-        this.customerId
-      )
-      .subscribe({
+    this.faceProfileService.getByCustomerId(this.customerId).subscribe({
+      next: (profile) => {
+        this.faceProfile.set(profile);
 
-        next: profile => {
+        this.loading.set(false);
+      },
 
-          this.faceProfile.set(
-            profile
-          );
+      error: (error) => {
+        this.loading.set(false);
 
-          this.loading.set(false);
-        },
+        this.faceProfile.set(null);
 
-        error: error => {
+        if (error.status === 400 || error.status === 404) {
+          this.profileNotFound.set(true);
 
-          this.loading.set(false);
-
-          this.faceProfile.set(
-            null
-          );
-
-          if (
-            error.status === 400 ||
-            error.status === 404
-          ) {
-
-            this.profileNotFound.set(
-              true
-            );
-
-            return;
-          }
-
-          this.errorMessage.set(
-            'Impossibile caricare il profilo del viso.'
-          );
+          return;
         }
-      });
+
+        this.errorMessage.set('Impossibile caricare il profilo del viso.');
+      },
+    });
   }
 
-  protected label(
-    value:
-      string |
-      null |
-      undefined
-  ): string {
-
-    return getProfileEnumLabel(
-      value
-    );
+  protected label(value: string | null | undefined): string {
+    return hairLabTechnicalLabel(value);
   }
 
   protected visual(
-    collection:
-      Record<
-        string,
-        ProfileVisualReference
-      >,
-    value:
-      string |
-      null |
-      undefined
+    collection: Record<string, ProfileVisualReference>,
+    value: string | null | undefined,
   ): ProfileVisualReference {
-
-    return getVisualReference(
-      collection,
-      value
-    );
+    return getVisualReference(collection, value);
   }
 
-  protected getEyeReferenceColor(
-    profile: FaceProfile
-  ): string {
-
-    if (
-      profile.eyeReferenceColor
-    ) {
-
+  protected getEyeReferenceColor(profile: FaceProfile): string {
+    if (profile.eyeReferenceColor) {
       return profile.eyeReferenceColor;
     }
 
-    if (
-      profile.eyeColor
-    ) {
-
-      return (
-        this.visual(
-          this.eyeColorVisuals,
-          profile.eyeColor
-        ).color ??
-        '#B8AAA2'
-      );
+    if (profile.eyeColor) {
+      return this.visual(this.eyeColorVisuals, profile.eyeColor).color ?? '#B8AAA2';
     }
 
     return '#B8AAA2';

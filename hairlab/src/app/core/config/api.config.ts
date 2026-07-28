@@ -11,8 +11,9 @@
  * Quando passeremo da sviluppo locale a produzione
  * sarà sufficiente modificare questa configurazione.
  */
-export const HAIRLAB_API_BASE_URL =
-  'http://localhost:8080/hairlab/api';
+export const HAIRLAB_SERVER_BASE_URL = 'http://localhost:8080';
+
+export const HAIRLAB_API_BASE_URL = `${HAIRLAB_SERVER_BASE_URL}/hairlab/api`;
 
 /**
  * Costruisce un endpoint HairLab
@@ -26,16 +27,8 @@ export const HAIRLAB_API_BASE_URL =
  *
  * http://localhost:8080/hairlab/api/customer
  */
-export function hairLabApi(
-  path: string
-): string {
+export function hairLabApi(path: string): string {
+  const normalizedPath = path.startsWith('/') ? path.substring(1) : path;
 
-  const normalizedPath =
-    path.startsWith('/')
-      ? path.substring(1)
-      : path;
-
-  return (
-    `${HAIRLAB_API_BASE_URL}/${normalizedPath}`
-  );
+  return `${HAIRLAB_API_BASE_URL}/${normalizedPath}`;
 }

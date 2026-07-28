@@ -6,9 +6,7 @@
       <p>Una sola configurazione riutilizzabile da tutte le tonalità della stessa linea.</p>
     </div>
 
-    <a class="secondary-button" routerLink="/color-lab/lines">
-      ← Linee tecniche
-    </a>
+    <a class="secondary-button" routerLink="/color-lab/lines"> ← Linee tecniche </a>
   </header>
 
   @if (errorMessage()) {
@@ -22,12 +20,12 @@
       <div class="grid">
         <label>
           <span>Marca *</span>
-          <input type="text" formControlName="brand" placeholder="Es. Wella">
+          <input type="text" formControlName="brand" placeholder="Es. Wella" />
         </label>
 
         <label>
           <span>Linea *</span>
-          <input type="text" formControlName="lineName" placeholder="Es. Koleston Perfect">
+          <input type="text" formControlName="lineName" placeholder="Es. Koleston Perfect" />
         </label>
       </div>
     </section>
@@ -55,23 +53,19 @@
               min="0.01"
               step="0.01"
               formControlName="customMixingRatioMultiplier"
-              placeholder="Es. 1.90">
+              placeholder="Es. 1.90"
+            />
           </label>
         }
 
         <label>
           <span>Lift massimo</span>
-          <input
-            type="number"
-            min="0"
-            max="5"
-            step="1"
-            formControlName="maxLiftLevels">
+          <input type="number" min="0" max="5" step="1" formControlName="maxLiftLevels" />
         </label>
       </div>
 
       <div class="developer-box">
-        <span class="box-label">Developer ammessi</span>
+        <span class="box-label">Ossidanti ammessi</span>
 
         <div class="developer-grid">
           @for (oxygen of oxygens; track oxygen) {
@@ -79,7 +73,8 @@
               <input
                 type="checkbox"
                 [checked]="isDeveloperSelected(oxygen)"
-                (change)="toggleDeveloper(oxygen, $event)">
+                (change)="toggleDeveloper(oxygen, $event)"
+              />
               <span>{{ oxygenLabels[oxygen] }}</span>
             </label>
           }
@@ -88,17 +83,17 @@
 
       <div class="switches">
         <label>
-          <input type="checkbox" formControlName="depositOnly">
+          <input type="checkbox" formControlName="depositOnly" />
           <span>Solo deposito / tonalizzazione</span>
         </label>
 
         <label>
-          <input type="checkbox" formControlName="allowCrossLineMixing">
+          <input type="checkbox" formControlName="allowCrossLineMixing" />
           <span>Consenti miscelazione cross-line</span>
         </label>
 
         <label>
-          <input type="checkbox" formControlName="requireSameLineDeveloper">
+          <input type="checkbox" formControlName="requireSameLineDeveloper" />
           <span>Richiedi developer della stessa linea</span>
         </label>
       </div>
@@ -108,7 +103,8 @@
         <textarea
           rows="5"
           formControlName="technicalNotes"
-          placeholder="Indicazioni del produttore, limitazioni, note operative...">
+          placeholder="Indicazioni del produttore, limitazioni, note operative..."
+        >
         </textarea>
       </label>
     </section>
@@ -118,13 +114,16 @@
         <div>
           <span class="eyebrow">FORMULA INTELLIGENCE · BLOCCO 17</span>
           <h2>Regole esecutive della linea</h2>
-          <p>Configura solo dati verificati sulla scheda tecnica reale della linea. Se un campo resta vuoto, HairLab non inventa la regola.</p>
+          <p>
+            Configura solo dati verificati sulla scheda tecnica reale della linea. Se un campo resta
+            vuoto, HairLab non inventa la regola.
+          </p>
         </div>
       </div>
 
       <div class="grid">
         <label>
-          <span>Developer preferito per tonalizzazione</span>
+          <span>Ossidante preferito per tonalizzazione</span>
           <select formControlName="toningDeveloperVolume">
             <option [ngValue]="null">Non configurato</option>
             @for (oxygen of oxygens; track oxygen) {
@@ -141,13 +140,14 @@
             max="180"
             step="1"
             formControlName="defaultProcessingTimeMinutes"
-            placeholder="Es. 35">
+            placeholder="Es. 35"
+          />
         </label>
       </div>
 
       <div class="coverage-rule">
         <label class="coverage-toggle">
-          <input type="checkbox" formControlName="whiteHairCoverageEnabled">
+          <input type="checkbox" formControlName="whiteHairCoverageEnabled" />
           <span>Abilita regola di copertura capelli bianchi</span>
         </label>
 
@@ -161,7 +161,8 @@
                 max="100"
                 step="1"
                 formControlName="whiteHairCoverageFromPercentage"
-                placeholder="Es. 30">
+                placeholder="Es. 30"
+              />
             </label>
 
             <label>
@@ -172,11 +173,12 @@
                 max="100"
                 step="1"
                 formControlName="whiteHairNaturalBaseSharePercentage"
-                placeholder="Es. 50">
+                placeholder="Es. 50"
+              />
             </label>
 
             <label>
-              <span>Developer preferito per copertura</span>
+              <span>Ossidante preferito per copertura</span>
               <select formControlName="whiteHairCoverageDeveloperVolume">
                 <option [ngValue]="null">Non configurato</option>
                 @for (oxygen of oxygens; track oxygen) {
@@ -191,12 +193,15 @@
             <textarea
               rows="4"
               formControlName="whiteHairCoverageNotes"
-              placeholder="Riporta qui solo indicazioni verificate dalla scheda tecnica: serie naturale richiesta, eccezioni, resistenze, tempi specifici...">
+              placeholder="Riporta qui solo indicazioni verificate dalla scheda tecnica: serie naturale richiesta, eccezioni, resistenze, tempi specifici..."
+            >
             </textarea>
           </label>
 
           <div class="safety-note">
-            La percentuale di base naturale è una regola configurabile della linea, non una regola universale HairLab. Smart Formula la applica soltanto quando la soglia impostata è raggiunta.
+            La percentuale di base naturale è una regola configurabile della linea, non una regola
+            universale HairLab. La Smart Formula la applica soltanto quando la soglia impostata è
+            raggiunta.
           </div>
         }
       </div>
@@ -204,7 +209,7 @@
 
     <section class="card">
       <label class="active-row">
-        <input type="checkbox" formControlName="active">
+        <input type="checkbox" formControlName="active" />
         <span>Profilo attivo</span>
       </label>
     </section>
@@ -212,10 +217,7 @@
     <div class="form-actions">
       <a class="secondary-button" routerLink="/color-lab/lines">Annulla</a>
 
-      <button
-        type="submit"
-        class="primary-button"
-        [disabled]="loading()">
+      <button type="submit" class="primary-button" [disabled]="loading()">
         {{ loading() ? 'Salvataggio...' : 'Salva profilo' }}
       </button>
     </div>

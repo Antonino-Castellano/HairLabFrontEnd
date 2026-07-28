@@ -1,8 +1,8 @@
+import { ConsultationRecommendation } from './consultation-recommendation';
 import { ConsultationType } from './enums/consultation-type';
 import { FeasibilityStatus } from './enums/feasibility-status';
 
 export interface Consultation {
-
   id?: number;
 
   customerId: number;
@@ -28,4 +28,6 @@ export interface Consultation {
   proposedProcedure: string;
 
   technicalNotes: string;
+
+  recommendations?: ConsultationRecommendation[];
 }

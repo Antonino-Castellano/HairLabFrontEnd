@@ -23,11 +23,11 @@ export class CustomerServicesComponent implements OnInit {
   protected readonly errorMessage = signal('');
 
   protected readonly jobTitleLabels: Record<JobTitle, string> = {
-    [JobTitle.SALON_MANAGER]: 'Salon Manager',
+    [JobTitle.SALON_MANAGER]: 'Responsabile salone',
     [JobTitle.RECEPTIONIST]: 'Receptionist',
-    [JobTitle.HAIR_STYLIST]: 'Hair Stylist',
+    [JobTitle.HAIR_STYLIST]: 'Hair stylist',
     [JobTitle.COLORIST]: 'Colorista',
-    [JobTitle.BARBER]: 'Barber',
+    [JobTitle.BARBER]: 'Barbiere',
     [JobTitle.ASSISTANT]: 'Assistente',
   };
 
@@ -42,7 +42,7 @@ export class CustomerServicesComponent implements OnInit {
     [Specialization.UPDO]: 'Raccolti',
     [Specialization.HAIR_COLOR]: 'Colorazione',
     [Specialization.BALAYAGE]: 'Balayage',
-    [Specialization.HIGHLIGHTS]: 'Schiariture',
+    [Specialization.HIGHLIGHTS]: 'Highlights',
     [Specialization.COLOR_CORRECTION]: 'Correzione colore',
     [Specialization.CREATIVE_COLOR]: 'Colori creativi',
     [Specialization.BLEACHING]: 'Decolorazione',

@@ -154,7 +154,9 @@
   color: #212529;
   background-color: white;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-group input:focus,
@@ -191,5 +193,215 @@
   }
   .form-group.full-width {
     grid-column: span 1;
+  }
+}
+.saved-recommendations-section {
+  display: grid;
+  gap: 18px;
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--hl-color-border, #dee2e6);
+}
+
+.saved-recommendations-section > header,
+.saved-recommendation-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.saved-recommendations-section h2,
+.saved-recommendation-card h3 {
+  margin: 4px 0 7px;
+}
+
+.saved-recommendations-section p {
+  margin: 0;
+  color: var(--hl-color-text-muted, #6c757d);
+  line-height: 1.55;
+}
+
+.recommendation-count {
+  min-width: 42px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: var(--hl-color-primary-soft, #f3e8ed);
+  color: var(--hl-color-primary, #7a3f58);
+  font-weight: 800;
+  text-align: center;
+}
+
+.saved-recommendations-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.saved-recommendation-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--hl-color-border, #dee2e6);
+  border-radius: var(--hl-radius-md, 14px);
+  background: var(--hl-color-surface-alt, #faf8f9);
+}
+
+.saved-recommendation-card header div > span {
+  color: var(--hl-color-primary, #7a3f58);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.decision-status {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #eef2f6;
+  color: #56616d;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.decision-status.accepted {
+  background: var(--hl-color-success-soft, #e9f7f0);
+  color: var(--hl-color-success, #277a55);
+}
+
+.decision-status.rejected {
+  background: #fff0f1;
+  color: var(--hl-color-danger, #b53b45);
+}
+
+.decision-status.modified {
+  background: #fff6e8;
+  color: var(--hl-color-warning, #a36b18);
+}
+
+.saved-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.saved-score strong {
+  font-size: 1.5rem;
+}
+
+.saved-score span {
+  color: var(--hl-color-text-muted, #6c757d);
+  font-size: 0.85rem;
+}
+
+.saved-components {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+}
+
+.saved-components span {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.saved-components small {
+  color: var(--hl-color-primary, #7a3f58);
+  font-weight: 800;
+}
+
+.saved-warnings {
+  display: grid;
+  gap: 7px;
+}
+
+.saved-warnings p {
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: #fff6e8;
+  color: var(--hl-color-warning, #a36b18);
+}
+
+.decision-note {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.decision-note-field {
+  display: grid;
+  gap: 6px;
+}
+
+.decision-note-field span {
+  color: var(--hl-color-text-muted, #6c757d);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.decision-note-field input {
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--hl-color-border, #ced4da);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.decision-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.decision-actions button {
+  padding: 8px 11px;
+  border: 1px solid var(--hl-color-border, #ced4da);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hl-color-text, #212529);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.decision-actions .accept-button {
+  border-color: var(--hl-color-success, #277a55);
+  color: var(--hl-color-success, #277a55);
+}
+
+.decision-actions .modify-button {
+  border-color: var(--hl-color-warning, #a36b18);
+  color: var(--hl-color-warning, #a36b18);
+}
+
+.decision-actions .reject-button,
+.decision-actions .remove-button {
+  border-color: var(--hl-color-danger, #b53b45);
+  color: var(--hl-color-danger, #b53b45);
+}
+
+.decision-actions .remove-button {
+  margin-left: auto;
+}
+
+.empty-recommendations {
+  padding: 22px;
+  border: 1px dashed var(--hl-color-border, #ced4da);
+  border-radius: 10px;
+  color: var(--hl-color-text-muted, #6c757d);
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  .saved-recommendations-section > header,
+  .saved-recommendation-card > header {
+    flex-direction: column;
+  }
+
+  .decision-actions .remove-button {
+    margin-left: 0;
   }
 }

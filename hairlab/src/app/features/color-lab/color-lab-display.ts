@@ -6,16 +6,16 @@ import { ToneLevel } from '../../models/enums/tone-level';
 /** Etichette italiane e riferimenti visivi usati nel Color Lab. */
 export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
   [ProductType.COLOR]: 'Colorazione',
-  [ProductType.TONER]: 'Toner / Gloss',
+  [ProductType.TONER]: 'Tonalizzante / lucidante',
   [ProductType.BLEACH]: 'Decolorante',
-  [ProductType.DEVELOPER]: 'Ossidante / Developer',
+  [ProductType.DEVELOPER]: 'Ossidante',
   [ProductType.ADDITIVE]: 'Additivo / Correttore',
-  [ProductType.TREATMENT]: 'Trattamento'
+  [ProductType.TREATMENT]: 'Trattamento',
 };
 
 export const INVENTORY_UNIT_LABELS: Record<InventoryUnit, string> = {
   [InventoryUnit.GRAM]: 'g',
-  [InventoryUnit.MILLILITER]: 'ml'
+  [InventoryUnit.MILLILITER]: 'ml',
 };
 
 export const TONE_LEVEL_LABELS: Record<ToneLevel, string> = {
@@ -28,7 +28,7 @@ export const TONE_LEVEL_LABELS: Record<ToneLevel, string> = {
   [ToneLevel.LEVEL_7_MEDIUM_BLONDE]: '7 · Biondo medio',
   [ToneLevel.LEVEL_8_LIGHT_BLONDE]: '8 · Biondo chiaro',
   [ToneLevel.LEVEL_9_VERY_LIGHT_BLONDE]: '9 · Biondo chiarissimo',
-  [ToneLevel.LEVEL_10_LIGHTEST_BLONDE]: '10 · Biondo platino'
+  [ToneLevel.LEVEL_10_LIGHTEST_BLONDE]: '10 · Biondo platino',
 };
 
 export const TONE_LEVEL_COLORS: Record<ToneLevel, string> = {
@@ -41,7 +41,7 @@ export const TONE_LEVEL_COLORS: Record<ToneLevel, string> = {
   [ToneLevel.LEVEL_7_MEDIUM_BLONDE]: '#b18b66',
   [ToneLevel.LEVEL_8_LIGHT_BLONDE]: '#c7a77c',
   [ToneLevel.LEVEL_9_VERY_LIGHT_BLONDE]: '#ddc59a',
-  [ToneLevel.LEVEL_10_LIGHTEST_BLONDE]: '#eee0bd'
+  [ToneLevel.LEVEL_10_LIGHTEST_BLONDE]: '#eee0bd',
 };
 
 export const REFLECTION_LABELS: Record<Reflection, string> = {
@@ -60,7 +60,7 @@ export const REFLECTION_LABELS: Record<Reflection, string> = {
   [Reflection.BEIGE]: 'Beige',
   [Reflection.PEARL]: 'Perlato',
   [Reflection.CENDRE]: 'Cendré',
-  [Reflection.OTHER]: 'Altro'
+  [Reflection.OTHER]: 'Altro',
 };
 
 export const REFLECTION_COLORS: Record<Reflection, string> = {
@@ -79,5 +79,5 @@ export const REFLECTION_COLORS: Record<Reflection, string> = {
   [Reflection.BEIGE]: '#baa589',
   [Reflection.PEARL]: '#d5d0c7',
   [Reflection.CENDRE]: '#aca69c',
-  [Reflection.OTHER]: '#b5ada8'
+  [Reflection.OTHER]: '#b5ada8',
 };

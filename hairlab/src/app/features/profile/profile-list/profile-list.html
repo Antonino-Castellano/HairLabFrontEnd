@@ -1,5 +1,4 @@
 <section class="user-list-page">
-
   <div class="page-header-row">
     <div class="page-header">
       <span class="eyebrow">Gestione Sistema</span>
@@ -8,13 +7,9 @@
     </div>
 
     <div class="header-actions">
-      <button class="secondary-button" routerLink="/profile" type="button">
-        Profilo Utente
-      </button>
+      <button class="secondary-button" routerLink="/profile" type="button">Profilo Utente</button>
 
-      <button class="primary-button" routerLink="/profile/new" type="button">
-        + Nuovo utente
-      </button>
+      <button class="primary-button" routerLink="/profile/new" type="button">+ Nuovo utente</button>
     </div>
   </div>
 
@@ -37,26 +32,38 @@
               <th>Indirizzo</th>
               <th>Data di Nascita</th>
               <th>Ruolo</th>
-              <th class="actions-th">Azioni</th> 
+              <th class="actions-th">Azioni</th>
             </tr>
           </thead>
           <tbody>
             @for (u of users(); track u.email) {
               <tr>
-                <td><strong>{{ u.firstName }} {{ u.lastName }}</strong></td>
+                <td>
+                  <strong>{{ u.firstName }} {{ u.lastName }}</strong>
+                </td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.address || 'Non specificato' }}</td>
                 <td>{{ u.dob ? (u.dob | date: 'dd/MM/yyyy') : 'Non specificata' }}</td>
                 <td>
-                  <span class="badge">{{ u.role }}</span>
+                  <span class="badge">{{ u.role | hairLabLabel }}</span>
                 </td>
                 <td class="table-actions">
                   <!-- Bottone Modifica (es. reindirizza al form passando l'id o apre la modifica) -->
-                  <button class="secondary-button icon-btn" (click)="onEdit(u)" type="button" title="Modifica">
+                  <button
+                    class="secondary-button icon-btn"
+                    (click)="onEdit(u)"
+                    type="button"
+                    title="Modifica"
+                  >
                     Modifica
                   </button>
                   <!-- Bottone Elimina -->
-                  <button class="danger-button icon-btn" (click)="onDelete(u.id!)" type="button" title="Elimina">
+                  <button
+                    class="danger-button icon-btn"
+                    (click)="onDelete(u.id!)"
+                    type="button"
+                    title="Elimina"
+                  >
                     Elimina
                   </button>
                 </td>
@@ -67,5 +74,4 @@
       </div>
     }
   </div>
-
 </section>

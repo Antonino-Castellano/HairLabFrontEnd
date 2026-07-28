@@ -12,7 +12,7 @@
     <!-- LOGO -->
     <div class="sidebar-header">
       <a class="brand" [routerLink]="getHomeRoute()" (click)="closeSidebarAfterNavigation()">
-        <div class="brand-mark">HL</div>
+        <img class="brand-logo-mark" src="assets/LOGO/HAIRLAB_LOGO_MARK.png" alt="HairLab" />
 
         <div class="brand-text">
           <strong>HairLab</strong>
@@ -261,7 +261,7 @@
                 routerLinkActive="active"
                 (click)="closeSidebarAfterNavigation()"
               >
-                Formula Center
+                Centro formule
               </a>
 
               <a
@@ -351,12 +351,16 @@
     <div class="sidebar-footer">
       <div class="sidebar-user-summary">
         <div class="sidebar-user-avatar">
-          {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+          @if (user?.profileImage) {
+            <img [src]="user.profileImage" [alt]="user?.username || 'Utente'" />
+          } @else {
+            {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+          }
         </div>
 
         <div class="sidebar-user-info">
           <strong>{{ user?.username || 'Utente' }}</strong>
-          <span>{{ user?.role || 'USER' }}</span>
+          <span>{{ user?.role || 'USER' | hairLabLabel }}</span>
         </div>
       </div>
 
@@ -391,16 +395,27 @@
         </svg>
       </button>
 
-      <div class="topbar-spacer"></div>
+      <a class="topbar-logo" [routerLink]="getHomeRoute()" aria-label="Vai alla home HairLab">
+        <img
+          class="topbar-logo-wordmark"
+          src="assets/LOGO/HAIRLAB_LOGO_WORDMARK.png"
+          alt="HairLab"
+        />
+        <img class="topbar-logo-mark" src="assets/LOGO/HAIRLAB_LOGO_MARK.png" alt="HairLab" />
+      </a>
 
       <div class="topbar-user" [routerLink]="getProfileRoute()" title="Vai alla tua area">
         <div class="topbar-avatar">
-          {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+          @if (user?.profileImage) {
+            <img [src]="user.profileImage" [alt]="user?.username || 'Utente'" />
+          } @else {
+            {{ user?.username ? user?.username?.charAt(0)?.toUpperCase() : 'U' }}
+          }
         </div>
 
         <div class="topbar-user-info">
           <strong>{{ user?.username || 'Utente' }}</strong>
-          <span>{{ user?.role || 'USER' }}</span>
+          <span>{{ user?.role || 'USER' | hairLabLabel }}</span>
         </div>
       </div>
     </header>

@@ -5,35 +5,40 @@
       <h1>{{ isEditMode() ? 'Modifica prodotto tecnico' : 'Nuovo prodotto tecnico' }}</h1>
       <p>Definisci identità commerciale e caratteristiche tecniche del prodotto.</p>
     </div>
-    <a class="back-button" routerLink="/color-lab" [queryParams]="{tab:'library'}">← Torna al Color Lab</a>
+    <a class="back-button" routerLink="/color-lab" [queryParams]="{ tab: 'library' }"
+      >← Torna al Color Lab</a
+    >
   </header>
 
-  @if (errorMessage()) { <div class="error-message">{{ errorMessage() }}</div> }
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <section class="form-card">
       <div class="section-heading">
         <span>01</span>
-        <div><h2>Identità prodotto</h2><p>Marca, nome, codice commerciale e tipologia tecnica.</p></div>
+        <div>
+          <h2>Identità prodotto</h2>
+          <p>Marca, nome, codice commerciale e tipologia tecnica.</p>
+        </div>
       </div>
 
       <div class="form-grid">
-        <label><span>Marca *</span><input type="text" formControlName="brand" placeholder="Es. Wella"></label>
-        <label><span>Nome commerciale *</span><input type="text" formControlName="name" placeholder="Es. Koleston Perfect"></label>
+        <label
+          ><span>Marca *</span><input type="text" formControlName="brand" placeholder="Es. Wella"
+        /></label>
+        <label
+          ><span>Nome commerciale *</span
+          ><input type="text" formControlName="name" placeholder="Es. Koleston Perfect"
+        /></label>
         <label>
           <span>Profilo tecnico linea</span>
-          <select
-            [value]="getSelectedLineProfileId()"
-            (change)="onLineProfileChange($event)">
-
-            <option value="">
-              Nessun profilo / regole prodotto
-            </option>
+          <select [value]="getSelectedLineProfileId()" (change)="onLineProfileChange($event)">
+            <option value="">Nessun profilo / regole prodotto</option>
 
             @for (profile of lineProfiles(); track profile.id) {
-              <option [value]="profile.id">
-                {{ profile.brand }} · {{ profile.lineName }}
-              </option>
+              <option [value]="profile.id">{{ profile.brand }} · {{ profile.lineName }}</option>
             }
           </select>
         </label>
@@ -43,14 +48,15 @@
           <input
             type="text"
             formControlName="lineName"
-            placeholder="Es. Koleston Perfect / Color Touch">
+            placeholder="Es. Koleston Perfect / Color Touch"
+          />
         </label>
-        <label><span>Codice *</span><input type="text" formControlName="code" placeholder="Es. 7/1"></label>
+        <label
+          ><span>Codice *</span><input type="text" formControlName="code" placeholder="Es. 7/1"
+        /></label>
         <label>
           <span>Tipo prodotto *</span>
-          <select
-            formControlName="productType"
-            (change)="onProductTypeChange()">
+          <select formControlName="productType" (change)="onProductTypeChange()">
             @for (type of productTypes; track type) {
               <option [value]="type">{{ productTypeLabels[type] }}</option>
             }
@@ -78,7 +84,9 @@
           <h2>Profilo cromatico</h2>
           <p>Opzionale per developer, trattamenti e prodotti non associati a un tono.</p>
         </div>
-        <button type="button" class="clear-button" (click)="clearToneData()">Pulisci dati colore</button>
+        <button type="button" class="clear-button" (click)="clearToneData()">
+          Pulisci dati colore
+        </button>
       </div>
 
       <div class="visual-grid">
@@ -119,65 +127,53 @@
           @if (form.controls.toneLevel.value; as tone) {
             <i [style.background]="toneLevelColors[tone]"></i>
             <strong>{{ toneLevelLabels[tone] }}</strong>
-          } @else { <em>Non definito</em> }
+          } @else {
+            <em>Non definito</em>
+          }
         </div>
         <div>
           <span>RIFLESSO PRINCIPALE</span>
           @if (form.controls.primaryReflection.value; as reflection) {
             <i [style.background]="reflectionColors[reflection]"></i>
             <strong>{{ reflectionLabels[reflection] }}</strong>
-          } @else { <em>Non definito</em> }
+          } @else {
+            <em>Non definito</em>
+          }
         </div>
       </div>
     </section>
 
-    @if (
-      supportsTechnicalRules()
-    ) {
-
+    @if (supportsTechnicalRules()) {
       <section class="form-card">
-
         <div class="section-heading">
-
-          <span>
-            03
-          </span>
+          <span> 03 </span>
 
           <div>
-
-            <h2>
-              Regole tecniche della linea
-            </h2>
+            <h2>Regole tecniche della linea</h2>
 
             <p>
-              Configurazione prodotto-specifica usata
-              dallo Smart Formula prima del profilo generico.
+              Configurazione prodotto-specifica usata dalla Smart Formula prima del profilo
+              generico.
             </p>
-
           </div>
-
         </div>
 
         <label class="switch-row technical-switch">
-          <input
-            type="checkbox"
-            formControlName="useLineProfileRules">
+          <input type="checkbox" formControlName="useLineProfileRules" />
 
           <span class="switch-control"></span>
 
           <div>
             <strong>Eredita regole dal profilo di linea</strong>
             <small>
-              HairLab usa il profilo corrispondente a Marca + Linea.
-              Gli override sottostanti vengono ignorati finché l'opzione è attiva.
+              HairLab usa il profilo corrispondente a Marca + Linea. Gli override sottostanti
+              vengono ignorati finché l'opzione è attiva.
             </small>
           </div>
         </label>
 
         @if (
-          form.controls.useLineProfileRules.value
-          &&
-          getMatchingLineProfile();
+          form.controls.useLineProfileRules.value && getMatchingLineProfile();
           as inheritedProfile
         ) {
           <div class="inherited-profile-summary">
@@ -187,72 +183,38 @@
         }
 
         <div class="form-grid">
-
           <label>
+            <span> Rapporto di miscelazione </span>
 
-            <span>
-              Rapporto di miscelazione
-            </span>
+            <select formControlName="defaultMixingRatio" (change)="onMixingRatioChange()">
+              <option [ngValue]="null">Usa fallback HairLab</option>
 
-            <select
-              formControlName="defaultMixingRatio"
-              (change)="onMixingRatioChange()">
-
-              <option [ngValue]="null">
-                Usa fallback HairLab
-              </option>
-
-              @for (
-                ratio of mixingRatios;
-                track ratio
-              ) {
-
+              @for (ratio of mixingRatios; track ratio) {
                 <option [ngValue]="ratio">
-
-                  {{
-                    mixingRatioLabels[
-                      ratio
-                    ]
-                  }}
-
+                  {{ mixingRatioLabels[ratio] }}
                 </option>
-
               }
-
             </select>
-
           </label>
 
-          @if (
-            isCustomMixingRatio()
-          ) {
-
+          @if (isCustomMixingRatio()) {
             <label>
-
-              <span>
-                Moltiplicatore developer *
-              </span>
+              <span> Moltiplicatore developer * </span>
 
               <input
                 type="number"
                 min="0.01"
                 step="0.01"
                 formControlName="customMixingRatioMultiplier"
-                placeholder="Es. 1.90">
+                placeholder="Es. 1.90"
+              />
 
-              <small class="field-help">
-                Per 1 : 1.9 inserisci 1.90
-              </small>
-
+              <small class="field-help"> Per 1 : 1.9 inserisci 1.90 </small>
             </label>
-
           }
 
           <label>
-
-            <span>
-              Lift massimo configurato
-            </span>
+            <span> Lift massimo configurato </span>
 
             <input
               type="number"
@@ -260,124 +222,90 @@
               max="5"
               step="1"
               formControlName="maxLiftLevels"
-              placeholder="Es. 2">
+              placeholder="Es. 2"
+            />
 
-            <small class="field-help">
-              Lascia vuoto quando non definito.
-            </small>
-
+            <small class="field-help"> Lascia vuoto quando non definito. </small>
           </label>
-
         </div>
 
         <div class="technical-rule-block">
-
-          <span class="technical-rule-label">
-            Developer ammessi
-          </span>
+          <span class="technical-rule-label"> Ossidanti ammessi </span>
 
           <div class="developer-options">
-
-            @for (
-              oxygen of oxygens;
-              track oxygen
-            ) {
-
+            @for (oxygen of oxygens; track oxygen) {
               <label class="developer-option">
-
                 <input
                   type="checkbox"
-                  [checked]="
-                    isAllowedDeveloper(
-                      oxygen
-                    )
-                  "
-                  (change)="
-                    onAllowedDeveloperToggle(
-                      oxygen,
-                      $event
-                    )
-                  ">
+                  [checked]="isAllowedDeveloper(oxygen)"
+                  (change)="onAllowedDeveloperToggle(oxygen, $event)"
+                />
 
                 <span>
-                  {{
-                    oxygenLabels[
-                      oxygen
-                    ]
-                  }}
+                  {{ oxygenLabels[oxygen] }}
                 </span>
-
               </label>
-
             }
-
           </div>
 
           <small class="field-help">
-            Nessuna selezione = HairLab usa il volume generico,
-            mostrando un warning di fallback.
+            Nessuna selezione = HairLab usa il volume generico, mostrando un warning di fallback.
           </small>
-
         </div>
 
         <label class="switch-row technical-switch">
-
-          <input
-            type="checkbox"
-            formControlName="depositOnly">
+          <input type="checkbox" formControlName="depositOnly" />
 
           <span class="switch-control"></span>
 
           <div>
-
-            <strong>
-              Solo deposito / tonalizzazione
-            </strong>
+            <strong> Solo deposito / tonalizzazione </strong>
 
             <small>
-              Se attivo, il prodotto non viene scelto
-              automaticamente quando il target richiede schiaritura.
+              Se attivo, il prodotto non viene scelto automaticamente quando il target richiede
+              schiaritura.
             </small>
-
           </div>
-
         </label>
 
         <label class="notes-field">
-
-          <span>
-            Note tecniche linea / produttore
-          </span>
+          <span> Note tecniche linea / produttore </span>
 
           <textarea
             rows="4"
             formControlName="technicalNotes"
-            placeholder="Indicazioni tecniche, limitazioni, note della linea...">
+            placeholder="Indicazioni tecniche, limitazioni, note della linea..."
+          >
           </textarea>
-
         </label>
-
       </section>
-
     }
 
     <section class="form-card">
       <div class="section-heading">
         <span>04</span>
-        <div><h2>Disponibilità catalogo</h2><p>Disattivare un prodotto non elimina lo storico delle formule.</p></div>
+        <div>
+          <h2>Disponibilità catalogo</h2>
+          <p>Disattivare un prodotto non elimina lo storico delle formule.</p>
+        </div>
       </div>
 
       <label class="switch-row">
-        <input type="checkbox" formControlName="active">
+        <input type="checkbox" formControlName="active" />
         <span class="switch-control"></span>
-        <div><strong>Prodotto attivo</strong><small>Disponibile per nuove formule e operazioni Color Lab.</small></div>
+        <div>
+          <strong>Prodotto attivo</strong
+          ><small>Disponibile per nuove formule e operazioni Color Lab.</small>
+        </div>
       </label>
     </section>
 
     <div class="form-actions">
-      <a class="secondary-button" routerLink="/color-lab" [queryParams]="{tab:'library'}">Annulla</a>
+      <a class="secondary-button" routerLink="/color-lab" [queryParams]="{ tab: 'library' }"
+        >Annulla</a
+      >
       <button type="submit" class="primary-button" [disabled]="loading()">
-        {{ loading() ? 'Salvataggio...' : (isEditMode() ? 'Salva modifiche' : 'Crea prodotto') }}
+        {{ loading() ? 'Salvataggio...' : isEditMode() ? 'Salva modifiche' : 'Crea prodotto' }}
       </button>
     </div>
   </form>

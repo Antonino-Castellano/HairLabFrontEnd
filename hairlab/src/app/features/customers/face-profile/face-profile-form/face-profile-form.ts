@@ -1,25 +1,10 @@
-import {
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  Component,
-  inject,
-  OnInit,
-  signal
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
   ChinProjection,
@@ -41,12 +26,10 @@ import {
   LipFullness,
   LipShape,
   NoseProfile,
-  NoseTip
+  NoseTip,
 } from '../../../../models/enums/face-profile-enums';
 
-import {
-  getProfileEnumLabel
-} from '../../../../models/enums/profile-enum-labels';
+import { hairLabTechnicalLabel } from '../../../../shared/ui/hairlab-technical-labels';
 
 import {
   CHIN_SHAPE_VISUALS,
@@ -59,20 +42,14 @@ import {
   LIP_SHAPE_VISUALS,
   NOSE_PROFILE_VISUALS,
   ProfileVisualReference,
-  getVisualReference
+  getVisualReference,
 } from '../../../../models/enums/profile-visual-references';
 
-import {
-  FaceProfile
-} from '../../../../models/face-profile';
+import { FaceProfile } from '../../../../models/face-profile';
 
-import {
-  FaceProfileService
-} from '../../../../service/face-profile-service';
+import { FaceProfileService } from '../../../../service/face-profile-service';
 
-import {
-  ProfileVisualIconComponent
-} from '../../../../shared/profile-visual/profile-visual-icon';
+import { ProfileVisualIconComponent } from '../../../../shared/profile-visual/profile-visual-icon';
 
 /**
  * Form completo di analisi morfologica del viso.
@@ -89,41 +66,28 @@ import {
 @Component({
   selector: 'app-face-profile-form',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ProfileVisualIconComponent
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ProfileVisualIconComponent],
   templateUrl: './face-profile-form.html',
-  styleUrl: './face-profile-form.css'
+  styleUrl: './face-profile-form.css',
 })
-export class FaceProfileFormComponent
-    implements OnInit {
+export class FaceProfileFormComponent implements OnInit {
+  private readonly formBuilder = inject(FormBuilder);
 
-  private readonly formBuilder =
-    inject(FormBuilder);
+  private readonly faceProfileService = inject(FaceProfileService);
 
-  private readonly faceProfileService =
-    inject(FaceProfileService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  private readonly activatedRoute =
-    inject(ActivatedRoute);
-
-  private readonly router =
-    inject(Router);
+  private readonly router = inject(Router);
 
   protected customerId?: number;
 
   protected profileId?: number;
 
-  protected readonly isEditMode =
-    signal(false);
+  protected readonly isEditMode = signal(false);
 
-  protected readonly loading =
-    signal(false);
+  protected readonly loading = signal(false);
 
-  protected readonly errorMessage =
-    signal('');
+  protected readonly errorMessage = signal('');
 
   /*
    * ============================================================
@@ -131,65 +95,45 @@ export class FaceProfileFormComponent
    * ============================================================
    */
 
-  protected readonly faceShapes =
-    Object.values(FaceShape);
+  protected readonly faceShapes = Object.values(FaceShape);
 
-  protected readonly levels =
-    Object.values(FaceLevel);
+  protected readonly levels = Object.values(FaceLevel);
 
-  protected readonly widths =
-    Object.values(FaceWidth);
+  protected readonly widths = Object.values(FaceWidth);
 
-  protected readonly lengths =
-    Object.values(FaceLength);
+  protected readonly lengths = Object.values(FaceLength);
 
-  protected readonly sizes =
-    Object.values(FaceSize);
+  protected readonly sizes = Object.values(FaceSize);
 
-  protected readonly thicknesses =
-    Object.values(FaceThickness);
+  protected readonly thicknesses = Object.values(FaceThickness);
 
-  protected readonly hairlineShapes =
-    Object.values(HairlineShape);
+  protected readonly hairlineShapes = Object.values(HairlineShape);
 
-  protected readonly eyeShapes =
-    Object.values(EyeShape);
+  protected readonly eyeShapes = Object.values(EyeShape);
 
-  protected readonly eyeOrientations =
-    Object.values(EyeOrientation);
+  protected readonly eyeOrientations = Object.values(EyeOrientation);
 
-  protected readonly eyeSpacings =
-    Object.values(EyeSpacing);
+  protected readonly eyeSpacings = Object.values(EyeSpacing);
 
-  protected readonly eyeColors =
-    Object.values(EyeColor);
+  protected readonly eyeColors = Object.values(EyeColor);
 
-  protected readonly eyebrowShapes =
-    Object.values(EyebrowShape);
+  protected readonly eyebrowShapes = Object.values(EyebrowShape);
 
-  protected readonly noseProfiles =
-    Object.values(NoseProfile);
+  protected readonly noseProfiles = Object.values(NoseProfile);
 
-  protected readonly noseTips =
-    Object.values(NoseTip);
+  protected readonly noseTips = Object.values(NoseTip);
 
-  protected readonly jawShapes =
-    Object.values(JawShape);
+  protected readonly jawShapes = Object.values(JawShape);
 
-  protected readonly chinShapes =
-    Object.values(ChinShape);
+  protected readonly chinShapes = Object.values(ChinShape);
 
-  protected readonly chinProjections =
-    Object.values(ChinProjection);
+  protected readonly chinProjections = Object.values(ChinProjection);
 
-  protected readonly lipFullnessValues =
-    Object.values(LipFullness);
+  protected readonly lipFullnessValues = Object.values(LipFullness);
 
-  protected readonly lipBalances =
-    Object.values(LipBalance);
+  protected readonly lipBalances = Object.values(LipBalance);
 
-  protected readonly lipShapes =
-    Object.values(LipShape);
+  protected readonly lipShapes = Object.values(LipShape);
 
   /*
    * ============================================================
@@ -197,450 +141,230 @@ export class FaceProfileFormComponent
    * ============================================================
    */
 
-  protected readonly faceForm =
-    this.formBuilder.group({
+  protected readonly faceForm = this.formBuilder.group({
+    faceShape: this.formBuilder.control<FaceShape | null>(null, Validators.required),
 
-      faceShape:
-        this.formBuilder.control<
-          FaceShape | null
-        >(
-          null,
-          Validators.required
-        ),
+    foreheadHeight: this.formBuilder.control<FaceLevel | null>(null),
 
-      foreheadHeight:
-        this.formBuilder.control<
-          FaceLevel | null
-        >(null),
+    foreheadWidth: this.formBuilder.control<FaceWidth | null>(null),
 
-      foreheadWidth:
-        this.formBuilder.control<
-          FaceWidth | null
-        >(null),
+    hairlineShape: this.formBuilder.control<HairlineShape | null>(null),
 
-      hairlineShape:
-        this.formBuilder.control<
-          HairlineShape | null
-        >(null),
+    eyeShape: this.formBuilder.control<EyeShape | null>(null),
 
-      eyeShape:
-        this.formBuilder.control<
-          EyeShape | null
-        >(null),
+    eyeOrientation: this.formBuilder.control<EyeOrientation | null>(null),
 
-      eyeOrientation:
-        this.formBuilder.control<
-          EyeOrientation | null
-        >(null),
+    eyeSpacing: this.formBuilder.control<EyeSpacing | null>(null),
 
-      eyeSpacing:
-        this.formBuilder.control<
-          EyeSpacing | null
-        >(null),
+    eyeSize: this.formBuilder.control<FaceSize | null>(null),
 
-      eyeSize:
-        this.formBuilder.control<
-          FaceSize | null
-        >(null),
+    eyeColor: this.formBuilder.control<EyeColor | null>(null),
 
-      eyeColor:
-        this.formBuilder.control<
-          EyeColor | null
-        >(null),
+    eyeReferenceColor: this.formBuilder.control<string>('#6A4634'),
 
-      eyeReferenceColor:
-        this.formBuilder.control<string>(
-          '#6A4634'
-        ),
+    eyeColorNotes: this.formBuilder.control<string>(''),
 
-      eyeColorNotes:
-        this.formBuilder.control<string>(
-          ''
-        ),
+    eyebrowShape: this.formBuilder.control<EyebrowShape | null>(null),
 
-      eyebrowShape:
-        this.formBuilder.control<
-          EyebrowShape | null
-        >(null),
+    eyebrowThickness: this.formBuilder.control<FaceThickness | null>(null),
 
-      eyebrowThickness:
-        this.formBuilder.control<
-          FaceThickness | null
-        >(null),
+    noseLength: this.formBuilder.control<FaceLength | null>(null),
 
-      noseLength:
-        this.formBuilder.control<
-          FaceLength | null
-        >(null),
+    noseWidth: this.formBuilder.control<FaceWidth | null>(null),
 
-      noseWidth:
-        this.formBuilder.control<
-          FaceWidth | null
-        >(null),
+    noseProfile: this.formBuilder.control<NoseProfile | null>(null),
 
-      noseProfile:
-        this.formBuilder.control<
-          NoseProfile | null
-        >(null),
+    noseTip: this.formBuilder.control<NoseTip | null>(null),
 
-      noseTip:
-        this.formBuilder.control<
-          NoseTip | null
-        >(null),
+    cheekboneWidth: this.formBuilder.control<FaceWidth | null>(null),
 
-      cheekboneWidth:
-        this.formBuilder.control<
-          FaceWidth | null
-        >(null),
+    cheekboneProminence: this.formBuilder.control<FaceLevel | null>(null),
 
-      cheekboneProminence:
-        this.formBuilder.control<
-          FaceLevel | null
-        >(null),
+    jawWidth: this.formBuilder.control<FaceWidth | null>(null),
 
-      jawWidth:
-        this.formBuilder.control<
-          FaceWidth | null
-        >(null),
+    jawDefinition: this.formBuilder.control<FaceLevel | null>(null),
 
-      jawDefinition:
-        this.formBuilder.control<
-          FaceLevel | null
-        >(null),
+    jawShape: this.formBuilder.control<JawShape | null>(null),
 
-      jawShape:
-        this.formBuilder.control<
-          JawShape | null
-        >(null),
+    chinShape: this.formBuilder.control<ChinShape | null>(null),
 
-      chinShape:
-        this.formBuilder.control<
-          ChinShape | null
-        >(null),
+    chinProjection: this.formBuilder.control<ChinProjection | null>(null),
 
-      chinProjection:
-        this.formBuilder.control<
-          ChinProjection | null
-        >(null),
+    mouthWidth: this.formBuilder.control<FaceWidth | null>(null),
 
-      mouthWidth:
-        this.formBuilder.control<
-          FaceWidth | null
-        >(null),
+    lipFullness: this.formBuilder.control<LipFullness | null>(null),
 
-      lipFullness:
-        this.formBuilder.control<
-          LipFullness | null
-        >(null),
+    lipBalance: this.formBuilder.control<LipBalance | null>(null),
 
-      lipBalance:
-        this.formBuilder.control<
-          LipBalance | null
-        >(null),
+    lipShape: this.formBuilder.control<LipShape | null>(null),
 
-      lipShape:
-        this.formBuilder.control<
-          LipShape | null
-        >(null),
+    notes: this.formBuilder.control<string>(''),
 
-      notes:
-        this.formBuilder.control<string>(
-          ''
-        ),
-
-      stylingGoals:
-        this.formBuilder.control<string>(
-          ''
-        )
-    });
+    stylingGoals: this.formBuilder.control<string>(''),
+  });
 
   ngOnInit(): void {
+    const customerIdParam = this.activatedRoute.snapshot.paramMap.get('customerId');
 
-    const customerIdParam =
-      this.activatedRoute.snapshot
-        .paramMap
-        .get('customerId');
-
-    const profileIdParam =
-      this.activatedRoute.snapshot
-        .paramMap
-        .get('profileId');
+    const profileIdParam = this.activatedRoute.snapshot.paramMap.get('profileId');
 
     if (!customerIdParam) {
-
-      this.errorMessage.set(
-        'ID cliente mancante.'
-      );
+      this.errorMessage.set('ID cliente mancante.');
 
       return;
     }
 
-    const customerId =
-      Number(customerIdParam);
+    const customerId = Number(customerIdParam);
 
-    if (
-      Number.isNaN(customerId) ||
-      customerId <= 0
-    ) {
-
-      this.errorMessage.set(
-        'ID cliente non valido.'
-      );
+    if (Number.isNaN(customerId) || customerId <= 0) {
+      this.errorMessage.set('ID cliente non valido.');
 
       return;
     }
 
-    this.customerId =
-      customerId;
+    this.customerId = customerId;
 
     if (profileIdParam) {
+      const profileId = Number(profileIdParam);
 
-      const profileId =
-        Number(profileIdParam);
-
-      if (
-        Number.isNaN(profileId) ||
-        profileId <= 0
-      ) {
-
-        this.errorMessage.set(
-          'ID profilo non valido.'
-        );
+      if (Number.isNaN(profileId) || profileId <= 0) {
+        this.errorMessage.set('ID profilo non valido.');
 
         return;
       }
 
-      this.profileId =
-        profileId;
+      this.profileId = profileId;
 
-      this.isEditMode.set(
-        true
-      );
+      this.isEditMode.set(true);
 
-      this.loadProfile(
-        profileId
-      );
+      this.loadProfile(profileId);
     }
   }
 
-  private loadProfile(
-    profileId: number
-  ): void {
-
+  private loadProfile(profileId: number): void {
     this.loading.set(true);
 
     this.errorMessage.set('');
 
-    this.faceProfileService
-      .getById(profileId)
-      .subscribe({
+    this.faceProfileService.getById(profileId).subscribe({
+      next: (profile) => {
+        this.faceForm.patchValue({
+          faceShape: profile.faceShape ?? null,
 
-        next: profile => {
+          foreheadHeight: profile.foreheadHeight ?? null,
 
-          this.faceForm.patchValue({
+          foreheadWidth: profile.foreheadWidth ?? null,
 
-            faceShape:
-              profile.faceShape ?? null,
+          hairlineShape: profile.hairlineShape ?? null,
 
-            foreheadHeight:
-              profile.foreheadHeight ?? null,
+          eyeShape: profile.eyeShape ?? null,
 
-            foreheadWidth:
-              profile.foreheadWidth ?? null,
+          eyeOrientation: profile.eyeOrientation ?? null,
 
-            hairlineShape:
-              profile.hairlineShape ?? null,
+          eyeSpacing: profile.eyeSpacing ?? null,
 
-            eyeShape:
-              profile.eyeShape ?? null,
+          eyeSize: profile.eyeSize ?? null,
 
-            eyeOrientation:
-              profile.eyeOrientation ?? null,
+          eyeColor: profile.eyeColor ?? null,
 
-            eyeSpacing:
-              profile.eyeSpacing ?? null,
+          eyeReferenceColor: profile.eyeReferenceColor ?? this.getDefaultEyeColor(profile.eyeColor),
 
-            eyeSize:
-              profile.eyeSize ?? null,
+          eyeColorNotes: profile.eyeColorNotes ?? '',
 
-            eyeColor:
-              profile.eyeColor ?? null,
+          eyebrowShape: profile.eyebrowShape ?? null,
 
-            eyeReferenceColor:
-              profile.eyeReferenceColor ??
-              this.getDefaultEyeColor(
-                profile.eyeColor
-              ),
+          eyebrowThickness: profile.eyebrowThickness ?? null,
 
-            eyeColorNotes:
-              profile.eyeColorNotes ?? '',
+          noseLength: profile.noseLength ?? null,
 
-            eyebrowShape:
-              profile.eyebrowShape ?? null,
+          noseWidth: profile.noseWidth ?? null,
 
-            eyebrowThickness:
-              profile.eyebrowThickness ?? null,
+          noseProfile: profile.noseProfile ?? null,
 
-            noseLength:
-              profile.noseLength ?? null,
+          noseTip: profile.noseTip ?? null,
 
-            noseWidth:
-              profile.noseWidth ?? null,
+          cheekboneWidth: profile.cheekboneWidth ?? null,
 
-            noseProfile:
-              profile.noseProfile ?? null,
+          cheekboneProminence: profile.cheekboneProminence ?? null,
 
-            noseTip:
-              profile.noseTip ?? null,
+          jawWidth: profile.jawWidth ?? null,
 
-            cheekboneWidth:
-              profile.cheekboneWidth ?? null,
+          jawDefinition: profile.jawDefinition ?? null,
 
-            cheekboneProminence:
-              profile.cheekboneProminence ?? null,
+          jawShape: profile.jawShape ?? null,
 
-            jawWidth:
-              profile.jawWidth ?? null,
+          chinShape: profile.chinShape ?? null,
 
-            jawDefinition:
-              profile.jawDefinition ?? null,
+          chinProjection: profile.chinProjection ?? null,
 
-            jawShape:
-              profile.jawShape ?? null,
+          mouthWidth: profile.mouthWidth ?? null,
 
-            chinShape:
-              profile.chinShape ?? null,
+          lipFullness: profile.lipFullness ?? null,
 
-            chinProjection:
-              profile.chinProjection ?? null,
+          lipBalance: profile.lipBalance ?? null,
 
-            mouthWidth:
-              profile.mouthWidth ?? null,
+          lipShape: profile.lipShape ?? null,
 
-            lipFullness:
-              profile.lipFullness ?? null,
+          notes: profile.notes ?? '',
 
-            lipBalance:
-              profile.lipBalance ?? null,
+          stylingGoals: profile.stylingGoals ?? '',
+        });
 
-            lipShape:
-              profile.lipShape ?? null,
+        this.loading.set(false);
+      },
 
-            notes:
-              profile.notes ?? '',
+      error: () => {
+        this.errorMessage.set('Impossibile caricare il profilo del viso.');
 
-            stylingGoals:
-              profile.stylingGoals ?? ''
-          });
-
-          this.loading.set(false);
-        },
-
-        error: () => {
-
-          this.errorMessage.set(
-            'Impossibile caricare il profilo del viso.'
-          );
-
-          this.loading.set(false);
-        }
-      });
+        this.loading.set(false);
+      },
+    });
   }
 
-  protected selectEyeColor(
-    value: EyeColor
-  ): void {
+  protected selectEyeColor(value: EyeColor): void {
+    this.faceForm.controls.eyeColor.setValue(value);
 
-    this.faceForm.controls
-      .eyeColor
-      .setValue(value);
-
-    const reference =
-      this.visual(
-        EYE_COLOR_VISUALS,
-        value
-      );
+    const reference = this.visual(EYE_COLOR_VISUALS, value);
 
     if (reference.color) {
-
-      this.faceForm.controls
-        .eyeReferenceColor
-        .setValue(
-          reference.color
-        );
+      this.faceForm.controls.eyeReferenceColor.setValue(reference.color);
     }
   }
 
-  protected label(
-    value:
-      string |
-      null |
-      undefined
-  ): string {
-
-    return getProfileEnumLabel(
-      value
-    );
+  protected label(value: string | null | undefined): string {
+    return hairLabTechnicalLabel(value);
   }
 
   protected visual(
-    collection:
-      Record<
-        string,
-        ProfileVisualReference
-      >,
-    value:
-      string |
-      null |
-      undefined
+    collection: Record<string, ProfileVisualReference>,
+    value: string | null | undefined,
   ): ProfileVisualReference {
-
-    return getVisualReference(
-      collection,
-      value
-    );
+    return getVisualReference(collection, value);
   }
 
-  protected readonly faceShapeVisuals =
-    FACE_SHAPE_VISUALS;
+  protected readonly faceShapeVisuals = FACE_SHAPE_VISUALS;
 
-  protected readonly eyeShapeVisuals =
-    EYE_SHAPE_VISUALS;
+  protected readonly eyeShapeVisuals = EYE_SHAPE_VISUALS;
 
-  protected readonly eyeOrientationVisuals =
-    EYE_ORIENTATION_VISUALS;
+  protected readonly eyeOrientationVisuals = EYE_ORIENTATION_VISUALS;
 
-  protected readonly eyeColorVisuals =
-    EYE_COLOR_VISUALS;
+  protected readonly eyeColorVisuals = EYE_COLOR_VISUALS;
 
-  protected readonly eyebrowShapeVisuals =
-    EYEBROW_SHAPE_VISUALS;
+  protected readonly eyebrowShapeVisuals = EYEBROW_SHAPE_VISUALS;
 
-  protected readonly noseProfileVisuals =
-    NOSE_PROFILE_VISUALS;
+  protected readonly noseProfileVisuals = NOSE_PROFILE_VISUALS;
 
-  protected readonly jawShapeVisuals =
-    JAW_SHAPE_VISUALS;
+  protected readonly jawShapeVisuals = JAW_SHAPE_VISUALS;
 
-  protected readonly chinShapeVisuals =
-    CHIN_SHAPE_VISUALS;
+  protected readonly chinShapeVisuals = CHIN_SHAPE_VISUALS;
 
-  protected readonly lipShapeVisuals =
-    LIP_SHAPE_VISUALS;
+  protected readonly lipShapeVisuals = LIP_SHAPE_VISUALS;
 
   protected submit(): void {
+    if (this.faceForm.invalid || !this.customerId) {
+      this.faceForm.markAllAsTouched();
 
-    if (
-      this.faceForm.invalid ||
-      !this.customerId
-    ) {
-
-      this.faceForm
-        .markAllAsTouched();
-
-      this.errorMessage.set(
-        'Controlla i campi obbligatori.'
-      );
+      this.errorMessage.set('Controlla i campi obbligatori.');
 
       return;
     }
@@ -649,116 +373,58 @@ export class FaceProfileFormComponent
 
     this.errorMessage.set('');
 
-    const value =
-      this.faceForm.getRawValue();
+    const value = this.faceForm.getRawValue();
 
     const profile: FaceProfile = {
-
-      customerId:
-        this.customerId,
+      customerId: this.customerId,
 
       ...value,
 
-      eyeReferenceColor:
-        value.eyeReferenceColor
-          ?.toUpperCase() ??
-        null
+      eyeReferenceColor: value.eyeReferenceColor?.toUpperCase() ?? null,
     };
 
-    if (
-      this.isEditMode() &&
-      this.profileId
-    ) {
+    if (this.isEditMode() && this.profileId) {
+      this.faceProfileService.update(this.profileId, profile).subscribe({
+        next: () => this.navigateToCustomer(),
 
-      this.faceProfileService
-        .update(
-          this.profileId,
-          profile
-        )
-        .subscribe({
-
-          next: () =>
-            this.navigateToCustomer(),
-
-          error: error =>
-            this.handleError(error)
-        });
+        error: (error) => this.handleError(error),
+      });
 
       return;
     }
 
-    this.faceProfileService
-      .insert(profile)
-      .subscribe({
+    this.faceProfileService.insert(profile).subscribe({
+      next: () => this.navigateToCustomer(),
 
-        next: () =>
-          this.navigateToCustomer(),
-
-        error: error =>
-          this.handleError(error)
-      });
+      error: (error) => this.handleError(error),
+    });
   }
 
   private navigateToCustomer(): void {
-
-    this.router.navigate([
-      '/customers',
-      this.customerId
-    ]);
+    this.router.navigate(['/customers', this.customerId]);
   }
 
-  private getDefaultEyeColor(
-    value:
-      EyeColor |
-      null |
-      undefined
-  ): string {
-
+  private getDefaultEyeColor(value: EyeColor | null | undefined): string {
     if (!value) {
-
       return '#6A4634';
     }
 
-    return (
-      EYE_COLOR_VISUALS[value]
-        ?.color ??
-      '#6A4634'
-    );
+    return EYE_COLOR_VISUALS[value]?.color ?? '#6A4634';
   }
 
-  private handleError(
-    error: HttpErrorResponse
-  ): void {
-
+  private handleError(error: HttpErrorResponse): void {
     this.loading.set(false);
 
-    if (
-      error.error &&
-      typeof error.error === 'object'
-    ) {
+    if (error.error && typeof error.error === 'object') {
+      const message = Object.values(error.error).find((value) => typeof value === 'string');
 
-      const message =
-        Object.values(
-          error.error
-        ).find(
-          value =>
-            typeof value === 'string'
-        );
-
-      if (
-        typeof message === 'string'
-      ) {
-
-        this.errorMessage.set(
-          message
-        );
+      if (typeof message === 'string') {
+        this.errorMessage.set(message);
 
         return;
       }
     }
 
-    this.errorMessage.set(
-      'Impossibile salvare il profilo del viso.'
-    );
+    this.errorMessage.set('Impossibile salvare il profilo del viso.');
   }
 }

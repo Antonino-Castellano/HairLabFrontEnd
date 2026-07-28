@@ -1,36 +1,20 @@
-import {
-  RecommendationItem
-} from './recommendation-item';
+import { Gender } from './gender';
+import { RecommendationItem } from './recommendation-item';
 
-/**
- * Risposta prodotta dal motore
- * StyleRecommendationService.
- */
 export interface StyleRecommendation {
-
   customerId: number;
-
+  gender: Gender;
   generatedAt: string;
-
   hairProfileAvailable: boolean;
-
   faceProfileAvailable: boolean;
-
   colorAnalysisAvailable: boolean;
-
-  haircutRecommendations:
-    RecommendationItem[];
-
-  fringeRecommendations:
-    RecommendationItem[];
-
-  colorRecommendations:
-    RecommendationItem[];
-
-  stylingRecommendations:
-    RecommendationItem[];
-
+  beardProfileAvailable: boolean;
+  haircutRecommendations: RecommendationItem[];
+  fringeRecommendations: RecommendationItem[];
+  beardRecommendations: RecommendationItem[];
+  colorRecommendations: RecommendationItem[];
+  totalLookRecommendations: RecommendationItem[];
+  stylingRecommendations: RecommendationItem[];
   technicalWarnings: string[];
-
   generalNotes: string[];
 }

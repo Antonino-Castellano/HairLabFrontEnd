@@ -1,52 +1,28 @@
 <section class="formula-list-page">
-
   <app-color-lab-section-nav activeSection="FORMULAS" />
 
   <header class="page-header">
-
     <div>
+      <span class="eyebrow"> COLOR LAB </span>
 
-      <span class="eyebrow">
-        COLOR LAB
-      </span>
-
-      <h1>
-        Formula Center
-      </h1>
+      <h1>Centro formule</h1>
 
       <p>
-        Il centro operativo delle formule HairLab:
-        creazione, Smart Formula, revisioni, utilizzi reali e storico tecnico.
+        Il centro operativo delle formule HairLab: creazione, Smart Formula, revisioni, utilizzi
+        reali e storico tecnico.
       </p>
-
     </div>
 
     <div class="header-actions">
+      <a class="secondary-button" routerLink="/color-lab"> Color Lab </a>
 
-      <a
-        class="secondary-button"
-        routerLink="/color-lab">
-        Color Lab
-      </a>
+      <a class="secondary-button" routerLink="/color-lab/smart-formula"> Smart Formula </a>
 
-      <a
-        class="secondary-button"
-        routerLink="/color-lab/smart-formula">
-        Smart Formula
-      </a>
-
-      <a
-        class="primary-button"
-        routerLink="/color-lab/formulas/new">
-        + Nuova formula
-      </a>
-
+      <a class="primary-button" routerLink="/color-lab/formulas/new"> + Nuova formula </a>
     </div>
-
   </header>
 
   <div class="formula-summary">
-
     <article>
       <span>FORMULE TOTALI</span>
       <strong>{{ totalCount() }}</strong>
@@ -66,228 +42,98 @@
       <span>REVISIONI</span>
       <strong>{{ revisionCount() }}</strong>
     </article>
-
   </div>
 
-  @if (
-    errorMessage()
-  ) {
-
+  @if (errorMessage()) {
     <div class="message error">
       {{ errorMessage() }}
     </div>
-
   }
 
   <div class="filters">
-
     <label class="search">
-
-      <span>
-        Cerca
-      </span>
+      <span> Cerca </span>
 
       <input
         type="search"
         placeholder="Formula, obiettivo o cliente..."
         [value]="searchTerm()"
-        (input)="
-          onSearchChange(
-            $event
-          )
-        ">
-
+        (input)="onSearchChange($event)"
+      />
     </label>
 
     <label>
+      <span> Cliente </span>
 
-      <span>
-        Cliente
-      </span>
+      <select [value]="customerFilter()" (change)="onCustomerFilterChange($event)">
+        <option value="ALL">Tutti i clienti</option>
 
-      <select
-        [value]="customerFilter()"
-        (change)="
-          onCustomerFilterChange(
-            $event
-          )
-        ">
-
-        <option value="ALL">
-          Tutti i clienti
-        </option>
-
-        @for (
-          customer of customers();
-          track customer.id
-        ) {
-
-          <option
-            [value]="customer.id">
-
+        @for (customer of customers(); track customer.id) {
+          <option [value]="customer.id">
             {{ customer.firstName }}
             {{ customer.lastName }}
-
           </option>
-
         }
-
       </select>
-
     </label>
 
     <label>
+      <span> Stato </span>
 
-      <span>
-        Stato
-      </span>
+      <select [value]="statusFilter()" (change)="onStatusFilterChange($event)">
+        <option value="ALL">Tutti</option>
 
-      <select
-        [value]="statusFilter()"
-        (change)="
-          onStatusFilterChange(
-            $event
-          )
-        ">
-
-        <option value="ALL">
-          Tutti
-        </option>
-
-        @for (
-          status of statuses;
-          track status
-        ) {
-
+        @for (status of statuses; track status) {
           <option [value]="status">
-
-            {{
-              statusLabels[
-                status
-              ]
-            }}
-
+            {{ statusLabels[status] }}
           </option>
-
         }
-
       </select>
-
     </label>
 
     <label>
+      <span> Origine </span>
 
-      <span>
-        Origine
-      </span>
+      <select [value]="originFilter()" (change)="onOriginFilterChange($event)">
+        <option value="ALL">Tutte</option>
 
-      <select
-        [value]="originFilter()"
-        (change)="
-          onOriginFilterChange(
-            $event
-          )
-        ">
-
-        <option value="ALL">
-          Tutte
-        </option>
-
-        @for (
-          origin of origins;
-          track origin
-        ) {
-
+        @for (origin of origins; track origin) {
           <option [value]="origin">
             {{ originLabels[origin] }}
           </option>
-
         }
-
       </select>
-
     </label>
-
   </div>
 
-  @if (
-    loading()
-  ) {
-
-    <div class="state-card">
-      Caricamento formule...
-    </div>
-
-  } @else if (
-    filteredFormulas().length ===
-    0
-  ) {
-
+  @if (loading()) {
+    <div class="state-card">Caricamento formule...</div>
+  } @else if (filteredFormulas().length === 0) {
     <div class="empty-state">
+      <strong> Nessuna formula trovata </strong>
 
-      <strong>
-        Nessuna formula trovata
-      </strong>
+      <p>Crea la prima formula manuale con il Formula Builder.</p>
 
-      <p>
-        Crea la prima formula manuale
-        con il Formula Builder.
-      </p>
-
-      <a
-        class="primary-button"
-        routerLink="/color-lab/formulas/new">
-        Nuova formula
-      </a>
-
+      <a class="primary-button" routerLink="/color-lab/formulas/new"> Nuova formula </a>
     </div>
-
   } @else {
-
     <div class="formula-grid">
-
-      @for (
-        formula of
-          filteredFormulas();
-        track formula.id
-      ) {
-
+      @for (formula of filteredFormulas(); track formula.id) {
         <article class="formula-card">
-
           <div class="card-head">
-
             <div>
-
               <span class="customer-name">
-
-                {{
-                  getCustomerName(
-                    formula.customerId
-                  )
-                }}
-
+                {{ getCustomerName(formula.customerId) }}
               </span>
 
               <h2>
                 {{ formula.name }}
               </h2>
-
             </div>
 
-            <span
-              class="status-badge"
-              [attr.data-status]="
-                formula.status
-              ">
-
-              {{
-                statusLabels[
-                  formula.status
-                ]
-              }}
-
+            <span class="status-badge" [attr.data-status]="formula.status">
+              {{ statusLabels[formula.status] }}
             </span>
-
           </div>
 
           <div class="formula-identity">
@@ -295,9 +141,7 @@
               {{ getOriginLabel(formula.origin) }}
             </span>
 
-            <span class="revision-badge">
-              Rev. {{ formula.revisionNumber ?? 1 }}
-            </span>
+            <span class="revision-badge"> Rev. {{ formula.revisionNumber ?? 1 }} </span>
 
             @if (formula.referenceFormula) {
               <span class="reference-formula-badge">★ Formula di riferimento</span>
@@ -322,12 +166,7 @@
             }
 
             @if (formula.parentFormulaId; as parentId) {
-              <a
-                class="parent-link"
-                [routerLink]="[
-                  '/color-lab/formulas',
-                  parentId
-                ]">
+              <a class="parent-link" [routerLink]="['/color-lab/formulas', parentId]">
                 Deriva da #{{ parentId }}
               </a>
             }
@@ -338,17 +177,10 @@
           </p>
 
           <div class="technical-meta">
-
             <div>
               <span>TONO TARGET</span>
               <strong>
-                {{
-                  formula.targetToneLevel
-                    ? toneLabels[
-                        formula.targetToneLevel
-                      ]
-                    : '—'
-                }}
+                {{ formula.targetToneLevel ? toneLabels[formula.targetToneLevel] : '—' }}
               </strong>
             </div>
 
@@ -357,9 +189,7 @@
               <strong>
                 {{
                   formula.targetPrimaryReflection
-                    ? reflectionLabels[
-                        formula.targetPrimaryReflection
-                      ]
+                    ? reflectionLabels[formula.targetPrimaryReflection]
                     : '—'
                 }}
               </strong>
@@ -368,79 +198,33 @@
             <div>
               <span>APPLICAZIONE</span>
               <strong>
-                {{
-                  formula.applicationType
-                    ? applicationLabels[
-                        formula.applicationType
-                      ]
-                    : '—'
-                }}
+                {{ formula.applicationType ? applicationLabels[formula.applicationType] : '—' }}
               </strong>
             </div>
-
           </div>
 
           <div class="meta">
-
             <span>
-
               Creata:
 
-              {{
-                formula.createdAt
-                  ? (
-                      formula.createdAt
-                      |
-                      date:
-                        'dd/MM/yyyy HH:mm'
-                    )
-                  : '—'
-              }}
-
+              {{ formula.createdAt ? (formula.createdAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
             </span>
-
           </div>
 
           <div class="card-actions">
+            @if (formula.id) {
+              <a routerLink="/color-lab/formulas/{{ formula.id }}"> Dettaglio </a>
 
-            @if (
-              formula.id
-            ) {
+              <a [routerLink]="['/color-lab/formulas', formula.id, 'evolution']"> Evoluzione </a>
+              <a [routerLink]="['/color-lab/formulas', formula.id, 'protocol']"> Protocollo </a>
 
-              <a
-                routerLink="/color-lab/formulas/{{ formula.id }}">
-                Dettaglio
-              </a>
-
-              <a
-                [routerLink]="['/color-lab/formulas', formula.id, 'evolution']">
-                Evoluzione
-              </a>
-              <a
-                [routerLink]="['/color-lab/formulas', formula.id, 'protocol']">
-                Protocollo
-              </a>
-
-              @if (
-                formula.status === 'DRAFT'
-                || formula.status === 'PROPOSED'
-              ) {
-                <a
-                  routerLink="/color-lab/formulas/{{ formula.id }}/edit">
-                  Modifica
-                </a>
+              @if (formula.status === 'DRAFT' || formula.status === 'PROPOSED') {
+                <a routerLink="/color-lab/formulas/{{ formula.id }}/edit"> Modifica </a>
               }
-
             }
-
           </div>
-
         </article>
-
       }
-
     </div>
-
   }
-
 </section>
