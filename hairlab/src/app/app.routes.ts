@@ -58,8 +58,28 @@ import { ColorSupplierListComponent } from './features/color-lab/color-supplier-
 import { ColorSupplierFormComponent } from './features/color-lab/color-supplier-form/color-supplier-form';
 import { ColorSupplierOrderListComponent } from './features/color-lab/color-supplier-order-list/color-supplier-order-list';
 import { ColorSupplierOrderDetailComponent } from './features/color-lab/color-supplier-order-detail/color-supplier-order-detail';
+import { SalonFormComponent } from './features/start-page/salon-form/salon-form';
+import { SubscriptionPlanComponent } from './features/start-page/subscription-plan/subscription-plan';
+import { StartPageComponent } from './features/start-page/start-page/start-page';
 
 export const routes: Routes = [
+
+  {
+    path: '',
+    component: StartPageComponent,
+    pathMatch: 'full'
+  },
+
+  {
+    path: 'salon/hairlab',
+    component: SubscriptionPlanComponent
+  },
+
+  {
+    path: 'salon-form',
+    component: SalonFormComponent
+  },
+
   {
     path: 'login',
     component: LoginComponent,
@@ -184,6 +204,7 @@ export const routes: Routes = [
           roles: ['ADMIN', 'SUPERADMIN'],
         },
       },
+
       {
         path: 'customers/:customerId/color-analysis/new',
         component: ColorAnalysisFormComponent,
@@ -224,6 +245,11 @@ export const routes: Routes = [
           roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
         },
       },
+
+      // ====================================================
+      // CATALOGO TECNICO
+      // ====================================================
+
 
       // ====================================================
       // APPUNTAMENTI
