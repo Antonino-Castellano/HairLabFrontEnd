@@ -393,3 +393,48 @@ tbody tr.inactive-row td {
     align-self: flex-start;
   }
 }
+
+/* ==========================================================
+   BLOCCO 2 — STATI E AZIONI ALLINEATI AI DIPENDENTI
+   ========================================================== */
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  padding: 5px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.status.active {
+  background: #e9f4ec;
+  color: #52765a;
+}
+
+.status.inactive {
+  background: #f4eaea;
+  color: #946060;
+}
+
+.action-button.status-toggle.deactivate {
+  border-color: #ebd3c5;
+  background: #fdf8f5;
+  color: #a06b4c;
+}
+
+.action-button.status-toggle.deactivate:hover {
+  background: #f8eee7;
+}
+
+.action-button.status-toggle.activate {
+  border-color: #cde4d3;
+  background: #f4faf5;
+  color: #43734e;
+}
+
+.action-button.status-toggle.activate:hover {
+  background: #e6f3e9;
+}

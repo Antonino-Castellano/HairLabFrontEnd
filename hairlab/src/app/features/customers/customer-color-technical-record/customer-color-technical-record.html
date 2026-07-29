@@ -6,7 +6,7 @@
   } @else if (analysis(); as current) {
     <header class="record-header">
       <div>
-        <span>CARTELLA TECNICA COLORE · BLOCCO 25</span>
+        <span>CARTELLA TECNICA COLORE</span>
         <h2>{{ current.customer.firstName }} {{ current.customer.lastName }}</h2>
         <p>Profilo tecnico, formule, risultati e appuntamenti riuniti in una sola vista.</p>
       </div>
@@ -53,11 +53,11 @@
             </div>
             <div>
               <dt>Porosità</dt>
-              <dd>{{ profile.porosity }}</dd>
+              <dd>{{ profile.porosity | hairLabLabel }}</dd>
             </div>
             <div>
               <dt>Condizione</dt>
-              <dd>{{ profile.hairCondition }}</dd>
+              <dd>{{ profile.hairCondition | hairLabLabel }}</dd>
             </div>
             <div>
               <dt>Capelli bianchi</dt>
@@ -75,7 +75,7 @@
           <h3>{{ ref.formula.name }}</h3>
           <p>{{ ref.formula.targetResult }}</p>
           @if (ref.result) {
-            <strong>Ultimo esito: {{ ref.result.assessment }}</strong>
+            <strong>Ultimo esito: {{ ref.result.assessment | hairLabLabel }}</strong>
           }
           @if (ref.formula.id) {
             <a [routerLink]="['/color-lab/formulas', ref.formula.id]">Apri formula →</a>
@@ -110,11 +110,11 @@
       <article class="record-card learning-card">
         <div class="learning-heading">
           <div>
-            <span class="eyebrow">BLOCCO 27 · APPRENDIMENTO CONTROLLATO</span>
+            <span class="eyebrow">APPRENDIMENTO CONTROLLATO</span>
             <h3>Cosa emerge dallo storico reale</h3>
           </div>
           <span class="evidence-badge" [attr.data-level]="learning.evidenceLevel">
-            Evidenza {{ learning.evidenceLevel }}
+            Evidenza {{ learning.evidenceLevel | hairLabLabel }}
           </span>
         </div>
 

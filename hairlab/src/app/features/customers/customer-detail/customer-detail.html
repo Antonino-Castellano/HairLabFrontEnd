@@ -426,7 +426,7 @@
               <div class="section-title">
                 <span class="card-eyebrow"> STORICO HAIRLAB </span>
 
-                <h2>Attività della cliente</h2>
+                <h2>Attività del cliente</h2>
 
                 <p>Appuntamenti, consulenze e formule tecniche collegate.</p>
               </div>
@@ -463,7 +463,11 @@
                 </button>
 
                 <!-- CONSULENZE -->
-                <div class="placeholder-box">
+                <a
+                  class="placeholder-box history-link-box"
+                  routerLink="/consultations"
+                  [queryParams]="{ customerId: selectedCustomer.id }"
+                >
                   <span class="placeholder-icon"> ◇ </span>
 
                   <div>
@@ -471,7 +475,7 @@
 
                     <p>Diagnosi, obiettivi, valutazioni tecniche e proposte professionali.</p>
                   </div>
-                </div>
+                </a>
 
                 <!-- FORMULE -->
                 <a

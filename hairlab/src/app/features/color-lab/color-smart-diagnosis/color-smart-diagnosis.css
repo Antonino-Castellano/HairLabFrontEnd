@@ -519,6 +519,29 @@ textarea {
   font-size: 12px;
 }
 
+.planning-formula-banner {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dec89c;
+  border-left: 4px solid #a77a2e;
+  border-radius: 9px;
+  background: #fffaf0;
+}
+
+.planning-formula-banner strong {
+  color: #75561e;
+  font-size: 13px;
+}
+
+.planning-formula-banner p {
+  margin: 0;
+  color: #806c49;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .proposal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

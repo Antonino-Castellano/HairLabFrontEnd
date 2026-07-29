@@ -1,63 +1,112 @@
-<div class="subscription-container">
-  <div class="subscription-content-wrapper">
-    
-    <!-- Header con descrizione progetto e sottotitolo -->
-    <header class="header-section">
-      <h1>PIANI DI ABBONAMENTO HAIRLAB</h1>
-      <p class="project-description">
-        HairLab è il gestionale definitivo progettato specificamente per semplificare, digitalizzare 
-        e far crescere i saloni e i professionisti del settore beauty.
-      </p>
-      <p class="description">SCEGLI IL PIANO PERFETTO PER TE E SCOPRI TUTTI I VANTAGGI.</p>
-    </header>
+<div class="subscription-page">
+  <header class="subscription-header">
+    <button
+      type="button"
+      class="brand-button"
+      (click)="goHome()"
+      aria-label="Torna alla home EUTE Tech"
+    >
+      <img src="/assets/LOGO/EUTE-LOGO-2024-COMPLETO.png" alt="EUTE Tech" />
+    </button>
 
-    <!-- Griglia Piani Alti -->
-    <div class="plans-grid top-grid">
-      <div class="plan-card" *ngFor="let plan of topPlans">
-        <h3 class="plan-title">{{ plan.title }}</h3>
-        <div class="plan-price-container">
-          <div class="plan-price">{{ plan.price }}</div>
-          <div class="plan-subtitle" *ngIf="plan.subtitle">{{ plan.subtitle }}</div>
-        </div>
-        
-        <ul class="plan-features">
-          <li *ngFor="let feature of plan.features">
-            <span class="bullet"></span> {{ feature }}
-          </li>
-        </ul>
-
-        <button type="button" class="plan-button" (click)="onSelectPlan(plan)">
-          {{ plan.buttonText }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Griglia Piani Bassi -->
-    <div class="plans-grid bottom-grid">
-      <div class="plan-card" *ngFor="let plan of bottomPlans">
-        <h3 class="plan-title">{{ plan.title }}</h3>
-        <div class="plan-price-container">
-          <div class="plan-price">{{ plan.price }}</div>
-          <div class="plan-subtitle" *ngIf="plan.subtitle">{{ plan.subtitle }}</div>
-        </div>
-        
-        <ul class="plan-features">
-          <li *ngFor="let feature of plan.features">
-            <span class="bullet"></span> {{ feature }}
-          </li>
-        </ul>
-
-        <button type="button" class="plan-button" (click)="onSelectPlan(plan)">
-          {{ plan.buttonText }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Sezione SuperAdmin spostata in basso -->
-    <div class="superadmin-section">
-      <p class="superadmin-text">Hai già un account SuperAdmin?</p>
+    <div class="header-actions">
+      <button type="button" class="text-button" (click)="goHome()">Torna alla suite</button>
       <button type="button" class="login-button" (click)="onLogin()">Accedi</button>
     </div>
+  </header>
 
-  </div>
+  <main class="subscription-content">
+    <section class="hero-section">
+      <span class="eyebrow">HairLab per il tuo salone</span>
+      <h1>Un piano semplice per un sistema completo.</h1>
+      <p>
+        Scegli la durata più adatta al tuo salone. Tutti i piani includono le funzionalità
+        principali di HairLab, senza moduli essenziali nascosti.
+      </p>
+
+      <div class="feature-strip">
+        <div>
+          <strong>Clienti e consulenze</strong>
+          <span>Un percorso professionale sempre tracciato.</span>
+        </div>
+        <div>
+          <strong>Color Lab e magazzino</strong>
+          <span>Formule, prodotti e scorte nello stesso flusso.</span>
+        </div>
+        <div>
+          <strong>Agenda e statistiche</strong>
+          <span>Organizzazione quotidiana e visione del salone.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="plans-section" aria-labelledby="plans-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Piani disponibili</span>
+          <h2 id="plans-title">Scegli come iniziare</h2>
+        </div>
+        <p>
+          Prezzi totali del periodo selezionato. Nessun addebito viene eseguito in questa versione
+          alpha.
+        </p>
+      </div>
+
+      <div class="plans-grid">
+        @for (plan of plans; track plan.title) {
+          <article class="plan-card" [class.recommended]="plan.recommended">
+            @if (plan.badge) {
+              <span class="plan-badge">{{ plan.badge }}</span>
+            }
+
+            <div class="plan-heading">
+              <span class="plan-duration">{{ plan.title }}</span>
+              <div class="plan-price">{{ plan.price }}</div>
+              <span class="plan-subtitle">{{ plan.subtitle }}</span>
+            </div>
+
+            <p class="billing-note">{{ plan.billingNote }}</p>
+
+            <ul class="plan-features">
+              @for (feature of plan.features; track feature) {
+                <li>
+                  <span class="check" aria-hidden="true">✓</span>
+                  {{ feature }}
+                </li>
+              }
+            </ul>
+
+            <button type="button" class="plan-button" (click)="onSelectPlan(plan)">
+              {{ plan.buttonText }}
+              <span aria-hidden="true">→</span>
+            </button>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="assurance-section">
+      <div>
+        <span class="assurance-icon" aria-hidden="true">◇</span>
+        <div>
+          <strong>Configurazione guidata</strong>
+          <span>Il salone viene accompagnato nei primi passaggi.</span>
+        </div>
+      </div>
+      <div>
+        <span class="assurance-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Dati organizzati</strong>
+          <span>Clienti, appuntamenti e formule in un unico ambiente.</span>
+        </div>
+      </div>
+      <div>
+        <span class="assurance-icon" aria-hidden="true">↻</span>
+        <div>
+          <strong>Evoluzione continua</strong>
+          <span>La piattaforma cresce con nuove rifiniture e aggiornamenti.</span>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>

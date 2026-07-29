@@ -83,19 +83,6 @@ export const routes: Routes = [
   },
 
   {
-    path: '',
-    component: StartPageComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'salon/hairlab',
-    component: SubscriptionPlanComponent,
-  },
-  {
-    path: 'salon-form',
-    component: SalonFormComponent,
-  },
-  {
     path: 'login',
     component: LoginComponent,
   },

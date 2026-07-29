@@ -1,4 +1,4 @@
-<nav class="workflow-stepper" aria-label="Avanzamento procedura">
+<nav class="workflow-stepper" aria-label="Avanzamento creazione formula">
   @for (step of steps; track step.id; let index = $index) {
     <button
       type="button"
@@ -8,11 +8,12 @@
       [class.locked]="step.id > maxAvailableStep"
       [disabled]="step.id > maxAvailableStep"
       [attr.aria-current]="step.id === activeStep ? 'step' : null"
+      [attr.aria-label]="'Passaggio ' + step.id + ': ' + step.label"
       (click)="selectStep(step.id)"
     >
       <span class="workflow-step-index">
         @if (step.id < activeStep) {
-          ✓
+          <span aria-hidden="true">✓</span>
         } @else {
           {{ step.id }}
         }
@@ -27,7 +28,11 @@
     </button>
 
     @if (index < steps.length - 1) {
-      <span class="workflow-connector" [class.completed]="step.id < activeStep"></span>
+      <span
+        class="workflow-connector"
+        [class.completed]="step.id < activeStep"
+        aria-hidden="true"
+      ></span>
     }
   }
 </nav>

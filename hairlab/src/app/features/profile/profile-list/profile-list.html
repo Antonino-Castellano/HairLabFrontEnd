@@ -31,7 +31,7 @@
               <th>Email</th>
               <th>Indirizzo</th>
               <th>Data di Nascita</th>
-              <th>Ruolo</th>
+              <th class="role-column">Ruolo</th>
               <th class="actions-th">Azioni</th>
             </tr>
           </thead>
@@ -44,7 +44,7 @@
                 <td>{{ u.email }}</td>
                 <td>{{ u.address || 'Non specificato' }}</td>
                 <td>{{ u.dob ? (u.dob | date: 'dd/MM/yyyy') : 'Non specificata' }}</td>
-                <td>
+                <td class="role-column">
                   <span class="badge">{{ u.role | hairLabLabel }}</span>
                 </td>
                 <td class="table-actions">

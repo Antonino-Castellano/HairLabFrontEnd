@@ -1,1 +1,89 @@
-<section class="page"><header><div><span>COLOR LAB · ACQUISTI</span><h1>Centro riordino</h1><p>Prodotti sotto soglia raggruppati per fornitore.</p></div><div class="actions"><a routerLink="/color-lab/suppliers">Fornitori</a><a class="primary" routerLink="/color-lab/orders">Ordini</a></div></header>@if(errorMessage()){<div class="error">{{errorMessage()}}</div>}@if(loading()){<div class="state">Calcolo...</div>}@else if(suggestions().length===0){<div class="state ok">Nessun prodotto sotto soglia.</div>}@else{@for(g of groups();track g.supplierName){<section class="group"><div class="ghead"><div><small>FORNITORE</small><h2>{{g.supplierName}}</h2></div>@if(g.supplierId){<button class="primary" [disabled]="creating()===g.supplierId" (click)="create(g)">Crea bozza ordine</button>}@else{<a routerLink="/color-lab/suppliers">Configura</a>}</div>@for(x of g.items;track x.inventoryId){<article><div><small>{{x.brand}} @if(x.lineName){· {{x.lineName}}}</small><strong>{{x.code}} · {{x.name}}</strong></div><div class="nums"><span>Disponibile <b>{{x.quantityAvailable}}</b></span><span>Soglia <b>{{x.lowStockThreshold}}</b></span><span>Target <b>{{x.reorderTargetQuantity}}</b></span><span class="order">Da ordinare <b>{{x.suggestedOrderQuantity}} {{unitLabels[x.unit]}}</b></span><span>Consumo 30gg <b>{{x.consumptionLast30Days}}</b></span></div><a [routerLink]="['/color-lab/inventory',x.hairDyeId]">Impostazioni</a></article>}</section>}}</section>
+<section class="page">
+  <header class="page-header">
+    <div>
+      <span>COLOR LAB · ACQUISTI</span>
+      <h1>Centro riordino</h1>
+      <p>Prodotti sotto soglia raggruppati per fornitore.</p>
+    </div>
+
+    <div class="actions">
+      <a routerLink="/color-lab/suppliers">Fornitori</a>
+      <a class="primary" routerLink="/color-lab/orders">Ordini</a>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="state">Calcolo prodotti da riordinare...</div>
+  } @else if (suggestions().length === 0) {
+    <div class="state ok">Nessun prodotto sotto soglia.</div>
+  } @else {
+    @for (group of groups(); track group.supplierName) {
+      <section class="group">
+        <div class="group-heading">
+          <div>
+            <small>FORNITORE</small>
+            <h2>{{ group.supplierName }}</h2>
+          </div>
+
+          @if (group.supplierId) {
+            <button
+              type="button"
+              class="primary"
+              [disabled]="creating() === group.supplierId"
+              (click)="create(group)"
+            >
+              {{ creating() === group.supplierId ? 'Creazione...' : 'Crea bozza ordine' }}
+            </button>
+          } @else {
+            <a routerLink="/color-lab/suppliers">Configura fornitore</a>
+          }
+        </div>
+
+        <div class="product-list">
+          @for (item of group.items; track item.inventoryId) {
+            <article class="product-row">
+              <div class="product-copy">
+                <small>
+                  {{ item.brand }}
+                  @if (item.lineName) {
+                    · {{ item.lineName }}
+                  }
+                </small>
+                <strong>{{ item.code }} · {{ item.name }}</strong>
+              </div>
+
+              <div class="numbers">
+                <span>Disponibile <b>{{ item.quantityAvailable }}</b></span>
+                <span>Soglia <b>{{ item.lowStockThreshold }}</b></span>
+                <span>Target <b>{{ item.reorderTargetQuantity }}</b></span>
+                <span class="order">
+                  Da ordinare
+                  <b>{{ item.suggestedOrderQuantity }} {{ unitLabels[item.unit] }}</b>
+                </span>
+                <span>Consumo 30 gg <b>{{ item.consumptionLast30Days }}</b></span>
+              </div>
+
+              <a
+                class="settings-button"
+                [routerLink]="['/color-lab/inventory', item.hairDyeId]"
+                title="Apri impostazioni prodotto"
+                [attr.aria-label]="'Impostazioni di ' + item.name"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8.2 3.5-.1-1.3 1.8-1.4-2-3.4-2.2.9a8.4 8.4 0 0 0-2.2-1.3L15.2 3h-4l-.3 2.5a8.4 8.4 0 0 0-2.2 1.3l-2.2-.9-2 3.4 1.8 1.4-.1 1.3.1 1.3-1.8 1.4 2 3.4 2.2-.9a8.4 8.4 0 0 0 2.2 1.3l.3 2.5h4l.3-2.5a8.4 8.4 0 0 0 2.2-1.3l2.2.9 2-3.4-1.8-1.4.1-1.3Z"
+                  ></path>
+                </svg>
+                <span>Impostazioni</span>
+              </a>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

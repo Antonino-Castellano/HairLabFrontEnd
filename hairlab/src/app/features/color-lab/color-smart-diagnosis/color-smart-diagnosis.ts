@@ -61,13 +61,11 @@ import {
 } from './color-smart-diagnosis-display';
 
 /**
- * UI della Smart Formula - Fase 1.
+ * Interfaccia completa della Smart Formula.
  *
- * Non genera ancora ingredienti.
- *
- * Confronta il Profilo Capelli reale
- * con l'obiettivo selezionato
- * e mostra diagnosi e strategia.
+ * Confronta il Profilo Capelli reale con l'obiettivo,
+ * costruisce la strategia tecnica, seleziona prodotti,
+ * stima grammature e verifica la disponibilità di magazzino.
  */
 @Component({
   selector: 'app-color-smart-diagnosis',

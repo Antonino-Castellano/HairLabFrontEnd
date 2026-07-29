@@ -200,3 +200,37 @@
 .danger-button:hover {
   background-color: #fce8e6;
 }
+
+/* ==========================================================
+   BLOCCO 2 — RUOLO CENTRATO E BADGE UNIFORME
+   ========================================================== */
+.role-column {
+  width: 150px;
+  text-align: center !important;
+}
+
+.badge {
+  min-width: 112px;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: 1px solid #e4d9cf;
+  border-radius: 999px;
+  background: #f5efe9;
+  color: #5f4c40;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .user-list-page {
+    padding: 18px;
+  }
+
+  .role-column {
+    width: auto;
+  }
+}

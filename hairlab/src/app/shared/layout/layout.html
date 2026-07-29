@@ -167,23 +167,21 @@
         </a>
       }
 
-      <!-- DIPENDENTI -->
-      @if (hasAnyRole(['ADMIN', 'SUPERADMIN'])) {
+      <!-- CONSULENZE -->
+      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
         <a
           class="nav-item"
-          routerLink="/employees"
+          routerLink="/consultations"
           routerLinkActive="active"
           (click)="closeSidebarAfterNavigation()"
         >
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"
-              ></path>
+              <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
             </svg>
           </span>
 
-          <span>Dipendenti</span>
+          <span>Consulenze</span>
         </a>
       }
 
@@ -202,24 +200,6 @@
           </span>
 
           <span>Servizi</span>
-        </a>
-      }
-
-      <!-- CONSULENZE -->
-      @if (hasAnyRole(['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'])) {
-        <a
-          class="nav-item"
-          routerLink="/consultations"
-          routerLinkActive="active"
-          (click)="closeSidebarAfterNavigation()"
-        >
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 5h16v12H8l-4 4V5zm4 4h8M8 13h5"></path>
-            </svg>
-          </span>
-
-          <span>Consulenze</span>
         </a>
       }
 
@@ -304,7 +284,7 @@
               </svg>
             </span>
 
-            <span>Magazzino & Acquisti</span>
+            <span>Magazzino</span>
             <span class="nav-chevron">›</span>
           </button>
 
@@ -346,6 +326,26 @@
         </div>
       }
 
+      <!-- DIPENDENTI -->
+      @if (hasAnyRole(['ADMIN', 'SUPERADMIN'])) {
+        <a
+          class="nav-item"
+          routerLink="/employees"
+          routerLinkActive="active"
+          (click)="closeSidebarAfterNavigation()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8-1a2.5 2.5 0 1 0 0-5M3 20c0-4 2-6 5-6s5 2 5 6m1-6c4 0 7 2 7 6"
+              ></path>
+            </svg>
+          </span>
+
+          <span>Dipendenti</span>
+        </a>
+      }
+
       <!-- STATISTICHE DIREZIONALI -->
       @if (hasAnyRole(['SUPERADMIN'])) {
         <a
@@ -359,7 +359,7 @@
               <path d="M4 20V10m6 10V4m6 16v-7m4 7H2M3 8l5-4 5 4 7-6"></path>
             </svg>
           </span>
-          <span>Statistiche salone</span>
+          <span>Stat. salone</span>
         </a>
       }
     </nav>

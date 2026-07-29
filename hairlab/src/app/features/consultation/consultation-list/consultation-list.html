@@ -30,7 +30,11 @@
       <div class="filter-bar">
         <div class="filter-group">
           <label for="customerFilter">Cliente:</label>
-          <select id="customerFilter" (change)="onCustomerFilterChange($event)">
+          <select
+            id="customerFilter"
+            [value]="selectedCustomerId()"
+            (change)="onCustomerFilterChange($event)"
+          >
             <option value="ALL">Tutti i clienti</option>
             @for (customer of customers(); track customer.id) {
               <option [value]="customer.id">
@@ -96,7 +100,11 @@
 
                 <td>
                   @if (consultation.feasibility) {
-                    <span class="status" [class.active]="consultation.feasibility === 'FEASIBLE'">
+                    <span
+                      class="status"
+                      [class.active]="consultation.feasibility === 'FEASIBLE'"
+                      [class.inactive]="consultation.feasibility !== 'FEASIBLE'"
+                    >
                       {{ consultation.feasibility | hairLabLabel }}
                     </span>
                   } @else {

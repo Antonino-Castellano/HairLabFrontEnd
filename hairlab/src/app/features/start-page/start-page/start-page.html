@@ -1,69 +1,162 @@
-<div class="landing-container">
-  <div class="landing-content-wrapper">
-    
-    <header class="landing-header">
-     <div class="logo-title-container">
-       <img src="assets/LOGO/LOGO-EUTE-2024-SENZA-SCRITTA-A-COLORI.png" alt="EUTE Tech Logo" class="company-logo" />
-       <h1 class="company-title">EUTE TECH</h1>
-     </div>
-    </header>
+<div class="landing-page">
+  <header class="site-header">
+    <button
+      class="brand"
+      type="button"
+      (click)="scrollToApplications()"
+      aria-label="Vai alle applicazioni EUTE Tech"
+    >
+      <img src="/assets/LOGO/EUTE-LOGO-2024-COMPLETO.png" alt="Logo EUTE Tech" class="brand-logo" />
+    </button>
 
-    <!-- Sezione Chi Siamo -->
-    <section class="about-section">
-      <h2>Chi Siamo</h2>
-      <p class="about-text">
-        In <strong>EUTE Tech</strong> sviluppiamo ecosistemi software innovativi pensati per semplificare 
-        e digitalizzare i processi aziendali in molteplici settori. La nostra missione è unire potenza tecnologica 
-        e semplicità d'uso per offrire soluzioni verticali ad alte performance.
-      </p>
-    </section>
+    <nav class="header-actions" aria-label="Navigazione principale">
+      <button type="button" class="nav-link" (click)="scrollToApplications()">Soluzioni</button>
+      <a class="nav-link" href="#company">Chi siamo</a>
+      <a class="nav-link" href="#contacts">Contatti</a>
+      <button type="button" class="login-button" (click)="openLogin()">Accedi</button>
+    </nav>
+  </header>
 
-    <!-- Sezione Le Nostre Web Application -->
-    <section class="applications-section">
-      <h2>Le Nostre Web-Application</h2>
-      
-      <div class="apps-grid">
-        <!-- Card HairLab (Attiva con bottone) -->
-        <div class="app-card highlight">
-          <h3>HairLab</h3>
-          <img src="assets/SCREENSHOTPROGRAMMI/SCREEN-HAIRLAB.png" alt="Anteprima di HairLab - Gestionale per saloni" class="app-screenshot" />
-          <p>Il gestionale definitivo per professionisti del settore beauty.</p>
-          <button (click)="navigateToHairLab()" class="btn btn-custom btn-custom-primary px-4 py-2">
-            <span>Scopri di più</span>
-            <i class="bi bi-arrow-right ms-2"></i>
+  <main>
+    <section class="hero" id="company">
+      <div class="hero-copy">
+        <span class="eyebrow">Ecosistemi software verticali</span>
+        <h1>
+          Soluzioni digitali pensate per far
+          <span>crescere il lavoro reale.</span>
+        </h1>
+        <p>
+          EUTE Tech progetta applicazioni professionali che trasformano processi complessi in
+          esperienze semplici, coordinate e misurabili.
+        </p>
+
+        <div class="hero-actions">
+          <button type="button" class="primary-action" (click)="scrollToApplications()">
+            Scopri le soluzioni
+            <span aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="secondary-action" (click)="openHairLab()">
+            Esplora HairLab
           </button>
         </div>
 
-        <!-- Altre Web Application fittizie dal wireframe -->
-        <div class="app-card" *ngFor="let app of webApps.slice(1)">
-          <h3>{{ app.name }}</h3>
-          <p>{{ app.description }}</p>
-          <span class="coming-soon">Prossimamente</span>
+        <div class="trust-row" aria-label="Valori EUTE Tech">
+          <div>
+            <strong>Verticale</strong>
+            <span>Ogni prodotto nasce per un settore preciso.</span>
+          </div>
+          <div>
+            <strong>Intuitivo</strong>
+            <span>Interfacce chiare per attività quotidiane.</span>
+          </div>
+          <div>
+            <strong>Scalabile</strong>
+            <span>Architetture pronte a evolvere nel tempo.</span>
+          </div>
         </div>
+      </div>
+
+      <div class="hero-showcase" aria-label="Anteprima suite EUTE Tech">
+        <div class="showcase-glow"></div>
+        <div class="showcase-card showcase-card-main">
+          <span class="showcase-label">Prodotto in evidenza</span>
+          <img
+            src="/assets/SCREENSHOTPROGRAMMI/SCREEN-HAIRLAB.png"
+            alt="Anteprima della dashboard HairLab"
+          />
+        </div>
+        <div class="floating-chip chip-top">Color Lab</div>
+        <div class="floating-chip chip-bottom">Business Analytics</div>
       </div>
     </section>
 
-    <!-- Linea orizzontale di separazione -->
-    <hr class="section-divider" />
-
-    <!-- Sezione Contatti e Dove Siamo (Sotto la riga gialla) -->
-    <section class="footer-section">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h3>Contatti</h3>
-          <p>Email: info@eute-tech.com</p>
-          <p>Telefono: +39 081 1234567</p>
+    <section class="suite-section" id="applications">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">EUTE Tech Suite</span>
+          <h2>Una visione, più applicazioni specializzate</h2>
         </div>
-        <div class="footer-col">
-          <h3>Dove Siamo</h3>
-          <p>Via Roma, 100</p>
-          <p>80100 Napoli (NA), Italia</p>
-        </div>
+        <p>
+          Ogni applicazione mantiene una propria identità, ma condivide lo stesso obiettivo: rendere
+          il lavoro più ordinato, leggibile e connesso.
+        </p>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 EUTE Tech. Tutti i diritti riservati.</p>
+
+      <div class="apps-grid">
+        @for (application of webApps; track application.name) {
+          <article class="app-card" [class.featured]="application.active">
+            <div class="app-image-wrap">
+              <img
+                [src]="application.screenshot"
+                [alt]="'Anteprima ' + application.name"
+                class="app-screenshot"
+              />
+              <span class="status-badge" [class.available]="application.active">
+                {{ application.status }}
+              </span>
+            </div>
+
+            <div class="app-content">
+              <span class="app-category">{{ application.category }}</span>
+              <h3>{{ application.name }}</h3>
+              <p>{{ application.description }}</p>
+
+              <div class="app-highlights">
+                @for (highlight of application.highlights; track highlight) {
+                  <span>{{ highlight }}</span>
+                }
+              </div>
+
+              <button
+                type="button"
+                class="app-action"
+                [class.disabled]="!application.active"
+                [disabled]="!application.active"
+                (click)="openApplication(application)"
+              >
+                {{ application.active ? 'Scopri HairLab' : 'Prossimamente' }}
+                @if (application.active) {
+                  <span aria-hidden="true">→</span>
+                }
+              </button>
+            </div>
+          </article>
+        }
       </div>
     </section>
 
-  </div>
+    <section class="hairlab-callout">
+      <div>
+        <span class="eyebrow">HairLab Alpha</span>
+        <h2>Il percorso del cliente, finalmente in un unico sistema.</h2>
+        <p>
+          Clienti, consulenze, fotografie, formule, appuntamenti, scorte e risultati: HairLab
+          collega ogni fase del lavoro del salone.
+        </p>
+      </div>
+      <button type="button" class="primary-action" (click)="openHairLab()">
+        Scopri piani e funzionalità
+        <span aria-hidden="true">→</span>
+      </button>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contacts">
+    <div class="footer-brand">
+      <img src="/assets/LOGO/EUTE-LOGO-2024-COMPLETO.png" alt="EUTE Tech" />
+      <p>Soluzioni digitali verticali, progettate intorno alle persone che le utilizzano.</p>
+    </div>
+
+    <div class="footer-column">
+      <strong>Contatti</strong>
+      <span>info&#64;eute-tech.com</span>
+      <span>+39 081 123 4567</span>
+    </div>
+
+    <div class="footer-column">
+      <strong>Sede</strong>
+      <span>Napoli, Italia</span>
+      <span>© 2026 EUTE Tech</span>
+    </div>
+  </footer>
 </div>

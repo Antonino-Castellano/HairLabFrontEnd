@@ -470,8 +470,8 @@
                 <strong>
                   {{
                     result.automaticFormulaCandidate
-                      ? 'Candidata alla generazione'
-                      : 'Richiede revisione prima della generazione'
+                      ? 'Pronta per la generazione automatica'
+                      : 'Generabile come bozza tecnica da validare'
                   }}
                 </strong>
               </div>
@@ -500,7 +500,7 @@
                 [disabled]="proposing()"
                 (click)="generateProductProposal()"
               >
-                {{ proposing() ? 'Ricerca prodotti...' : 'Genera proposta prodotti' }}
+                {{ proposing() ? 'Generazione in corso...' : 'Genera Smart Formula' }}
               </button>
             </div>
           } @else {
@@ -530,6 +530,17 @@
               </div>
             </div>
 
+            @if (!formulaResult.diagnosis.automaticFormulaCandidate) {
+              <div class="planning-formula-banner">
+                <strong>Bozza tecnica da validare</strong>
+                <p>
+                  HairLab ha prodotto la formula per la fase cromatica finale, ma la diagnosi
+                  richiede una verifica professionale o una fase preliminare prima dell’applicazione
+                  sulla base attuale.
+                </p>
+              </div>
+            }
+
             <div class="proposal-grid">
               <!-- FORMULA IDEALE -->
               <article class="proposal-card">
@@ -546,7 +557,13 @@
                     class="proposal-status"
                     [class.complete]="formulaResult.idealProposal.complete"
                   >
-                    {{ formulaResult.idealProposal.complete ? 'Completa' : 'Parziale' }}
+                    {{
+                      formulaResult.idealProposal.complete
+                        ? formulaResult.diagnosis.automaticFormulaCandidate
+                          ? 'Completa'
+                          : 'Bozza tecnica'
+                        : 'Parziale'
+                    }}
                   </span>
                 </div>
 
@@ -654,7 +671,9 @@
                   >
                     {{
                       formulaResult.inventoryProposal.complete
-                        ? 'Prodotti presenti'
+                        ? formulaResult.diagnosis.automaticFormulaCandidate
+                          ? 'Prodotti presenti'
+                          : 'Bozza da validare'
                         : 'Da completare'
                     }}
                   </span>
@@ -891,13 +910,13 @@
             </div>
 
             <div class="phase-note">
-              <strong> Blocco 6 · Dosage Engine </strong>
+              <strong> Calcolo tecnico e verifica magazzino </strong>
 
               <p>
-                HairLab ha ora stimato il fabbisogno colore usando applicazione, lunghezza, densità
-                e spessore, distribuendo i grammi tra i componenti e confrontandoli con la giacenza
-                reale. I correttori restano volutamente a dosaggio manuale finché non esiste una
-                regola prodotto-specifica affidabile.
+                HairLab ha stimato il fabbisogno colore usando applicazione, lunghezza, densità e
+                spessore, distribuendo i grammi tra i componenti e confrontandoli con la giacenza
+                reale. Le eventuali correzioni non coperte da regole tecniche restano affidate alla
+                validazione del professionista.
               </p>
             </div>
 
@@ -930,7 +949,13 @@
           [class.hl-badge-success]="formulaResult.inventoryProposal.complete"
           [class.hl-badge-warning]="!formulaResult.inventoryProposal.complete"
         >
-          {{ formulaResult.inventoryProposal.complete ? 'Proposta completa' : 'Da completare' }}
+          {{
+            formulaResult.inventoryProposal.complete
+              ? formulaResult.diagnosis.automaticFormulaCandidate
+                ? 'Proposta completa'
+                : 'Bozza da validare'
+              : 'Da completare'
+          }}
         </span>
       </div>
 
@@ -991,7 +1016,11 @@
           routerLink="/color-lab/formulas/new"
           [queryParams]="getBuilderQueryParams(formulaResult)"
         >
-          Apri nel Formula Builder →
+          {{
+            formulaResult.diagnosis.automaticFormulaCandidate
+              ? 'Apri nel Formula Builder →'
+              : 'Apri come bozza da validare →'
+          }}
         </a>
       </div>
     </section>

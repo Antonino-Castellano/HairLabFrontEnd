@@ -836,3 +836,42 @@
   background: #faf6f3;
   box-shadow: 0 5px 14px rgba(55, 42, 35, 0.04);
 }
+
+/* BLOCCO 3 — storico HairLab realmente navigabile. */
+.hairlab-sections .placeholder-box {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hairlab-sections .placeholder-box > div {
+  min-width: 0;
+}
+
+.hairlab-sections .placeholder-box strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #443a35;
+  font-size: 15px;
+}
+
+.hairlab-sections .placeholder-box p {
+  margin: 0;
+  color: #8d817a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.hairlab-sections .placeholder-icon {
+  display: grid;
+  place-items: center;
+  border: 1px solid #e2d6cf;
+  border-radius: 12px;
+  background: #fff;
+  color: #9b684b;
+  font-size: 20px;
+}
+
+.history-link-box:focus-visible {
+  outline: 3px solid rgba(155, 104, 75, 0.2);
+  outline-offset: 3px;
+}

@@ -1,86 +1,283 @@
-<div class="salon-form-container">
-  <h2>Registrazione Salone - Piano: {{ selectedPlan }}</h2>
-  <p>Prezzo: €{{ selectedPrice }} / mese</p>
+<div class="registration-page">
+  <header class="registration-header">
+    <button
+      type="button"
+      class="brand-button"
+      (click)="goBackToPlans()"
+      aria-label="Torna ai piani HairLab"
+    >
+      <img src="/assets/LOGO/EUTE-LOGO-2024-COMPLETO.png" alt="EUTE Tech" />
+    </button>
 
-  @if (errorMessage) {
-    <div class="error-message">{{ errorMessage }}</div>
-  }
+    <button type="button" class="back-button" (click)="goBackToPlans()">
+      <span aria-hidden="true">←</span>
+      Cambia piano
+    </button>
+  </header>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label>Nome <span class="required">*</span></label>
-      <input type="text" formControlName="firstName" placeholder="Nome titolare" />
-    </div>
+  <main class="registration-content">
+    <section class="registration-intro">
+      <span class="eyebrow">Attivazione HairLab</span>
+      <h1>Completa la registrazione del tuo salone.</h1>
+      <p>
+        Crea l’account del titolare, conferma il piano e scegli il metodo di pagamento. Al termine
+        potrai accedere all’ambiente HairLab.
+      </p>
 
-    <div class="form-group">
-      <label>Cognome <span class="required">*</span></label>
-      <input type="text" formControlName="lastName" placeholder="Cognome titolare" />
-    </div>
+      <div class="progress-steps" aria-label="Avanzamento registrazione">
+        <div class="step active">
+          <span>1</span>
+          <div>
+            <strong>Dati titolare</strong>
+            <small>Identità e accesso</small>
+          </div>
+        </div>
+        <div class="step active">
+          <span>2</span>
+          <div>
+            <strong>Pagamento</strong>
+            <small>Metodo selezionato</small>
+          </div>
+        </div>
+        <div class="step">
+          <span>3</span>
+          <div>
+            <strong>Conferma</strong>
+            <small>Accesso a HairLab</small>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="form-group">
-      <label>Data di Nascita <span class="required">*</span></label>
-      <input type="date" formControlName="dob" />
-    </div>
+    <div class="registration-layout">
+      <section class="form-card">
+        <div class="card-heading">
+          <div>
+            <span class="section-number">01</span>
+            <div>
+              <h2>Dati del titolare</h2>
+              <p>I campi contrassegnati sono necessari per creare l’account.</p>
+            </div>
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label>Telefono <span class="required">*</span></label>
-      <input type="text" formControlName="phoneNumber" placeholder="Numero di telefono" />
-    </div>
-
-    <div class="form-group">
-      <label>Email <span class="required">*</span></label>
-      <input type="email" formControlName="email" placeholder="Email di accesso" />
-    </div>
-
-    <div class="form-group">
-      <label>Password <span class="required">*</span></label>
-      <input type="password" formControlName="password" placeholder="Minimo 6 caratteri" />
-    </div>
-
-    <div class="form-group">
-      <label>Metodo di Pagamento <span class="required">*</span></label>
-      <select formControlName="paymentType">
-        <option value="">Seleziona pagamento</option>
-        @for (type of paymentTypes; track type) {
-          <option [value]="type">{{ type }}</option>
+        @if (errorMessage) {
+          <div class="error-message" role="alert">
+            <span aria-hidden="true">!</span>
+            {{ errorMessage }}
+          </div>
         }
-      </select>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">Nome <span>*</span></label>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                placeholder="Nome del titolare"
+              />
+              @if (
+                registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid
+              ) {
+                <small>Inserisci il nome.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Cognome <span>*</span></label>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                placeholder="Cognome del titolare"
+              />
+              @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
+                <small>Inserisci il cognome.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="dob">Data di nascita <span>*</span></label>
+              <input id="dob" type="date" formControlName="dob" />
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber">Telefono <span>*</span></label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                formControlName="phoneNumber"
+                placeholder="Numero di telefono"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="email">Email di accesso <span>*</span></label>
+              <input id="email" type="email" formControlName="email" placeholder="nome@salone.it" />
+              @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+                <small>Inserisci un indirizzo email valido.</small>
+              }
+            </div>
+
+            <div class="form-group full-width">
+              <label for="password">Password <span>*</span></label>
+              <input
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="Almeno 6 caratteri"
+              />
+              @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+                <small>La password deve contenere almeno 6 caratteri.</small>
+              }
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <div class="card-heading compact">
+            <div>
+              <span class="section-number">02</span>
+              <div>
+                <h2>Metodo di pagamento</h2>
+                <p>Questa versione alpha registra i dati senza eseguire addebiti reali.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-choice">
+            @for (type of paymentTypes; track type) {
+              <label
+                class="payment-option"
+                [class.selected]="registerForm.get('paymentType')?.value === type"
+              >
+                <input type="radio" formControlName="paymentType" [value]="type" />
+                <span class="payment-radio"></span>
+                <span>
+                  <strong>{{ paymentLabel(type) }}</strong>
+                  <small>{{
+                    type === PaymentTypeEnum.CREDIT_CARD
+                      ? 'Visa, Mastercard o carta compatibile'
+                      : 'Utilizza il tuo indirizzo PayPal'
+                  }}</small>
+                </span>
+              </label>
+            }
+          </div>
+
+          @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.CREDIT_CARD) {
+            <div class="payment-fields">
+              <div class="form-group full-width">
+                <label for="cardNumber">Numero carta <span>*</span></label>
+                <input
+                  id="cardNumber"
+                  inputmode="numeric"
+                  type="text"
+                  formControlName="cardNumber"
+                  placeholder="0000 0000 0000 0000"
+                  maxlength="16"
+                />
+              </div>
+              <div class="form-group full-width">
+                <label for="cardHolder">Intestatario <span>*</span></label>
+                <input
+                  id="cardHolder"
+                  type="text"
+                  formControlName="cardHolder"
+                  placeholder="Nome e cognome"
+                />
+              </div>
+              <div class="form-group">
+                <label for="cardExpDate">Scadenza <span>*</span></label>
+                <input
+                  id="cardExpDate"
+                  type="text"
+                  formControlName="cardExpDate"
+                  placeholder="MM/YY"
+                />
+              </div>
+              <div class="form-group">
+                <label for="cardCvv">CVV <span>*</span></label>
+                <input
+                  id="cardCvv"
+                  inputmode="numeric"
+                  type="password"
+                  formControlName="cardCvv"
+                  placeholder="000"
+                  maxlength="4"
+                />
+              </div>
+            </div>
+          }
+
+          @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.PAYPAL) {
+            <div class="payment-fields single-column">
+              <div class="form-group full-width">
+                <label for="paypalEmail">Email PayPal <span>*</span></label>
+                <input
+                  id="paypalEmail"
+                  type="email"
+                  formControlName="paypalEmail"
+                  placeholder="account@paypal.com"
+                />
+              </div>
+            </div>
+          }
+
+          <div class="form-actions">
+            <button type="button" class="secondary-button" (click)="goBackToPlans()">
+              Indietro
+            </button>
+            <button type="submit" class="primary-button" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Registrazione in corso…' : 'Completa registrazione' }}
+              @if (!isSubmitting) {
+                <span aria-hidden="true">→</span>
+              }
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="summary-card">
+        <span class="summary-label">Piano selezionato</span>
+        <h2>{{ selectedPlan }}</h2>
+        <p class="summary-plan-label">{{ selectedPlanLabel }}</p>
+
+        <div class="summary-price">
+          <strong>{{ selectedPrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</strong>
+          <span>totale del piano</span>
+        </div>
+
+        @if (monthlyEquivalent !== null) {
+          <div class="monthly-equivalent">
+            Equivalente a
+            <strong>{{
+              monthlyEquivalent | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+            }}</strong>
+            al mese
+          </div>
+        }
+
+        <div class="summary-divider"></div>
+
+        <strong class="included-title">Il piano include</strong>
+        <ul>
+          <li><span>✓</span> Tutte le funzioni principali HairLab</li>
+          <li><span>✓</span> Clienti, agenda e consulenze</li>
+          <li><span>✓</span> Color Lab e magazzino</li>
+          <li><span>✓</span> Aggiornamenti della versione</li>
+        </ul>
+
+        <div class="security-note">
+          <span aria-hidden="true">◇</span>
+          <p>
+            <strong>Dati protetti</strong>
+            In questa alpha non vengono eseguite transazioni reali.
+          </p>
+        </div>
+      </aside>
     </div>
-
-    <!-- Campi Carta di Credito -->
-    @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.CREDIT_CARD) {
-      <div class="payment-fields">
-        <div class="form-group">
-          <label>Numero Carta <span class="required">*</span></label>
-          <input type="text" formControlName="cardNumber" placeholder="16 cifre" maxlength="16" />
-        </div>
-        <div class="form-group">
-          <label>Titolare Carta <span class="required">*</span></label>
-          <input type="text" formControlName="cardHolder" placeholder="Nome e Cognome" />
-        </div>
-        <div class="form-group">
-          <label>Scadenza (MM/YY) <span class="required">*</span></label>
-          <input type="text" formControlName="cardExpDate" placeholder="MM/YY" />
-        </div>
-        <div class="form-group">
-          <label>CVV <span class="required">*</span></label>
-          <input type="password" formControlName="cardCvv" placeholder="CVV" maxlength="4" />
-        </div>
-      </div>
-    }
-
-    <!-- Campi PayPal -->
-    @if (registerForm.get('paymentType')?.value === PaymentTypeEnum.PAYPAL) {
-      <div class="payment-fields">
-        <div class="form-group">
-          <label>Email PayPal <span class="required">*</span></label>
-          <input type="email" formControlName="paypalEmail" placeholder="tua-email@paypal.com" />
-        </div>
-      </div>
-    }
-
-    <div class="form-actions">
-      <button type="submit" class="primary-button">Completa Registrazione</button>
-    </div>
-  </form>
+  </main>
 </div>

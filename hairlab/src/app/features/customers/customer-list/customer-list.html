@@ -151,7 +151,7 @@
                     [class.active]="customer.active"
                     [class.inactive]="!customer.active"
                   >
-                    {{ customer.active ? 'Attivo' : 'Disattivato' }}
+                    {{ customer.active ? 'Attivo' : 'Non attivo' }}
                   </span>
                 </td>
 
@@ -168,7 +168,7 @@
 
                     @if (customer.active) {
                       <button
-                        class="action-button deactivate"
+                        class="action-button status-toggle deactivate"
                         type="button"
                         (click)="deactivateCustomer(customer)"
                       >
@@ -176,7 +176,7 @@
                       </button>
                     } @else {
                       <button
-                        class="action-button activate"
+                        class="action-button status-toggle activate"
                         type="button"
                         (click)="activateCustomer(customer)"
                       >

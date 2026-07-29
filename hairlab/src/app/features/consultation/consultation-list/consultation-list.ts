@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Consultation } from '../../../models/consultation';
 import { ConsultationService } from '../../../service/consultation-service';
 import { CustomerService } from '../../../service/customer-service';
@@ -19,6 +19,7 @@ import { HairLabTechnicalLabelPipe } from '../../../shared/ui/hairlab-technical-
   styleUrl: './consultation-list.css',
 })
 export class ConsultationListComponent implements OnInit {
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly consultationService = inject(ConsultationService);
   private readonly customerService = inject(CustomerService);
   private readonly employeeService = inject(EmployeeService);
@@ -50,6 +51,12 @@ export class ConsultationListComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    const customerId = Number(this.activatedRoute.snapshot.queryParamMap.get('customerId'));
+
+    if (Number.isInteger(customerId) && customerId > 0) {
+      this.selectedCustomerId.set(String(customerId));
+    }
+
     this.loadData();
   }
 

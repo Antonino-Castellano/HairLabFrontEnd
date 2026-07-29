@@ -1,499 +1,783 @@
 <section class="customer-profile-page hl-page">
   <header class="hl-page-header profile-header">
     <div>
-      <span class="eyebrow">PROFILO PERSONALE IN SOLA LETTURA</span>
+      <span class="eyebrow">IL MIO HAIRLAB</span>
       <h1>Il mio HairLab</h1>
       <p>
-        Qui trovi le informazioni professionali registrate dal salone su capelli, viso, barba quando
-        presente, armocromia, consulenze e storico. Questi dati possono essere modificati soltanto
-        dal team.
+        Consulta le informazioni professionali registrate dal salone e gestisci
+        in autonomia le tue fotografie e il consenso alle elaborazioni
+        assistite. I dati tecnici restano modificabili soltanto dal team.
       </p>
     </div>
-    <a class="hl-btn hl-btn-secondary" routerLink="/my-account">Gestisci account</a>
+    <a class="hl-btn hl-btn-secondary" routerLink="/my-account"
+      >Gestisci account</a
+    >
   </header>
 
   @if (loading()) {
-    <div class="hl-card state-card">Caricamento del profilo...</div>
+  <div class="hl-card state-card">Caricamento del profilo...</div>
   } @else if (errorMessage()) {
-    <div class="hl-card state-card error-state">
-      <strong>Profilo non disponibile</strong>
-      <p>{{ errorMessage() }}</p>
-      <button class="hl-btn hl-btn-primary" type="button" (click)="loadProfile()">Riprova</button>
-    </div>
+  <div class="hl-card state-card error-state">
+    <strong>Profilo non disponibile</strong>
+    <p>{{ errorMessage() }}</p>
+    <button class="hl-btn hl-btn-primary" type="button" (click)="loadProfile()">
+      Riprova
+    </button>
+  </div>
   } @else if (area(); as customerArea) {
-    <nav class="profile-tabs" aria-label="Sezioni profilo cliente">
+  <nav class="profile-tabs" aria-label="Sezioni profilo cliente">
+    <button
+      type="button"
+      [class.active]="activeSection() === 'hair'"
+      (click)="selectSection('hair')"
+    >
+      Capelli
+    </button>
+    <button
+      type="button"
+      [class.active]="activeSection() === 'face'"
+      (click)="selectSection('face')"
+    >
+      Viso
+    </button>
+    @if (customerArea.customer.gender === 'MALE') {
+    <button
+      type="button"
+      [class.active]="activeSection() === 'beard'"
+      (click)="selectSection('beard')"
+    >
+      Barba
+    </button>
+    }
+    <button
+      type="button"
+      [class.active]="activeSection() === 'color'"
+      (click)="selectSection('color')"
+    >
+      Armocromia
+    </button>
+    <button
+      type="button"
+      [class.active]="activeSection() === 'privacy'"
+      (click)="selectSection('privacy')"
+    >
+      Foto e consenso
+    </button>
+    <button
+      type="button"
+      [class.active]="activeSection() === 'history'"
+      (click)="selectSection('history')"
+    >
+      Storico e consulenze
+    </button>
+  </nav>
+
+  @if (activeSection() === 'hair') { @if (customerArea.analysis.hairProfile; as
+  hair) {
+  <section class="profile-section-grid">
+    <article class="hl-card profile-card wide-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">PROFILO TECNICO</span>
+          <h2>I miei capelli</h2>
+        </div>
+        <span class="read-only-badge">Sola lettura</span>
+      </div>
+
+      <div class="technical-grid">
+        <div>
+          <span>Tono naturale</span>
+          <strong>{{ toneLabels[hair.naturalTone] }}</strong>
+        </div>
+        <div>
+          <span>Tono attuale</span>
+          <strong>{{ toneLabels[hair.currentTone] }}</strong>
+        </div>
+        <div>
+          <span>Riflesso</span>
+          <strong>{{ reflectionLabels[hair.reflection] }}</strong>
+        </div>
+        <div>
+          <span>Forma</span>
+          <strong>{{ hairTypeLabels[hair.hairType] }}</strong>
+        </div>
+        <div>
+          <span>Texture</span>
+          <strong>{{ hairTextureLabels[hair.texture] }}</strong>
+        </div>
+        <div>
+          <span>Lunghezza</span>
+          <strong
+            >{{ hair.hairLength ? hairLengthLabels[hair.hairLength] : 'Non
+            indicata' }}</strong
+          >
+        </div>
+        <div>
+          <span>Porosità</span>
+          <strong>{{ physicalValueLabels[hair.porosity] }}</strong>
+        </div>
+        <div>
+          <span>Densità</span>
+          <strong>{{ physicalValueLabels[hair.density] }}</strong>
+        </div>
+        <div>
+          <span>Condizione</span>
+          <strong>{{ hairConditionLabels[hair.hairCondition] }}</strong>
+        </div>
+        <div>
+          <span>Capelli bianchi</span>
+          <strong>{{ hair.whiteHairPercentage ?? 0 }}%</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="hl-card profile-card">
+      <span class="eyebrow">STORICO CHIMICO</span>
+      <h2>Trattamenti registrati</h2>
+      @if (hair.chemicalHistory.length) {
+      <div class="chip-list">
+        @for (entry of hair.chemicalHistory; track entry) {
+        <span>{{ entry }}</span>
+        }
+      </div>
+      } @else {
+      <p class="muted">Nessun trattamento chimico registrato.</p>
+      }
+    </article>
+
+    <article class="hl-card profile-card">
+      <span class="eyebrow">ATTENZIONI</span>
+      <h2>Sensibilità e controindicazioni</h2>
+      <div class="list-block">
+        <strong>Sensibilità</strong>
+        <p>
+          {{ hair.sensitivities.length ? hair.sensitivities.join(', ') :
+          'Nessuna registrata' }}
+        </p>
+        <strong>Controindicazioni</strong>
+        <p>
+          {{ hair.contraindications.length ? hair.contraindications.join(', ') :
+          'Nessuna registrata' }}
+        </p>
+      </div>
+    </article>
+
+    @if (hair.notes) {
+    <article class="hl-card profile-card wide-card">
+      <span class="eyebrow">NOTE PROFESSIONALI</span>
+      <h2>Osservazioni del team</h2>
+      <p>{{ hair.notes }}</p>
+    </article>
+    }
+  </section>
+  } @else {
+  <div class="hl-empty-state">
+    Il profilo capelli non è ancora stato compilato dal salone.
+  </div>
+  } } @if (activeSection() === 'face') { @if (customerArea.analysis.faceProfile;
+  as face) {
+  <section class="profile-section-grid">
+    <article class="hl-card profile-card wide-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">ANALISI MORFOLOGICA</span>
+          <h2>Il mio viso</h2>
+        </div>
+        <span class="read-only-badge">Sola lettura</span>
+      </div>
+
+      <div class="technical-grid">
+        <div>
+          <span>Forma viso</span
+          ><strong>{{ profileLabel(face.faceShape) }}</strong>
+        </div>
+        <div>
+          <span>Fronte</span
+          ><strong>{{ profileLabel(face.foreheadHeight) }}</strong>
+        </div>
+        <div>
+          <span>Attaccatura</span
+          ><strong>{{ profileLabel(face.hairlineShape) }}</strong>
+        </div>
+        <div>
+          <span>Forma occhi</span
+          ><strong>{{ profileLabel(face.eyeShape) }}</strong>
+        </div>
+        <div>
+          <span>Orientamento occhi</span
+          ><strong>{{ profileLabel(face.eyeOrientation) }}</strong>
+        </div>
+        <div>
+          <span>Colore occhi</span
+          ><strong>{{ profileLabel(face.eyeColor) }}</strong>
+        </div>
+        <div>
+          <span>Sopracciglia</span
+          ><strong>{{ profileLabel(face.eyebrowShape) }}</strong>
+        </div>
+        <div>
+          <span>Profilo naso</span
+          ><strong>{{ profileLabel(face.noseProfile) }}</strong>
+        </div>
+        <div>
+          <span>Mascella</span
+          ><strong>{{ profileLabel(face.jawShape) }}</strong>
+        </div>
+        <div>
+          <span>Mento</span><strong>{{ profileLabel(face.chinShape) }}</strong>
+        </div>
+        <div>
+          <span>Labbra</span><strong>{{ profileLabel(face.lipShape) }}</strong>
+        </div>
+        <div>
+          <span>Pienezza labbra</span
+          ><strong>{{ profileLabel(face.lipFullness) }}</strong>
+        </div>
+      </div>
+    </article>
+
+    @if (face.eyeReferenceColor) {
+    <article class="hl-card profile-card">
+      <span class="eyebrow">REFERENCE OCCHI</span>
+      <h2>Colore rilevato</h2>
+      <div class="color-reference">
+        <span [style.background]="face.eyeReferenceColor"></span>
+        <strong>{{ face.eyeReferenceColor }}</strong>
+      </div>
+      @if (face.eyeColorNotes) {
+      <p>{{ face.eyeColorNotes }}</p>
+      }
+    </article>
+    }
+
+    <article class="hl-card profile-card">
+      <span class="eyebrow">OBIETTIVI DI STILE</span>
+      <h2>Linee guida registrate</h2>
+      <p>{{ face.stylingGoals || 'Nessun obiettivo specifico registrato.' }}</p>
+    </article>
+
+    @if (face.notes) {
+    <article class="hl-card profile-card wide-card">
+      <span class="eyebrow">NOTE PROFESSIONALI</span>
+      <h2>Osservazioni sul viso</h2>
+      <p>{{ face.notes }}</p>
+    </article>
+    }
+  </section>
+  } @else {
+  <div class="hl-empty-state">
+    Il profilo del viso non è ancora stato compilato dal salone.
+  </div>
+  } } @if (activeSection() === 'beard') { @if
+  (customerArea.analysis.beardProfile; as beard) {
+  <section class="profile-section-grid">
+    <article class="hl-card profile-card wide-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">PROFILO BARBA</span>
+          <h2>Barba e baffi</h2>
+        </div>
+        <span class="read-only-badge">Sola lettura</span>
+      </div>
+      <div class="technical-grid">
+        <div>
+          <span>Stile attuale</span
+          ><strong>{{ profileLabel(beard.currentStyle) }}</strong>
+        </div>
+        <div>
+          <span>Stile desiderato</span
+          ><strong>{{ profileLabel(beard.desiredStyle) }}</strong>
+        </div>
+        <div>
+          <span>Lunghezza</span
+          ><strong>{{ profileLabel(beard.beardLength) }}</strong>
+        </div>
+        <div>
+          <span>Misura</span
+          ><strong>{{ beard.approximateLengthMm ?? 0 }} mm</strong>
+        </div>
+        <div>
+          <span>Densità</span><strong>{{ profileLabel(beard.density) }}</strong>
+        </div>
+        <div>
+          <span>Crescita</span
+          ><strong>{{ profileLabel(beard.growthPattern) }}</strong>
+        </div>
+        <div>
+          <span>Baffi</span
+          ><strong
+            >{{ beard.moustachePresent ? profileLabel(beard.moustacheStyle) :
+            'Non presenti' }}</strong
+          >
+        </div>
+        <div>
+          <span>Collegamento baffi</span
+          ><strong>{{ profileLabel(beard.moustacheConnection) }}</strong>
+        </div>
+        <div>
+          <span>Linea guance</span
+          ><strong>{{ profileLabel(beard.cheekLine) }}</strong>
+        </div>
+        <div>
+          <span>Linea collo</span
+          ><strong>{{ profileLabel(beard.neckline) }}</strong>
+        </div>
+        <div>
+          <span>Bianchi</span><strong>{{ beard.grayPercentage ?? 0 }}%</strong>
+        </div>
+        <div>
+          <span>Obiettivo colore</span
+          ><strong>{{ profileLabel(beard.beardColorGoal) }}</strong>
+        </div>
+      </div>
+    </article>
+    <article class="hl-card profile-card">
+      <span class="eyebrow">CUTE</span>
+      <h2>Sensibilità e cautele</h2>
+      <p>
+        Sensibilità: <strong>{{ profileLabel(beard.skinSensitivity) }}</strong>
+      </p>
+      <p>
+        Irritazione:
+        <strong
+          >{{ beard.irritationPresent ? 'Presente' : 'Non rilevata' }}</strong
+        >
+      </p>
+      <p>
+        Peli incarniti:
+        <strong
+          >{{ beard.ingrownHairPresent ? 'Presenti' : 'Non rilevati' }}</strong
+        >
+      </p>
+    </article>
+    <article class="hl-card profile-card">
+      <span class="eyebrow">NOTE PROFESSIONALI</span>
+      <h2>Indicazioni del team</h2>
+      <p>{{ beard.notes || 'Nessuna nota registrata.' }}</p>
+      @if (beard.contraindications) {
+      <p><strong>Controindicazioni:</strong> {{ beard.contraindications }}</p>
+      }
+    </article>
+  </section>
+  } @else {
+  <div class="hl-empty-state">
+    Il Profilo barba non è ancora stato compilato dal salone.
+  </div>
+  } } @if (activeSection() === 'color') { @if
+  (customerArea.analysis.colorAnalysis; as color) {
+  <section class="profile-section-grid">
+    <article class="hl-card profile-card wide-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">ARMOCROMIA</span>
+          <h2>La mia analisi cromatica</h2>
+        </div>
+        <span class="read-only-badge">Sola lettura</span>
+      </div>
+
+      <div class="technical-grid">
+        <div>
+          <span>Tonalità pelle</span
+          ><strong>{{ profileLabel(color.skinTone) }}</strong>
+        </div>
+        <div>
+          <span>Sottotono</span
+          ><strong>{{ profileLabel(color.undertone) }}</strong>
+        </div>
+        <div>
+          <span>Stagione</span><strong>{{ profileLabel(color.season) }}</strong>
+        </div>
+        <div>
+          <span>Sottostagione</span
+          ><strong>{{ profileLabel(color.subSeason) }}</strong>
+        </div>
+        <div>
+          <span>Valore</span
+          ><strong>{{ profileLabel(color.colorValue) }}</strong>
+        </div>
+        <div>
+          <span>Contrasto</span
+          ><strong>{{ profileLabel(color.contrastLevel) }}</strong>
+        </div>
+        <div>
+          <span>Croma</span><strong>{{ profileLabel(color.chroma) }}</strong>
+        </div>
+        <div>
+          <span>Metalli</span
+          ><strong
+            >{{ color.bestMetals.length ?
+            color.bestMetals.map(profileLabel).join(', ') : 'Non indicati'
+            }}</strong
+          >
+        </div>
+      </div>
+    </article>
+
+    <article class="hl-card profile-card">
+      <span class="eyebrow">COLORI VALORIZZANTI</span>
+      <h2>Palette consigliata</h2>
+      <div class="palette-grid">
+        @for (entry of paletteEntries(color.bestColors); track entry[0]) {
+        <div>
+          <span [style.background]="entry[1]"></span>
+          <strong>{{ entry[0] }}</strong>
+          <small>{{ entry[1] }}</small>
+        </div>
+        }
+      </div>
+    </article>
+
+    <article class="hl-card profile-card">
+      <span class="eyebrow">COLORI DA DOSARE</span>
+      <h2>Palette meno armonica</h2>
+      <div class="palette-grid">
+        @for (entry of paletteEntries(color.avoidColors); track entry[0]) {
+        <div>
+          <span [style.background]="entry[1]"></span>
+          <strong>{{ entry[0] }}</strong>
+          <small>{{ entry[1] }}</small>
+        </div>
+        }
+      </div>
+    </article>
+
+    @if (color.notes) {
+    <article class="hl-card profile-card wide-card">
+      <span class="eyebrow">NOTE PROFESSIONALI</span>
+      <h2>Osservazioni armocromatiche</h2>
+      <p>{{ color.notes }}</p>
+    </article>
+    }
+  </section>
+  } @else {
+  <div class="hl-empty-state">
+    L'analisi cromatica non è ancora stata compilata dal salone.
+  </div>
+  } } @if (activeSection() === 'privacy') {
+  <section class="privacy-grid">
+    <article class="hl-card consent-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">PRIVACY E CONTROLLO</span>
+          <h2>Consenso alle elaborazioni IA</h2>
+        </div>
+
+        <span
+          class="consent-status"
+          [class.active]="consent()?.valid"
+          [class.inactive]="!consent()?.valid"
+        >
+          {{ consent()?.valid ? 'Consenso attivo' : 'Consenso non attivo' }}
+        </span>
+      </div>
+
+      <p class="consent-intro">
+        Le tue fotografie possono essere analizzate soltanto dopo una conferma
+        esplicita. Il consenso può essere revocato in qualsiasi momento e non
+        autorizza modifiche automatiche ai profili professionali.
+      </p>
+
+      <ul class="consent-points">
+        <li>Il professionista controlla sempre ogni proposta.</li>
+        <li>
+          Le foto non vengono elaborate quando il consenso è assente o revocato.
+        </li>
+        <li>Puoi continuare a conservare le foto anche dopo la revoca.</li>
+      </ul>
+
+      @if (consent()?.valid) {
+      <div class="consent-current">
+        <div>
+          <span>Registrato il</span>
+          <strong>{{ consent()?.grantedAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+        <div>
+          <span>Versione informativa</span>
+          <strong>{{ consent()?.documentVersion || 'Non indicata' }}</strong>
+        </div>
+      </div>
+
       <button
         type="button"
-        [class.active]="activeSection() === 'hair'"
-        (click)="selectSection('hair')"
+        class="privacy-button danger"
+        [disabled]="consentBusy()"
+        (click)="revokeConsent()"
       >
-        Capelli
+        {{ consentBusy() ? 'Aggiornamento...' : 'Revoca consenso' }}
       </button>
+      } @else {
+      <label class="consent-checkbox">
+        <input
+          type="checkbox"
+          [checked]="consentAccepted()"
+          (change)="setConsentAccepted($event)"
+        />
+        <span>
+          Confermo di avere letto l’informativa e autorizzo l’uso delle mie
+          fotografie per analisi assistite e simulazioni richieste al salone.
+        </span>
+      </label>
+
+      <label class="consent-notes">
+        <span>Nota facoltativa</span>
+        <textarea
+          rows="3"
+          [value]="consentNotes()"
+          (input)="setConsentNotes($event)"
+          placeholder="Eventuali indicazioni o limiti personali"
+        ></textarea>
+      </label>
+
       <button
         type="button"
-        [class.active]="activeSection() === 'face'"
-        (click)="selectSection('face')"
+        class="privacy-button primary"
+        [disabled]="consentBusy() || !consentAccepted()"
+        (click)="grantConsent()"
       >
-        Viso
+        {{ consentBusy() ? 'Registrazione...' : 'Accetta e registra consenso' }}
       </button>
-      @if (customerArea.customer.gender === 'MALE') {
+      }
+    </article>
+
+    <article class="hl-card upload-customer-photo-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">LE MIE FOTO</span>
+          <h2>Aggiungi una fotografia</h2>
+        </div>
+        <span>{{ photos().length }}</span>
+      </div>
+
+      <p class="muted">
+        Puoi aggiungere una foto tecnica oppure sostituire l’immagine principale
+        collegata al tuo account e alla scheda cliente.
+      </p>
+
+      <div class="customer-photo-upload">
+        <div class="customer-photo-preview">
+          @if (photoPreview(); as preview) {
+          <img [src]="preview" alt="Anteprima fotografia selezionata" />
+          } @else if (primaryPhoto(); as primary) {
+          <img
+            [src]="imageUrl(primary.imageUrl)"
+            alt="Immagine principale attuale"
+          />
+          } @else {
+          <span>+</span>
+          <small>Nessuna anteprima</small>
+          }
+        </div>
+
+        <input
+          #customerPhotoInput
+          class="hidden-file-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          (change)="choosePhoto($event)"
+        />
+
         <button
           type="button"
-          [class.active]="activeSection() === 'beard'"
-          (click)="selectSection('beard')"
+          class="file-picker-button"
+          (click)="customerPhotoInput.click()"
         >
-          Barba
+          Scegli fotografia
         </button>
-      }
-      <button
-        type="button"
-        [class.active]="activeSection() === 'color'"
-        (click)="selectSection('color')"
-      >
-        Armocromia
-      </button>
-      <button
-        type="button"
-        [class.active]="activeSection() === 'history'"
-        (click)="selectSection('history')"
-      >
-        Storico e consulenze
-      </button>
-    </nav>
 
-    @if (activeSection() === 'hair') {
-      @if (customerArea.analysis.hairProfile; as hair) {
-        <section class="profile-section-grid">
-          <article class="hl-card profile-card wide-card">
-            <div class="card-title-row">
-              <div>
-                <span class="eyebrow">PROFILO TECNICO</span>
-                <h2>I miei capelli</h2>
-              </div>
-              <span class="read-only-badge">Sola lettura</span>
-            </div>
+        <span class="selected-file-name">
+          {{ selectedPhotoFile()?.name || 'JPG, PNG o WEBP · massimo 10 MB' }}
+        </span>
 
-            <div class="technical-grid">
-              <div>
-                <span>Tono naturale</span>
-                <strong>{{ toneLabels[hair.naturalTone] }}</strong>
-              </div>
-              <div>
-                <span>Tono attuale</span>
-                <strong>{{ toneLabels[hair.currentTone] }}</strong>
-              </div>
-              <div>
-                <span>Riflesso</span>
-                <strong>{{ reflectionLabels[hair.reflection] }}</strong>
-              </div>
-              <div>
-                <span>Forma</span>
-                <strong>{{ hairTypeLabels[hair.hairType] }}</strong>
-              </div>
-              <div>
-                <span>Texture</span>
-                <strong>{{ hairTextureLabels[hair.texture] }}</strong>
-              </div>
-              <div>
-                <span>Lunghezza</span>
-                <strong>{{
-                  hair.hairLength ? hairLengthLabels[hair.hairLength] : 'Non indicata'
-                }}</strong>
-              </div>
-              <div>
-                <span>Porosità</span>
-                <strong>{{ physicalValueLabels[hair.porosity] }}</strong>
-              </div>
-              <div>
-                <span>Densità</span>
-                <strong>{{ physicalValueLabels[hair.density] }}</strong>
-              </div>
-              <div>
-                <span>Condizione</span>
-                <strong>{{ hairConditionLabels[hair.hairCondition] }}</strong>
-              </div>
-              <div>
-                <span>Capelli bianchi</span>
-                <strong>{{ hair.whiteHairPercentage ?? 0 }}%</strong>
-              </div>
-            </div>
-          </article>
+        <label>
+          <span>Utilizzo della foto</span>
+          <select [value]="photoType()" (change)="setPhotoType($event)">
+            <option value="TECHNICAL">Foto tecnica del mio percorso</option>
+            <option value="PROFILE">Immagine principale e profilo</option>
+          </select>
+        </label>
 
-          <article class="hl-card profile-card">
-            <span class="eyebrow">STORICO CHIMICO</span>
-            <h2>Trattamenti registrati</h2>
-            @if (hair.chemicalHistory.length) {
-              <div class="chip-list">
-                @for (entry of hair.chemicalHistory; track entry) {
-                  <span>{{ entry }}</span>
-                }
-              </div>
-            } @else {
-              <p class="muted">Nessun trattamento chimico registrato.</p>
+        <label>
+          <span>Descrizione facoltativa</span>
+          <input
+            type="text"
+            [value]="photoDescription()"
+            (input)="setPhotoDescription($event)"
+            placeholder="Es. situazione attuale frontale"
+          />
+        </label>
+
+        <button
+          type="button"
+          class="privacy-button primary"
+          [disabled]="uploadingPhoto() || !selectedPhotoFile()"
+          (click)="uploadPhoto()"
+        >
+          {{ uploadingPhoto() ? 'Caricamento...' : 'Aggiungi al mio HairLab' }}
+        </button>
+      </div>
+    </article>
+
+    <article class="hl-card customer-gallery-card wide-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">ARCHIVIO PERSONALE</span>
+          <h2>Le mie fotografie</h2>
+        </div>
+
+        @if (simulationSource()) {
+        <span class="source-ready-badge">Foto di partenza selezionata</span>
+        }
+      </div>
+
+      @if (!consent()?.valid) {
+      <div class="gallery-consent-notice">
+        Le fotografie restano disponibili nel tuo profilo, ma non verranno
+        elaborate finché il consenso IA non sarà attivo.
+      </div>
+      } @if (assetsLoading()) {
+      <div class="hl-empty-state">Caricamento fotografie...</div>
+      } @else if (!photos().length) {
+      <div class="hl-empty-state">
+        <strong>Non hai ancora aggiunto fotografie.</strong>
+        <p>Carica una foto per iniziare a costruire il tuo archivio HairLab.</p>
+      </div>
+      } @else {
+      <div class="customer-photo-grid">
+        @for (photo of photos(); track photo.id) {
+        <article
+          class="customer-photo-item"
+          [class.primary]="photo.primaryPhoto"
+        >
+          <div class="customer-photo-frame">
+            @if (imageUrl(photo.imageUrl); as url) {
+            <img
+              [src]="url"
+              [alt]="photo.description || 'Fotografia personale'"
+            />
             }
-          </article>
 
-          <article class="hl-card profile-card">
-            <span class="eyebrow">ATTENZIONI</span>
-            <h2>Sensibilità e controindicazioni</h2>
-            <div class="list-block">
-              <strong>Sensibilità</strong>
-              <p>
-                {{
-                  hair.sensitivities.length ? hair.sensitivities.join(', ') : 'Nessuna registrata'
-                }}
-              </p>
-              <strong>Controindicazioni</strong>
-              <p>
-                {{
-                  hair.contraindications.length
-                    ? hair.contraindications.join(', ')
-                    : 'Nessuna registrata'
-                }}
-              </p>
-            </div>
-          </article>
-
-          @if (hair.notes) {
-            <article class="hl-card profile-card wide-card">
-              <span class="eyebrow">NOTE PROFESSIONALI</span>
-              <h2>Osservazioni del team</h2>
-              <p>{{ hair.notes }}</p>
-            </article>
-          }
-        </section>
-      } @else {
-        <div class="hl-empty-state">
-          Il profilo capelli non è ancora stato compilato dal salone.
-        </div>
-      }
-    }
-
-    @if (activeSection() === 'face') {
-      @if (customerArea.analysis.faceProfile; as face) {
-        <section class="profile-section-grid">
-          <article class="hl-card profile-card wide-card">
-            <div class="card-title-row">
-              <div>
-                <span class="eyebrow">ANALISI MORFOLOGICA</span>
-                <h2>Il mio viso</h2>
-              </div>
-              <span class="read-only-badge">Sola lettura</span>
-            </div>
-
-            <div class="technical-grid">
-              <div>
-                <span>Forma viso</span><strong>{{ profileLabel(face.faceShape) }}</strong>
-              </div>
-              <div>
-                <span>Fronte</span><strong>{{ profileLabel(face.foreheadHeight) }}</strong>
-              </div>
-              <div>
-                <span>Attaccatura</span><strong>{{ profileLabel(face.hairlineShape) }}</strong>
-              </div>
-              <div>
-                <span>Forma occhi</span><strong>{{ profileLabel(face.eyeShape) }}</strong>
-              </div>
-              <div>
-                <span>Orientamento occhi</span
-                ><strong>{{ profileLabel(face.eyeOrientation) }}</strong>
-              </div>
-              <div>
-                <span>Colore occhi</span><strong>{{ profileLabel(face.eyeColor) }}</strong>
-              </div>
-              <div>
-                <span>Sopracciglia</span><strong>{{ profileLabel(face.eyebrowShape) }}</strong>
-              </div>
-              <div>
-                <span>Profilo naso</span><strong>{{ profileLabel(face.noseProfile) }}</strong>
-              </div>
-              <div>
-                <span>Mascella</span><strong>{{ profileLabel(face.jawShape) }}</strong>
-              </div>
-              <div>
-                <span>Mento</span><strong>{{ profileLabel(face.chinShape) }}</strong>
-              </div>
-              <div>
-                <span>Labbra</span><strong>{{ profileLabel(face.lipShape) }}</strong>
-              </div>
-              <div>
-                <span>Pienezza labbra</span><strong>{{ profileLabel(face.lipFullness) }}</strong>
-              </div>
-            </div>
-          </article>
-
-          @if (face.eyeReferenceColor) {
-            <article class="hl-card profile-card">
-              <span class="eyebrow">REFERENCE OCCHI</span>
-              <h2>Colore rilevato</h2>
-              <div class="color-reference">
-                <span [style.background]="face.eyeReferenceColor"></span>
-                <strong>{{ face.eyeReferenceColor }}</strong>
-              </div>
-              @if (face.eyeColorNotes) {
-                <p>{{ face.eyeColorNotes }}</p>
-              }
-            </article>
-          }
-
-          <article class="hl-card profile-card">
-            <span class="eyebrow">OBIETTIVI DI STILE</span>
-            <h2>Linee guida registrate</h2>
-            <p>{{ face.stylingGoals || 'Nessun obiettivo specifico registrato.' }}</p>
-          </article>
-
-          @if (face.notes) {
-            <article class="hl-card profile-card wide-card">
-              <span class="eyebrow">NOTE PROFESSIONALI</span>
-              <h2>Osservazioni sul viso</h2>
-              <p>{{ face.notes }}</p>
-            </article>
-          }
-        </section>
-      } @else {
-        <div class="hl-empty-state">
-          Il profilo del viso non è ancora stato compilato dal salone.
-        </div>
-      }
-    }
-
-    @if (activeSection() === 'beard') {
-      @if (customerArea.analysis.beardProfile; as beard) {
-        <section class="profile-section-grid">
-          <article class="hl-card profile-card wide-card">
-            <div class="card-title-row">
-              <div>
-                <span class="eyebrow">PROFILO BARBA</span>
-                <h2>Barba e baffi</h2>
-              </div>
-              <span class="read-only-badge">Sola lettura</span>
-            </div>
-            <div class="technical-grid">
-              <div>
-                <span>Stile attuale</span><strong>{{ profileLabel(beard.currentStyle) }}</strong>
-              </div>
-              <div>
-                <span>Stile desiderato</span><strong>{{ profileLabel(beard.desiredStyle) }}</strong>
-              </div>
-              <div>
-                <span>Lunghezza</span><strong>{{ profileLabel(beard.beardLength) }}</strong>
-              </div>
-              <div>
-                <span>Misura</span><strong>{{ beard.approximateLengthMm ?? 0 }} mm</strong>
-              </div>
-              <div>
-                <span>Densità</span><strong>{{ profileLabel(beard.density) }}</strong>
-              </div>
-              <div>
-                <span>Crescita</span><strong>{{ profileLabel(beard.growthPattern) }}</strong>
-              </div>
-              <div>
-                <span>Baffi</span
-                ><strong>{{
-                  beard.moustachePresent ? profileLabel(beard.moustacheStyle) : 'Non presenti'
-                }}</strong>
-              </div>
-              <div>
-                <span>Collegamento baffi</span
-                ><strong>{{ profileLabel(beard.moustacheConnection) }}</strong>
-              </div>
-              <div>
-                <span>Linea guance</span><strong>{{ profileLabel(beard.cheekLine) }}</strong>
-              </div>
-              <div>
-                <span>Linea collo</span><strong>{{ profileLabel(beard.neckline) }}</strong>
-              </div>
-              <div>
-                <span>Bianchi</span><strong>{{ beard.grayPercentage ?? 0 }}%</strong>
-              </div>
-              <div>
-                <span>Obiettivo colore</span
-                ><strong>{{ profileLabel(beard.beardColorGoal) }}</strong>
-              </div>
-            </div>
-          </article>
-          <article class="hl-card profile-card">
-            <span class="eyebrow">CUTE</span>
-            <h2>Sensibilità e cautele</h2>
-            <p>
-              Sensibilità: <strong>{{ profileLabel(beard.skinSensitivity) }}</strong>
-            </p>
-            <p>
-              Irritazione:
-              <strong>{{ beard.irritationPresent ? 'Presente' : 'Non rilevata' }}</strong>
-            </p>
-            <p>
-              Peli incarniti:
-              <strong>{{ beard.ingrownHairPresent ? 'Presenti' : 'Non rilevati' }}</strong>
-            </p>
-          </article>
-          <article class="hl-card profile-card">
-            <span class="eyebrow">NOTE PROFESSIONALI</span>
-            <h2>Indicazioni del team</h2>
-            <p>{{ beard.notes || 'Nessuna nota registrata.' }}</p>
-            @if (beard.contraindications) {
-              <p><strong>Controindicazioni:</strong> {{ beard.contraindications }}</p>
-            }
-          </article>
-        </section>
-      } @else {
-        <div class="hl-empty-state">Il Profilo barba non è ancora stato compilato dal salone.</div>
-      }
-    }
-
-    @if (activeSection() === 'color') {
-      @if (customerArea.analysis.colorAnalysis; as color) {
-        <section class="profile-section-grid">
-          <article class="hl-card profile-card wide-card">
-            <div class="card-title-row">
-              <div>
-                <span class="eyebrow">ARMOCROMIA</span>
-                <h2>La mia analisi cromatica</h2>
-              </div>
-              <span class="read-only-badge">Sola lettura</span>
-            </div>
-
-            <div class="technical-grid">
-              <div>
-                <span>Tonalità pelle</span><strong>{{ profileLabel(color.skinTone) }}</strong>
-              </div>
-              <div>
-                <span>Sottotono</span><strong>{{ profileLabel(color.undertone) }}</strong>
-              </div>
-              <div>
-                <span>Stagione</span><strong>{{ profileLabel(color.season) }}</strong>
-              </div>
-              <div>
-                <span>Sottostagione</span><strong>{{ profileLabel(color.subSeason) }}</strong>
-              </div>
-              <div>
-                <span>Valore</span><strong>{{ profileLabel(color.colorValue) }}</strong>
-              </div>
-              <div>
-                <span>Contrasto</span><strong>{{ profileLabel(color.contrastLevel) }}</strong>
-              </div>
-              <div>
-                <span>Croma</span><strong>{{ profileLabel(color.chroma) }}</strong>
-              </div>
-              <div>
-                <span>Metalli</span
-                ><strong>{{
-                  color.bestMetals.length
-                    ? color.bestMetals.map(profileLabel).join(', ')
-                    : 'Non indicati'
-                }}</strong>
-              </div>
-            </div>
-          </article>
-
-          <article class="hl-card profile-card">
-            <span class="eyebrow">COLORI VALORIZZANTI</span>
-            <h2>Palette consigliata</h2>
-            <div class="palette-grid">
-              @for (entry of paletteEntries(color.bestColors); track entry[0]) {
-                <div>
-                  <span [style.background]="entry[1]"></span>
-                  <strong>{{ entry[0] }}</strong>
-                  <small>{{ entry[1] }}</small>
-                </div>
+            <div class="customer-photo-badges">
+              <span>{{ photoTypeLabel(photo.photoType) }}</span>
+              @if (photo.primaryPhoto) {
+              <span>Principale</span>
+              } @if (photo.simulationSource) {
+              <span class="analysis-source">Foto di partenza</span>
               }
             </div>
-          </article>
-
-          <article class="hl-card profile-card">
-            <span class="eyebrow">COLORI DA DOSARE</span>
-            <h2>Palette meno armonica</h2>
-            <div class="palette-grid">
-              @for (entry of paletteEntries(color.avoidColors); track entry[0]) {
-                <div>
-                  <span [style.background]="entry[1]"></span>
-                  <strong>{{ entry[0] }}</strong>
-                  <small>{{ entry[1] }}</small>
-                </div>
-              }
-            </div>
-          </article>
-
-          @if (color.notes) {
-            <article class="hl-card profile-card wide-card">
-              <span class="eyebrow">NOTE PROFESSIONALI</span>
-              <h2>Osservazioni armocromatiche</h2>
-              <p>{{ color.notes }}</p>
-            </article>
-          }
-        </section>
-      } @else {
-        <div class="hl-empty-state">
-          L'analisi cromatica non è ancora stata compilata dal salone.
-        </div>
-      }
-    }
-
-    @if (activeSection() === 'history') {
-      <section class="history-grid">
-        <article class="hl-card history-card">
-          <div class="card-title-row">
-            <div>
-              <span class="eyebrow">STORICO SERVIZI</span>
-              <h2>Appuntamenti completati</h2>
-            </div>
-            <span>{{ completedAppointments().length }}</span>
           </div>
 
-          @if (completedAppointments().length) {
-            <div class="history-list">
-              @for (appointment of completedAppointments(); track appointment.id) {
-                <article>
-                  <div>
-                    <strong>{{
-                      appointment.startDateTime | date: 'dd MMMM yyyy' : '' : 'it-IT'
-                    }}</strong>
-                    <span>{{ appointment.startDateTime | date: 'HH:mm' }}</span>
-                  </div>
-                  <div>
-                    @for (item of appointment.items; track item.id) {
-                      <strong>{{ item.serviceName }}</strong>
-                      <span>con {{ item.employeeName }}</span>
-                    }
-                  </div>
-                </article>
-              }
-            </div>
-          } @else {
-            <div class="hl-empty-state">Non risultano ancora appuntamenti completati.</div>
-          }
-        </article>
-
-        <article class="hl-card history-card">
-          <div class="card-title-row">
-            <div>
-              <span class="eyebrow">CONSULENZE</span>
-              <h2>Analisi professionali</h2>
-            </div>
-            <span>{{ customerArea.consultations.length }}</span>
+          <div class="customer-photo-copy">
+            <strong>{{ photo.description || 'Fotografia personale' }}</strong>
+            <small
+              >{{ photo.capturedAt || photo.createdAt | date: 'dd/MM/yyyy HH:mm'
+              }}</small
+            >
           </div>
 
-          @if (customerArea.consultations.length) {
-            <div class="consultation-history">
-              @for (consultation of customerArea.consultations; track consultation.id) {
-                <article>
-                  <header>
-                    <strong>{{ consultationTypeLabels[consultation.type] }}</strong>
-                    <span>{{ consultation.consultationDate | date: 'dd/MM/yyyy' }}</span>
-                  </header>
-                  <h3>{{ consultation.objective }}</h3>
-                  <p>{{ consultation.proposedProcedure }}</p>
-                  @if (consultation.technicalNotes) {
-                    <small>{{ consultation.technicalNotes }}</small>
-                  }
-                </article>
-              }
-            </div>
-          } @else {
-            <div class="hl-empty-state">Non risultano consulenze registrate.</div>
+          <footer>
+            <button
+              type="button"
+              [disabled]="photo.primaryPhoto"
+              (click)="selectPrimaryPhoto(photo)"
+            >
+              Usa come principale
+            </button>
+
+            <button
+              type="button"
+              [disabled]="photo.simulationSource || !consent()?.valid"
+              [title]="
+                        consent()?.valid
+                          ? 'Usa questa foto come situazione iniziale'
+                          : 'Attiva prima il consenso IA'
+                      "
+              (click)="selectSimulationPhoto(photo)"
+            >
+              Usa per analisi
+            </button>
+
+            @if (canRemovePhoto(photo)) {
+            <button type="button" class="danger" (click)="removePhoto(photo)">
+              Rimuovi
+            </button>
+            }
+          </footer>
+        </article>
+        }
+      </div>
+      }
+    </article>
+  </section>
+  } @if (activeSection() === 'history') {
+  <section class="history-grid">
+    <article class="hl-card history-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">STORICO SERVIZI</span>
+          <h2>Appuntamenti completati</h2>
+        </div>
+        <span>{{ completedAppointments().length }}</span>
+      </div>
+
+      @if (completedAppointments().length) {
+      <div class="history-list">
+        @for (appointment of completedAppointments(); track appointment.id) {
+        <article>
+          <div>
+            <strong
+              >{{ appointment.startDateTime | date: 'dd MMMM yyyy' : '' :
+              'it-IT' }}</strong
+            >
+            <span>{{ appointment.startDateTime | date: 'HH:mm' }}</span>
+          </div>
+          <div>
+            @for (item of appointment.items; track item.id) {
+            <strong>{{ item.serviceName }}</strong>
+            <span>con {{ item.employeeName }}</span>
+            }
+          </div>
+        </article>
+        }
+      </div>
+      } @else {
+      <div class="hl-empty-state">
+        Non risultano ancora appuntamenti completati.
+      </div>
+      }
+    </article>
+
+    <article class="hl-card history-card">
+      <div class="card-title-row">
+        <div>
+          <span class="eyebrow">CONSULENZE</span>
+          <h2>Analisi professionali</h2>
+        </div>
+        <span>{{ customerArea.consultations.length }}</span>
+      </div>
+
+      @if (customerArea.consultations.length) {
+      <div class="consultation-history">
+        @for (consultation of customerArea.consultations; track consultation.id)
+        {
+        <article>
+          <header>
+            <strong>{{ consultationTypeLabels[consultation.type] }}</strong>
+            <span
+              >{{ consultation.consultationDate | date: 'dd/MM/yyyy' }}</span
+            >
+          </header>
+          <h3>{{ consultation.objective }}</h3>
+          <p>{{ consultation.proposedProcedure }}</p>
+          @if (consultation.technicalNotes) {
+          <small>{{ consultation.technicalNotes }}</small>
           }
         </article>
-      </section>
-    }
-  }
+        }
+      </div>
+      } @else {
+      <div class="hl-empty-state">Non risultano consulenze registrate.</div>
+      }
+    </article>
+  </section>
+  } }
 </section>
