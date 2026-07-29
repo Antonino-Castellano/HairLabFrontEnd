@@ -29,6 +29,8 @@ export interface HaircutDefinitionCatalog {
   napeLengthMinMm?: number | null;
   napeLengthMaxMm?: number | null;
   referenceImageUrl?: string | null;
+  tutorialUrl?: string | null;
+  tutorialLabel?: string | null;
   technicalDescription: string;
   futureSimulationDescriptor?: string | null;
   futureSimulationReady: boolean;

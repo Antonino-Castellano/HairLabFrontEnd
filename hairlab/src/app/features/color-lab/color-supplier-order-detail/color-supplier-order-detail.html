@@ -1,1 +1,122 @@
-<section class="page">@if(order();as o){<header><div><span>COLOR LAB · ORDINE</span><h1>{{o.orderNumber}}</h1><p>{{o.supplierName}} · {{labels[o.status]}}</p></div><a routerLink="/color-lab/orders">← Ordini</a></header>@if(errorMessage()){<div class="error">{{errorMessage()}}</div>}@if(successMessage()){<div class="success">{{successMessage()}}</div>}<div class="actions">@if(o.status==='DRAFT'){<button class="primary" (click)="ordered()">Segna come ordinato</button>}@if(o.status==='DRAFT'||o.status==='ORDERED'){<button (click)="cancel()">Annulla</button>}</div><section class="card">@for(i of o.items;track i.id){<article><div><small>{{i.brand}} @if(i.lineName){· {{i.lineName}}}</small><strong>{{i.code}} · {{i.name}}</strong></div><span>Ordinato <b>{{i.orderedQuantity}} {{unitLabels[i.unit]}}</b></span><span>Ricevuto <b>{{i.receivedQuantity}}</b></span><span>Residuo <b>{{i.remainingQuantity}}</b></span>@if(canReceive()&&i.remainingQuantity>0){<input type="number" min="0" [max]="i.remainingQuantity" step="0.01" [value]="quantities()[i.id]??0" (input)="change(i.id,$event)">}</article>}</section>@if(canReceive()){<section class="card"><textarea rows="3" placeholder="Note ricezione..." [value]="notes()" (input)="notes.set($any($event.target).value)"></textarea><button class="primary" [disabled]="busy()" (click)="receive()">Registra ricezione</button></section>}}</section>
+<section class="page">
+  @if (order(); as currentOrder) {
+    <header>
+      <div>
+        <span>COLOR LAB · ORDINE</span>
+        <h1>{{ currentOrder.orderNumber }}</h1>
+        <p>{{ currentOrder.supplierName }} · {{ labels[currentOrder.status] }}</p>
+      </div>
+      <a routerLink="/color-lab/orders">← Ordini</a>
+    </header>
+
+    @if (errorMessage()) {
+      <div class="error">{{ errorMessage() }}</div>
+    }
+    @if (successMessage()) {
+      <div class="success">{{ successMessage() }}</div>
+    }
+
+    <section class="cost-summary">
+      <div>
+        <span>Costo impegnato</span>
+        <strong>{{ committedTotal() | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</strong>
+      </div>
+      <div>
+        <span>Costo merce ricevuta</span>
+        <strong>{{ receivedTotal() | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</strong>
+      </div>
+      <p>I costi alimentano la dashboard statistica riservata al Superadmin.</p>
+    </section>
+
+    <div class="actions">
+      @if (currentOrder.status === 'DRAFT') {
+        <button class="primary" (click)="ordered()">Segna come ordinato</button>
+      }
+      @if (currentOrder.status === 'DRAFT' || currentOrder.status === 'ORDERED') {
+        <button (click)="cancel()">Annulla</button>
+      }
+    </div>
+
+    <section class="card">
+      @for (item of currentOrder.items; track item.id) {
+        <article>
+          <div class="product-data">
+            <small
+              >{{ item.brand }}
+              @if (item.lineName) {
+                · {{ item.lineName }}
+              }
+            </small>
+            <strong>{{ item.code }} · {{ item.name }}</strong>
+          </div>
+          <span
+            >Ordinato <b>{{ item.orderedQuantity }} {{ unitLabels[item.unit] }}</b></span
+          >
+          <span
+            >Ricevuto <b>{{ item.receivedQuantity }}</b></span
+          >
+          <span
+            >Residuo <b>{{ item.remainingQuantity }}</b></span
+          >
+          <div class="price-editor">
+            <label [for]="'price-' + item.id">Prezzo unitario</label>
+            <div>
+              <input
+                [id]="'price-' + item.id"
+                type="number"
+                min="0"
+                step="0.01"
+                [disabled]="!canEditCosts()"
+                [value]="unitPrices()[item.id] ?? 0"
+                (input)="changePrice(item.id, $event)"
+              />
+              @if (canEditCosts()) {
+                <button
+                  type="button"
+                  [disabled]="savingPriceId() === item.id"
+                  (click)="savePrice(item.id)"
+                >
+                  {{ savingPriceId() === item.id ? 'Salvo…' : 'Salva' }}
+                </button>
+              }
+            </div>
+            <small>
+              Totale riga:
+              {{
+                item.orderedQuantity * (unitPrices()[item.id] ?? 0)
+                  | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+              }}
+            </small>
+          </div>
+          @if (canReceive() && item.remainingQuantity > 0) {
+            <label class="receive-field">
+              <span>Quantità ricevuta ora</span>
+              <input
+                type="number"
+                min="0"
+                [max]="item.remainingQuantity"
+                step="0.01"
+                [value]="quantities()[item.id] ?? 0"
+                (input)="changeQuantity(item.id, $event)"
+              />
+            </label>
+          }
+        </article>
+      }
+    </section>
+
+    @if (canReceive()) {
+      <section class="card receive-card">
+        <textarea
+          rows="3"
+          placeholder="Note ricezione..."
+          [value]="notes()"
+          (input)="notes.set($any($event.target).value)"
+        ></textarea>
+        <button class="primary" [disabled]="busy()" (click)="receive()">
+          {{ busy() ? 'Registrazione…' : 'Registra ricezione' }}
+        </button>
+      </section>
+    }
+  }
+</section>

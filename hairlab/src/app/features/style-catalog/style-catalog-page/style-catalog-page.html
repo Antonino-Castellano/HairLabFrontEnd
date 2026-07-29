@@ -330,6 +330,18 @@
               <strong>{{ compatibilityText(item) }}</strong>
             </div>
 
+            @if (isHaircut(item) && item.tutorialUrl) {
+              <a
+                class="tutorial-link"
+                [href]="item.tutorialUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>▶</span>
+                {{ item.tutorialLabel || 'Apri tutorial del taglio' }}
+              </a>
+            }
+
             <details class="card-details">
               <summary>Vedi scheda tecnica</summary>
               <dl>
@@ -432,6 +444,24 @@
               placeholder="Descrivi forma, effetto visivo e manutenzione con parole chiare."
             ></textarea>
           </label>
+          @if (activeTab() === 'haircuts') {
+            <label class="full-field">
+              <span>Link tutorial</span>
+              <input
+                type="url"
+                [(ngModel)]="formModel.tutorialUrl"
+                placeholder="https://www.youtube.com/... oppure un altro tutorial professionale"
+              />
+              <small>Puoi sostituire la ricerca YouTube automatica con un video specifico.</small>
+            </label>
+            <label class="full-field">
+              <span>Etichetta tutorial</span>
+              <input
+                [(ngModel)]="formModel.tutorialLabel"
+                placeholder="Tutorial e tecnica di esecuzione"
+              />
+            </label>
+          }
         </div>
       </section>
 

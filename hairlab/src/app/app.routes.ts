@@ -5,6 +5,7 @@ import { LayoutComponent } from './shared/layout/layout';
 
 import { LoginComponent } from './features/login/login';
 import { DashboardComponent } from './features/dashboard/dashboard';
+import { BusinessAnalyticsPageComponent } from './features/business-analytics/business-analytics-page/business-analytics-page';
 import { AccessDeniedComponent } from './features/access-denied/access-denied';
 import { CustomerAreaComponent } from './features/customer-area/customer-area';
 import { CustomerProfileComponent } from './features/customer-profile/customer-profile';
@@ -65,21 +66,20 @@ import { SubscriptionPlanComponent } from './features/start-page/subscription-pl
 import { StartPageComponent } from './features/start-page/start-page/start-page';
 
 export const routes: Routes = [
-
   {
     path: '',
     component: StartPageComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
 
   {
     path: 'salon/hairlab',
-    component: SubscriptionPlanComponent
+    component: SubscriptionPlanComponent,
   },
 
   {
     path: 'salon-form',
-    component: SalonFormComponent
+    component: SalonFormComponent,
   },
 
   {
@@ -114,6 +114,15 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: {
           roles: ['ADMIN', 'SUPERADMIN', 'RECEPTIONIST'],
+        },
+      },
+
+      {
+        path: 'business-analytics',
+        component: BusinessAnalyticsPageComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['SUPERADMIN'],
         },
       },
 

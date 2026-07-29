@@ -1,0 +1,349 @@
+HAIRLAB — INVENTARIO COMPLETO LIBRERIA TECNICA
+
+I 285 elementi sono i soli TAGLI.
+Libreria completa: 285 tagli + 20 frangie + 19 barbe = 324 elementi.
+
+ASSET ATTUALI
+Tagli: 20 record coperti, 40 file JPG; 265 record da creare.
+Frangie: 5 record coperti, 10 file JPG; 15 record da creare.
+Barbe: 5 record coperti, 10 file JPG; 14 record da creare.
+Totale: 30 record coperti su 324; 294 record da creare.
+
+Gli asset sono creati ma non ancora collegati automaticamente.
+Gli abbinamenti sotto sono proposte da verificare visivamente.
+
+====================================================================================================
+TAGLI — 285
+====================================================================================================
+001. [Femminile] [Buzz e crop] Buzz cut uniforme — DA CREARE
+002. [Femminile] [Buzz e crop] Buzz cut sfumato — DA CREARE
+003. [Femminile] [Buzz e crop] Buzz cut con sommità più lunga — DA CREARE
+004. [Femminile] [Buzz e crop] Shaved crop — DA CREARE
+005. [Femminile] [Buzz e crop] Micro crop — DA CREARE
+006. [Femminile] [Buzz e crop] French crop femminile — DA CREARE
+007. [Femminile] [Buzz e crop] Caesar crop femminile — DA CREARE
+008. [Femminile] [Buzz e crop] Textured crop femminile — DA CREARE
+009. [Femminile] [Pixie] Classic pixie — ASSET CREATO — DA COLLEGARE — taglio_pixie_01.jpg, taglio_pixie_02.jpg
+010. [Femminile] [Pixie] Soft pixie — DA CREARE
+011. [Femminile] [Pixie] Micro pixie — DA CREARE
+012. [Femminile] [Pixie] Short pixie — DA CREARE
+013. [Femminile] [Pixie] Long pixie — DA CREARE
+014. [Femminile] [Pixie] Layered pixie — DA CREARE
+015. [Femminile] [Pixie] Graduated pixie — DA CREARE
+016. [Femminile] [Pixie] Textured pixie — DA CREARE
+017. [Femminile] [Pixie] Choppy pixie — DA CREARE
+018. [Femminile] [Pixie] Feathered pixie — DA CREARE
+019. [Femminile] [Pixie] Piecey pixie — DA CREARE
+020. [Femminile] [Pixie] Sleek pixie — DA CREARE
+021. [Femminile] [Pixie] Polished pixie — DA CREARE
+022. [Femminile] [Pixie] Tousled pixie — DA CREARE
+023. [Femminile] [Pixie] Undercut pixie — DA CREARE
+024. [Femminile] [Pixie] Hidden undercut pixie — DA CREARE
+025. [Femminile] [Pixie] Side-shaved pixie — DA CREARE
+026. [Femminile] [Pixie] Disconnected pixie — DA CREARE
+027. [Femminile] [Pixie] Asymmetrical pixie — DA CREARE
+028. [Femminile] [Pixie] Stacked pixie — DA CREARE
+029. [Femminile] [Pixie] Tapered pixie — DA CREARE
+030. [Femminile] [Pixie] Cropped pixie — DA CREARE
+031. [Femminile] [Pixie] Gamine pixie — DA CREARE
+032. [Femminile] [Pixie] Power pixie — DA CREARE
+033. [Femminile] [Pixie] Contoured pixie — DA CREARE
+034. [Femminile] [Pixie] Pixie con micro frangia — DA CREARE
+035. [Femminile] [Pixie] Pixie con frangia laterale — DA CREARE
+036. [Femminile] [Pixie] Pixie con frangia lunga — DA CREARE
+037. [Femminile] [Pixie] Curly pixie — DA CREARE
+038. [Femminile] [Pixie] Wavy pixie — DA CREARE
+039. [Femminile] [Pixie] Spiky pixie — DA CREARE
+040. [Femminile] [Pixie] Pompadour pixie — DA CREARE
+041. [Femminile] [Pixie] Pixie mullet — DA CREARE
+042. [Femminile] [Bixie] Classic bixie — DA CREARE
+043. [Femminile] [Bixie] Soft bixie — DA CREARE
+044. [Femminile] [Bixie] 90s bixie — DA CREARE
+045. [Femminile] [Bixie] Layered bixie — DA CREARE
+046. [Femminile] [Bixie] Shaggy bixie — DA CREARE
+047. [Femminile] [Bixie] Textured bixie — DA CREARE
+048. [Femminile] [Bixie] Curly bixie — DA CREARE
+049. [Femminile] [Bixie] Wavy bixie — DA CREARE
+050. [Femminile] [Bixie] Sleek bixie — DA CREARE
+051. [Femminile] [Bixie] Stacked bixie — DA CREARE
+052. [Femminile] [Bixie] Graduated bixie — DA CREARE
+053. [Femminile] [Bixie] Asymmetrical bixie — DA CREARE
+054. [Femminile] [Bixie] Undercut bixie — DA CREARE
+055. [Femminile] [Bixie] Bixie con frangia lunga — DA CREARE
+056. [Femminile] [Bixie] Bixie con curtain bangs — DA CREARE
+057. [Femminile] [Bixie] Bixie con micro frangia — DA CREARE
+058. [Femminile] [Bixie] Pixie bob arrotondato — DA CREARE
+059. [Femminile] [Bixie] Pixie bob graduato — DA CREARE
+060. [Femminile] [Bob] Classic bob — ASSET CREATO — DA COLLEGARE — taglio_bob_classico_01.jpg, taglio_bob_classico_02.jpg
+061. [Femminile] [Bob] Blunt bob — DA CREARE
+062. [Femminile] [Bob] Box bob — DA CREARE
+063. [Femminile] [Bob] French bob — DA CREARE
+064. [Femminile] [Bob] Parisian bob — DA CREARE
+065. [Femminile] [Bob] Italian bob corto — DA CREARE
+066. [Femminile] [Bob] Jaw-length bob — DA CREARE
+067. [Femminile] [Bob] Chin-length bob — DA CREARE
+068. [Femminile] [Bob] Cheekbone bob — DA CREARE
+069. [Femminile] [Bob] Micro bob — DA CREARE
+070. [Femminile] [Bob] Mini bob — DA CREARE
+071. [Femminile] [Bob] Bubble bob — DA CREARE
+072. [Femminile] [Bob] Rounded bob — DA CREARE
+073. [Femminile] [Bob] Sleek bob — DA CREARE
+074. [Femminile] [Bob] Soft bob — DA CREARE
+075. [Femminile] [Bob] Textured bob — DA CREARE
+076. [Femminile] [Bob] Choppy bob — DA CREARE
+077. [Femminile] [Bob] Layered bob — DA CREARE
+078. [Femminile] [Bob] Shaggy bob — DA CREARE
+079. [Femminile] [Bob] Flipped bob — DA CREARE
+080. [Femminile] [Bob] Curly bob — DA CREARE
+081. [Femminile] [Bob] Wavy bob — DA CREARE
+082. [Femminile] [Bob] Graduated bob — DA CREARE
+083. [Femminile] [Bob] Stacked bob — DA CREARE
+084. [Femminile] [Bob] Inverted bob — DA CREARE
+085. [Femminile] [Bob] A-line bob — DA CREARE
+086. [Femminile] [Bob] Concave bob — DA CREARE
+087. [Femminile] [Bob] Convex bob — DA CREARE
+088. [Femminile] [Bob] Asymmetrical bob — ASSET CREATO — DA COLLEGARE — taglio_asimmetrico_01.jpg, taglio_asimmetrico_02.jpg
+089. [Femminile] [Bob] Disconnected bob — DA CREARE
+090. [Femminile] [Bob] Undercut bob — DA CREARE
+091. [Femminile] [Bob] Hidden undercut bob — DA CREARE
+092. [Femminile] [Bob] Side-shaved bob — DA CREARE
+093. [Femminile] [Bob] Bob con frangia piena — DA CREARE
+094. [Femminile] [Bob] Bob con micro frangia — DA CREARE
+095. [Femminile] [Bob] Bob con curtain bangs — DA CREARE
+096. [Femminile] [Bob] Bob con frangia laterale — DA CREARE
+097. [Femminile] [Lob] Classic lob — ASSET CREATO — DA COLLEGARE — taglio_lob_01.jpg, taglio_lob_02.jpg
+098. [Femminile] [Lob] Blunt lob — DA CREARE
+099. [Femminile] [Lob] Soft lob — DA CREARE
+100. [Femminile] [Lob] Layered lob — DA CREARE
+101. [Femminile] [Lob] Long layered lob — DA CREARE
+102. [Femminile] [Lob] Textured lob — DA CREARE
+103. [Femminile] [Lob] Choppy lob — DA CREARE
+104. [Femminile] [Lob] Shaggy lob — DA CREARE
+105. [Femminile] [Lob] Wavy lob — DA CREARE
+106. [Femminile] [Lob] Curly lob — DA CREARE
+107. [Femminile] [Lob] Sleek lob — DA CREARE
+108. [Femminile] [Lob] Italian lob — DA CREARE
+109. [Femminile] [Lob] A-line lob — DA CREARE
+110. [Femminile] [Lob] Inverted lob — DA CREARE
+111. [Femminile] [Lob] Asymmetrical lob — DA CREARE
+112. [Femminile] [Lob] Graduated lob — DA CREARE
+113. [Femminile] [Lob] Collarbone lob — DA CREARE
+114. [Femminile] [Lob] Clavicut — DA CREARE
+115. [Femminile] [Lob] Shoulder-grazing lob — ASSET CREATO — DA COLLEGARE — taglio_bob_lungo_01.jpg, taglio_bob_lungo_02.jpg
+116. [Femminile] [Lob] Lob con face framing — DA CREARE
+117. [Femminile] [Lob] Lob con curtain bangs — DA CREARE
+118. [Femminile] [Lob] Lob con frangia piena — DA CREARE
+119. [Femminile] [Lob] Lob con frangia laterale — DA CREARE
+120. [Femminile] [Shag] Classic shag — ASSET CREATO — DA COLLEGARE — taglio_shag_01.jpg, taglio_shag_02.jpg
+121. [Femminile] [Shag] Soft shag — DA CREARE
+122. [Femminile] [Shag] Modern shag — DA CREARE
+123. [Femminile] [Shag] Short shag — DA CREARE
+124. [Femminile] [Shag] Medium shag — DA CREARE
+125. [Femminile] [Shag] Long shag — DA CREARE
+126. [Femminile] [Shag] Curly shag — DA CREARE
+127. [Femminile] [Shag] Wavy shag — DA CREARE
+128. [Femminile] [Shag] Straight shag — DA CREARE
+129. [Femminile] [Shag] Choppy shag — DA CREARE
+130. [Femminile] [Shag] Razor shag — DA CREARE
+131. [Femminile] [Shag] Heavy shag — DA CREARE
+132. [Femminile] [Shag] Light shag — DA CREARE
+133. [Femminile] [Shag] 70s shag — DA CREARE
+134. [Femminile] [Shag] 90s shag — DA CREARE
+135. [Femminile] [Shag] Shag con curtain bangs — DA CREARE
+136. [Femminile] [Shag] Shag con frangia piena — DA CREARE
+137. [Femminile] [Shag] Shag con micro frangia — DA CREARE
+138. [Femminile] [Wolf cut] Classic wolf cut — DA CREARE
+139. [Femminile] [Wolf cut] Soft wolf cut — DA CREARE
+140. [Femminile] [Wolf cut] Short wolf cut — DA CREARE
+141. [Femminile] [Wolf cut] Medium wolf cut — DA CREARE
+142. [Femminile] [Wolf cut] Long wolf cut — DA CREARE
+143. [Femminile] [Wolf cut] Curly wolf cut — DA CREARE
+144. [Femminile] [Wolf cut] Wavy wolf cut — DA CREARE
+145. [Femminile] [Wolf cut] Straight wolf cut — DA CREARE
+146. [Femminile] [Wolf cut] Layered wolf cut — DA CREARE
+147. [Femminile] [Wolf cut] Shaggy wolf cut — DA CREARE
+148. [Femminile] [Wolf cut] Voluminous wolf cut — DA CREARE
+149. [Femminile] [Wolf cut] Wolf cut con curtain bangs — DA CREARE
+150. [Femminile] [Wolf cut] Wolf cut con frangia piena — DA CREARE
+151. [Femminile] [Wolf cut] Wolf cut con micro frangia — DA CREARE
+152. [Femminile] [Mullet] Classic female mullet — DA CREARE
+153. [Femminile] [Mullet] Soft mullet — DA CREARE
+154. [Femminile] [Mullet] Modern mullet — DA CREARE
+155. [Femminile] [Mullet] Micro mullet — DA CREARE
+156. [Femminile] [Mullet] Pixie mullet femminile — DA CREARE
+157. [Femminile] [Mullet] Shag mullet — DA CREARE
+158. [Femminile] [Mullet] Wolf mullet — DA CREARE
+159. [Femminile] [Mullet] Curly mullet — DA CREARE
+160. [Femminile] [Mullet] Wavy mullet — DA CREARE
+161. [Femminile] [Mullet] Long mullet — DA CREARE
+162. [Femminile] [Mullet] Disconnected mullet — DA CREARE
+163. [Femminile] [Mullet] Undercut mullet — DA CREARE
+164. [Femminile] [Tagli medi] Taglio medio pari — DA CREARE
+165. [Femminile] [Tagli medi] Taglio medio leggermente scalato — DA CREARE
+166. [Femminile] [Tagli medi] Taglio medio scalato — ASSET CREATO — DA COLLEGARE — taglio_layered_01.jpg, taglio_layered_02.jpg
+167. [Femminile] [Tagli medi] Taglio medio molto scalato — DA CREARE
+168. [Femminile] [Tagli medi] Rounded medium cut — DA CREARE
+169. [Femminile] [Tagli medi] U-shaped medium cut — DA CREARE
+170. [Femminile] [Tagli medi] V-shaped medium cut — DA CREARE
+171. [Femminile] [Tagli medi] Medium butterfly cut — DA CREARE
+172. [Femminile] [Tagli medi] Medium feathered cut — DA CREARE
+173. [Femminile] [Tagli medi] Medium face-framing cut — DA CREARE
+174. [Femminile] [Tagli medi] Medium choppy layers — DA CREARE
+175. [Femminile] [Tagli medi] Medium invisible layers — DA CREARE
+176. [Femminile] [Tagli medi] Medium internal layers — DA CREARE
+177. [Femminile] [Tagli medi] Medium disconnected layers — DA CREARE
+178. [Femminile] [Tagli medi] Medium curly layers — DA CREARE
+179. [Femminile] [Tagli medi] Medium wavy layers — DA CREARE
+180. [Femminile] [Tagli medi] Shoulder-length blunt cut — DA CREARE
+181. [Femminile] [Tagli lunghi] Lungo pari — ASSET CREATO — DA COLLEGARE — taglio_lungo_liscio_01.jpg, taglio_lungo_liscio_02.jpg
+182. [Femminile] [Tagli lunghi] Lungo con perimetro pieno — DA CREARE
+183. [Femminile] [Tagli lunghi] Lungo con perimetro arrotondato — DA CREARE
+184. [Femminile] [Tagli lunghi] Lungo a U — DA CREARE
+185. [Femminile] [Tagli lunghi] Lungo a V — DA CREARE
+186. [Femminile] [Tagli lunghi] Lungo leggermente scalato — DA CREARE
+187. [Femminile] [Tagli lunghi] Lungo scalato — DA CREARE
+188. [Femminile] [Tagli lunghi] Lungo molto scalato — DA CREARE
+189. [Femminile] [Tagli lunghi] Long graduation — DA CREARE
+190. [Femminile] [Tagli lunghi] Long round layers — DA CREARE
+191. [Femminile] [Tagli lunghi] Long square layers — DA CREARE
+192. [Femminile] [Tagli lunghi] Long triangular layers — DA CREARE
+193. [Femminile] [Tagli lunghi] Long face-framing layers — DA CREARE
+194. [Femminile] [Tagli lunghi] Long feathered layers — DA CREARE
+195. [Femminile] [Tagli lunghi] Long invisible layers — DA CREARE
+196. [Femminile] [Tagli lunghi] Long internal layers — DA CREARE
+197. [Femminile] [Tagli lunghi] Long disconnected layers — DA CREARE
+198. [Femminile] [Tagli lunghi] Long choppy layers — DA CREARE
+199. [Femminile] [Tagli lunghi] Long cascading layers — DA CREARE
+200. [Femminile] [Tagli lunghi] Long waterfall layers — DA CREARE
+201. [Femminile] [Tagli lunghi] Long curly layers — ASSET CREATO — DA COLLEGARE — taglio_lungo_riccio_01.jpg, taglio_lungo_riccio_02.jpg
+202. [Femminile] [Tagli lunghi] Long wavy layers — DA CREARE
+203. [Femminile] [Tagli lunghi] Long blunt cut — DA CREARE
+204. [Femminile] [Tagli lunghi] Classic butterfly cut — DA CREARE
+205. [Femminile] [Tagli lunghi] Soft butterfly cut — DA CREARE
+206. [Femminile] [Tagli lunghi] Long butterfly cut — DA CREARE
+207. [Femminile] [Tagli lunghi] Butterfly cut con curtain bangs — DA CREARE
+208. [Femminile] [Tagli lunghi] Butterfly cut con face framing — DA CREARE
+209. [Femminile] [Tagli lunghi] 90s butterfly cut — DA CREARE
+210. [Femminile] [Tagli lunghi] Bombshell layers — DA CREARE
+211. [Femminile] [Tagli lunghi] 90s supermodel layers — DA CREARE
+212. [Femminile] [Tagli lunghi] Bouncy layers — DA CREARE
+213. [Femminile] [Tagli lunghi] Voluminous cascading layers — DA CREARE
+214. [Femminile] [Ricci e naturali] Short curly crop — DA CREARE
+215. [Femminile] [Ricci e naturali] Rounded curly bob — DA CREARE
+216. [Femminile] [Ricci e naturali] Curly layered medium — DA CREARE
+217. [Femminile] [Ricci e naturali] Curly layered long — DA CREARE
+218. [Femminile] [Ricci e naturali] Rounded curly cut — DA CREARE
+219. [Femminile] [Ricci e naturali] Triangular curly cut — DA CREARE
+220. [Femminile] [Ricci e naturali] Oval curly shape — DA CREARE
+221. [Femminile] [Ricci e naturali] Diamond curly shape — DA CREARE
+222. [Femminile] [Ricci e naturali] Rounded dry curl layering — DA CREARE
+223. [Femminile] [Ricci e naturali] Coily tapered cut — DA CREARE
+224. [Femminile] [Ricci e naturali] Tapered afro — DA CREARE
+225. [Femminile] [Ricci e naturali] Rounded afro — DA CREARE
+226. [Femminile] [Ricci e naturali] Layered afro — DA CREARE
+227. [Femminile] [Ricci e naturali] Short natural crop — DA CREARE
+228. [Femminile] [Ricci e naturali] Medium natural shape — DA CREARE
+229. [Femminile] [Ricci e naturali] Long natural layers — DA CREARE
+230. [Maschile] [Buzz e crop] Buzz cut uniforme — DA CREARE
+231. [Maschile] [Buzz e crop] Buzz cut sfumato — DA CREARE
+232. [Maschile] [Buzz e crop] Induction cut — DA CREARE
+233. [Maschile] [Buzz e crop] Burr cut — DA CREARE
+234. [Maschile] [Buzz e crop] Butch cut — DA CREARE
+235. [Maschile] [Buzz e crop] High and tight — DA CREARE
+236. [Maschile] [Buzz e crop] Crew cut — DA CREARE
+237. [Maschile] [Buzz e crop] Textured crop — ASSET CREATO — DA COLLEGARE — taglio_corto_testurizzato_01.jpg, taglio_corto_testurizzato_02.jpg
+238. [Maschile] [Buzz e crop] French crop — DA CREARE
+239. [Maschile] [Buzz e crop] Caesar cut — DA CREARE
+240. [Maschile] [Buzz e crop] Curly crop — DA CREARE
+241. [Maschile] [Maschili classici] Ivy League — DA CREARE
+242. [Maschile] [Maschili classici] Side part classico — ASSET CREATO — DA COLLEGARE — taglio_classico_01.jpg, taglio_classico_02.jpg
+243. [Maschile] [Maschili classici] Side part morbido — DA CREARE
+244. [Maschile] [Maschili classici] Comb over naturale — DA CREARE
+245. [Maschile] [Maschili classici] Slick back classico — DA CREARE
+246. [Maschile] [Maschili classici] Pompadour classico — ASSET CREATO — DA COLLEGARE — taglio_pompadour_01.jpg, taglio_pompadour_02.jpg
+247. [Maschile] [Maschili classici] Quiff classico — ASSET CREATO — DA COLLEGARE — taglio_quiff_01.jpg, taglio_quiff_02.jpg
+248. [Maschile] [Maschili classici] Executive contour — DA CREARE
+249. [Maschile] [Maschili classici] Taper classico — DA CREARE
+250. [Maschile] [Maschili classici] Scissor cut corto — DA CREARE
+251. [Maschile] [Maschili moderni] Textured crop con low taper — DA CREARE
+252. [Maschile] [Maschili moderni] Textured crop con mid fade — DA CREARE
+253. [Maschile] [Maschili moderni] French crop con frangia corta — DA CREARE
+254. [Maschile] [Maschili moderni] Curly top con low fade — DA CREARE
+255. [Maschile] [Maschili moderni] Undercut disconnesso — ASSET CREATO — DA COLLEGARE — taglio_undercut_01.jpg, taglio_undercut_02.jpg
+256. [Maschile] [Maschili moderni] Slick back undercut — DA CREARE
+257. [Maschile] [Maschili moderni] Modern quiff — DA CREARE
+258. [Maschile] [Maschili moderni] Messy quiff — ASSET CREATO — DA COLLEGARE — taglio_messy_01.jpg, taglio_messy_02.jpg
+259. [Maschile] [Maschili moderni] Low fade crop — ASSET CREATO — DA COLLEGARE — taglio_fade_basso_01.jpg, taglio_fade_basso_02.jpg
+260. [Maschile] [Maschili moderni] Mid fade crop — ASSET CREATO — DA COLLEGARE — taglio_fade_medio_01.jpg, taglio_fade_medio_02.jpg
+261. [Maschile] [Maschili moderni] High fade crop — ASSET CREATO — DA COLLEGARE — taglio_fade_alto_01.jpg, taglio_fade_alto_02.jpg
+262. [Maschile] [Maschili moderni] Skin fade con top texturizzato — DA CREARE
+263. [Maschile] [Maschili moderni] Burst fade — DA CREARE
+264. [Maschile] [Maschili moderni] Drop fade — DA CREARE
+265. [Maschile] [Maschili moderni] Temple fade — DA CREARE
+266. [Maschile] [Maschili moderni] Faux hawk — DA CREARE
+267. [Maschile] [Maschili moderni] Modern mullet — ASSET CREATO — DA COLLEGARE — taglio_mullet_01.jpg, taglio_mullet_02.jpg
+268. [Maschile] [Maschili moderni] Wolf cut maschile corto — DA CREARE
+269. [Maschile] [Maschili moderni] Bro flow medio — DA CREARE
+270. [Maschile] [Maschili moderni] Curtains anni 90 — ASSET CREATO — DA COLLEGARE — taglio_curtain_01.jpg, taglio_curtain_02.jpg
+271. [Maschile] [Maschili medi e lunghi] Bro flow lungo — DA CREARE
+272. [Maschile] [Maschili medi e lunghi] Curtains lunghi — DA CREARE
+273. [Maschile] [Maschili medi e lunghi] Capelli medi scalati maschili — DA CREARE
+274. [Maschile] [Maschili medi e lunghi] Capelli lunghi pari maschili — DA CREARE
+275. [Maschile] [Maschili medi e lunghi] Capelli lunghi scalati maschili — DA CREARE
+276. [Maschile] [Maschili medi e lunghi] Ricci medi maschili — DA CREARE
+277. [Maschile] [Maschili medi e lunghi] Ricci lunghi maschili — DA CREARE
+278. [Maschile] [Maschili medi e lunghi] Shag maschile medio — DA CREARE
+279. [Maschile] [Maschili medi e lunghi] Shag maschile lungo — DA CREARE
+280. [Maschile] [Maschili medi e lunghi] Wolf cut maschile medio — DA CREARE
+281. [Maschile] [Maschili medi e lunghi] Wolf cut maschile lungo — DA CREARE
+282. [Maschile] [Maschili medi e lunghi] Mullet maschile lungo — DA CREARE
+283. [Maschile] [Maschili medi e lunghi] Slick back lungo — DA CREARE
+284. [Maschile] [Maschili medi e lunghi] Man bun con lati pieni — DA CREARE
+285. [Maschile] [Maschili medi e lunghi] Raccolto basso maschile — DA CREARE
+
+====================================================================================================
+FRANGIE — 20
+====================================================================================================
+01. Micro frangia — DA CREARE
+02. Baby bangs — DA CREARE
+03. Frangia corta dritta — ASSET CREATO — DA COLLEGARE — frangia_dritta_01.jpg, frangia_dritta_02.jpg
+04. Frangia piena — DA CREARE
+05. Frangia morbida piena — DA CREARE
+06. Wispy fringe — ASSET CREATO — DA COLLEGARE — frangia_sfilata_01.jpg, frangia_sfilata_02.jpg
+07. Airy fringe — DA CREARE
+08. Bottleneck bangs — DA CREARE
+09. Curtain bangs — ASSET CREATO — DA COLLEGARE — frangia_curtain_01.jpg, frangia_curtain_02.jpg
+10. Curtain bangs lunghe — DA CREARE
+11. Frangia laterale — ASSET CREATO — DA COLLEGARE — frangia_laterale_01.jpg, frangia_laterale_02.jpg
+12. Ciuffo laterale lungo — ASSET CREATO — DA COLLEGARE — frangia_lunga_01.jpg, frangia_lunga_02.jpg
+13. Frangia diagonale — DA CREARE
+14. Frangia ad arco — DA CREARE
+15. Choppy fringe — DA CREARE
+16. Shag fringe — DA CREARE
+17. Frangia riccia — DA CREARE
+18. Frangia disconnessa — DA CREARE
+19. Face-framing fringe — DA CREARE
+20. Frangia senza separazione centrale — DA CREARE
+
+====================================================================================================
+BARBE E BAFFI — 19
+====================================================================================================
+01. Rasatura completa — DA CREARE
+02. Stubble uniforme — DA CREARE
+03. Barba corta naturale — ASSET CREATO — DA COLLEGARE — barba_corta_01.jpg, barba_corta_02.jpg
+04. Short boxed beard — DA CREARE
+05. Barba completa media — ASSET CREATO — DA COLLEGARE — barba_media_01.jpg, barba_media_02.jpg
+06. Barba completa lunga — ASSET CREATO — DA COLLEGARE — barba_lunga_01.jpg, barba_lunga_02.jpg
+07. Pizzetto classico — ASSET CREATO — DA COLLEGARE — barba_pizzetto_01.jpg, barba_pizzetto_02.jpg
+08. Circle beard — DA CREARE
+09. Van Dyke — DA CREARE
+10. Balbo — DA CREARE
+11. Barba ad ancora — ASSET CREATO — DA COLLEGARE — barba_anchor_01.jpg, barba_anchor_02.jpg
+12. Chin strap — DA CREARE
+13. Ducktail — DA CREARE
+14. Garibaldi — DA CREARE
+15. Solo baffi naturali — DA CREARE
+16. Baffo Chevron — DA CREARE
+17. Baffo Handlebar — DA CREARE
+18. Baffo Horseshoe — DA CREARE
+19. Barba e baffi definiti — DA CREARE

@@ -2,8 +2,11 @@
   <header class="section-header">
     <div>
       <span class="eyebrow">ANALISI HAIRLAB</span>
-      <h2>Suggerimenti HairLab</h2>
-      <p>Proposte visive ordinate per compatibilità con il profilo tecnico del cliente.</p>
+      <h2>Suggerimenti personalizzati</h2>
+      <p>
+        Confronta la foto attuale del cliente con una simulazione generata manualmente sulla stessa
+        immagine.
+      </p>
     </div>
     <div class="header-actions">
       <a
@@ -11,25 +14,196 @@
         routerLink="/style-catalog"
         [queryParams]="{ customerId: customerId }"
       >
-        Libreria tagli e stili
+        Libreria tecnica
       </a>
       @if (recommendations()) {
-        <button
-          class="regenerate-button"
-          type="button"
-          [disabled]="loading()"
-          (click)="loadRecommendations()"
-        >
-          {{ loading() ? 'Analisi in corso...' : '↻ Rigenera' }}
+        <button class="regenerate-button" type="button" [disabled]="loading()" (click)="loadAll()">
+          {{ loading() ? 'Analisi in corso...' : '↻ Aggiorna' }}
         </button>
       }
     </div>
   </header>
 
+  <section class="source-overview" [class.missing-source]="!sourcePhoto()">
+    <div class="source-preview">
+      @if (sourceImageUrl(); as sourceUrl) {
+        <img [src]="sourceUrl" alt="Foto attuale del cliente" />
+      } @else {
+        <div class="source-placeholder">▣</div>
+      }
+    </div>
+    <div class="source-copy">
+      <span class="overview-kicker">FOTO DI PARTENZA</span>
+      @if (sourcePhoto(); as photo) {
+        <strong>{{
+          photo.description ||
+            (photo.profileFallback ? 'Foto profilo cliente' : 'Foto tecnica cliente')
+        }}</strong>
+        <p>È l’immagine usata come “Prima” e inviata soltanto al provider scelto manualmente.</p>
+        <small>
+          {{
+            photo.profileFallback
+              ? 'Origine: foto profilo'
+              : 'Scatto: ' + (photo.capturedAt || photo.createdAt | date: 'dd/MM/yyyy HH:mm')
+          }}
+        </small>
+      } @else {
+        <strong>Nessuna fotografia disponibile</strong>
+        <p>Carica una foto frontale recente prima di preparare le simulazioni.</p>
+      }
+    </div>
+    <details class="photo-manager">
+      <summary>Gestisci fotografie</summary>
+      <app-customer-photo-gallery
+        [customerId]="customerId"
+        (sourceChanged)="handleSourceChanged($event)"
+      ></app-customer-photo-gallery>
+    </details>
+  </section>
+
+  <section class="ai-governance" [class.consent-valid]="consent()?.valid">
+    <div class="consent-card">
+      <div class="governance-heading">
+        <div>
+          <span class="overview-kicker">CONSENSO E PRIVACY</span>
+          <strong>{{ consent()?.valid ? 'Consenso IA attivo' : 'Consenso IA necessario' }}</strong>
+        </div>
+        <span class="status-pill" [class.ok]="consent()?.valid">
+          {{ consent()?.valid ? 'Autorizzato' : 'Bloccato' }}
+        </span>
+      </div>
+
+      @if (consent()?.valid) {
+        <p>
+          Versione {{ consent()?.documentVersion }} · registrato il
+          {{ consent()?.grantedAt | date: 'dd/MM/yyyy HH:mm' }} da {{ consent()?.grantedBy }}.
+        </p>
+        <div class="revocation-controls">
+          <input
+            type="text"
+            placeholder="Motivo revoca facoltativo"
+            [value]="revokeReason()"
+            (input)="revokeReasonChanged($event)"
+          />
+          <label>
+            <input
+              type="checkbox"
+              [checked]="revokeDeletePhotos()"
+              (change)="revokeDeletePhotosChanged($event)"
+            />
+            Elimina fotografie archiviate
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              [checked]="revokeDeleteSimulations()"
+              (change)="revokeDeleteSimulationsChanged($event)"
+            />
+            Elimina simulazioni e risultati
+          </label>
+          <button class="danger-button" type="button" (click)="revokeConsent()">
+            Revoca consenso
+          </button>
+        </div>
+      } @else {
+        <p>
+          Nessun provider reale o locale può elaborare la fotografia finché l’operatore non registra
+          il consenso esplicito del cliente.
+        </p>
+        <textarea
+          rows="2"
+          placeholder="Note facoltative sull’acquisizione del consenso"
+          [value]="consentNotes()"
+          (input)="consentNotesChanged($event)"
+        ></textarea>
+        <label class="consent-confirmation">
+          <input
+            type="checkbox"
+            [checked]="consentConfirmed()"
+            (change)="consentConfirmedChanged($event)"
+          />
+          Confermo di aver acquisito il consenso esplicito del cliente secondo l’informativa
+          HAIRLAB-AI-1.0.
+        </label>
+        <button class="primary-governance-button" type="button" (click)="grantConsent()">
+          Registra consenso IA
+        </button>
+      }
+    </div>
+
+    <div class="provider-summary-card">
+      <div class="governance-heading">
+        <div>
+          <span class="overview-kicker">PROVIDER E BUDGET</span>
+          <strong>Generazione esclusivamente manuale</strong>
+        </div>
+      </div>
+      <label class="preference-field">
+        <span>Provider preferito operatore</span>
+        <select
+          [value]="providerPreference()?.preferredProvider ?? ''"
+          (change)="updateProviderPreference($event)"
+        >
+          <option value="">Predefinito applicazione</option>
+          <option value="MOCK">MOCK</option>
+          <option value="OPENAI">OpenAI</option>
+          <option value="LOCAL_COMFYUI">ComfyUI locale</option>
+        </select>
+      </label>
+      @if (budget(); as value) {
+        <div class="budget-grid">
+          <div>
+            <span>Budget OpenAI</span><strong>{{ formatUsd(value.monthlyBudgetUsd) }}</strong>
+          </div>
+          <div>
+            <span>Utilizzato</span><strong>{{ formatUsd(value.usedUsd) }}</strong>
+          </div>
+          <div>
+            <span>Residuo</span><strong>{{ formatUsd(value.remainingUsd) }}</strong>
+          </div>
+          <div>
+            <span>Generazioni</span>
+            <strong>{{ value.successfulGenerations }}/{{ value.maxSuccessfulGenerations }}</strong>
+          </div>
+        </div>
+      }
+      <small>
+        Nessun fallback a pagamento è automatico. Se un provider fallisce, HairLab richiede una
+        nuova scelta esplicita.
+      </small>
+    </div>
+  </section>
+
+  @if (providers().length) {
+    <section class="provider-diagnostics" aria-label="Stato provider simulazioni">
+      @for (provider of providers(); track provider.provider) {
+        @if (provider.provider !== 'NONE') {
+          <article [class.available]="provider.available" [class.paid]="provider.paid">
+            <div class="provider-icon">{{ providerIcon(provider.provider) }}</div>
+            <div>
+              <strong>{{ providerDisplayName(provider.provider) }}</strong>
+              <span>{{ providerStatusLabel(provider) }}</span>
+              <small>{{ provider.description }}</small>
+            </div>
+            <div class="provider-tags">
+              <span>{{ provider.paid ? 'A consumo' : 'Costo API $0' }}</span>
+              @if (provider.model) {
+                <span>{{ provider.model }}</span>
+              }
+              @if (provider.preferredProvider) {
+                <span>Preferito</span>
+              }
+            </div>
+          </article>
+        }
+      }
+    </section>
+  }
+
   @if (loading() && !recommendations()) {
     <div class="state-card">
       <strong>HairLab sta analizzando il profilo</strong>
-      <p>Selezione delle reference e costruzione delle proposte più compatibili.</p>
+      <p>Costruzione delle proposte tecniche più compatibili.</p>
     </div>
   } @else if (errorMessage()) {
     <div class="state-card error-card">
@@ -37,14 +211,14 @@
         <strong>Analisi non disponibile</strong>
         <p>{{ errorMessage() }}</p>
       </div>
-      <button type="button" (click)="loadRecommendations()">Riprova</button>
+      <button type="button" (click)="loadAll()">Riprova</button>
     </div>
   } @else if (recommendations(); as data) {
     <section class="analysis-toolbar">
       <div class="analysis-summary">
         <div>
           <span class="overview-kicker">ANALISI ATTIVA</span>
-          <strong>Catalogo {{ isMale(data) ? 'uomo' : 'donna' }}</strong>
+          <strong>Profilo {{ isMale(data) ? 'uomo' : 'donna' }}</strong>
         </div>
         <div class="analysis-status" aria-label="Profili utilizzati">
           <span [class.available]="data.hairProfileAvailable">Capelli</span>
@@ -133,321 +307,285 @@
 
     @if (itemsForActiveTab(data); as items) {
       @if (items.length) {
-        @if (activeTab() === 'total-look') {
-          <div class="total-look-grid">
-            @for (item of items; track item.code ?? item.title) {
-              <article class="total-look-card" [class.top-card]="isTopRecommendation(item, items)">
-                <div class="total-look-visuals">
-                  @for (
-                    component of item.components;
-                    track component.category + (component.code ?? component.title)
-                  ) {
-                    <div class="component-visual">
-                      @if (componentImage(component); as image) {
-                        <img
-                          [src]="image"
-                          [alt]="'Reference ' + displayTitle(component.title)"
-                          loading="lazy"
-                        />
-                      } @else if (component.category === 'COLOR') {
-                        <div
-                          class="color-reference"
-                          [style.background]="colorPreviewBackground(item)"
-                        ></div>
-                      } @else {
-                        <div class="visual-placeholder compact-placeholder">
-                          <span>{{ componentSymbol(component) }}</span>
-                        </div>
-                      }
-                      <span>{{ categoryLabel(component.category) }}</span>
+        <div class="recommendation-grid" [class.total-look-grid]="activeTab() === 'total-look'">
+          @for (item of items; track item.code ?? item.title) {
+            <article
+              class="recommendation-card"
+              [class.top-card]="isTopRecommendation(item, items)"
+            >
+              <header class="card-header">
+                <div>
+                  <div class="label-row">
+                    <span class="category-label">{{ categoryLabel(item.category) }}</span>
+                    @if (isTopRecommendation(item, items)) {
+                      <span class="top-badge">Prima scelta</span>
+                    }
+                  </div>
+                  <h3>{{ displayTitle(item.title) }}</h3>
+                </div>
+                <div class="score-badge">
+                  <strong>{{ item.compatibilityScore }}%</strong>
+                  <span>{{ scoreLabel(item.compatibilityScore) }}</span>
+                </div>
+              </header>
+
+              <div class="score-track">
+                <span [style.width]="scoreWidth(item.compatibilityScore)"></span>
+              </div>
+
+              <div class="before-after">
+                <figure class="comparison-panel before-panel">
+                  <figcaption>
+                    <span>PRIMA</span>
+                    <small>Foto reale cliente</small>
+                  </figcaption>
+                  @if (sourceImageUrl(); as sourceUrl) {
+                    <img [src]="sourceUrl" alt="Prima della simulazione" />
+                  } @else {
+                    <div class="visual-placeholder"><b>▣</b><span>Aggiungi una foto</span></div>
+                  }
+                </figure>
+
+                <figure class="comparison-panel after-panel">
+                  <figcaption>
+                    <span>SIMULAZIONE</span>
+                    <small>{{ simulationStatusLabel(simulationFor(item)) }}</small>
+                  </figcaption>
+                  @if (generatedImageUrl(simulationFor(item)); as generatedUrl) {
+                    <img [src]="generatedUrl" alt="Risultato simulazione" />
+                  } @else {
+                    <div
+                      class="simulation-placeholder"
+                      [class.color-simulation]="item.category === 'COLOR'"
+                      [style.--color-preview]="colorPreviewBackground(item)"
+                    >
+                      <div class="ai-symbol">✦</div>
+                      <strong>{{ displayTitle(item.title) }}</strong>
+                      <span>
+                        {{
+                          simulationFor(item)
+                            ? 'Scegli manualmente OpenAI, ComfyUI oppure MOCK'
+                            : 'Prepara la richiesta sulla foto del cliente'
+                        }}
+                      </span>
                     </div>
                   }
+                </figure>
+              </div>
+
+              @if (simulationFor(item); as simulation) {
+                <div class="simulation-meta" [class.completed]="simulation.status === 'COMPLETED'">
+                  <span>{{ providerLabel(simulation) }}</span>
+                  <span>Tentativi: {{ simulation.generationAttempts ?? 0 }}</span>
+                  @if (simulation.cachedFromSimulationId) {
+                    <span>Cache: #{{ simulation.cachedFromSimulationId }}</span>
+                  }
+                  @if (
+                    simulation.actualCostUsd !== null && simulation.actualCostUsd !== undefined
+                  ) {
+                    <span>Costo stimato registrato: {{ formatUsd(simulation.actualCostUsd) }}</span>
+                  }
+                  @if (simulation.modelName) {
+                    <span>{{ simulation.modelName }}</span>
+                  }
                 </div>
+              }
 
-                <div class="total-look-content">
-                  <header class="total-look-header">
+              <p class="description">{{ displayText(item.description) }}</p>
+
+              @if (primaryMetrics(item).length) {
+                <dl class="quick-facts">
+                  @for (detail of primaryMetrics(item); track detail[0]) {
                     <div>
-                      <div class="label-row">
-                        <span class="category-label">TOTAL LOOK</span>
-                        @if (isTopRecommendation(item, items)) {
-                          <span class="top-badge">Prima scelta</span>
-                        }
-                      </div>
-                      <h3>{{ displayTitle(item.title) }}</h3>
-                      <p>{{ displayText(item.description) }}</p>
+                      <dt>{{ detail[0] }}</dt>
+                      <dd>{{ detail[1] }}</dd>
                     </div>
-                    <div class="score-badge large-score">
-                      <strong>{{ item.compatibilityScore }}%</strong>
-                      <span>{{ scoreLabel(item.compatibilityScore) }}</span>
-                    </div>
-                  </header>
+                  }
+                </dl>
+              }
 
-                  <div class="score-track">
-                    <span [style.width]="scoreWidth(item.compatibilityScore)"></span>
-                  </div>
+              @if (item.reasons.length) {
+                <p class="primary-reason">
+                  <span>Perché funziona</span>{{ displayText(item.reasons[0]) }}
+                </p>
+              }
+
+              <details class="expanded-details">
+                <summary>Vedi scheda tecnica</summary>
+                <div class="expanded-content">
+                  @if (details(item).length) {
+                    <dl class="technical-details">
+                      @for (detail of details(item); track detail[0]) {
+                        <div>
+                          <dt>{{ detail[0] }}</dt>
+                          <dd>{{ detail[1] }}</dd>
+                        </div>
+                      }
+                    </dl>
+                  }
+
+                  @if (item.reasons.length > 1) {
+                    <div class="reasons">
+                      <strong>Motivazioni tecniche</strong>
+                      <ul>
+                        @for (reason of item.reasons; track reason) {
+                          <li>{{ displayText(reason) }}</li>
+                        }
+                      </ul>
+                    </div>
+                  }
+
+                  @if (technicalReferenceUrl(item.referenceImageUrl); as referenceUrl) {
+                    <div class="technical-reference">
+                      <div>
+                        <span>REFERENCE TECNICA</span>
+                        <strong>Supporto del catalogo, non anteprima cliente</strong>
+                      </div>
+                      <img [src]="referenceUrl" [alt]="'Reference ' + item.title" />
+                    </div>
+                  }
+
+                  @if (simulationFor(item); as simulation) {
+                    @if (simulation.professionalSummary || simulation.instructionPrompt) {
+                      <details class="instruction-panel">
+                        <summary>Istruzioni costruite per il provider</summary>
+                        <div>
+                          @if (simulation.professionalSummary) {
+                            <p><b>Riepilogo:</b> {{ simulation.professionalSummary }}</p>
+                          }
+                          @if (simulation.instructionPrompt) {
+                            <p><b>Istruzione provider:</b> {{ simulation.instructionPrompt }}</p>
+                          }
+                          @if (simulation.negativePrompt) {
+                            <p><b>Vincoli negativi:</b> {{ simulation.negativePrompt }}</p>
+                          }
+                        </div>
+                      </details>
+                    }
+                  }
 
                   @if (item.components.length) {
-                    <div class="look-components">
+                    <div class="component-list">
                       @for (
                         component of item.components;
-                        track component.category + (component.code ?? component.title)
+                        track component.category + component.title
                       ) {
                         <div>
+                          @if (componentReferenceUrl(component); as componentUrl) {
+                            <img [src]="componentUrl" [alt]="component.title" />
+                          }
                           <span>{{ categoryLabel(component.category) }}</span>
                           <strong>{{ displayTitle(component.title) }}</strong>
-                          @if (component.description) {
-                            <small>{{ displayText(component.description) }}</small>
-                          }
+                          <small>{{ displayText(component.description) }}</small>
                         </div>
                       }
                     </div>
                   }
 
                   @if (item.combinationValidated) {
-                    <section class="cross-compatibility-panel">
-                      <header>
-                        <div>
-                          <span>COMPATIBILITÀ TRA GLI ELEMENTI</span>
-                          <strong>Combinazione verificata</strong>
-                        </div>
-                        <div
-                          class="adjustment-value"
-                          [class.negative]="(item.compatibilityAdjustment ?? 0) < 0"
-                        >
-                          {{ adjustmentLabel(item.compatibilityAdjustment) }} punti
-                        </div>
-                      </header>
-                      <div class="compatibility-metrics">
-                        <span
-                          >Media elementi <b>{{ item.componentAverageScore ?? 0 }}%</b></span
-                        >
-                        <span
-                          >Punteggio finale <b>{{ item.compatibilityScore }}%</b></span
-                        >
-                      </div>
-                      @if (item.compatibilityRules?.length) {
-                        <ul class="compatibility-rules">
-                          @for (rule of item.compatibilityRules ?? []; track rule) {
-                            <li>{{ displayText(rule) }}</li>
-                          }
-                        </ul>
-                      }
-                      @if (item.compatibilityWarnings?.length) {
-                        <div class="compatibility-warnings">
-                          @for (warning of item.compatibilityWarnings ?? []; track warning) {
-                            <p>{{ displayText(warning) }}</p>
-                          }
-                        </div>
-                      }
-                    </section>
-                  }
-
-                  @if (details(item).length || item.reasons.length) {
-                    <details class="expanded-details">
-                      <summary>Vedi scheda tecnica</summary>
-                      <div class="expanded-content">
-                        @if (details(item).length) {
-                          <dl class="technical-details">
-                            @for (detail of details(item); track detail[0] + detail[1]) {
-                              <div>
-                                <dt>{{ detail[0] }}</dt>
-                                <dd>{{ detail[1] }}</dd>
-                              </div>
-                            }
-                          </dl>
-                        }
-                        @if (item.reasons.length) {
-                          <div class="reasons">
-                            <strong>Perché è adatto</strong>
-                            <ul>
-                              @for (reason of item.reasons; track reason) {
-                                <li>{{ displayText(reason) }}</li>
-                              }
-                            </ul>
-                          </div>
-                        }
-                      </div>
-                    </details>
-                  }
-
-                  <footer class="card-actions">
-                    @if (hasColorAction(item)) {
-                      <a
-                        class="primary-action"
-                        routerLink="/color-lab/smart-formula"
-                        [queryParams]="smartFormulaQueryParams(item)"
+                    <div class="compatibility-panel">
+                      <strong>Compatibilità incrociata validata</strong>
+                      <span
+                        >{{ adjustmentLabel(item.compatibilityAdjustment) }} punti rispetto alla
+                        media componenti</span
                       >
-                        Apri nel Color Lab
-                      </a>
-                    }
-                    <button
-                      class="secondary-action"
-                      type="button"
-                      [class.saved]="isSaved(item)"
-                      [disabled]="
-                        !selectedConsultationId() ||
-                        !item.code ||
-                        savingRecommendationCode() === item.code
-                      "
-                      (click)="saveToConsultation(item)"
-                    >
-                      @if (savingRecommendationCode() === item.code) {
-                        Salvataggio...
-                      } @else if (isSaved(item)) {
-                        ✓ Salvato
-                      } @else {
-                        Salva nella consulenza
+                      @for (rule of item.compatibilityRules ?? []; track rule) {
+                        <p>{{ displayText(rule) }}</p>
                       }
-                    </button>
-                    @if (item.futureSimulation) {
-                      <span class="simulation-ready"
-                        >Dati simulazione predisposti · IA non attiva</span
-                      >
-                    }
-                  </footer>
-                </div>
-              </article>
-            }
-          </div>
-        } @else {
-          <div class="suggestion-grid">
-            @for (item of items; track item.code ?? item.title) {
-              <article class="suggestion-card" [class.top-card]="isTopRecommendation(item, items)">
-                <div class="suggestion-media">
-                  @if (itemImage(item); as image) {
-                    <img
-                      [src]="image"
-                      [alt]="'Reference ' + displayTitle(item.title)"
-                      loading="lazy"
-                    />
-                  } @else if (item.category === 'COLOR') {
-                    <div class="color-reference" [style.background]="colorPreviewBackground(item)">
-                      <span>Anteprima cromatica</span>
-                    </div>
-                  } @else {
-                    <div class="visual-placeholder">
-                      <span>{{ visualSymbol(item) }}</span>
-                      <small>Reference da aggiungere nel catalogo</small>
-                    </div>
-                  }
-
-                  <div class="media-badges">
-                    <span>{{ categoryLabel(item.category) }}</span>
-                    @if (isTopRecommendation(item, items)) {
-                      <span>Prima scelta</span>
-                    }
-                  </div>
-
-                  <div class="media-score">
-                    <strong>{{ item.compatibilityScore }}%</strong>
-                    <span>{{ scoreLabel(item.compatibilityScore) }}</span>
-                  </div>
-                </div>
-
-                <div class="suggestion-body">
-                  <header>
-                    <h3>{{ displayTitle(item.title) }}</h3>
-                    <p>{{ displayText(item.description) }}</p>
-                  </header>
-
-                  <div class="score-track">
-                    <span [style.width]="scoreWidth(item.compatibilityScore)"></span>
-                  </div>
-
-                  @if (primaryMetrics(item).length) {
-                    <div class="quick-metrics">
-                      @for (detail of primaryMetrics(item); track detail[0] + detail[1]) {
-                        <div>
-                          <span>{{ detail[0] }}</span>
-                          <strong>{{ detail[1] }}</strong>
-                        </div>
+                      @for (warning of item.compatibilityWarnings ?? []; track warning) {
+                        <p class="compatibility-warning">{{ displayText(warning) }}</p>
                       }
                     </div>
                   }
-
-                  @if (item.reasons.length) {
-                    <div class="compatibility-line">
-                      <span>Perché è consigliato</span>
-                      <strong>{{ displayText(item.reasons[0]) }}</strong>
-                    </div>
-                  }
-
-                  @if (
-                    details(item).length > 3 || item.reasons.length > 1 || item.futureSimulation
-                  ) {
-                    <details class="expanded-details">
-                      <summary>Vedi scheda tecnica</summary>
-                      <div class="expanded-content">
-                        @if (details(item).length) {
-                          <dl class="technical-details single-column">
-                            @for (detail of details(item); track detail[0] + detail[1]) {
-                              <div>
-                                <dt>{{ detail[0] }}</dt>
-                                <dd>{{ detail[1] }}</dd>
-                              </div>
-                            }
-                          </dl>
-                        }
-                        @if (item.reasons.length > 1) {
-                          <div class="reasons">
-                            <strong>Motivazioni tecniche</strong>
-                            <ul>
-                              @for (reason of item.reasons; track reason) {
-                                <li>{{ displayText(reason) }}</li>
-                              }
-                            </ul>
-                          </div>
-                        }
-                        @if (item.futureSimulation) {
-                          <span class="simulation-ready"
-                            >Dati simulazione predisposti · IA non attiva</span
-                          >
-                        }
-                      </div>
-                    </details>
-                  }
                 </div>
+              </details>
 
-                <footer class="card-actions compact-actions">
-                  @if (hasColorAction(item)) {
-                    <a
-                      class="primary-action"
-                      routerLink="/color-lab/smart-formula"
-                      [queryParams]="smartFormulaQueryParams(item)"
-                    >
-                      Color Lab
-                    </a>
-                  }
+              <footer class="card-actions">
+                <button
+                  class="simulation-button"
+                  type="button"
+                  [disabled]="simulationActionDisabled(item)"
+                  (click)="openProviderDialog(item)"
+                >
+                  {{ generationActionLabel(item) }}
+                </button>
+
+                @if (simulationFor(item)) {
                   <button
-                    class="secondary-action"
+                    class="delete-simulation-button"
                     type="button"
-                    [class.saved]="isSaved(item)"
-                    [disabled]="
-                      !selectedConsultationId() ||
-                      !item.code ||
-                      savingRecommendationCode() === item.code
-                    "
-                    (click)="saveToConsultation(item)"
+                    [disabled]="deletingSimulationId() === simulationFor(item)?.id"
+                    (click)="deleteSimulation(item)"
                   >
-                    @if (savingRecommendationCode() === item.code) {
-                      Salvataggio...
-                    } @else if (isSaved(item)) {
-                      ✓ Salvato
-                    } @else {
-                      Salva
-                    }
+                    {{
+                      deletingSimulationId() === simulationFor(item)?.id
+                        ? 'Eliminazione...'
+                        : 'Elimina risultato'
+                    }}
                   </button>
-                </footer>
-              </article>
-            }
-          </div>
-        }
-      } @else {
-        <div class="state-card empty-state">
-          <strong>Profilo tecnico da completare</strong>
-          <p>Completa i dati necessari per visualizzare suggerimenti in questa categoria.</p>
+                }
+
+                @if (hasColorAction(item)) {
+                  <a
+                    class="smart-formula-button"
+                    routerLink="/color-lab/smart-formula"
+                    [queryParams]="smartFormulaQueryParams(item)"
+                    >Smart Formula</a
+                  >
+                }
+
+                <button
+                  class="consultation-save-button"
+                  type="button"
+                  [class.saved]="isSaved(item)"
+                  [disabled]="
+                    !selectedConsultationId() ||
+                    !item.code ||
+                    savingRecommendationCode() === item.code
+                  "
+                  (click)="saveToConsultation(item)"
+                >
+                  @if (savingRecommendationCode() === item.code) {
+                    Salvataggio...
+                  } @else if (isSaved(item)) {
+                    ✓ Salvato
+                  } @else {
+                    Salva in consulenza
+                  }
+                </button>
+              </footer>
+            </article>
+          }
         </div>
+      } @else {
+        <div class="empty-state">Completa i profili tecnici necessari per questa categoria.</div>
       }
+    }
+
+    @if (audit().length) {
+      <details class="audit-panel">
+        <summary>
+          <span>Audit IA cliente</span>
+          <small>{{ audit().length }} eventi registrati</small>
+        </summary>
+        <div class="audit-list">
+          @for (event of audit().slice(0, 20); track event.id) {
+            <article [class.failed]="!event.success">
+              <div>
+                <strong>{{ event.action }}</strong>
+                <span>{{ event.occurredAt | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+              </div>
+              <p>{{ event.details || 'Operazione registrata' }}</p>
+              <small>
+                {{ providerDisplayName(event.provider) }} · {{ event.operatorEmail || 'sistema' }}
+                @if (event.actualCostUsd !== null && event.actualCostUsd !== undefined) {
+                  · {{ formatUsd(event.actualCostUsd) }}
+                }
+              </small>
+            </article>
+          }
+        </div>
+      </details>
     }
 
     @if (data.generalNotes.length) {
@@ -462,3 +600,146 @@
     }
   }
 </section>
+
+@if (providerDialogOpen() && dialogSimulation(); as simulation) {
+  <div class="provider-modal-backdrop" role="presentation">
+    <section
+      class="provider-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="provider-title"
+    >
+      <header>
+        <div>
+          <span class="eyebrow">GENERAZIONE MANUALE</span>
+          <h3 id="provider-title">Scegli il provider</h3>
+          <p>{{ displayTitle(dialogItem()?.title) }}</p>
+        </div>
+        <button type="button" aria-label="Chiudi" (click)="closeProviderDialog()">×</button>
+      </header>
+
+      <div class="modal-comparison">
+        <div>
+          <span>PRIMA</span>
+          @if (sourceImageUrl(); as sourceUrl) {
+            <img [src]="sourceUrl" alt="Foto sorgente cliente" />
+          }
+        </div>
+        <div>
+          <span>RISULTATO ATTUALE</span>
+          @if (generatedImageUrl(simulation); as resultUrl) {
+            <img [src]="resultUrl" alt="Risultato attuale" />
+          } @else {
+            <div class="modal-result-placeholder">✦</div>
+          }
+        </div>
+      </div>
+
+      <div class="provider-choice-grid">
+        @for (provider of providers(); track provider.provider) {
+          @if (provider.provider !== 'NONE') {
+            <button
+              type="button"
+              [class.selected]="selectedProvider() === provider.provider"
+              [class.unavailable]="!provider.available"
+              (click)="selectProvider(provider.provider)"
+            >
+              <span class="provider-icon">{{ providerIcon(provider.provider) }}</span>
+              <strong>{{ providerDisplayName(provider.provider) }}</strong>
+              <small>{{ provider.paid ? 'A consumo' : 'Costo API $0' }}</small>
+              <em>{{ providerStatusLabel(provider) }}</em>
+              @if (provider.model) {
+                <span>{{ provider.model }}</span>
+              }
+            </button>
+          }
+        }
+      </div>
+
+      <section class="quote-panel" [class.invalid]="quote() && !canConfirmGeneration()">
+        @if (loadingQuote()) {
+          <p>Verifica provider, consenso, cache e budget...</p>
+        } @else if (quote(); as value) {
+          <div class="quote-title">
+            <strong>{{ providerDisplayName(value.provider) }}</strong>
+            <span [class.ok]="value.providerAvailable && value.consentValid">
+              {{ value.providerAvailable && value.consentValid ? 'Pronto' : 'Bloccato' }}
+            </span>
+          </div>
+          <p>{{ value.message }}</p>
+          <dl>
+            <div>
+              <dt>Modello</dt>
+              <dd>{{ value.model || value.workflowCode || '—' }}</dd>
+            </div>
+            <div>
+              <dt>Qualità</dt>
+              <dd>{{ value.quality || 'Configurazione provider' }}</dd>
+            </div>
+            <div>
+              <dt>Formato</dt>
+              <dd>{{ value.imageSize || 'Workflow locale' }}</dd>
+            </div>
+            <div>
+              <dt>Costo stimato</dt>
+              <dd>{{ formatUsd(value.estimatedCostUsd) }}</dd>
+            </div>
+            <div>
+              <dt>Budget residuo</dt>
+              <dd>{{ formatUsd(value.budgetRemainingUsd) }}</dd>
+            </div>
+            <div>
+              <dt>Cache</dt>
+              <dd>{{ value.cacheHit ? 'Risultato riutilizzabile' : 'Nuova generazione' }}</dd>
+            </div>
+          </dl>
+          @if (!value.consentValid) {
+            <div class="modal-warning">Registra il consenso IA del cliente prima di procedere.</div>
+          }
+          @if (!value.providerAvailable) {
+            <div class="modal-warning">{{ value.message }}</div>
+          }
+        } @else {
+          <p>Seleziona un provider per visualizzare la verifica preventiva.</p>
+        }
+      </section>
+
+      <label class="remember-provider">
+        <input
+          type="checkbox"
+          [checked]="rememberProviderPreference()"
+          (change)="rememberProviderChanged($event)"
+        />
+        Ricorda questo provider come preferenza del mio utente.
+      </label>
+
+      <div class="manual-confirmation-note">
+        <strong>Nessuna generazione automatica.</strong>
+        <span>
+          Premendo “Conferma e genera” autorizzi una sola elaborazione. Una rigenerazione richiederà
+          una nuova conferma.
+        </span>
+      </div>
+
+      <footer>
+        <button type="button" class="secondary-modal-button" (click)="closeProviderDialog()">
+          Annulla
+        </button>
+        <button
+          type="button"
+          class="primary-modal-button"
+          [disabled]="!canConfirmGeneration()"
+          (click)="confirmGeneration()"
+        >
+          {{
+            generatingSimulationId() === simulation.id
+              ? 'Generazione in corso...'
+              : simulation.status === 'COMPLETED'
+                ? 'Conferma e rigenera'
+                : 'Conferma e genera'
+          }}
+        </button>
+      </footer>
+    </section>
+  </div>
+}

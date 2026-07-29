@@ -1,0 +1,1502 @@
+[
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_anchor_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54102,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_anchor_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_anchor_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_anchor_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52692,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_anchor_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_anchor_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_corta_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55340,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_corta_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_corta_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_corta_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 59086,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_corta_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_corta_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_lunga_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 57961,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_lunga_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_lunga_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_lunga_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 56712,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_lunga_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_lunga_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_media_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54056,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_media_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_media_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_media_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 53474,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_media_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_media_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_pizzetto_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 53525,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_pizzetto_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_pizzetto_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "barba_pizzetto_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55064,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/barba_pizzetto_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/barba_pizzetto_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_baffo_chevron.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2168721,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_baffo_chevron.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_baffo_chevron.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_baffo_handlebar.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2310804,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_baffo_handlebar.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_baffo_handlebar.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_baffo_horseshoe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2126741,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_baffo_horseshoe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_baffo_horseshoe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_balbo.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1923836,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_balbo.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_balbo.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_barba_completa_lunga.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1946163,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_barba_completa_lunga.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_barba_completa_lunga.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_barba_e_baffi_definiti.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2072867,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_barba_e_baffi_definiti.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_barba_e_baffi_definiti.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_chin_strap.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1998778,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_chin_strap.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_chin_strap.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_circle_beard.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1977333,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_circle_beard.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_circle_beard.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_ducktail.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1989409,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_ducktail.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_ducktail.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_garibaldi.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2138714,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_garibaldi.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_garibaldi.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_short_boxed_beard.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1941700,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_short_boxed_beard.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_short_boxed_beard.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_solo_baffi_naturali.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2285842,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_solo_baffi_naturali.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_solo_baffi_naturali.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_stubble_uniforme.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1978509,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_stubble_uniforme.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_stubble_uniforme.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "BARBA_BAFFI",
+    "famiglia": "BARBE",
+    "nomeFile": "m_beard_van_dyke.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1969916,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/BARBE/m_beard_van_dyke.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/BARBE/m_beard_van_dyke.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_airy_fringe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1975845,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_airy_fringe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_airy_fringe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_baby_bangs.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2072688,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_baby_bangs.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_baby_bangs.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_bottleneck_bangs.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1960732,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_bottleneck_bangs.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_bottleneck_bangs.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_choppy_fringe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2092804,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_choppy_fringe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_choppy_fringe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_curtain_bangs_lunghe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1940271,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_curtain_bangs_lunghe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_curtain_bangs_lunghe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_face_framing_fringe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2135521,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_face_framing_fringe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_face_framing_fringe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_ad_arco.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1953166,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_ad_arco.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_ad_arco.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_diagonale.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1940495,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_diagonale.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_diagonale.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_disconnessa.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1896098,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_disconnessa.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_disconnessa.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_morbida_piena.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1819749,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_morbida_piena.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_morbida_piena.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_piena.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1973584,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_piena.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_piena.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_riccia.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2041974,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_riccia.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_riccia.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_frangia_senza_separazione_centrale.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1921732,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_frangia_senza_separazione_centrale.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_frangia_senza_separazione_centrale.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_micro_frangia.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2009099,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_micro_frangia.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_micro_frangia.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "f_fringe_shag_fringe.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2088569,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/f_fringe_shag_fringe.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/f_fringe_shag_fringe.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_curtain_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 59275,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_curtain_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_curtain_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_curtain_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 60358,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_curtain_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_curtain_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_dritta_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 57051,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_dritta_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_dritta_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_dritta_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55273,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_dritta_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_dritta_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_laterale_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55187,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_laterale_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_laterale_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_laterale_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 57167,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_laterale_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_laterale_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_lunga_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 59518,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_lunga_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_lunga_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_lunga_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 59377,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_lunga_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_lunga_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_sfilata_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 58064,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_sfilata_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_sfilata_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "FRANGIA",
+    "famiglia": "FRANGIE",
+    "nomeFile": "frangia_sfilata_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 59710,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/FRANGIE/frangia_sfilata_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/FRANGIE/frangia_sfilata_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "90s_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2098576,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/90s_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/90s_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "classic_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1850564,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/classic_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/classic_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "curly_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2067417,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/curly_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/curly_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "layered_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2185546,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/layered_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/layered_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "shaggy_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2122533,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/shaggy_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/shaggy_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "sleek_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1975119,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/sleek_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/sleek_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "soft_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2056926,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/soft_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/soft_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "textured_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2132711,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/textured_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/textured_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BIXIE",
+    "nomeFile": "wavy_bixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1967496,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BIXIE/wavy_bixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BIXIE/wavy_bixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "asymmetrical_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1991827,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/asymmetrical_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/asymmetrical_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "blunt_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2051885,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/blunt_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/blunt_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "classic_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2178709,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/classic_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/classic_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "french_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1932040,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/french_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/french_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "graduated_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1879366,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/graduated_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/graduated_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "italian_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2115636,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/italian_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/italian_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "layered_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2100084,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/layered_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/layered_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "rounded_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1850564,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/rounded_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/rounded_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "sleek_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1693909,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/sleek_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/sleek_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "stacked_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1996073,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/stacked_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/stacked_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "textured_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2066012,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/textured_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/textured_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "BOB",
+    "nomeFile": "wavy_bob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1898284,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/BOB/wavy_bob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/BOB/wavy_bob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "a_line_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1894001,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/a_line_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/a_line_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "blunt_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2178709,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/blunt_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/blunt_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "choppy_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1951637,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/choppy_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/choppy_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "curly_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2066012,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/curly_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/curly_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "italian_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1693909,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/italian_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/italian_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "layered_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2115636,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/layered_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/layered_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "long_layered_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1947797,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/long_layered_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/long_layered_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "shaggy_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2021800,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/shaggy_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/shaggy_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "sleek_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2256676,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/sleek_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/sleek_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "soft_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1932040,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/soft_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/soft_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "textured_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1991827,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/textured_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/textured_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "LOB",
+    "nomeFile": "wavy_lob.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2177187,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/LOB/wavy_lob.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/LOB/wavy_lob.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "choppy_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2100084,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/choppy_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/choppy_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "feathered_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2065911,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/feathered_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/feathered_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "graduated_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1879366,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/graduated_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/graduated_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "layered_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1896932,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/layered_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/layered_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "long_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2051885,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/long_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/long_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "micro_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1953808,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/micro_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/micro_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "piecey_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1898284,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/piecey_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/piecey_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "short_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1810938,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/short_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/short_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "sleek_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1977345,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/sleek_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/sleek_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "soft_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2034938,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/soft_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/soft_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "PIXIE",
+    "nomeFile": "textured_pixie.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1996073,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/PIXIE/textured_pixie.png",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/PIXIE/textured_pixie.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_asimmetrico_01.jpg",
+    "nomeFile": "taglio_asimmetrico_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55532,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_asimmetrico_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_asimmetrico_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_asimmetrico_02.jpg",
+    "nomeFile": "taglio_asimmetrico_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 51537,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_asimmetrico_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_asimmetrico_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_bob_classico_01.jpg",
+    "nomeFile": "taglio_bob_classico_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52227,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_bob_classico_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_bob_classico_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_bob_classico_02.jpg",
+    "nomeFile": "taglio_bob_classico_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 50485,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_bob_classico_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_bob_classico_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_bob_lungo_01.jpg",
+    "nomeFile": "taglio_bob_lungo_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 57905,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_bob_lungo_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_bob_lungo_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_bob_lungo_02.jpg",
+    "nomeFile": "taglio_bob_lungo_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 56382,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_bob_lungo_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_bob_lungo_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_classico_01.jpg",
+    "nomeFile": "taglio_classico_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 56922,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_classico_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_classico_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_classico_02.jpg",
+    "nomeFile": "taglio_classico_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 53083,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_classico_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_classico_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_corto_testurizzato_01.jpg",
+    "nomeFile": "taglio_corto_testurizzato_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 49809,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_corto_testurizzato_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_corto_testurizzato_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_corto_testurizzato_02.jpg",
+    "nomeFile": "taglio_corto_testurizzato_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52488,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_corto_testurizzato_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_corto_testurizzato_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_curtain_01.jpg",
+    "nomeFile": "taglio_curtain_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 56007,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_curtain_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_curtain_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_curtain_02.jpg",
+    "nomeFile": "taglio_curtain_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 56184,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_curtain_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_curtain_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_alto_01.jpg",
+    "nomeFile": "taglio_fade_alto_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 51333,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_alto_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_alto_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_alto_02.jpg",
+    "nomeFile": "taglio_fade_alto_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52763,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_alto_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_alto_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_basso_01.jpg",
+    "nomeFile": "taglio_fade_basso_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52916,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_basso_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_basso_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_basso_02.jpg",
+    "nomeFile": "taglio_fade_basso_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 51197,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_basso_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_basso_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_medio_01.jpg",
+    "nomeFile": "taglio_fade_medio_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 49898,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_medio_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_medio_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_fade_medio_02.jpg",
+    "nomeFile": "taglio_fade_medio_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 51295,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_fade_medio_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_fade_medio_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_layered_01.jpg",
+    "nomeFile": "taglio_layered_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 63330,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_layered_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_layered_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_layered_02.jpg",
+    "nomeFile": "taglio_layered_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 68587,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_layered_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_layered_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lob_01.jpg",
+    "nomeFile": "taglio_lob_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 60374,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lob_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lob_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lob_02.jpg",
+    "nomeFile": "taglio_lob_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 61646,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lob_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lob_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lungo_liscio_01.jpg",
+    "nomeFile": "taglio_lungo_liscio_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 57448,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lungo_liscio_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lungo_liscio_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lungo_liscio_02.jpg",
+    "nomeFile": "taglio_lungo_liscio_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 51621,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lungo_liscio_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lungo_liscio_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lungo_riccio_01.jpg",
+    "nomeFile": "taglio_lungo_riccio_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 64509,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lungo_riccio_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lungo_riccio_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_lungo_riccio_02.jpg",
+    "nomeFile": "taglio_lungo_riccio_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 60833,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_lungo_riccio_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_lungo_riccio_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_messy_01.jpg",
+    "nomeFile": "taglio_messy_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55211,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_messy_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_messy_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_messy_02.jpg",
+    "nomeFile": "taglio_messy_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54758,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_messy_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_messy_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_mullet_01.jpg",
+    "nomeFile": "taglio_mullet_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55072,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_mullet_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_mullet_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_mullet_02.jpg",
+    "nomeFile": "taglio_mullet_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55023,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_mullet_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_mullet_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_pixie_01.jpg",
+    "nomeFile": "taglio_pixie_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54919,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_pixie_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_pixie_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_pixie_02.jpg",
+    "nomeFile": "taglio_pixie_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54779,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_pixie_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_pixie_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_pompadour_01.jpg",
+    "nomeFile": "taglio_pompadour_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 53992,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_pompadour_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_pompadour_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_pompadour_02.jpg",
+    "nomeFile": "taglio_pompadour_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 53172,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_pompadour_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_pompadour_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_quiff_01.jpg",
+    "nomeFile": "taglio_quiff_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55572,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_quiff_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_quiff_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_quiff_02.jpg",
+    "nomeFile": "taglio_quiff_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 54766,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_quiff_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_quiff_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_shag_01.jpg",
+    "nomeFile": "taglio_shag_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 68004,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_shag_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_shag_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_shag_02.jpg",
+    "nomeFile": "taglio_shag_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 62079,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_shag_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_shag_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_undercut_01.jpg",
+    "nomeFile": "taglio_undercut_01.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 52968,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_undercut_01.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_undercut_01.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "TAGLIO",
+    "famiglia": "taglio_undercut_02.jpg",
+    "nomeFile": "taglio_undercut_02.jpg",
+    "formato": "JPG",
+    "dimensioneBytes": 55033,
+    "percorsoRelativoAssets": "CATALOGO TECNICO/TAGLI/taglio_undercut_02.jpg",
+    "referenceImageUrl": "/assets/CATALOGO TECNICO/TAGLI/taglio_undercut_02.jpg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "CLIENTE",
+    "famiglia": "",
+    "nomeFile": "ASSUNTA_GRECO.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1735222,
+    "percorsoRelativoAssets": "CLIENTI/ASSUNTA_GRECO.png",
+    "referenceImageUrl": "/assets/CLIENTI/ASSUNTA_GRECO.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "CLIENTE",
+    "famiglia": "",
+    "nomeFile": "ELENA_CONTI.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1815432,
+    "percorsoRelativoAssets": "CLIENTI/ELENA_CONTI.png",
+    "referenceImageUrl": "/assets/CLIENTI/ELENA_CONTI.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "CLIENTE",
+    "famiglia": "",
+    "nomeFile": "GIULIA_ROMANO.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2157167,
+    "percorsoRelativoAssets": "CLIENTI/GIULIA_ROMANO.png",
+    "referenceImageUrl": "/assets/CLIENTI/GIULIA_ROMANO.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "CLIENTE",
+    "famiglia": "",
+    "nomeFile": "MARIA_ESPOSITO.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1964471,
+    "percorsoRelativoAssets": "CLIENTI/MARIA_ESPOSITO.png",
+    "referenceImageUrl": "/assets/CLIENTI/MARIA_ESPOSITO.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "CLIENTE",
+    "famiglia": "",
+    "nomeFile": "SARA_FERRARI.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2300489,
+    "percorsoRelativoAssets": "CLIENTI/SARA_FERRARI.png",
+    "referenceImageUrl": "/assets/CLIENTI/SARA_FERRARI.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "DIPENDENTE",
+    "famiglia": "",
+    "nomeFile": "ANNA_ROSSI_COLORISTA.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1948459,
+    "percorsoRelativoAssets": "DIPENDENTI/ANNA_ROSSI_COLORISTA.png",
+    "referenceImageUrl": "/assets/DIPENDENTI/ANNA_ROSSI_COLORISTA.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "DIPENDENTE",
+    "famiglia": "",
+    "nomeFile": "LUCA_BIANCHI_HAIR_STYLIST.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2022005,
+    "percorsoRelativoAssets": "DIPENDENTI/LUCA_BIANCHI_HAIR_STYLIST.png",
+    "referenceImageUrl": "/assets/DIPENDENTI/LUCA_BIANCHI_HAIR_STYLIST.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "DIPENDENTE",
+    "famiglia": "",
+    "nomeFile": "MARCO_VERDI_BARBER.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2333220,
+    "percorsoRelativoAssets": "DIPENDENTI/MARCO_VERDI_BARBER.png",
+    "referenceImageUrl": "/assets/DIPENDENTI/MARCO_VERDI_BARBER.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "DIPENDENTE",
+    "famiglia": "",
+    "nomeFile": "SENIOR_STYLIST_DEMO.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2114395,
+    "percorsoRelativoAssets": "DIPENDENTI/SENIOR_STYLIST_DEMO.png",
+    "referenceImageUrl": "/assets/DIPENDENTI/SENIOR_STYLIST_DEMO.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "LOGO",
+    "famiglia": "",
+    "nomeFile": "HAIRLAB_LOGO_MARK.png",
+    "formato": "PNG",
+    "dimensioneBytes": 94860,
+    "percorsoRelativoAssets": "LOGO/HAIRLAB_LOGO_MARK.png",
+    "referenceImageUrl": "/assets/LOGO/HAIRLAB_LOGO_MARK.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "LOGO",
+    "famiglia": "",
+    "nomeFile": "HAIRLAB_LOGO_WORDMARK.png",
+    "formato": "PNG",
+    "dimensioneBytes": 60101,
+    "percorsoRelativoAssets": "LOGO/HAIRLAB_LOGO_WORDMARK.png",
+    "referenceImageUrl": "/assets/LOGO/HAIRLAB_LOGO_WORDMARK.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "LOGO",
+    "famiglia": "",
+    "nomeFile": "LOGO DISEGNO.jpeg",
+    "formato": "JPEG",
+    "dimensioneBytes": 38675,
+    "percorsoRelativoAssets": "LOGO/LOGO DISEGNO.jpeg",
+    "referenceImageUrl": "/assets/LOGO/LOGO DISEGNO.jpeg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "LOGO",
+    "famiglia": "",
+    "nomeFile": "LOGO SCRITTA.jpeg",
+    "formato": "JPEG",
+    "dimensioneBytes": 33984,
+    "percorsoRelativoAssets": "LOGO/LOGO SCRITTA.jpeg",
+    "referenceImageUrl": "/assets/LOGO/LOGO SCRITTA.jpeg",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "UTENTE",
+    "famiglia": "",
+    "nomeFile": "ADMIN.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2165111,
+    "percorsoRelativoAssets": "UTENTI/ADMIN.png",
+    "referenceImageUrl": "/assets/UTENTI/ADMIN.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "UTENTE",
+    "famiglia": "",
+    "nomeFile": "CUSTOMER.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1989898,
+    "percorsoRelativoAssets": "UTENTI/CUSTOMER.png",
+    "referenceImageUrl": "/assets/UTENTI/CUSTOMER.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "UTENTE",
+    "famiglia": "",
+    "nomeFile": "RECEPTIONIST.png",
+    "formato": "PNG",
+    "dimensioneBytes": 1979376,
+    "percorsoRelativoAssets": "UTENTI/RECEPTIONIST.png",
+    "referenceImageUrl": "/assets/UTENTI/RECEPTIONIST.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  },
+  {
+    "categoria": "UTENTE",
+    "famiglia": "",
+    "nomeFile": "SUPERADMIN.png",
+    "formato": "PNG",
+    "dimensioneBytes": 2077938,
+    "percorsoRelativoAssets": "UTENTI/SUPERADMIN.png",
+    "referenceImageUrl": "/assets/UTENTI/SUPERADMIN.png",
+    "stato": "PRESENTE_NELLO_ZIP"
+  }
+]

@@ -879,3 +879,44 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.tutorial-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 9px 12px;
+  border: 1px solid #dccbc1;
+  border-radius: 10px;
+  background: #fff8f3;
+  color: #684b3e;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 850;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.tutorial-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(75, 53, 43, 0.11);
+}
+
+.tutorial-link span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #6f5042;
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.form-grid label small {
+  color: #95857c;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}

@@ -1,4 +1,11 @@
-HairLab assets root. Test URLs:
-/assets/LOGO/HAIRLAB_LOGO_WORDMARK.png
-/assets/UTENTI/ADMIN.png
-/assets/CLIENTI/MARIA_ESPOSITO.png
+HAIRLAB ASSET CHECK
+
+Archivio sorgente: assets(2).zip
+Estensione integrata: Blocco 4 LOB
+Nuove immagini LOB: 12
+LOB già presenti: 2
+LOB coperti complessivamente: 14
+LOB ancora da generare: 9
+Totale immagini archivio: 150
+Manifest specifico LOB: presente
+Manifest generale CSV/JSON: aggiornato

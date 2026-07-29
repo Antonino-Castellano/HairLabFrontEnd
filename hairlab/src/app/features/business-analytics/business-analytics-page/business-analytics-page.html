@@ -1,0 +1,418 @@
+<section class="analytics-page">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">SUPERADMIN · CONTROLLO DIREZIONALE</span>
+      <h1>Statistiche del salone</h1>
+      <p>Incassi registrati, andamento dei servizi, clienti, forniture, colori e fasce orarie.</p>
+    </div>
+    @if (dashboard(); as data) {
+      <div class="generated-at">
+        <span>Ultimo aggiornamento</span>
+        <strong>{{ data.generatedAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
+      </div>
+    }
+  </header>
+
+  <section class="filter-panel">
+    <div class="preset-buttons" aria-label="Periodo statistico">
+      @for (option of presets; track option.value) {
+        <button
+          type="button"
+          [class.active]="preset() === option.value"
+          (click)="applyPreset(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+    <div class="date-range">
+      <label>
+        <span>Dal</span>
+        <input type="date" [value]="startDate()" (change)="updateStart($event)" />
+      </label>
+      <label>
+        <span>Al</span>
+        <input type="date" [value]="endDate()" (change)="updateEnd($event)" />
+      </label>
+      <button class="apply-button" type="button" [disabled]="loading()" (click)="load()">
+        {{ loading() ? 'Aggiornamento…' : 'Applica intervallo' }}
+      </button>
+    </div>
+  </section>
+
+  @if (errorMessage()) {
+    <div class="message error-message">{{ errorMessage() }}</div>
+  }
+
+  @if (loading() && !dashboard()) {
+    <div class="loading-card">
+      <span class="loader"></span>
+      <strong>Elaborazione statistiche reali</strong>
+      <p>HairLab sta aggregando appuntamenti, servizi, clienti e magazzino.</p>
+    </div>
+  } @else if (dashboard(); as data) {
+    <section class="kpi-grid">
+      <article class="kpi-card primary-card">
+        <span>Incasso registrato</span>
+        <strong>{{
+          data.summary.grossRevenue | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+        }}</strong>
+        <small>{{ data.summary.completedAppointments }} appuntamenti completati</small>
+      </article>
+      <article class="kpi-card">
+        <span>Costi forniture ricevute</span>
+        <strong>{{
+          data.summary.receivedSupplyCosts | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+        }}</strong>
+        <small
+          >Impegni:
+          {{
+            data.summary.committedSupplyCosts | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+          }}</small
+        >
+      </article>
+      <article class="kpi-card accent-card">
+        <span>Margine parziale</span>
+        <strong>{{
+          data.summary.partialOperatingMargin | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+        }}</strong>
+        <small>Incassi meno forniture registrate</small>
+      </article>
+      <article class="kpi-card">
+        <span>Scontrino medio</span>
+        <strong>{{
+          data.summary.averageTicket | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT'
+        }}</strong>
+        <small>{{ data.summary.completedServices }} servizi eseguiti</small>
+      </article>
+      <article class="kpi-card">
+        <span>Clienti serviti</span>
+        <strong>{{ data.summary.uniqueCustomers }}</strong>
+        <small>{{ data.summary.newCustomers }} nuovi nel periodo</small>
+      </article>
+      <article class="kpi-card">
+        <span>Clienti di ritorno</span>
+        <strong>{{ data.summary.returningCustomerRate | number: '1.0-1' : 'it-IT' }}%</strong>
+        <small>{{ data.summary.returningCustomers }} con almeno due appuntamenti</small>
+      </article>
+      <article class="kpi-card warning-card">
+        <span>Annullamenti</span>
+        <strong>{{ data.summary.cancellationRate | number: '1.0-1' : 'it-IT' }}%</strong>
+        <small>{{ data.summary.cancelledAppointments }} appuntamenti annullati</small>
+      </article>
+      <article class="kpi-card warning-card">
+        <span>Mancate presenze</span>
+        <strong>{{ data.summary.noShowRate | number: '1.0-1' : 'it-IT' }}%</strong>
+        <small>{{ data.summary.noShowAppointments }} clienti non presentati</small>
+      </article>
+      <article class="kpi-card stock-card">
+        <span>Scorte da controllare</span>
+        <strong>{{ data.summary.lowStockItems }}</strong>
+        <small>Prodotti sotto o sulla soglia minima</small>
+      </article>
+    </section>
+
+    <section class="dashboard-grid two-columns">
+      <article class="panel trend-panel">
+        <header class="panel-header">
+          <div>
+            <span>ANDAMENTO</span>
+            <h2>Incassi nel periodo</h2>
+          </div>
+          <strong
+            >{{ data.startDate | date: 'dd/MM/yyyy' }} –
+            {{ data.endDate | date: 'dd/MM/yyyy' }}</strong
+          >
+        </header>
+        @if (data.trend.length) {
+          <div class="trend-chart" role="img" aria-label="Grafico degli incassi nel periodo">
+            @for (point of data.trend; track point.key) {
+              <div class="trend-column" [title]="point.label + ': € ' + point.revenue">
+                <div class="trend-value">
+                  {{ point.revenue | currency: 'EUR' : 'symbol' : '1.0-0' : 'it-IT' }}
+                </div>
+                <div class="trend-track">
+                  <div class="trend-bar" [style.height.%]="trendHeight(point.revenue)"></div>
+                </div>
+                <span>{{ point.label }}</span>
+                <small>{{ point.appointments }} app.</small>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-copy">Nessun incasso registrato nell’intervallo selezionato.</p>
+        }
+      </article>
+
+      <article class="panel">
+        <header class="panel-header">
+          <div>
+            <span>AGENDA</span>
+            <h2>Stato degli appuntamenti</h2>
+          </div>
+        </header>
+        <div class="status-list">
+          @for (row of data.appointmentStatuses; track row.status) {
+            <div class="status-row">
+              <div>
+                <strong>{{ statusLabel(row.status) }}</strong>
+                <span>{{ row.count }} appuntamenti</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" [style.width.%]="row.percentage"></div>
+              </div>
+              <b>{{ row.percentage | number: '1.0-1' : 'it-IT' }}%</b>
+            </div>
+          }
+        </div>
+      </article>
+    </section>
+
+    <section class="dashboard-grid two-columns">
+      <article class="panel">
+        <header class="panel-header">
+          <div>
+            <span>CLIENTI</span>
+            <h2>Chi ha speso di più</h2>
+          </div>
+        </header>
+        @if (data.topCustomers.length) {
+          <div class="ranking-list">
+            @for (row of data.topCustomers.slice(0, 8); track row.customerId; let index = $index) {
+              <div class="ranking-row">
+                <span class="rank">{{ index + 1 }}</span>
+                <div class="ranking-content">
+                  <div>
+                    <strong>{{ row.customerName }}</strong>
+                    <span
+                      >{{ row.completedAppointments }} appuntamenti ·
+                      {{ row.completedServices }} servizi</span
+                    >
+                  </div>
+                  <b>{{ row.totalSpent | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</b>
+                  <div class="mini-track">
+                    <div [style.width.%]="customerWidth(row.totalSpent)"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-copy">Nessuna spesa cliente disponibile.</p>
+        }
+      </article>
+
+      <article class="panel">
+        <header class="panel-header">
+          <div>
+            <span>SERVIZI</span>
+            <h2>I più richiesti</h2>
+          </div>
+        </header>
+        @if (data.topServices.length) {
+          <div class="ranking-list service-ranking">
+            @for (row of data.topServices.slice(0, 8); track row.serviceId; let index = $index) {
+              <div class="ranking-row">
+                <span class="rank">{{ index + 1 }}</span>
+                <div class="ranking-content">
+                  <div>
+                    <strong>{{ row.serviceName }}</strong>
+                    <span>{{ row.categoryName }} · {{ row.usageCount }} utilizzi</span>
+                  </div>
+                  <b>{{ row.revenue | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</b>
+                  <div class="mini-track">
+                    <div [style.width.%]="serviceWidth(row.usageCount)"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-copy">Nessun servizio completato nel periodo.</p>
+        }
+      </article>
+    </section>
+
+    <section class="dashboard-grid two-columns">
+      <article class="panel">
+        <header class="panel-header">
+          <div>
+            <span>AFFLUENZA</span>
+            <h2>Fasce orarie più frequentate</h2>
+          </div>
+        </header>
+        <div class="horizontal-chart">
+          @for (row of data.peakHours; track row.label) {
+            <div class="horizontal-row">
+              <span>{{ row.label }}</span>
+              <div class="horizontal-track">
+                <div [style.width.%]="hourWidth(row.appointmentCount)"></div>
+              </div>
+              <strong>{{ row.appointmentCount }}</strong>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="panel">
+        <header class="panel-header">
+          <div>
+            <span>COLOR LAB</span>
+            <h2>Colori e prodotti più usati</h2>
+          </div>
+        </header>
+        @if (data.topColors.length) {
+          <div class="horizontal-chart color-chart">
+            @for (row of data.topColors.slice(0, 10); track row.hairDyeId) {
+              <div class="horizontal-row">
+                <span>
+                  <strong>{{ row.code }}</strong>
+                  <small
+                    >{{ row.brand }}
+                    @if (row.lineName) {
+                      · {{ row.lineName }}
+                    }
+                  </small>
+                </span>
+                <div class="horizontal-track">
+                  <div [style.width.%]="colorWidth(row.totalQuantity)"></div>
+                </div>
+                <b>{{ row.totalQuantity | number: '1.0-2' : 'it-IT' }} {{ unitLabel(row.unit) }}</b>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-copy">Nessun utilizzo formula registrato nel periodo.</p>
+        }
+      </article>
+    </section>
+
+    <section class="panel table-panel">
+      <header class="panel-header">
+        <div>
+          <span>FORNITURE</span>
+          <h2>Costi per fornitore</h2>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fornitore</th>
+              <th>Ordini</th>
+              <th>Costo impegnato</th>
+              <th>Costo ricevuto</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of data.supplyCosts; track row.supplierId) {
+              <tr>
+                <td>
+                  <strong>{{ row.supplierName }}</strong>
+                </td>
+                <td>{{ row.orderCount }}</td>
+                <td>{{ row.committedCost | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</td>
+                <td>{{ row.receivedCost | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4">Nessun costo fornitore registrato nel periodo.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard-grid two-columns tables-grid">
+      <article class="panel table-panel">
+        <header class="panel-header">
+          <div>
+            <span>TEAM</span>
+            <h2>Performance operatori</h2>
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Operatore</th>
+                <th>Servizi</th>
+                <th>Ore</th>
+                <th>Incasso</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of data.employeePerformance; track row.employeeId) {
+                <tr>
+                  <td>
+                    <strong>{{ row.employeeName }}</strong>
+                  </td>
+                  <td>{{ row.serviceCount }}</td>
+                  <td>{{ row.totalMinutes / 60 | number: '1.1-1' : 'it-IT' }}</td>
+                  <td>{{ row.revenue | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4">Nessun servizio assegnato agli operatori.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel table-panel">
+        <header class="panel-header">
+          <div>
+            <span>DETTAGLIO SERVIZI</span>
+            <h2>Ricavi e tempi</h2>
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Servizio</th>
+                <th>Utilizzi</th>
+                <th>Tempo</th>
+                <th>Ricavo medio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of data.topServices; track row.serviceId) {
+                <tr>
+                  <td>
+                    <strong>{{ row.serviceName }}</strong
+                    ><small>{{ row.categoryName }}</small>
+                  </td>
+                  <td>{{ row.usageCount }}</td>
+                  <td>{{ row.totalMinutes }} min</td>
+                  <td>{{ row.averagePrice | currency: 'EUR' : 'symbol' : '1.2-2' : 'it-IT' }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4">Nessun dato disponibile.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    @if (data.dataQualityWarnings.length) {
+      <section class="warning-panel">
+        <header>
+          <span>QUALITÀ DEI DATI</span>
+          <h2>Indicazioni per interpretare correttamente i risultati</h2>
+        </header>
+        <ul>
+          @for (warning of data.dataQualityWarnings; track warning) {
+            <li>{{ warning }}</li>
+          }
+        </ul>
+      </section>
+    }
+  }
+</section>

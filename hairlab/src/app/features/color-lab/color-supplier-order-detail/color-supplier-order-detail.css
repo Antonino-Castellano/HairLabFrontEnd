@@ -5,15 +5,19 @@
   padding: 24px;
 }
 header,
-.actions {
+.actions,
+.cost-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
+}
+header,
+.actions {
   margin-bottom: 12px;
 }
 header span,
-small {
+.card small {
   font-size: 12px;
   font-weight: 800;
   color: #98715c;
@@ -22,18 +26,52 @@ h1 {
   color: #493d37;
 }
 header a,
-.actions button {
+.actions button,
+.price-editor button {
   padding: 9px 12px;
   border: 1px solid #ddd2cc;
   border-radius: 8px;
   background: #fff;
   color: #665850;
   text-decoration: none;
-  font: 800 8px inherit;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
 }
 .primary {
   background: #473a34 !important;
   color: #fff !important;
+}
+.cost-summary {
+  justify-content: flex-start;
+  margin-bottom: 14px;
+  padding: 15px;
+  border: 1px solid #e0d5ce;
+  border-radius: 12px;
+  background: #fff9f5;
+}
+.cost-summary div {
+  min-width: 190px;
+}
+.cost-summary span,
+.cost-summary strong {
+  display: block;
+}
+.cost-summary span {
+  color: #8e7b70;
+  font-size: 12px;
+  font-weight: 800;
+}
+.cost-summary strong {
+  margin-top: 4px;
+  color: #4d4039;
+  font-size: 20px;
+}
+.cost-summary p {
+  margin-left: auto;
+  max-width: 390px;
+  color: #89786f;
+  font-size: 12px;
 }
 .card {
   margin-bottom: 12px;
@@ -44,11 +82,17 @@ header a,
 }
 .card article {
   display: grid;
-  grid-template-columns: 1.5fr repeat(3, 0.7fr) 0.7fr;
-  gap: 10px;
+  grid-template-columns: minmax(190px, 1.4fr) repeat(3, minmax(95px, 0.55fr)) minmax(
+      190px,
+      0.9fr
+    ) minmax(135px, 0.65fr);
+  gap: 12px;
   align-items: center;
-  padding: 10px;
+  padding: 13px 8px;
   border-bottom: 1px solid #eee7e3;
+}
+.card article:last-child {
+  border-bottom: 0;
 }
 .card strong,
 .card b {
@@ -59,12 +103,42 @@ header a,
   font-size: 12px;
   color: #81746c;
 }
-.card input {
+.price-editor {
+  display: grid;
+  gap: 5px;
+}
+.price-editor label,
+.receive-field span {
+  color: #88766c;
+  font-size: 11px;
+  font-weight: 800;
+}
+.price-editor > div {
+  display: flex;
+  gap: 6px;
+}
+.price-editor input,
+.receive-field input {
+  width: 100%;
+  min-width: 0;
   height: 34px;
+  box-sizing: border-box;
+  padding: 0 8px;
   border: 1px solid #ddd3cd;
   border-radius: 7px;
 }
-.card textarea {
+.price-editor button {
+  padding: 7px 9px;
+}
+.price-editor button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.receive-field {
+  display: grid;
+  gap: 5px;
+}
+.receive-card textarea {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
@@ -86,17 +160,27 @@ header a,
   background: #f3faf4;
   color: #58725d;
 }
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .card article {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .product-data {
+    grid-column: 1 / -1;
   }
 }
-@media (max-width: 600px) {
-  header {
+@media (max-width: 760px) {
+  header,
+  .cost-summary {
     align-items: flex-start;
     flex-direction: column;
   }
+  .cost-summary p {
+    margin-left: 0;
+  }
   .card article {
     grid-template-columns: 1fr;
+  }
+  .product-data {
+    grid-column: auto;
   }
 }

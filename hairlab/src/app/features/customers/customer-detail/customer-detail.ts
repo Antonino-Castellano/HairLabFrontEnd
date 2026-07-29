@@ -22,6 +22,10 @@ import { CustomerAppointmentHistoryComponent } from '../customer-appointment-his
 
 import { CustomerColorTechnicalRecordComponent } from '../customer-color-technical-record/customer-color-technical-record';
 
+import { CustomerPhotoGalleryComponent } from '../customer-photo-gallery/customer-photo-gallery';
+
+import { CustomerPhotoAnalysisComponent } from '../customer-photo-analysis/customer-photo-analysis';
+
 /**
  * Identifica le sezioni disponibili
  * all'interno della scheda cliente.
@@ -38,6 +42,8 @@ type CustomerDetailSection =
   | 'beard'
   | 'color'
   | 'recommendations'
+  | 'photos'
+  | 'ai-analysis'
   | 'color-record';
 
 /**
@@ -66,6 +72,8 @@ type CustomerDetailSection =
     StyleRecommendationDetailComponent,
     CustomerAppointmentHistoryComponent,
     CustomerColorTechnicalRecordComponent,
+    CustomerPhotoGalleryComponent,
+    CustomerPhotoAnalysisComponent,
   ],
 
   templateUrl: './customer-detail.html',

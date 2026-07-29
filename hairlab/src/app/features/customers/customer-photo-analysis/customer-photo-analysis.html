@@ -1,0 +1,423 @@
+<section class="analysis-page">
+  <header class="analysis-header">
+    <div>
+      <span class="eyebrow">ASSISTENZA PROFESSIONALE</span>
+      <h2>Analisi fotografica IA</h2>
+      <p>
+        L’IA osserva e propone. Il professionista controlla, modifica e decide quali dati applicare
+        ai profili ufficiali.
+      </p>
+    </div>
+
+    <button type="button" class="secondary-button" (click)="reload()" [disabled]="loading()">
+      Aggiorna
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="state-card">Caricamento modulo di analisi...</div>
+  } @else {
+    <section class="setup-grid">
+      <article class="setup-card source-card">
+        <div class="card-heading">
+          <span class="step-badge">1</span>
+          <div>
+            <h3>Foto di analisi</h3>
+            <p>Priorità: foto scelta, foto tecnica recente, consulenza, appuntamento, profilo.</p>
+          </div>
+        </div>
+
+        @if (sourcePhoto(); as photo) {
+          <div class="source-preview">
+            @if (imageUrl(photo.imageUrl); as url) {
+              <img [src]="url" alt="Foto selezionata per l’analisi IA" />
+            }
+            <div>
+              <strong>{{ photo.description || 'Foto cliente selezionata' }}</strong>
+              <span>{{ valueLabel(photo.photoType) }}</span>
+              @if (photo.profileFallback) {
+                <small>Fallback automatico dalla foto profilo</small>
+              } @else {
+                <small>Foto disponibile nella galleria tecnica</small>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="empty-source">
+            <span>▣</span>
+            <strong>Nessuna fotografia disponibile</strong>
+            <p>Aggiungi una foto profilo oppure carica una foto nella sezione Foto.</p>
+          </div>
+        }
+      </article>
+
+      <article class="setup-card consent-card" [class.valid]="consent()?.valid">
+        <div class="card-heading">
+          <span class="step-badge">2</span>
+          <div>
+            <h3>Consenso all’elaborazione</h3>
+            <p>Lo stesso consenso privacy protegge analisi e simulazioni fotografiche.</p>
+          </div>
+        </div>
+
+        @if (consent()?.valid) {
+          <div class="consent-valid">
+            <span>✓</span>
+            <div>
+              <strong>Consenso attivo</strong>
+              <small>
+                Versione {{ consent()?.documentVersion }} ·
+                {{ consent()?.grantedAt | date: 'dd/MM/yyyy HH:mm' }}
+              </small>
+            </div>
+          </div>
+        } @else {
+          <label>
+            Versione informativa
+            <input [(ngModel)]="consentVersion" name="analysisConsentVersion" />
+          </label>
+
+          <label>
+            Note facoltative
+            <textarea
+              [(ngModel)]="consentNotes"
+              name="analysisConsentNotes"
+              rows="2"
+              placeholder="Consenso acquisito in salone..."
+            ></textarea>
+          </label>
+
+          <button type="button" class="primary-button" (click)="grantConsent()">
+            Registra consenso
+          </button>
+        }
+      </article>
+    </section>
+
+    <section class="generation-panel">
+      <div class="card-heading">
+        <span class="step-badge">3</span>
+        <div>
+          <h3>Avvia una nuova bozza IA</h3>
+          <p>Nessuna analisi parte automaticamente. La chiamata avviene solo dopo conferma.</p>
+        </div>
+      </div>
+
+      <div class="generation-controls">
+        <label>
+          Sezione da analizzare
+          <select [(ngModel)]="analysisType" name="analysisType">
+            <option value="COMPLETE">Analisi completa</option>
+            <option value="HAIR_PROFILE">Solo profilo capelli</option>
+            <option value="FACE_PROFILE">Solo profilo viso</option>
+            <option value="COLOR_ANALYSIS">Solo armocromia</option>
+          </select>
+        </label>
+
+        <label>
+          Provider
+          <select [(ngModel)]="provider" name="analysisProvider">
+            @for (item of providers(); track item.provider) {
+              <option [value]="item.provider" [disabled]="!item.available">
+                {{ providerLabel(item.provider) }}
+              </option>
+            }
+          </select>
+        </label>
+
+        <button
+          type="button"
+          class="generate-button"
+          (click)="analyze()"
+          [disabled]="analyzing() || !sourcePhoto() || !consent()?.valid"
+        >
+          {{ analyzing() ? 'Analisi in corso...' : 'Analizza foto con IA' }}
+        </button>
+      </div>
+
+      <div class="provider-grid">
+        @for (item of providers(); track item.provider) {
+          <article
+            class="provider-card"
+            [class.available]="item.available"
+            [class.selected]="provider === item.provider"
+          >
+            <div class="provider-title">
+              <strong>{{ providerLabel(item.provider) }}</strong>
+              <span [class.ok]="item.available">
+                {{ item.available ? 'Disponibile' : 'Non disponibile' }}
+              </span>
+            </div>
+            <p>{{ item.message }}</p>
+            <div class="provider-meta">
+              <span>{{ item.model || 'Modello non configurato' }}</span>
+              <span>{{ item.paid ? 'A consumo' : 'Costo API €0' }}</span>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="workspace-grid">
+      <aside class="history-panel">
+        <div class="panel-title">
+          <div>
+            <span class="eyebrow">VERSIONI</span>
+            <h3>Analisi salvate</h3>
+          </div>
+          <span class="count">{{ analyses().length }}</span>
+        </div>
+
+        @if (analyses().length === 0) {
+          <div class="empty-history">Nessuna analisi. Avvia manualmente la prima bozza.</div>
+        } @else {
+          <div class="analysis-list">
+            @for (analysis of analyses(); track analysis.id) {
+              <button
+                type="button"
+                class="analysis-list-item"
+                [class.active]="selectedAnalysis()?.id === analysis.id"
+                (click)="selectAnalysis(analysis)"
+              >
+                <div>
+                  <strong>{{ typeLabel(analysis.analysisType) }}</strong>
+                  <span>{{ providerLabel(analysis.provider) }}</span>
+                </div>
+                <small>{{ analysis.createdAt | date: 'dd/MM/yy HH:mm' }}</small>
+                <em [attr.data-status]="analysis.status">
+                  {{ statusLabel(analysis.status) }}
+                </em>
+              </button>
+            }
+          </div>
+        }
+
+        @if (audit().length > 0) {
+          <details class="audit-details">
+            <summary>Storico audit</summary>
+            <div class="audit-list">
+              @for (event of audit().slice(0, 12); track event.id) {
+                <div>
+                  <strong>{{ valueLabel(event.action) }}</strong>
+                  <span>{{ event.occurredAt | date: 'dd/MM/yy HH:mm' }}</span>
+                  <small>{{ event.details }}</small>
+                </div>
+              }
+            </div>
+          </details>
+        }
+      </aside>
+
+      <main class="review-panel">
+        @if (selectedAnalysis(); as analysis) {
+          <div class="review-header">
+            <div>
+              <span class="eyebrow">BOZZA REVISIONABILE</span>
+              <h3>{{ typeLabel(analysis.analysisType) }}</h3>
+              <p>
+                {{ providerLabel(analysis.provider) }} ·
+                {{ analysis.modelName || 'modello non indicato' }}
+              </p>
+            </div>
+            <span class="status-pill" [attr.data-status]="analysis.status">
+              {{ statusLabel(analysis.status) }}
+            </span>
+          </div>
+
+          @if (analysis.errorMessage) {
+            <div class="error-banner">{{ analysis.errorMessage }}</div>
+          }
+
+          @if (analysis.photoQuality; as quality) {
+            <section
+              class="quality-card"
+              [class.low]="!quality.usable || (quality.score ?? 0) < 45"
+            >
+              <div class="quality-score">
+                <strong>{{ quality.score ?? 0 }}</strong>
+                <span>/100</span>
+              </div>
+              <div>
+                <h4>Qualità della fotografia</h4>
+                <p>
+                  Luce: {{ quality.lighting }} · Nitidezza: {{ quality.sharpness }} · Posa:
+                  {{ quality.pose }} · Inquadratura: {{ quality.framing }}
+                </p>
+                @for (warning of quality.warnings; track warning) {
+                  <small>⚠ {{ warning }}</small>
+                }
+              </div>
+            </section>
+          }
+
+          @if (analysis.warnings.length > 0) {
+            <div class="warning-stack">
+              @for (warning of analysis.warnings; track warning) {
+                <p>⚠ {{ warning }}</p>
+              }
+            </div>
+          }
+
+          <div class="bulk-actions">
+            <button type="button" (click)="acceptReliable()">Accetta proposte ≥ 60%</button>
+            <button type="button" (click)="rejectAll()">Rifiuta tutte</button>
+          </div>
+
+          @for (section of ['HAIR_PROFILE', 'FACE_PROFILE', 'COLOR_ANALYSIS']; track section) {
+            @if (fieldsFor($any(section)).length > 0) {
+              <section class="field-section">
+                <div class="field-section-title">
+                  <h4>{{ sectionLabel($any(section)) }}</h4>
+                  <span>{{ fieldsFor($any(section)).length }} campi</span>
+                </div>
+
+                <div class="field-table">
+                  @for (field of fieldsFor($any(section)); track field.fieldName) {
+                    <article class="field-row" [attr.data-decision]="field.decision">
+                      <div class="field-name">
+                        <strong>{{ field.label }}</strong>
+                        <span>{{ field.fieldName }}</span>
+                      </div>
+
+                      <div class="field-value">
+                        <small>Valore attuale</small>
+                        <strong>{{ valueLabel(field.currentValue) }}</strong>
+                      </div>
+
+                      <div class="field-value proposal">
+                        <small>Proposta IA</small>
+                        <strong>{{ valueLabel(field.proposedValue) }}</strong>
+                        <span class="confidence">{{ field.confidence ?? 0 }}%</span>
+                      </div>
+
+                      <div class="field-explanation">
+                        <p>{{ field.reason || 'Nessuna motivazione disponibile.' }}</p>
+                        @if (field.warning) {
+                          <small>⚠ {{ field.warning }}</small>
+                        }
+                      </div>
+
+                      <div class="decision-buttons">
+                        <button
+                          type="button"
+                          [class.active]="field.decision === 'ACCEPTED'"
+                          [disabled]="!field.proposedValue"
+                          (click)="chooseDecision(field, 'ACCEPTED')"
+                        >
+                          Accetta
+                        </button>
+                        <button
+                          type="button"
+                          [class.active]="field.decision === 'MODIFIED'"
+                          (click)="chooseDecision(field, 'MODIFIED')"
+                        >
+                          Modifica
+                        </button>
+                        <button
+                          type="button"
+                          [class.active]="field.decision === 'REJECTED'"
+                          (click)="chooseDecision(field, 'REJECTED')"
+                        >
+                          Rifiuta
+                        </button>
+                      </div>
+
+                      @if (field.decision === 'MODIFIED') {
+                        <label class="edit-control">
+                          Valore corretto
+                          @if (field.allowedValues.length > 0) {
+                            <select
+                              [(ngModel)]="field.editedValue"
+                              [name]="
+                                'edited-' +
+                                analysis.id +
+                                '-' +
+                                field.section +
+                                '-' +
+                                field.fieldName
+                              "
+                            >
+                              <option [ngValue]="null">Seleziona...</option>
+                              @for (value of field.allowedValues; track value) {
+                                <option [value]="value">{{ valueLabel(value) }}</option>
+                              }
+                            </select>
+                          } @else if (field.fieldName.endsWith('ReferenceColor')) {
+                            <input
+                              type="color"
+                              [(ngModel)]="field.editedValue"
+                              [name]="'edited-color-' + analysis.id + '-' + field.fieldName"
+                            />
+                          } @else {
+                            <input
+                              [(ngModel)]="field.editedValue"
+                              [name]="'edited-text-' + analysis.id + '-' + field.fieldName"
+                            />
+                          }
+                        </label>
+                      }
+                    </article>
+                  }
+                </div>
+              </section>
+            }
+          }
+
+          <section class="apply-panel">
+            <label>
+              Modalità di applicazione
+              <select [(ngModel)]="applyMode" name="photoAnalysisApplyMode">
+                <option value="SELECTED_FIELDS">Applica i campi approvati</option>
+                <option value="EMPTY_FIELDS_ONLY">Applica solo dove il profilo è vuoto</option>
+              </select>
+            </label>
+
+            @if (!analysis.photoQuality?.usable || (analysis.photoQuality?.score ?? 0) < 45) {
+              <label class="override-check">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="allowLowQualityOverride"
+                  name="allowLowQualityOverride"
+                />
+                Confermo di aver verificato manualmente la foto nonostante la qualità bassa
+              </label>
+            }
+
+            <div class="final-actions">
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="saveReview(false)"
+                [disabled]="saving()"
+              >
+                Salva revisione
+              </button>
+              <button
+                type="button"
+                class="danger-button"
+                (click)="rejectAnalysis()"
+                [disabled]="saving() || analysis.status === 'REJECTED'"
+              >
+                Rifiuta bozza
+              </button>
+              <button
+                type="button"
+                class="primary-button"
+                (click)="saveReview(true)"
+                [disabled]="saving() || analysis.status === 'REJECTED'"
+              >
+                {{ saving() ? 'Salvataggio...' : 'Applica ai profili ufficiali' }}
+              </button>
+            </div>
+          </section>
+        } @else {
+          <div class="empty-review">
+            <span>✦</span>
+            <h3>Nessuna bozza selezionata</h3>
+            <p>Avvia un’analisi oppure seleziona una versione salvata.</p>
+          </div>
+        }
+      </main>
+    </section>
+  }
+</section>

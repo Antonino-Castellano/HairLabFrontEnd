@@ -208,6 +208,26 @@
 
         Armocromia
       </button>
+      <!-- FOTO TECNICHE -->
+      <button
+        type="button"
+        [class.active]="isSectionActive('photos')"
+        (click)="selectSection('photos')"
+      >
+        <span class="tab-icon">▣</span>
+        Foto
+      </button>
+
+      <!-- ANALISI FOTOGRAFICA IA -->
+      <button
+        type="button"
+        [class.active]="isSectionActive('ai-analysis')"
+        (click)="selectSection('ai-analysis')"
+      >
+        <span class="tab-icon">⌾</span>
+        Analisi IA
+      </button>
+
       <!-- SUGGERIMENTI -->
       <button
         type="button"
@@ -362,6 +382,23 @@
                     <span class="shortcut-arrow"> → </span>
                   </button>
 
+                  <!-- ANALISI IA -->
+                  <button
+                    type="button"
+                    class="shortcut-card"
+                    (click)="selectSection('ai-analysis')"
+                  >
+                    <span class="shortcut-icon">⌾</span>
+
+                    <div>
+                      <strong> Analisi fotografica IA </strong>
+
+                      <small> Bozze modificabili per capelli, viso e armocromia. </small>
+                    </div>
+
+                    <span class="shortcut-arrow"> → </span>
+                  </button>
+
                   <!-- SUGGERIMENTI -->
                   <button
                     type="button"
@@ -504,6 +541,20 @@
         <!-- =================================================
              SUGGERIMENTI
              ================================================= -->
+        @case ('photos') {
+          <section class="module-panel">
+            <app-customer-photo-gallery [customerId]="selectedCustomer.id!">
+            </app-customer-photo-gallery>
+          </section>
+        }
+
+        @case ('ai-analysis') {
+          <section class="module-panel">
+            <app-customer-photo-analysis [customerId]="selectedCustomer.id!">
+            </app-customer-photo-analysis>
+          </section>
+        }
+
         @case ('recommendations') {
           <section class="module-panel">
             <app-style-recommendation-detail [customerId]="selectedCustomer.id!">

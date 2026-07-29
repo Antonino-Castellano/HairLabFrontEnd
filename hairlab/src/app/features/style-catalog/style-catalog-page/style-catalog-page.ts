@@ -42,6 +42,8 @@ interface CatalogFormModel {
   futureSimulationDescriptor: string;
   futureSimulationReady: boolean;
   referenceImageUrl: string | null;
+  tutorialUrl: string;
+  tutorialLabel: string;
 
   gender: 'FEMALE' | 'MALE';
   family: string;
@@ -747,6 +749,8 @@ export class StyleCatalogPageComponent implements OnInit {
       napeLengthMinMm: value.napeLengthMinMm,
       napeLengthMaxMm: value.napeLengthMaxMm,
       referenceImageUrl: value.referenceImageUrl,
+      tutorialUrl: value.tutorialUrl || null,
+      tutorialLabel: value.tutorialLabel || null,
       technicalDescription: value.technicalDescription,
       futureSimulationDescriptor: value.futureSimulationDescriptor || null,
       futureSimulationReady: value.futureSimulationReady,
@@ -834,6 +838,8 @@ export class StyleCatalogPageComponent implements OnInit {
       futureSimulationDescriptor: '',
       futureSimulationReady: false,
       referenceImageUrl: null,
+      tutorialUrl: '',
+      tutorialLabel: 'Tutorial e tecnica di esecuzione',
       gender: 'FEMALE',
       family: tab === 'haircuts' ? 'PIXIE' : '',
       lengthCategory: 'SHORT',

@@ -1,0 +1,83 @@
+<section class="photo-gallery">
+  <header>
+    <div>
+      <span class="eyebrow">ARCHIVIO FOTOGRAFICO</span>
+      <h2>Galleria tecnica cliente</h2>
+      <p>Gestisci le fotografie recenti e scegli quella da usare come “Prima”.</p>
+    </div>
+    @if (sourcePhoto(); as source) {
+      <div class="source-chip">✓ Foto di partenza selezionata</div>
+    }
+  </header>
+
+  <div class="upload-panel">
+    <label>
+      <span>Nuova fotografia</span>
+      <input type="file" accept="image/jpeg,image/png,image/webp" (change)="chooseFile($event)" />
+    </label>
+    <label>
+      <span>Tipo</span>
+      <select [(ngModel)]="photoType">
+        <option value="TECHNICAL">Foto tecnica</option>
+        <option value="CONSULTATION">Consulenza</option>
+        <option value="APPOINTMENT">Appuntamento</option>
+        <option value="SIMULATION_SOURCE">Sorgente simulazione</option>
+      </select>
+    </label>
+    <label class="description-field">
+      <span>Descrizione</span>
+      <input [(ngModel)]="description" placeholder="Es. foto frontale dopo l'appuntamento" />
+    </label>
+    <button type="button" [disabled]="uploading() || !selectedFile" (click)="upload()">
+      {{ uploading() ? 'Caricamento...' : 'Aggiungi foto' }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="empty-state">Caricamento fotografie...</div>
+  } @else if (!photos().length) {
+    <div class="empty-state">
+      <strong>Nessuna foto tecnica caricata</strong>
+      <p>Se disponibile, HairLab userà temporaneamente la foto profilo del cliente.</p>
+    </div>
+  } @else {
+    <div class="photo-grid">
+      @for (photo of photos(); track photo.id) {
+        <article [class.selected-source]="photo.simulationSource">
+          <div class="photo-frame">
+            @if (imageUrl(photo.imageUrl); as url) {
+              <img [src]="url" [alt]="photo.description || 'Fotografia cliente'" />
+            }
+            <div class="badges">
+              <span>{{ typeLabel(photo.photoType) }}</span>
+              @if (photo.simulationSource) {
+                <span class="source-badge">Foto di partenza</span>
+              }
+              @if (photo.primaryPhoto) {
+                <span>Principale</span>
+              }
+            </div>
+          </div>
+          <div class="photo-info">
+            <strong>{{ photo.description || 'Fotografia cliente' }}</strong>
+            <small>{{ photo.capturedAt || photo.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small>
+          </div>
+          <footer>
+            <button type="button" [disabled]="photo.simulationSource" (click)="selectSource(photo)">
+              Usa come Prima
+            </button>
+            <button
+              type="button"
+              class="secondary"
+              [disabled]="photo.primaryPhoto"
+              (click)="selectPrimary(photo)"
+            >
+              Principale
+            </button>
+            <button type="button" class="danger" (click)="remove(photo)">Rimuovi</button>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>
